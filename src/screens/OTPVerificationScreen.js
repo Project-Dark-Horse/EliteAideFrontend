@@ -30,7 +30,7 @@ const OTPVerificationScreen = ({ route, navigation }) => {
     const userOtp = otp.join(''); // Join the OTP digits
     if (userOtp.length === 4) {
       try {
-        const response = await fetch('https://your-api.com/verify-otp', {
+        const response = await fetch('http://localhost:8080/api/users/otp/validate/', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -42,8 +42,8 @@ const OTPVerificationScreen = ({ route, navigation }) => {
 
         if (data.success) {
           console.log('OTP verified successfully');
-          // Navigate to the Home Screen
-          navigation.navigate('Home');
+          // Navigate to the Register Screen
+          navigation.navigate('Register');
         } else {
           alert('Invalid OTP');
         }

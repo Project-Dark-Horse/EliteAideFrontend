@@ -3,9 +3,9 @@ import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
+// Validation schema for registration input using Yup
 const registerValidationSchema = Yup.object().shape({
   fullName: Yup.string().required('Full Name is required'),
-  email: Yup.string().email('Invalid email address').required('Email is required'),
   password: Yup.string().min(6, 'Password must be at least 6 characters').required('Password is required'),
   confirmPassword: Yup.string()
     .oneOf([Yup.ref('password'), null], 'Passwords must match')
@@ -22,22 +22,20 @@ const RegisterScreen = ({ navigation }) => {
         },
         body: JSON.stringify({
           fullName: values.fullName,
-          email: values.email,
           password: values.password,
         }),
       });
 
       // const data = await response.json(); Turned off for testing
 
-      // Dummy data object written for testing postive scenario
+      // Dummy data object written for testing positive scenario
       const data = {
         success: true
-      }
+      };
 
       if (data.success) {
         console.log('Registration successful');
-        // Navigate to OTP screen and pass email as a parameter
-        navigation.navigate('OTPVerification', { email: values.email });
+        // Navigate to Home Screen
       } else {
         alert(data.message);
       }
@@ -50,7 +48,7 @@ const RegisterScreen = ({ navigation }) => {
     <View style={styles.container}>
       <Text style={styles.title}>Register</Text>
       <Formik
-        initialValues={{ fullName: '', email: '', password: '', confirmPassword: '' }}
+        initialValues={{ fullName: '', password: '', confirmPassword: '' }}
         validationSchema={registerValidationSchema}
         onSubmit={handleRegister}
       >
@@ -64,15 +62,6 @@ const RegisterScreen = ({ navigation }) => {
               value={values.fullName}
             />
             {touched.fullName && errors.fullName && <Text style={styles.errorText}>{errors.fullName}</Text>}
-
-            <TextInput
-              style={styles.input}
-              placeholder="Email"
-              onChangeText={handleChange('email')}
-              onBlur={handleBlur('email')}
-              value={values.email}
-            />
-            {touched.email && errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
 
             <TextInput
               style={styles.input}
