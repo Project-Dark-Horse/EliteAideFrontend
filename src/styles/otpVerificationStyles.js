@@ -21,4 +21,9 @@ export const otpVerificationStyles = StyleSheet.create({
   disabledText: {
     color: 'gray',
   },
+  reenterText: {
+    color: 'blue',
+    marginTop: 10,
+    textDecorationLine: 'underline',
+  }
 });

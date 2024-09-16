@@ -57,7 +57,11 @@ const OTPVerificationScreen = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Enter the 4-digit OTP sent on your Email ID</Text>
+      <Text style={styles.title}>Enter the 4-digit OTP sent to {email}</Text>
+
+      <TouchableOpacity onPress={() => navigation.navigate('Email')}>
+        <Text style={styles.reenterText}>Wrong address? Re-enter</Text>
+      </TouchableOpacity>
       
       <OtpInput otp={otp} handleOtpChange={handleOtpChange} />
 
