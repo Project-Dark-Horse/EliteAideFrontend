@@ -1,14 +1,17 @@
+// OTPVerificationScreen.js
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, Button, TouchableOpacity } from 'react-native';
+import OtpInput from '../components/OtpInput';
+import { verifyOtp, resendOtp } from '../services/otpService';
+import { otpVerificationStyles as styles } from '../styles/otpVerificationStyles';
 
 const OTPVerificationScreen = ({ route, navigation }) => {
-  const { email } = route.params; // Get email from navigation params
+  const { email } = route.params;
   const [otp, setOtp] = useState(['', '', '', '']);
   const [isResendDisabled, setIsResendDisabled] = useState(true);
   const [timer, setTimer] = useState(30);
 
   useEffect(() => {
-    // Start countdown for resend OTP button
     const countdown = setInterval(() => {
       setTimer((prev) => (prev > 0 ? prev - 1 : 0));
     }, 1000);
@@ -17,7 +20,7 @@ const OTPVerificationScreen = ({ route, navigation }) => {
       setIsResendDisabled(false);
     }
 
-    return () => clearInterval(countdown); // Clean up timer on unmount
+    return () => clearInterval(countdown);
   }, [timer]);
 
   const handleOtpChange = (value, index) => {
@@ -27,28 +30,13 @@ const OTPVerificationScreen = ({ route, navigation }) => {
   };
 
   const handleVerifyOtp = async () => {
-    const userOtp = otp.join(''); // Join the OTP digits
+    const userOtp = otp.join('');
     if (userOtp.length === 4) {
-      try {
-        const response = await fetch('http://localhost:8080/api/users/otp/validate/', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ email, otp: userOtp }),
-        });
-
-        const data = await response.json();
-
-        if (data.success) {
-          console.log('OTP verified successfully');
-          // Navigate to the Register Screen
-          navigation.navigate('Register');
-        } else {
-          alert('Invalid OTP');
-        }
-      } catch (error) {
-        alert('Failed to verify OTP');
+      const isValid = await verifyOtp(email, userOtp);
+      if (isValid) {
+        navigation.navigate('Register');
+      } else {
+        alert('Invalid OTP');
       }
     } else {
       alert('Please enter the 4-digit OTP');
@@ -57,25 +45,12 @@ const OTPVerificationScreen = ({ route, navigation }) => {
 
   const handleResendOtp = async () => {
     setIsResendDisabled(true);
-    setTimer(30); // Reset timer to 30 seconds
+    setTimer(30);
 
-    try {
-      const response = await fetch('https://your-api.com/resend-otp', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email }),
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        alert('OTP resent successfully');
-      } else {
-        alert('Failed to resend OTP');
-      }
-    } catch (error) {
+    const isResent = await resendOtp(email);
+    if (isResent) {
+      alert('OTP resent successfully');
+    } else {
       alert('Failed to resend OTP');
     }
   };
@@ -83,18 +58,8 @@ const OTPVerificationScreen = ({ route, navigation }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Enter the 4-digit OTP sent on your Email ID</Text>
-      <View style={styles.otpContainer}>
-        {otp.map((digit, index) => (
-          <TextInput
-            key={index}
-            style={styles.otpInput}
-            keyboardType="numeric"
-            maxLength={1}
-            onChangeText={(value) => handleOtpChange(value, index)}
-            value={digit}
-          />
-        ))}
-      </View>
+      
+      <OtpInput otp={otp} handleOtpChange={handleOtpChange} />
 
       <Button title="Verify OTP" onPress={handleVerifyOtp} />
 
@@ -110,39 +75,5 @@ const OTPVerificationScreen = ({ route, navigation }) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: 24,
-    marginBottom: 16,
-  },
-  otpContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 20,
-  },
-  otpInput: {
-    borderWidth: 1,
-    padding: 10,
-    margin: 5,
-    width: 50,
-    textAlign: 'center',
-  },
-  resendButton: {
-    marginTop: 20,
-  },
-  resendText: {
-    color: 'blue',
-  },
-  disabledText: {
-    color: 'gray',
-  },
-});
 
 export default OTPVerificationScreen;

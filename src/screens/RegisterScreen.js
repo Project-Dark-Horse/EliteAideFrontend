@@ -1,7 +1,11 @@
+// RegisterScreen.js
 import React from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { View, Text, Button } from 'react-native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
+import FormInput from '../components/FormInput';
+import { registerUser } from '../services/authService';
+import { registerScreenStyles as styles } from '../styles/registerScreenStyles';
 
 // Validation schema for registration input using Yup
 const registerValidationSchema = Yup.object().shape({
@@ -14,32 +18,12 @@ const registerValidationSchema = Yup.object().shape({
 
 const RegisterScreen = ({ navigation }) => {
   const handleRegister = async (values) => {
-    try {
-      const response = await fetch('https://your-api.com/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          fullName: values.fullName,
-          password: values.password,
-        }),
-      });
+    const success = await registerUser(values.fullName, values.password);
 
-      // const data = await response.json(); Turned off for testing
-
-      // Dummy data object written for testing positive scenario
-      const data = {
-        success: true
-      };
-
-      if (data.success) {
-        console.log('Registration successful');
-        // Navigate to Home Screen
-      } else {
-        alert(data.message);
-      }
-    } catch (error) {
+    if (success) {
+      console.log('Registration successful');
+      // Navigate to Home Screen or another screen
+    } else {
       alert('Registration failed');
     }
   };
@@ -54,36 +38,32 @@ const RegisterScreen = ({ navigation }) => {
       >
         {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
           <View>
-            <TextInput
-              style={styles.input}
+            <FormInput
               placeholder="Full Name"
-              onChangeText={handleChange('fullName')}
-              onBlur={handleBlur('fullName')}
               value={values.fullName}
+              handleChange={handleChange('fullName')}
+              handleBlur={handleBlur('fullName')}
+              error={errors.fullName}
+              touched={touched.fullName}
             />
-            {touched.fullName && errors.fullName && <Text style={styles.errorText}>{errors.fullName}</Text>}
-
-            <TextInput
-              style={styles.input}
+            <FormInput
               placeholder="Password"
               secureTextEntry
-              onChangeText={handleChange('password')}
-              onBlur={handleBlur('password')}
               value={values.password}
+              handleChange={handleChange('password')}
+              handleBlur={handleBlur('password')}
+              error={errors.password}
+              touched={touched.password}
             />
-            {touched.password && errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
-
-            <TextInput
-              style={styles.input}
+            <FormInput
               placeholder="Confirm Password"
               secureTextEntry
-              onChangeText={handleChange('confirmPassword')}
-              onBlur={handleBlur('confirmPassword')}
               value={values.confirmPassword}
+              handleChange={handleChange('confirmPassword')}
+              handleBlur={handleBlur('confirmPassword')}
+              error={errors.confirmPassword}
+              touched={touched.confirmPassword}
             />
-            {touched.confirmPassword && errors.confirmPassword && (
-              <Text style={styles.errorText}>{errors.confirmPassword}</Text>
-            )}
 
             <Button title="Register" onPress={handleSubmit} />
           </View>
@@ -92,28 +72,5 @@ const RegisterScreen = ({ navigation }) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 24,
-    marginBottom: 16,
-    textAlign: 'center',
-  },
-  input: {
-    borderWidth: 1,
-    padding: 8,
-    marginBottom: 10,
-    borderRadius: 4,
-  },
-  errorText: {
-    color: 'red',
-    marginBottom: 10,
-  },
-});
 
 export default RegisterScreen;
