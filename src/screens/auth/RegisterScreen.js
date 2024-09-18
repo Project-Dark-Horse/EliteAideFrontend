@@ -3,9 +3,9 @@ import React from 'react';
 import { View, Text, Button } from 'react-native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import FormInput from '../components/FormInput';
-import { registerUser } from '../services/authService';
-import { registerScreenStyles as styles } from '../styles/registerScreenStyles';
+import FormInput from '../../components/common/FormInput'
+import { registerUser } from '../../services/authService';
+import { registerScreenStyles as styles } from '../../styles/registerScreenStyles';
 
 // Validation schema for registration input using Yup
 const registerValidationSchema = Yup.object().shape({

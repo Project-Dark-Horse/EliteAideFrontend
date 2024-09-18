@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { TextInput, View, TouchableOpacity, Text } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { commonStyles as styles } from '../styles/commonStyles'; // Import common styles
+import { commonStyles as styles } from '../../styles/commonStyles'; // Import common styles
 
 const PasswordInput = ({ onChangeText, onBlur, value, error }) => {
   const [passwordVisible, setPasswordVisible] = useState(false);

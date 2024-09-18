@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { View, Text, Button, TouchableOpacity, TextInput} from 'react-native';
 import { Formik } from 'formik';
-import { emailValidationSchema } from '../validation/emailValidation';
-import { checkEmailExists, sendOtp } from '../services/emailService';
-import { emailScreenStyles as styles } from '../styles/emailScreenStyles'; // Import styles
+import { emailValidationSchema } from '../../validation/emailValidation';
+import { checkEmailExists, sendOtp } from '../../services/emailService';
+import { emailScreenStyles as styles } from '../../styles/emailScreenStyles'; // Import styles
 
 const EmailScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(false); // State to track loading

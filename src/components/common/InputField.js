@@ -1,6 +1,6 @@
 import React from 'react';
 import { TextInput, View, Text } from 'react-native';
-import { commonStyles as styles } from '../styles/commonStyles'; // Import common styles
+import { commonStyles as styles } from '../../styles/commonStyles'; // Import common styles
 
 const InputField = ({ placeholder, onChangeText, onBlur, value, error }) => {
   return (

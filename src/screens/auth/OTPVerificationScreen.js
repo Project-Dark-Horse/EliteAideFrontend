@@ -1,9 +1,9 @@
 // OTPVerificationScreen.js
 import React, { useState, useEffect } from 'react';
 import { View, Text, Button, TouchableOpacity } from 'react-native';
-import OtpInput from '../components/OtpInput';
-import { verifyOtp, resendOtp } from '../services/otpService';
-import { otpVerificationStyles as styles } from '../styles/otpVerificationStyles';
+import OtpInput from '../../components/OtpInput';
+import { verifyOtp, resendOtp } from '../../services/otpService';
+import { otpVerificationStyles as styles } from '../../styles/otpVerificationStyles';
 
 const OTPVerificationScreen = ({ route, navigation }) => {
   const { email } = route.params;

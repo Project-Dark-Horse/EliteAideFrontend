@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import LoginScreen from './screens/LoginScreen';
-import RegisterScreen from './screens/RegisterScreen';
-import OTPVerificationScreen from './screens/OTPVerificationScreen';
-import EmailScreen from './screens/EmailScreen';
+import LoginScreen from './screens/auth/LoginScreen';
+import RegisterScreen from './screens/auth/RegisterScreen';
+import OTPVerificationScreen from './screens/auth/OTPVerificationScreen';
+import EmailScreen from './screens/auth/EmailScreen';
 
 const Stack = createStackNavigator();
 

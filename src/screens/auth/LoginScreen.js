@@ -1,11 +1,11 @@
 import React from 'react';
 import { View, Text, Button, TouchableOpacity, Alert } from 'react-native';
 import { Formik } from 'formik';
-import { loginValidationSchema } from '../validation/loginValidation';
-import { loginUser } from '../services/authService';
-import InputField from '../components/InputField';
-import PasswordInput from '../components/PasswordInput';
-import { loginScreenStyles as styles } from '../styles/loginScreenStyles'; // Import styles for LoginScreen
+import { loginValidationSchema } from '../../validation/loginValidation';
+import { loginUser } from '../../services/authService';
+import InputField from '../../components/common/InputField';
+import PasswordInput from '../../components/common/PasswordInput';
+import { loginScreenStyles as styles } from '../../styles/loginScreenStyles'; // Import styles for LoginScreen
 
 const LoginScreen = ({ navigation }) => {
   const handleLogin = async (values) => {
@@ -19,7 +19,7 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Elite Aide Login</Text>
+      <Text style={styles.title}>Login</Text>
       <Text style={styles.welcomeText}>Welcome back! Ready to be your own boss?</Text>
 
       <Formik
