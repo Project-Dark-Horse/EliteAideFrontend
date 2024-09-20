@@ -1,0 +1,1 @@
+export const baseUrl = 'elite-aide-git-v1-testing-keshav-krishnas-projects.vercel.app'
