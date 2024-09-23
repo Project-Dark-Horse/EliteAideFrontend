@@ -12,7 +12,6 @@ const EmailScreen = ({ navigation }) => {
     setLoading(true);
     const emailExists = await checkEmailExists(values.email);
     setLoading(false);
-
     if (!emailExists) {
       const otpSent = await sendOtp(values.email);
       if (otpSent) {

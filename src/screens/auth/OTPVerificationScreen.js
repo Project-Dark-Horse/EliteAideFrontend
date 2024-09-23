@@ -7,7 +7,7 @@ import { otpVerificationStyles as styles } from '../../styles/otpVerificationSty
 
 const OTPVerificationScreen = ({ route, navigation }) => {
   const { email } = route.params;
-  const [otp, setOtp] = useState(['', '', '', '']);
+  const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [isResendDisabled, setIsResendDisabled] = useState(true);
   const [timer, setTimer] = useState(30);
 
@@ -31,7 +31,7 @@ const OTPVerificationScreen = ({ route, navigation }) => {
 
   const handleVerifyOtp = async () => {
     const userOtp = otp.join('');
-    if (userOtp.length === 4) {
+    if (userOtp.length === 6) {
       const isValid = await verifyOtp(email, userOtp);
       if (isValid) {
         navigation.navigate('Register');
@@ -57,7 +57,7 @@ const OTPVerificationScreen = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Enter the 4-digit OTP sent to {email}</Text>
+      <Text style={styles.title}>Enter the 6-digit OTP sent to {email}</Text>
 
       <TouchableOpacity onPress={() => navigation.navigate('Email')}>
         <Text style={styles.reenterText}>Wrong address? Re-enter</Text>
