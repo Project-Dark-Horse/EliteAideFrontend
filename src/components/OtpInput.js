@@ -1,8 +1,16 @@
-// OtpInput.js
 import React from 'react';
 import { TextInput, StyleSheet, View } from 'react-native';
 
-const OtpInput = ({ otp, handleOtpChange }) => {
+const OtpInput = ({ otp, handleOtpChange, otpRefs }) => {
+  const handleChange = (value, index) => {
+    handleOtpChange(value, index);
+
+    // Move focus to the next input if value is entered
+    if (value && index < otp.length - 1) {
+      otpRefs.current[index + 1].current.focus();
+    }
+  };
+
   return (
     <View style={styles.otpContainer}>
       {otp.map((digit, index) => (
@@ -11,8 +19,9 @@ const OtpInput = ({ otp, handleOtpChange }) => {
           style={styles.otpInput}
           keyboardType="numeric"
           maxLength={1}
-          onChangeText={(value) => handleOtpChange(value, index)}
+          onChangeText={(value) => handleChange(value, index)}
           value={digit}
+          ref={otpRefs.current[index]} // Attach ref to the input
         />
       ))}
     </View>

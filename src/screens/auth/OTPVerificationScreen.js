@@ -1,15 +1,24 @@
 // OTPVerificationScreen.js
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, Button, TouchableOpacity } from 'react-native';
 import OtpInput from '../../components/OtpInput';
-import { verifyOtp, resendOtp } from '../../services/otpService';
+import { verifyOtp, sendOtp } from '../../services/otpService';
 import { otpVerificationStyles as styles } from '../../styles/otpVerificationStyles';
+import { commonStyles } from '../../styles/commonStyles';
 
 const OTPVerificationScreen = ({ route, navigation }) => {
   const { email } = route.params;
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [isResendDisabled, setIsResendDisabled] = useState(true);
   const [timer, setTimer] = useState(30);
+  const [errorMessage, setErrorMessage] = useState('');
+  
+  // Create refs for each OTP input
+  const otpRefs = useRef(Array(6).fill().map(() => React.createRef()));
+
+  useEffect(() => {
+    otpRefs.current[0].current.focus();
+  }, []);
 
   useEffect(() => {
     const countdown = setInterval(() => {
@@ -27,19 +36,18 @@ const OTPVerificationScreen = ({ route, navigation }) => {
     const newOtp = [...otp];
     newOtp[index] = value;
     setOtp(newOtp);
+    if (newOtp.join('').length === 6) {
+      handleVerifyOtp(newOtp.join(''));
+    }
   };
 
-  const handleVerifyOtp = async () => {
-    const userOtp = otp.join('');
-    if (userOtp.length === 6) {
-      const isValid = await verifyOtp(email, userOtp);
-      if (isValid) {
-        navigation.navigate('Register');
-      } else {
-        alert('Invalid OTP');
-      }
+  const handleVerifyOtp = async (otp) => {
+    const isValid = await verifyOtp(email, otp);
+    if (isValid) {
+      navigation.navigate('Register');
+      setErrorMessage(''); // Clear any previous error message
     } else {
-      alert('Please enter the 4-digit OTP');
+      setErrorMessage('Invalid OTP');
     }
   };
 
@@ -47,11 +55,11 @@ const OTPVerificationScreen = ({ route, navigation }) => {
     setIsResendDisabled(true);
     setTimer(30);
 
-    const isResent = await resendOtp(email);
+    const isResent = await sendOtp(email);
     if (isResent) {
-      alert('OTP resent successfully');
+      setErrorMessage(''); // Clear any previous error message
     } else {
-      alert('Failed to resend OTP');
+      setErrorMessage('Failed to resend OTP');
     }
   };
 
@@ -59,13 +67,15 @@ const OTPVerificationScreen = ({ route, navigation }) => {
     <View style={styles.container}>
       <Text style={styles.title}>Enter the 6-digit OTP sent to {email}</Text>
 
+      {errorMessage ? (
+        <Text style={commonStyles.errorText}>{errorMessage}</Text> // Display error message
+      ) : null}
+
       <TouchableOpacity onPress={() => navigation.navigate('Email')}>
         <Text style={styles.reenterText}>Wrong address? Re-enter</Text>
       </TouchableOpacity>
       
-      <OtpInput otp={otp} handleOtpChange={handleOtpChange} />
-
-      <Button title="Verify OTP" onPress={handleVerifyOtp} />
+      <OtpInput otp={otp} handleOtpChange={handleOtpChange} otpRefs={otpRefs} />
 
       <TouchableOpacity
         disabled={isResendDisabled}

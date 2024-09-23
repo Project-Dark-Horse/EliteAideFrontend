@@ -50,27 +50,3 @@ export const checkEmailExists = async (email) => {
     }
   };
   
-  export const sendOtp = async (email) => {
-    try {
-      const response = await fetch(`https://${baseUrl}/v1/users/otp/send/`, {
-        method: 'POST',
-        headers: {
-          accept: 'application/json',
-          'content-type': 'application/json',
-          cookie,
-        },
-        body: JSON.stringify({ email }),
-      });
-      
-      if (response.status === 200) {
-        return true; // OTP sent successfully
-      } else {
-        console.log('Failed to send OTP');
-        return false;
-      }
-    } catch (error) {
-      console.log('Error sending OTP:', error);
-      return false;
-    }
-  };
-  
