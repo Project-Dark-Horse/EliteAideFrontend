@@ -1,71 +1,115 @@
 // RegisterScreen.js
-import React from 'react';
-import { View, Text, Button } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, Button, ActivityIndicator } from 'react-native';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import FormInput from '../../components/common/FormInput'
 import { registerUser } from '../../services/authService';
 import { registerScreenStyles as styles } from '../../styles/registerScreenStyles';
+import PasswordInput from '../../components/common/PasswordInput';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 // Validation schema for registration input using Yup
 const registerValidationSchema = Yup.object().shape({
-  fullName: Yup.string().required('Full Name is required'),
+  first_name: Yup.string().required('First Name is required'),
+  last_name: Yup.string().required('Last Name is required'),
+  username: Yup.string().required('Username is required'),
   password: Yup.string().min(6, 'Password must be at least 6 characters').required('Password is required'),
   confirmPassword: Yup.string()
     .oneOf([Yup.ref('password'), null], 'Passwords must match')
     .required('Please confirm your password'),
 });
 
-const RegisterScreen = ({ navigation }) => {
+const RegisterScreen = ({ navigation, route }) => {
+  const [loading, setLoading] = useState(false);
   const handleRegister = async (values) => {
-    const success = await registerUser(values.fullName, values.password);
-
-    if (success) {
-      console.log('Registration successful');
-      // Navigate to Home Screen or another screen
+    setLoading(true);
+    const response = await registerUser(values.first_name, values.last_name, values.username, values.password, route.params.otp, route.params.email);
+    if (response.success) {
+      // Handle successful registration
+      await AsyncStorage.setItem('accessToken', response.accessToken);
+      await AsyncStorage.setItem('refreshToken', response.refreshToken);
+      alert('Registration successful');
+      // navigation.navigate('MainAppScreen');
     } else {
-      alert('Registration failed');
+      // Handle registration failure (show error messages)
+      if (response.error.email) {
+        alert('Email error:', response.error.email);
+      }
     }
+    setLoading(false);
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Register</Text>
       <Formik
-        initialValues={{ fullName: '', password: '', confirmPassword: '' }}
+        initialValues={{
+          first_name: '',
+          last_name: '',
+          username: '',
+          password: '',
+          confirmPassword: '',
+        }}
         validationSchema={registerValidationSchema}
-        onSubmit={handleRegister}
-      >
-        {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+        onSubmit={handleRegister}>
+        {({
+          handleChange,
+          handleBlur,
+          handleSubmit,
+          values,
+          errors,
+          touched,
+        }) => (
           <View>
             <FormInput
-              placeholder="Full Name"
-              value={values.fullName}
-              handleChange={handleChange('fullName')}
-              handleBlur={handleBlur('fullName')}
-              error={errors.fullName}
-              touched={touched.fullName}
+              placeholder="First Name"
+              value={values.first_name}
+              handleChange={handleChange('first_name')}
+              handleBlur={handleBlur('first_name')}
+              error={errors.first_name}
+              touched={touched.first_name}
             />
             <FormInput
-              placeholder="Password"
-              secureTextEntry
-              value={values.password}
-              handleChange={handleChange('password')}
-              handleBlur={handleBlur('password')}
-              error={errors.password}
-              touched={touched.password}
-            />
-            <FormInput
-              placeholder="Confirm Password"
-              secureTextEntry
-              value={values.confirmPassword}
-              handleChange={handleChange('confirmPassword')}
-              handleBlur={handleBlur('confirmPassword')}
-              error={errors.confirmPassword}
-              touched={touched.confirmPassword}
+              placeholder="Last Name"
+              value={values.last_name}
+              handleChange={handleChange('last_name')}
+              handleBlur={handleBlur('last_name')}
+              error={errors.last_name}
+              touched={touched.last_name}
             />
 
-            <Button title="Register" onPress={handleSubmit} />
+            <FormInput
+              placeholder="Username"
+              value={values.username}
+              handleChange={handleChange('username')}
+              handleBlur={handleBlur('username')}
+              error={errors.username}
+              touched={touched.username}
+            />
+            <PasswordInput
+              placeholder="Password"
+              value={values.password}
+              onChangeText={handleChange('password')}
+              onBlur={handleBlur('password')}
+              error={errors.password}
+            />
+            <PasswordInput
+              placeholder="Confirm Password"
+              value={values.confirmPassword}
+              onChangeText={handleChange('confirmPassword')}
+              onBlur={handleBlur('confirmPassword')}
+              error={errors.confirmPassword}
+            />
+            {loading ? (
+              <ActivityIndicator size="small" color="#0000ff" />
+            ) : (
+              <Button
+                title="Register"
+                onPress={handleSubmit}
+              />
+            )}
           </View>
         )}
       </Formik>

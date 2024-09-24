@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Button, TouchableOpacity, TextInput} from 'react-native';
+import { View, Text, Button, TouchableOpacity, TextInput, ActivityIndicator} from 'react-native';
 import { Formik } from 'formik';
 import { emailValidationSchema } from '../../validation/emailValidation';
 import { checkEmailExists } from '../../services/emailService';
@@ -14,8 +14,10 @@ const EmailScreen = ({ navigation }) => {
   // Debounced function to check email existence
   const debouncedCheckEmailExists = debounce(async (email) => {
     if (emailValidationSchema.isValidSync({ email })) {
+      setLoading(true);
       const exists = await checkEmailExists(email);
       setEmailExists(exists);
+      setLoading(false);
     } else {
       setEmailExists(false); // Reset if email is empty
     }
@@ -37,40 +39,58 @@ const EmailScreen = ({ navigation }) => {
   };
   return (
     <View style={styles.container}>
-    <Text style={styles.title}>Enter your email address</Text>
-    <Text style={styles.subtitle}>You will need to verify your email in the next step</Text>
+      <Text style={styles.title}>Enter your email address</Text>
+      <Text style={styles.subtitle}>
+        You will need to verify your email in the next step
+      </Text>
 
-    <Formik
-      initialValues={{ email: '' }}
-      validationSchema={emailValidationSchema}
-      onSubmit={handleSubmit}
-    >
-      {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
-        <View>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter your email address"
-            onChangeText={(text) => {
-              handleChange('email')(text);
-              debouncedCheckEmailExists(text); // Call the debounced function
-            }}
-            onBlur={handleBlur('email')}
-            value={values.email}
-          />
-          {touched.email && errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
-          {emailExists && <Text style={styles.errorText}>Email ID already exists</Text>}
-
-          <Button title="Next" onPress={handleSubmit} disabled={loading || emailExists} />
-          <View style={styles.loginContainer}>
-            <Text>Already have an account? </Text>
-            <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-              <Text style={styles.loginText}>Login</Text>
-            </TouchableOpacity>
+      <Formik
+        initialValues={{email: ''}}
+        validationSchema={emailValidationSchema}
+        onSubmit={handleSubmit}>
+        {({
+          handleChange,
+          handleBlur,
+          handleSubmit,
+          values,
+          errors,
+          touched,
+        }) => (
+          <View>
+            <TextInput
+              style={styles.input}
+              placeholder="Enter your email address"
+              onChangeText={text => {
+                handleChange('email')(text);
+                debouncedCheckEmailExists(text); // Call the debounced function
+              }}
+              onBlur={handleBlur('email')}
+              value={values.email}
+            />
+            {touched.email && errors.email && (
+              <Text style={styles.errorText}>{errors.email}</Text>
+            )}
+            {emailExists && (
+              <Text style={styles.errorText}>Email ID already exists</Text>
+            )}
+            {loading || emailExists ? (
+              <ActivityIndicator size="small" color="#0000ff" />
+            ) : (
+              <Button
+                title="Next"
+                onPress={handleSubmit}
+              />
+            )}
+            <View style={styles.loginContainer}>
+              <Text>Already have an account? </Text>
+              <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+                <Text style={styles.loginText}>Login</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-      )}
-    </Formik>
-  </View>
+        )}
+      </Formik>
+    </View>
   );
 };
 

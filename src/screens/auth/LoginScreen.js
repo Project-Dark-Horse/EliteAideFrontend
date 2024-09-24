@@ -1,20 +1,34 @@
-import React from 'react';
-import { View, Text, Button, TouchableOpacity, Alert } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, Button, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Formik } from 'formik';
 import { loginValidationSchema } from '../../validation/loginValidation';
 import { loginUser } from '../../services/authService';
 import InputField from '../../components/common/InputField';
 import PasswordInput from '../../components/common/PasswordInput';
 import { loginScreenStyles as styles } from '../../styles/loginScreenStyles'; // Import styles for LoginScreen
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const LoginScreen = ({ navigation }) => {
+  const [loading, setLoading] = useState(false);
   const handleLogin = async (values) => {
+    setLoading(true);
     const response = await loginUser(values.email, values.password);
     if (response.success) {
-      navigation.navigate('MainAppScreen');
-    } else {
-      Alert.alert('Login failed', response.message);
+      
+      // Handle successful login
+      await AsyncStorage.setItem('accessToken', response.accessToken);
+      await AsyncStorage.setItem('refreshToken', response.refreshToken);
+      alert('Login successful');
+      // navigation.navigate('MainAppScreen');
     }
+    else {
+      // Handle login failure (show error messages)
+      if (response.error) {
+        alert('Login error:', response.error);
+      }
+    }
+    setLoading(false);
   };
 
   return (
@@ -40,11 +54,17 @@ const LoginScreen = ({ navigation }) => {
               onChangeText={handleChange('password')}
               onBlur={handleBlur('password')}
               value={values.password}
+              placeholder = {'Password'}
               error={touched.password && errors.password}
             />
-
-            <Button title="Login" onPress={handleSubmit} />
-
+              {loading ? (
+              <ActivityIndicator size="small" color="#0000ff" />
+            ) : (
+              <Button
+                title="Login"
+                onPress={handleSubmit}
+              />
+            )}
             <View style={styles.signupContainer}>
               <Text>Don't have an account? </Text>
               <TouchableOpacity onPress={() => navigation.navigate('Email')}>

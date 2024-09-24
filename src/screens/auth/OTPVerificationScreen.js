@@ -8,13 +8,13 @@ import { commonStyles } from '../../styles/commonStyles';
 
 const OTPVerificationScreen = ({ route, navigation }) => {
   const { email } = route.params;
-  const [otp, setOtp] = useState(['', '', '', '', '', '']);
+  const [otp, setOtp] = useState(['', '', '', '']);
   const [isResendDisabled, setIsResendDisabled] = useState(true);
   const [timer, setTimer] = useState(30);
   const [errorMessage, setErrorMessage] = useState('');
   
   // Create refs for each OTP input
-  const otpRefs = useRef(Array(6).fill().map(() => React.createRef()));
+  const otpRefs = useRef(Array(4).fill().map(() => React.createRef()));
 
   useEffect(() => {
     otpRefs.current[0].current.focus();
@@ -36,7 +36,7 @@ const OTPVerificationScreen = ({ route, navigation }) => {
     const newOtp = [...otp];
     newOtp[index] = value;
     setOtp(newOtp);
-    if (newOtp.join('').length === 6) {
+    if (newOtp.join('').length === 4) {
       handleVerifyOtp(newOtp.join(''));
     }
   };
@@ -44,7 +44,7 @@ const OTPVerificationScreen = ({ route, navigation }) => {
   const handleVerifyOtp = async (otp) => {
     const isValid = await verifyOtp(email, otp);
     if (isValid) {
-      navigation.navigate('Register');
+      navigation.navigate('Register', { otp , email });
       setErrorMessage(''); // Clear any previous error message
     } else {
       setErrorMessage('Invalid OTP');
@@ -65,7 +65,7 @@ const OTPVerificationScreen = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Enter the 6-digit OTP sent to {email}</Text>
+      <Text style={styles.title}>Enter the 4-digit OTP sent to {email}</Text>
 
       {errorMessage ? (
         <Text style={commonStyles.errorText}>{errorMessage}</Text> // Display error message
