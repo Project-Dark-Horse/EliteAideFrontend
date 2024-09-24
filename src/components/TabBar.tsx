@@ -50,7 +50,8 @@ const styles = StyleSheet.create({
   tabbarItem: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-evenly',
+    
   }
 });
 

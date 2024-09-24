@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
   },
   bottomBar: {},
   backButton: {
-    marginLeft: 15, // Adjust padding as needed
+    marginLeft: 15, 
   },
   backButtonText: {
     color: '#F8F8F8', 

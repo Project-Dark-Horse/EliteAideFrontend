@@ -8,7 +8,7 @@ import tw from 'twrnc';
 
 const UpcomingTasks = [
   {
-    id: '1',
+    id: 1,
     title: 'Team Meeting',
     description: 'Group discussion for the new product',
     time: '10 AM',
@@ -16,7 +16,7 @@ const UpcomingTasks = [
     iconName: 'people', 
   },
   {
-    id: '2',
+    id: 2,
     title: 'Design Review',
     description: 'Review of the new design prototype',
     time: '2 PM',
@@ -24,7 +24,7 @@ const UpcomingTasks = [
     iconName: 'chatbubble', 
   },
   {
-    id: '3',
+    id: 3,
     title: 'Code Review',
     description: 'Review of the recent code changes',
     time: '4 PM',
@@ -40,15 +40,15 @@ const UpcomingTasksComponent: React.FC = () => {
       <FlatList
         horizontal
         data={UpcomingTasks}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.id.toString()}  // Convert id to string
         renderItem={({ item }) => (
           <UpcomingTasksCard
+            id={item.id}
             title={item.title}
             description={item.description}
             time={item.time}
             backgroundColor={item.backgroundColor}
-            iconName={item.iconName}  
-          />
+            iconName={item.iconName}           />
         )}
         contentContainerStyle={tw`py-1`}
         showsHorizontalScrollIndicator={false}

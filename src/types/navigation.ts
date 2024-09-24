@@ -6,6 +6,11 @@ export type RootStackParamList = {
   ToDo: undefined;
   Progress: undefined;
   Done: undefined;
+  Login:undefined;
+  SignUp:undefined;
+  EnterEmail:undefined;
+  Otp:undefined;
+  BottomTabNavigator:undefined;
 };
 
-export type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Home'>;
+export type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
