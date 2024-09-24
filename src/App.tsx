@@ -10,6 +10,11 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import OTPVerificationScreen from './screens/OTPVerificationScreen';
 import EmailScreen from './screens/EmailScreen';
 import TopNavBar from './components/UpperNavBar/TopNavBar';
+import Calender from './screens/Calender';
+import Login from './screens/Login';
+import SignUp from './screens/SignUp';
+import EnterEmail from './screens/EnterEmail';
+import Otp from './screens/Otp';
 const tasks =[
   {
     id:1,
@@ -27,17 +32,18 @@ export default function App() {
     <SafeAreaProvider>
 
     <NavigationContainer>
-      {/* <Stack.Navigator initialRouteName="Login">
-        <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="Register" component={RegisterScreen} />
-        <Stack.Screen name="Email" component={EmailScreen} />
-        <Stack.Screen name="OTPVerification" component={OTPVerificationScreen} />
+      <Stack.Navigator initialRouteName="Login" >
+        <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+        <Stack.Screen name="EnterEmail" component={EnterEmail} options={{ headerShown: false }}  />
+        <Stack.Screen name="SignUp" component={SignUp} options={{ headerShown: false }}  />
+        <Stack.Screen name="Otp" component={Otp} options={{ headerShown: false }}/>
+        <Stack.Screen name="Email" component={EmailScreen} options={{ headerShown: false }}/>
+        <Stack.Screen name="OTPVerification" component={OTPVerificationScreen} options={{ headerShown: false }}/>
+        <Stack.Screen name="BottomTabNavigator" component={BottomTabNavigator} options={{ headerShown: false }}/>
+
                 
-      </Stack.Navigator> */}
-          <StatusBar backgroundColor="#111111" barStyle="light-content" />
-          <View style={styles.container}>
-              <BottomTabNavigator />
-          </View>
+       </Stack.Navigator> 
+          
         </NavigationContainer>
     </SafeAreaProvider>
 

@@ -7,24 +7,29 @@ import tw from 'twrnc';
 const { width } = Dimensions.get('window');
 
 interface PinnedTasksCardProps {
+  id:number;
   title: string;
   description: string;
   day: string; 
   time: string;
   iconName: string;
   backgroundColor: string;
+
 }
 
 const PinnedTasksCard: React.FC<PinnedTasksCardProps> = ({
+
+  id,
   title,
   description,
   day,
   time,
   iconName,
   backgroundColor
+  
 }) => {
   return (
-    <Card style={[tw`rounded-xl border border-[#1D1E23] flex-row justify-between items-center mb-3`, { backgroundColor, width: width * 0.87, height: 60 }]}>
+    <Card style={[tw`rounded-xl border border-[#1D1E23] flex-row items-center mb-3`, { backgroundColor, width: width * 0.87, height: 60 }]}>
       <View style={tw`flex-row justify-between items-center p-3 w-full`}>
         <View style={tw`flex-row items-start`}>
           <View style={tw`relative w-7 h-7 mr-2`}>

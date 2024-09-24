@@ -5,6 +5,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import tw from 'twrnc';  // Import twrnc for styling
 
 interface CardProps {
+  id : number;
   title: string;
   description: string;
   time: string;
@@ -12,7 +13,7 @@ interface CardProps {
   iconName: string;
 }
 
-const UpcomingTasksCard: React.FC<CardProps> = ({ title, description, time, backgroundColor, iconName }) => {
+const UpcomingTasksCard: React.FC<CardProps> = ({ id, title, description, time, backgroundColor, iconName }) => {
   return (
     <Card style={[tw`rounded-xl mr-2 h-[125px] w-[152px] justify-between`, { backgroundColor }]}>
       {/* Added custom padding (12px on x-axis, 16px on y-axis) */}
