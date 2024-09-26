@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Button, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, Button, TouchableOpacity} from 'react-native';
 import { Formik } from 'formik';
 import { loginValidationSchema } from '../../validation/loginValidation';
 import { loginUser } from '../../services/authService';
@@ -57,23 +57,20 @@ const LoginScreen = ({ navigation }) => {
               placeholder = {'Password'}
               error={touched.password && errors.password}
             />
-              {loading ? (
-              <ActivityIndicator size="small" color="#0000ff" />
-            ) : (
               <Button
                 title="Login"
                 onPress={handleSubmit}
+                disabled={loading}
               />
-            )}
             <View style={styles.signupContainer}>
               <Text>Don't have an account? </Text>
-              <TouchableOpacity onPress={() => navigation.navigate('Email')}>
+              <TouchableOpacity onPress={() => navigation.navigate('Email', { key: 'Register'})}>
                 <Text style={styles.signupText}>Create One</Text>
               </TouchableOpacity>
             </View>
 
             <View style={styles.forgotPasswordContainer}>
-              <TouchableOpacity onPress={() => navigation.navigate('Email')}>
+              <TouchableOpacity onPress={() => navigation.navigate('Email', {key: 'ForgotPass'})}>
                 <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
               </TouchableOpacity>
             </View>

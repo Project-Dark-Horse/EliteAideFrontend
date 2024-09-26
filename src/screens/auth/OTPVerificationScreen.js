@@ -1,13 +1,13 @@
 // OTPVerificationScreen.js
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, Button, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import OtpInput from '../../components/OtpInput';
 import { verifyOtp, sendOtp } from '../../services/otpService';
 import { otpVerificationStyles as styles } from '../../styles/otpVerificationStyles';
 import { commonStyles } from '../../styles/commonStyles';
 
 const OTPVerificationScreen = ({ route, navigation }) => {
-  const { email } = route.params;
+  const { email, key } = route.params;
   const [otp, setOtp] = useState(['', '', '', '']);
   const [isResendDisabled, setIsResendDisabled] = useState(true);
   const [timer, setTimer] = useState(30);
@@ -44,7 +44,7 @@ const OTPVerificationScreen = ({ route, navigation }) => {
   const handleVerifyOtp = async (otp) => {
     const isValid = await verifyOtp(email, otp);
     if (isValid) {
-      navigation.navigate('Register', { otp , email });
+      navigation.navigate('Register', { otp , email, key });
       setErrorMessage(''); // Clear any previous error message
     } else {
       setErrorMessage('Invalid OTP');
@@ -71,7 +71,7 @@ const OTPVerificationScreen = ({ route, navigation }) => {
         <Text style={commonStyles.errorText}>{errorMessage}</Text> // Display error message
       ) : null}
 
-      <TouchableOpacity onPress={() => navigation.navigate('Email')}>
+      <TouchableOpacity onPress={() => navigation.navigate('Email', { key })}>
         <Text style={styles.reenterText}>Wrong address? Re-enter</Text>
       </TouchableOpacity>
       

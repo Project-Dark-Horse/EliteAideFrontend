@@ -87,3 +87,34 @@ export const registerUser = async (first_name, last_name, username, password, ot
   }
 };
 
+export const forgotPassword = async (password, otp, email) => {
+  const url = `https://${baseUrl}/v1/users/forgot-password/`;
+  const options = {
+    method: 'POST',
+    headers: {
+      accept: 'application/json',
+      'content-type': 'application/json',
+      cookie,
+    },
+    body: JSON.stringify({ new_password: password, confirm_password: password, otp, email }),
+  }
+  try {
+    const response = await fetch(url, options);
+    const data = await response.json();
+    // Check if response contains an error
+    if (data.error) {
+      return { success: false, error: data.error };
+    }
+
+    clearTokens();
+    console.log(data.message);
+    return {
+      success: true,
+      message: data.message,
+    };
+  } catch (error) {
+    console.error("Error during password reset:", error);
+    return { success: false, error: error.message };
+  }
+};
+
