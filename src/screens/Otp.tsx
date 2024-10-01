@@ -27,13 +27,14 @@ type Props = {
 
 const OTPVerificationScreen: React.FC<Props> = ({ route }) => {
   const { email } = route.params;
+  console.log(email);
   const navigation = useNavigation<OTPVerificationScreenNavigationProp>();
 
   const [otp, setOtp] = useState<string[]>(['', '', '', '']);
   const [isResendDisabled, setIsResendDisabled] = useState<boolean>(true);
   const [timer, setTimer] = useState<number>(30);
   const [loading, setLoading] = useState<boolean>(false);
-  const [errorMessage, setErrorMessage] = useState<string>(''); 
+  const [errorMessage, setErrorMessage] = useState<string>('');
   const otpRefs = useRef<(TextInput | null)[]>([]);
 
   useEffect(() => {
@@ -71,7 +72,10 @@ const OTPVerificationScreen: React.FC<Props> = ({ route }) => {
   };
 
   const handleVerifyOtp = async () => {
-    const userOtp = otp.join('');
+    const userOtp = otp.join(''); // Combine the OTP array into a string
+    console.log(userOtp);
+    console.log("Request Body:", JSON.stringify({ email, otp: userOtp }));
+
     if (userOtp.length === 4) {
       setLoading(true);
       setErrorMessage('');
@@ -83,26 +87,30 @@ const OTPVerificationScreen: React.FC<Props> = ({ route }) => {
           },
           body: JSON.stringify({ email, otp: userOtp }),
         });
-  
+
         const data = await response.json();
-        console.log('OTP Verification Response:', data); // Keep this log to inspect the response
-  
+        console.log('OTP Verification Response:', data);
+
         setLoading(false);
-        
-        // Modify condition to check the message in the response
+
         if (data.message && data.message.toLowerCase() === 'otp verified') {
           Toast.show({
             type: 'success',
             text1: 'OTP verified successfully!',
           });
-          // Navigate to SignUp screen
-          navigation.replace('SignUp');
+
+          // Navigate to SignUp screen, passing email, otp, and the key from response
+          navigation.replace('SignUp', {
+            email,           // Pass the email
+            otp: userOtp,    // Pass the OTP
+            key: data.key    // Assuming `data.key` is part of the response
+          });
         } else {
           setErrorMessage('Invalid OTP. Please try again.');
         }
       } catch (error) {
         setLoading(false);
-        console.log('OTP Verification Error:', error); // Log any error
+        console.log('OTP Verification Error:', error);
         Toast.show({
           type: 'error',
           text1: 'Network error. Please try again.',
@@ -112,8 +120,9 @@ const OTPVerificationScreen: React.FC<Props> = ({ route }) => {
       setErrorMessage('Please enter the 4-digit OTP');
     }
   };
-  
-  
+
+
+
 
   const handleResendOtp = async () => {
     setIsResendDisabled(true);
@@ -122,12 +131,13 @@ const OTPVerificationScreen: React.FC<Props> = ({ route }) => {
 
     setLoading(true);
     try {
-      const response = await fetch(`${BASE_URL}v1/users/otp/resend/`, {
+      const response = await fetch(`${BASE_URL}v1/users/otp/send/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ email }),
+
       });
 
       const data = await response.json();
@@ -169,8 +179,8 @@ const OTPVerificationScreen: React.FC<Props> = ({ route }) => {
 
       <View style={tw`flex-1 justify-center px-6 bg-transparent mt-5`}>
         <View>
-          <TouchableOpacity 
-            style={tw`w-10 h-10 justify-center items-center top--39 bg-[#1D1E23] rounded-2xl`} 
+          <TouchableOpacity
+            style={tw`w-10 h-10 justify-center items-center top--39 bg-[#1D1E23] rounded-2xl`}
             onPress={() => navigation.goBack()}
           >
             <Ionicons name="chevron-back" size={28} color="#fff" />
@@ -182,7 +192,7 @@ const OTPVerificationScreen: React.FC<Props> = ({ route }) => {
           <TouchableOpacity>
             <Text style={tw`text-[#979797] mt-3`}>Wrong Address? Re-enter</Text>
           </TouchableOpacity>
-          
+
           <View style={tw`flex-row justify-start w-full mb-5 mt-10`}>
             {otp.map((digit, index) => (
               <TextInput
@@ -199,7 +209,7 @@ const OTPVerificationScreen: React.FC<Props> = ({ route }) => {
           </View>
 
           {errorMessage ? (
-            <Text style={tw`text-red-500 mb-3`}>{errorMessage}</Text> 
+            <Text style={tw`text-red-500 mb-3`}>{errorMessage}</Text>
           ) : null}
 
           <TouchableOpacity onPress={handleResendOtp} disabled={isResendDisabled}>
@@ -212,11 +222,11 @@ const OTPVerificationScreen: React.FC<Props> = ({ route }) => {
             mode="elevated"
             onPress={handleVerifyOtp}
             disabled={loading}
-            style={[tw`rounded-2xl top-20`, { 
-              shadowColor: 'grey', 
-              shadowOffset: { width: 0, height: 0.5 }, 
-              shadowOpacity: 0.15, 
-              shadowRadius: 0.5, 
+            style={[tw`rounded-2xl top-20`, {
+              shadowColor: 'grey',
+              shadowOffset: { width: 0, height: 0.5 },
+              shadowOpacity: 0.15,
+              shadowRadius: 0.5,
               elevation: 2,
               overflow: 'visible'
             }]}
