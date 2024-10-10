@@ -5,8 +5,9 @@ import ToDo from '../screens/HomeScreens/Todo';
 import Progress from '../screens/HomeScreens/Progress';
 import Done from '../screens/HomeScreens/Done';
 import Calender from '../screens/Calender';
-import Ai from '../screens/Ai';
+import Ai from '../screens/ChatScreen';
 import Profile from '../screens/Profile';
+import ChatScreen from '../screens/ChatScreen';
 
 const Stack = createStackNavigator();
 
@@ -28,7 +29,7 @@ const BottomBarStack = () => {
     >
       <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
       <Stack.Screen name="Calender" component={Calender} />
-      <Stack.Screen name="AI" component={Ai} />
+      <Stack.Screen name="ChatScreen" component={ChatScreen} />
       <Stack.Screen name="Profile" component={Profile} />
     </Stack.Navigator>
   );
