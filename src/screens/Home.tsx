@@ -10,8 +10,8 @@ import TopNavBar from '../components/UpperNavBar/TopNavBar';
 import tw from 'twrnc';
 
 const todo = require('../assets/to-do.png');
-const progress= require('../assets/progress.png')
-const done= require('../assets/done.png')
+const progress= require('../assets/Progress.png')
+const done= require('../assets/Done.png')
 
 
 const Home: React.FC = () => {
