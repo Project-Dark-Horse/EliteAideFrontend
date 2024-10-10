@@ -12,7 +12,7 @@ const UpcomingTasks = [
     title: 'Team Meeting',
     description: 'Group discussion for the new product',
     time: '10 AM',
-    backgroundColor: '#4956C7',
+    backgroundColor: '#5560C4',
     iconName: 'people', 
   },
   {
@@ -20,7 +20,7 @@ const UpcomingTasks = [
     title: 'Design Review',
     description: 'Review of the new design prototype',
     time: '2 PM',
-    backgroundColor: '#3C8FA9',
+    backgroundColor: '#36AAB9',
     iconName: 'chatbubble', 
   },
   {
@@ -28,7 +28,7 @@ const UpcomingTasks = [
     title: 'Code Review',
     description: 'Review of the recent code changes',
     time: '4 PM',
-    backgroundColor: '#3D83AA',
+    backgroundColor: '#499FCE',
     iconName: 'notifications', 
   },
 ];
