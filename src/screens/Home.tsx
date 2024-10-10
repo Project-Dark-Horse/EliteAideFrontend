@@ -9,6 +9,11 @@ import PinnedTasks from '../components/MainPage/PinnedTasks';
 import TopNavBar from '../components/UpperNavBar/TopNavBar';
 import tw from 'twrnc';
 
+const todo = require('../assets/to-do.png');
+const progress= require('../assets/progress.png')
+const done= require('../assets/done.png')
+
+
 const Home: React.FC = () => {
   const navigation = useNavigation<HomeScreenNavigationProp>();
 
@@ -17,9 +22,9 @@ const Home: React.FC = () => {
       <TopNavBar />
       <CustomMessageComponent />
       <View style={tw`flex-row justify-between mt-2`}>
-        <Tile title="To-do" onPress={() => navigation.navigate('ToDo')} />
-        <Tile title="Progress" onPress={() => navigation.navigate('Progress')} />
-        <Tile title="Done" onPress={() => navigation.navigate('Done')} />
+        <Tile image={todo}  title="To-do" onPress={() => navigation.navigate('ToDo')} />
+        <Tile image={progress}title="Progress" onPress={() => navigation.navigate('Progress')} />
+        <Tile image={done} title="Done" onPress={() => navigation.navigate('Done')} />
       </View>
       <UpcomingTasksComponent />
       <PinnedTasks />
