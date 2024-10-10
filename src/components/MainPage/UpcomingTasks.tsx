@@ -37,7 +37,7 @@ const UpcomingTasksComponent: React.FC = () => {
   return (
     <Surface style={tw`p-4 bg-[#111111]`}>
       <SeeAllCards title="Upcoming Tasks" onSeeAllPress={() => console.log('See all pressed')} />
-      <FlatList
+      <FlatList 
         horizontal
         data={UpcomingTasks}
         keyExtractor={(item) => item.id.toString()}  // Convert id to string
