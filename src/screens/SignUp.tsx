@@ -17,7 +17,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { HomeScreenNavigationProp } from '../types/navigation';
 import tw from 'twrnc';
 
-const API_URL = 'https://elite-aide-git-v1-testing-elite-aide-backends-projects.vercel.app/v1/users/register/';
+const API_URL = 'https://api.eliteaide.tech/v1/users/register/';
 
 interface RouteParams {
   email: string;

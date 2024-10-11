@@ -22,7 +22,7 @@ const LoginScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch('https://elite-aide-git-v1-testing-elite-aide-backends-projects.vercel.app/v1/users/login/', {
+      const response = await fetch('https://api.eliteaide.tech/v1/users/login/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
