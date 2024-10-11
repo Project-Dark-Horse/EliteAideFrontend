@@ -9,15 +9,18 @@ import { Button } from 'react-native-paper';
 import { RouteProp, useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import Toast from 'react-native-toast-message';
+//import { RootStackParamList } from '../types/navigation';
 
-const BASE_URL = "https://elite-aide-git-v1-testing-elite-aide-backends-projects.vercel.app/";
+
+
+
+const BASE_URL = "https://api.eliteaide.tech/";
 
 type RootStackParamList = {
   OTPVerification: { email: string };
+  SignUp: { email: string; otp: string; key: string }; // key is part of response
   Register: undefined;
-  SignUp: undefined;
 };
-
 type OTPVerificationScreenNavigationProp = StackNavigationProp<RootStackParamList, 'OTPVerification'>;
 type OTPVerificationScreenRouteProp = RouteProp<RootStackParamList, 'OTPVerification'>;
 

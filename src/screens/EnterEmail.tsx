@@ -10,7 +10,7 @@ import { useNavigation } from '@react-navigation/native';
 import * as Yup from 'yup';
 import Toast from 'react-native-toast-message';
 
-const BASE_URL = "https://elite-aide-git-v1-testing-elite-aide-backends-projects.vercel.app/";
+const BASE_URL = "https://api.eliteaide.tech/";
 
 type EmailScreenNavigationProp = {
   navigate: (screen: string, params?: any) => void;
