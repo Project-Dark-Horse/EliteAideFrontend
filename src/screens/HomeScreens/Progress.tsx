@@ -4,7 +4,7 @@ import { View, Text, StyleSheet } from 'react-native';
 const Progress: React.FC = () => {
   return (
     <View style={styles.container}>
-   
+      <Text style={styles.text}>This is the Progress Screen</Text>
     </View>
   );
 };
