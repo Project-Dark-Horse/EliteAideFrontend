@@ -1,28 +1,28 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity } from 'react-native';
-import RadialGradient from 'react-native-radial-gradient';
+//import RadialGradient from 'react-native-radial-gradient';
 import { BlurView } from '@react-native-community/blur';
 import tw from 'twrnc';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
 import { Button } from 'react-native-paper';
+import { RadialGradient } from 'react-native-svg';
 import { useNavigation } from '@react-navigation/native';
 import { HomeScreenNavigationProp } from '../types/navigation';
-import SignUp from './SignUp';
-import EnterEmail from './EnterEmail';
+import { string } from 'yup';
 
 const Login: React.FC = () => {
   const navigation = useNavigation<HomeScreenNavigationProp>();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [pressed, setPressed] = useState(false)
+  const [pressed, setPressed] = useState(false);
 
   return (
     <View style={tw`flex-1`}>
       {/* Top-Right Gradient */}
       <RadialGradient
-        style={tw`absolute inset-0`}
+        style = {tw`absolute inset-0`}
         colors={['#4956C7', '#111111', '#111111']}
         center={[330, 99]}
         radius={350}
@@ -49,7 +49,7 @@ const Login: React.FC = () => {
             <TextInput
               style={[
                 tw`bg-[#111111] text-sm text-white p-3 rounded-2xl border-[#6F6F6F]`,
-                { borderWidth: 0.5 }
+                { borderWidth: 0.5 },
               ]}
               placeholder="Username or Email address"
               placeholderTextColor="#6F6F6F"
@@ -63,7 +63,8 @@ const Login: React.FC = () => {
             <TextInput
               style={[
                 tw`bg-[#111111] text-white p-3 rounded-2xl border-[#6F6F6F]`,
-                { borderWidth: 0.5 }
+                // eslint-disable-next-line react-native/no-inline-styles
+                { borderWidth: 0.5 },
               ]}
               placeholder="Enter Password"
               placeholderTextColor="#6F6F6F"
@@ -75,7 +76,7 @@ const Login: React.FC = () => {
               onPress={() => setShowPassword(!showPassword)}
               style={tw`absolute right-4 top-4`}
             >
-              <Ionicons name={showPassword ? "eye-off" : "eye"} size={22} color="#979797" />
+              <Ionicons name={showPassword ? 'eye-off' : 'eye'} size={22} color="#979797" />
             </TouchableOpacity>
           </View>
 
@@ -93,13 +94,14 @@ const Login: React.FC = () => {
               navigation.navigate('BottomTabNavigator');
               setPressed(!pressed);
             }}
+            // eslint-disable-next-line react-native/no-inline-styles
             style={[tw`rounded-2xl top-20`, {
               shadowColor: 'grey',
               shadowOffset: { width: 0, height: 0.5 },
               shadowOpacity: 0.15,
               shadowRadius: 0.5,
               elevation: 2,
-              overflow: 'visible'
+              overflow: 'visible',
             }]}
             contentStyle={tw`py-1`}
             labelStyle={tw`text-sm text-white`}
@@ -113,7 +115,7 @@ const Login: React.FC = () => {
       <Text style={tw`text-white`}>Don’t have an account? </Text>
           <TouchableOpacity onPress={() => {
               console.log('hello');
-              navigation.navigate('EnterEmail')
+              navigation.navigate('EnterEmail');
               setPressed(!pressed);
               // Add any navigation logic here
             }}>

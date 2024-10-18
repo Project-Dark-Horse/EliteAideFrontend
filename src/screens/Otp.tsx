@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity } from 'react-native';
-import RadialGradient from 'react-native-radial-gradient';
+import Svg, { Defs, RadialGradient, Stop, Rect } from 'react-native-svg';
 import { BlurView } from '@react-native-community/blur';
 import tw from 'twrnc';
 import Ionicons from 'react-native-vector-icons/Ionicons';

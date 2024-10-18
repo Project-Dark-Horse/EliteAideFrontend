@@ -1,4 +1,4 @@
-package com.eliteaidefrontend
+package com.eliteaideclient
 
 import android.app.Application
 import com.facebook.react.PackageList
