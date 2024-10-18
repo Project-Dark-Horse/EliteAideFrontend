@@ -9,7 +9,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import { Button } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { HomeScreenNavigationProp } from '../types/navigation';
-// import SignUp from './SignUp';
+import SignUp from './SignUp';
 import Otp from './Otp';
 
 const EnterEmail: React.FC = () => {

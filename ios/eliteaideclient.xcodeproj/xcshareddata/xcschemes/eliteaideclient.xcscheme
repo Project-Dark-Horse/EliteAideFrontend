@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "eliteaideclient.app"
-               BlueprintName = "eliteaideclient"
-               ReferencedContainer = "container:eliteaideclient.xcodeproj">
+               BuildableName = "eliteaidefrontend.app"
+               BlueprintName = "eliteaidefrontend"
+               ReferencedContainer = "container:eliteaidefrontend.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "eliteaideclientTests.xctest"
-               BlueprintName = "eliteaideclientTests"
-               ReferencedContainer = "container:eliteaideclient.xcodeproj">
+               BuildableName = "eliteaidefrontendTests.xctest"
+               BlueprintName = "eliteaidefrontendTests"
+               ReferencedContainer = "container:eliteaidefrontend.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "eliteaideclient.app"
-            BlueprintName = "eliteaideclient"
-            ReferencedContainer = "container:eliteaideclient.xcodeproj">
+            BuildableName = "eliteaidefrontend.app"
+            BlueprintName = "eliteaidefrontend"
+            ReferencedContainer = "container:eliteaidefrontend.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "eliteaideclient.app"
-            BlueprintName = "eliteaideclient"
-            ReferencedContainer = "container:eliteaideclient.xcodeproj">
+            BuildableName = "eliteaidefrontend.app"
+            BlueprintName = "eliteaidefrontend"
+            ReferencedContainer = "container:eliteaidefrontend.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
