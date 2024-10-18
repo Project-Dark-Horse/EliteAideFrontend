@@ -1,13 +1,12 @@
-import React from "react";
+import React from 'react';
 import { View, FlatList } from 'react-native';
 import tw from 'twrnc';
-import SeeAllCards from "./SeeAllCards";
-import { Surface } from "react-native-paper";
-import PinnedTasksCard from "./PinnedTasksCard";
-
+import SeeAllCards from './SeeAllCards';
+import { Surface } from 'react-native-paper';
+import PinnedTasksCard from './PinnedTasksCard';
 const PinnedTasksData = [
   {
-    id: 1,
+    id: '1',
     title: 'Team Meeting',
     description: 'Group discussion for the new product',
     time: '10 AM',
@@ -16,7 +15,7 @@ const PinnedTasksData = [
     iconName: 'people', 
   },
   {
-    id: 2,
+    id: '2',
     title: 'Design Review',
     description: 'Review of the new design prototype',
     time: '2 PM',
@@ -25,24 +24,21 @@ const PinnedTasksData = [
     iconName: 'chatbubble', 
   },
 ];
-
 const PinnedTasks: React.FC = () => {
   return (
     <Surface style={tw`p-4 bg-[#111111] flex-1`}>
       <SeeAllCards title="Weekly Tasks" onSeeAllPress={() => console.log('See all pressed')} />
       <FlatList
         data={PinnedTasksData}
-        keyExtractor={(item) => item.id.toString()}  
+        keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <PinnedTasksCard
-            key={item.id}
-            id={item.id}
             title={item.title}
             description={item.description}
             time={item.time}
             day={item.day}
             backgroundColor={item.backgroundColor}
-            iconName={item.iconName}          />
+            iconName={item.iconName} id={0}          />
         )}
         contentContainerStyle={tw`py-2`}
         showsVerticalScrollIndicator={false}
@@ -51,5 +47,4 @@ const PinnedTasks: React.FC = () => {
     </Surface>
   );
 };
-
 export default PinnedTasks;
