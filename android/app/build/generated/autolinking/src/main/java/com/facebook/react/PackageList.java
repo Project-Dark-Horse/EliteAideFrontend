@@ -20,8 +20,6 @@ import com.curvedbottombar.CurvedBottomBarPackage;
 import com.swmansion.gesturehandler.RNGestureHandlerPackage;
 // react-native-linear-gradient
 import com.BV.LinearGradient.LinearGradientPackage;
-// react-native-radial-gradient
-import com.surajit.rnrg.RNRadialGradientPackage;
 // react-native-reanimated
 import com.swmansion.reanimated.ReanimatedPackage;
 // react-native-safe-area-context
@@ -82,7 +80,6 @@ public class PackageList {
       new CurvedBottomBarPackage(),
       new RNGestureHandlerPackage(),
       new LinearGradientPackage(),
-      new RNRadialGradientPackage(),
       new ReanimatedPackage(),
       new SafeAreaContextPackage(),
       new RNScreensPackage(),

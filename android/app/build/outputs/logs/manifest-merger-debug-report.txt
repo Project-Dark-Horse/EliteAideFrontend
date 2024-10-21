@@ -12,7 +12,6 @@ MERGED from [:react-native-async-storage_async-storage] /Users/shriyakapil/PDH/h
 MERGED from [:react-native-community_blur] /Users/shriyakapil/PDH/hogwarts/eliteaideclient/node_modules/@react-native-community/blur/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:2:1-7:12
 MERGED from [:react-native-curved-bottom-bar] /Users/shriyakapil/PDH/hogwarts/eliteaideclient/node_modules/react-native-curved-bottom-bar/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:2:1-7:12
 MERGED from [:react-native-linear-gradient] /Users/shriyakapil/PDH/hogwarts/eliteaideclient/node_modules/react-native-linear-gradient/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:2:1-7:12
-MERGED from [:react-native-radial-gradient] /Users/shriyakapil/PDH/hogwarts/eliteaideclient/node_modules/react-native-radial-gradient/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:2:1-7:12
 MERGED from [:react-native-reanimated] /Users/shriyakapil/PDH/hogwarts/eliteaideclient/node_modules/react-native-reanimated/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:2:1-7:12
 MERGED from [:react-native-svg] /Users/shriyakapil/PDH/hogwarts/eliteaideclient/node_modules/react-native-svg/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:2:1-7:12
 MERGED from [:react-native-vector-icons] /Users/shriyakapil/PDH/hogwarts/eliteaideclient/node_modules/react-native-vector-icons/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:2:1-7:12
@@ -148,7 +147,7 @@ MERGED from [com.facebook.soloader:soloader:0.11.0] /Users/shriyakapil/.gradle/c
 	android:name
 		ADDED from /Users/shriyakapil/PDH/hogwarts/eliteaideclient/android/app/src/main/AndroidManifest.xml:6:7-38
 		ADDED from /Users/shriyakapil/PDH/hogwarts/eliteaideclient/android/app/src/main/AndroidManifest.xml:6:7-38
-activity#com.eliteaideclient.MainActivity
+activity#com.eliteaidefrontend.MainActivity
 ADDED from /Users/shriyakapil/PDH/hogwarts/eliteaideclient/android/app/src/main/AndroidManifest.xml:13:7-24:18
 	android:label
 		ADDED from /Users/shriyakapil/PDH/hogwarts/eliteaideclient/android/app/src/main/AndroidManifest.xml:15:9-41
@@ -190,8 +189,6 @@ MERGED from [:react-native-curved-bottom-bar] /Users/shriyakapil/PDH/hogwarts/el
 MERGED from [:react-native-curved-bottom-bar] /Users/shriyakapil/PDH/hogwarts/eliteaideclient/node_modules/react-native-curved-bottom-bar/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:5:5-44
 MERGED from [:react-native-linear-gradient] /Users/shriyakapil/PDH/hogwarts/eliteaideclient/node_modules/react-native-linear-gradient/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:5:5-44
 MERGED from [:react-native-linear-gradient] /Users/shriyakapil/PDH/hogwarts/eliteaideclient/node_modules/react-native-linear-gradient/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:5:5-44
-MERGED from [:react-native-radial-gradient] /Users/shriyakapil/PDH/hogwarts/eliteaideclient/node_modules/react-native-radial-gradient/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:5:5-44
-MERGED from [:react-native-radial-gradient] /Users/shriyakapil/PDH/hogwarts/eliteaideclient/node_modules/react-native-radial-gradient/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:5:5-44
 MERGED from [:react-native-reanimated] /Users/shriyakapil/PDH/hogwarts/eliteaideclient/node_modules/react-native-reanimated/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:5:5-44
 MERGED from [:react-native-reanimated] /Users/shriyakapil/PDH/hogwarts/eliteaideclient/node_modules/react-native-reanimated/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:5:5-44
 MERGED from [:react-native-svg] /Users/shriyakapil/PDH/hogwarts/eliteaideclient/node_modules/react-native-svg/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:5:5-44
@@ -368,7 +365,7 @@ ADDED from [androidx.core:core:1.9.0] /Users/shriyakapil/.gradle/caches/8.8/tran
 		ADDED from [androidx.core:core:1.9.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/19a3848eea211a03727cbbbdeefda2de/transformed/core-1.9.0/AndroidManifest.xml:24:9-44
 	android:name
 		ADDED from [androidx.core:core:1.9.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/19a3848eea211a03727cbbbdeefda2de/transformed/core-1.9.0/AndroidManifest.xml:23:9-81
-permission#com.eliteaideclient.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+permission#com.eliteaidefrontend.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
 ADDED from [androidx.core:core:1.9.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/19a3848eea211a03727cbbbdeefda2de/transformed/core-1.9.0/AndroidManifest.xml:22:5-24:47
 	android:protectionLevel
 		ADDED from [androidx.core:core:1.9.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/19a3848eea211a03727cbbbdeefda2de/transformed/core-1.9.0/AndroidManifest.xml:24:9-44
@@ -378,7 +375,7 @@ uses-permission#${applicationId}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
 ADDED from [androidx.core:core:1.9.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/19a3848eea211a03727cbbbdeefda2de/transformed/core-1.9.0/AndroidManifest.xml:26:5-97
 	android:name
 		ADDED from [androidx.core:core:1.9.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/19a3848eea211a03727cbbbdeefda2de/transformed/core-1.9.0/AndroidManifest.xml:26:22-94
-uses-permission#com.eliteaideclient.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+uses-permission#com.eliteaidefrontend.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
 ADDED from [androidx.core:core:1.9.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/19a3848eea211a03727cbbbdeefda2de/transformed/core-1.9.0/AndroidManifest.xml:26:5-97
 	android:name
 		ADDED from [androidx.core:core:1.9.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/19a3848eea211a03727cbbbdeefda2de/transformed/core-1.9.0/AndroidManifest.xml:26:22-94

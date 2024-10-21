@@ -4,7 +4,7 @@
     "type": "APK",
     "kind": "Directory"
   },
-  "applicationId": "com.eliteaideclient",
+  "applicationId": "com.eliteaidefrontend",
   "variantName": "debug",
   "elements": [
     {

@@ -1,6 +1,6 @@
 1<?xml version="1.0" encoding="utf-8"?>
 2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-3    package="com.eliteaideclient"
+3    package="com.eliteaidefrontend"
 4    android:versionCode="1"
 5    android:versionName="1.0" >
 6
@@ -21,18 +21,18 @@
 17
 18    <permission
 18-->[androidx.core:core:1.9.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/19a3848eea211a03727cbbbdeefda2de/transformed/core-1.9.0/AndroidManifest.xml:22:5-24:47
-19        android:name="com.eliteaideclient.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+19        android:name="com.eliteaidefrontend.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
 19-->[androidx.core:core:1.9.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/19a3848eea211a03727cbbbdeefda2de/transformed/core-1.9.0/AndroidManifest.xml:23:9-81
 20        android:protectionLevel="signature" />
 20-->[androidx.core:core:1.9.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/19a3848eea211a03727cbbbdeefda2de/transformed/core-1.9.0/AndroidManifest.xml:24:9-44
 21
-22    <uses-permission android:name="com.eliteaideclient.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+22    <uses-permission android:name="com.eliteaidefrontend.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
 22-->[androidx.core:core:1.9.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/19a3848eea211a03727cbbbdeefda2de/transformed/core-1.9.0/AndroidManifest.xml:26:5-97
 22-->[androidx.core:core:1.9.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/19a3848eea211a03727cbbbdeefda2de/transformed/core-1.9.0/AndroidManifest.xml:26:22-94
 23
 24    <application
 24-->/Users/shriyakapil/PDH/hogwarts/eliteaideclient/android/app/src/main/AndroidManifest.xml:5:5-25:19
-25        android:name="com.eliteaideclient.MainApplication"
+25        android:name="com.eliteaidefrontend.MainApplication"
 25-->/Users/shriyakapil/PDH/hogwarts/eliteaideclient/android/app/src/main/AndroidManifest.xml:6:7-38
 26        android:allowBackup="false"
 26-->/Users/shriyakapil/PDH/hogwarts/eliteaideclient/android/app/src/main/AndroidManifest.xml:10:7-34
@@ -54,7 +54,7 @@
 35-->/Users/shriyakapil/PDH/hogwarts/eliteaideclient/android/app/src/debug/AndroidManifest.xml:6:9-44
 36        <activity
 36-->/Users/shriyakapil/PDH/hogwarts/eliteaideclient/android/app/src/main/AndroidManifest.xml:13:7-24:18
-37            android:name="com.eliteaideclient.MainActivity"
+37            android:name="com.eliteaidefrontend.MainActivity"
 37-->/Users/shriyakapil/PDH/hogwarts/eliteaideclient/android/app/src/main/AndroidManifest.xml:14:9-37
 38            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize|uiMode"
 38-->/Users/shriyakapil/PDH/hogwarts/eliteaideclient/android/app/src/main/AndroidManifest.xml:16:9-118
@@ -88,7 +88,7 @@
 53-->[androidx.emoji2:emoji2:1.2.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/af9fe4497f627430e2e6a9c9a98f7289/transformed/emoji2-1.2.0/AndroidManifest.xml:24:9-32:20
 54            android:name="androidx.startup.InitializationProvider"
 54-->[androidx.emoji2:emoji2:1.2.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/af9fe4497f627430e2e6a9c9a98f7289/transformed/emoji2-1.2.0/AndroidManifest.xml:25:13-67
-55            android:authorities="com.eliteaideclient.androidx-startup"
+55            android:authorities="com.eliteaidefrontend.androidx-startup"
 55-->[androidx.emoji2:emoji2:1.2.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/af9fe4497f627430e2e6a9c9a98f7289/transformed/emoji2-1.2.0/AndroidManifest.xml:26:13-68
 56            android:exported="false" >
 56-->[androidx.emoji2:emoji2:1.2.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/af9fe4497f627430e2e6a9c9a98f7289/transformed/emoji2-1.2.0/AndroidManifest.xml:27:13-37
