@@ -35,7 +35,6 @@ export default function App() {
         <Stack.Screen name="EnterEmail" component={EnterEmail} options={{ headerShown: false }}  />
         <Stack.Screen name="SignUp" component={SignUp} options={{ headerShown: false }}  />
         <Stack.Screen name="Email" component={EmailScreen} options={{ headerShown: false }}/>
-        <Stack.Screen name="Otp" component={Otp} options={{ headerShown: false }}/>
         <Stack.Screen name="BottomTabNavigator" component={BottomTabNavigator} options={{ headerShown: false }}/>
 
 

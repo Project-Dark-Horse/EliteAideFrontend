@@ -54,7 +54,7 @@ yarn-error.log
 **/fastlane/test_output
 
 # Bundle artifact
-*.jsbundle
+*.jsbundlec
 
 # Ruby / CocoaPods
 **/Pods/
@@ -73,3 +73,5 @@ yarn-error.log
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+package-lock.json
