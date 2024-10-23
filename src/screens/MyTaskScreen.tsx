@@ -73,7 +73,7 @@ const MyTaskScreen: React.FC = () => {
   const renderTask = (task: Task) => (
       <View key={task.id} style={[styles.taskCard, { backgroundColor: task.color + '20' }, task.cardStyle]}>
         <View style={[styles.leftContainer, task.leftContainerStyle]}>
-          <View style={[styles.iconContainer, { backgroundColor: task.color }]}>
+          <View style={[styles.container, { backgroundColor: task.color }]}>
             <Icon name={task.icon} size={20} color="#FFFFFF" />
           </View>
         </View>
