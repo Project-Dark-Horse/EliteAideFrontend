@@ -10,6 +10,7 @@ export type RootStackParamList = {
   SignUp:undefined;
   EnterEmail:undefined;
   Otp:undefined;
+  ChatScreen:undefined;
   BottomTabNavigator:undefined;
 };
 

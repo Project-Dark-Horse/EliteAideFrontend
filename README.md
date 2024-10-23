@@ -1,3 +1,30 @@
+# EliteAideFrontend
+
+This is the **EliteAideFrontend** project built with **React Native**. The project follows a structured Git flow for efficient development, and this README provides a guide on how to get started with the app, how to set up the environment, and the general branching strategy.
+
+## Git Flow
+
+The project uses the following Git flow structure:
+
+```plaintext
+main
+│
+├── feature/     // features
+│   └── (development of the user profile page)
+│
+├── bugfix/  // bugs and errors
+│   └── (fix for issue #1245, related to button click)
+│
+├── release/1.0.0                  // apk and bundling
+│   ├── feature/
+│   ├── bugfix/
+│   └── (final adjustments for release 1.0.0)
+│
+└── hotfix/        // critical issues
+    └── (critical fix for login crash in production)
+
+
+```
 This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
 # Getting Started
@@ -16,8 +43,6 @@ npm start
 
 # OR using Yarn
 yarn start
-```
-
 ## Step 2: Start your Application
 
 Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:

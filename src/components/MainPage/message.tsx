@@ -8,7 +8,7 @@ const CustomMessageComponent: React.FC = () => {
       
       <View style={tw`flex-col`}>
         <Text style={tw`text-gray-500 text-base `}>
-          Heya <Text style={tw`text-white`}>Arush,</Text>
+          Hey <Text style={tw`text-white`}>Arush,</Text>
         </Text>
         <Text style={tw`text-gray-400 text-base`}>Hope you have an awesome day!</Text>
       </View>
