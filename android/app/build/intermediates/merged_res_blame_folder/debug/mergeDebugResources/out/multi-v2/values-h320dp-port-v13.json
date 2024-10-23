@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.eliteaideclient.app-mergeDebugResources-32:/values-h320dp-port-v13/values-h320dp-port-v13.xml",
+            "outputFile": "com.eliteaidefrontend.app-mergeDebugResources-32:/values-h320dp-port-v13/values-h320dp-port-v13.xml",
             "map": [
                 {
                     "source": "/Users/shriyakapil/.gradle/caches/8.8/transforms/7b318836775473582af6a678efbc7360/transformed/material-1.6.1/res/values-h320dp-port-v13/values-h320dp-port-v13.xml",

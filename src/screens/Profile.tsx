@@ -4,16 +4,23 @@ import BottomTabNavigator from '../components/BottomTabNavigator';
 import UserInfo from '../components/Profile/UserInfo';
 import TaskCard from '../components/Profile/TaskBar';
 import ProfileMenu from '../components/Profile/ProfileMenu';
+import { useNavigation } from '@react-navigation/native';  // Import navigation hook
+
 import tw from 'twrnc';
 
 const Profile = () => {
+  const navigation = useNavigation();  // Initialize navigation
+
   const totalTasks = 125;
   const pendingTasks = 25;
   const doneTasks = 100;
-  
+
   const handleCardPress = () => {
-    // Handle the card press event here
     console.log('Card pressed!');
+  };
+
+  const handleMyActivityPress = () => {
+    navigation.navigate('MyActivityScreen');  // Navigate to MyActivityScreen
   };
 
   return (
@@ -23,8 +30,8 @@ const Profile = () => {
         <TaskCard total={totalTasks} pending={pendingTasks} done={doneTasks} />
         <ProfileMenu 
           title="My Activity" 
-          iconName="stats-chart" 
-          onPress={handleCardPress}
+          iconName="stats-chart"
+          onPress={handleMyActivityPress}
         />
         <ProfileMenu 
           title="Settings" 
