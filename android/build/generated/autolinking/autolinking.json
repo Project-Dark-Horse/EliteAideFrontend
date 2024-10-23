@@ -529,7 +529,7 @@
         {
           "name": "--terminal <string>",
           "description": "Launches the Metro Bundler in a new window using the specified terminal path.",
-          "default": "vscode"
+          "default": "Apple_Terminal"
         },
         {
           "name": "--binary-path <string>",
@@ -689,7 +689,7 @@
         {
           "name": "--terminal <string>",
           "description": "Launches the Metro Bundler in a new window using the specified terminal path.",
-          "default": "vscode"
+          "default": "Apple_Terminal"
         },
         {
           "name": "--appId <string>",
@@ -775,8 +775,8 @@
     "android": {
       "sourceDir": "/Users/shriyakapil/PDH/hogwarts/eliteaidefrontend/android",
       "appName": "app",
-      "packageName": "com.eliteaideclient",
-      "applicationId": "com.eliteaideclient",
+      "packageName": "com.eliteaidefrontend",
+      "applicationId": "com.eliteaidefrontend",
       "mainActivity": ".MainActivity",
       "assets": []
     }

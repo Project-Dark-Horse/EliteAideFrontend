@@ -15,6 +15,7 @@ import Login from './screens/Login';
 import SignUp from './screens/SignUp';
 import EnterEmail from './screens/EnterEmail';
 import Otp from './screens/Otp';
+import WelcomeScreen from './screens/Welcome';
 const tasks =[
   {
     id:1,
@@ -32,7 +33,8 @@ export default function App() {
     <SafeAreaProvider>
 
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login" >
+      <Stack.Navigator initialRouteName="Welcome" >
+        <Stack.Screen name="Welcome" component={WelcomeScreen} options={{ headerShown: false }} />
         <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
         <Stack.Screen name="EnterEmail" component={EnterEmail} options={{ headerShown: false }}  />
         <Stack.Screen name="SignUp" component={SignUp} options={{ headerShown: false }}  />
