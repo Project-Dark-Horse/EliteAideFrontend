@@ -50,6 +50,7 @@ const SignUp = () => {
 
         <TouchableOpacity style={tw`w-10 h-10 justify-center items-center top--20 bg-[#1D1E23] rounded-2xl`}>
             <Ionicons name="chevron-back" size={28} color="#fff" />
+            
         </TouchableOpacity>
 
           <Text style={tw`text-white text-3xl font-bold mb-3`}>Sign Up</Text>
