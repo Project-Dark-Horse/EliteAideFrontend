@@ -10,6 +10,7 @@ const WelcomeScreen = () => {
 
   return (
     <ImageBackground
+      // eslint-disable-next-line no-undef
       source={require('../assets/welcome-bg.png')} // Replace with your background image path
       style={styles.container}
     >
@@ -25,7 +26,6 @@ const WelcomeScreen = () => {
       <View style={styles.buttonContainer}>
         <TouchableOpacity
           onPress={() => {
-            console.log('hello');
             navigation.navigate('BottomTabNavigator');
             setPressed(!pressed);
           }}
@@ -39,7 +39,7 @@ const WelcomeScreen = () => {
           <Text style={tw`text-white`}>Don’t have an account? </Text>
           <TouchableOpacity
             onPress={() => {
-              console.log('Navigate to signup');
+              
               navigation.navigate('EnterEmail');
               setPressed(!pressed);
             }}
