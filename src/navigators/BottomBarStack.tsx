@@ -6,6 +6,7 @@ import Progress from '../screens/HomeScreens/Progress';
 import Done from '../screens/HomeScreens/Done';
 import Calender from '../screens/Calender';
 import Ai from '../screens/Ai';
+import Notification from '../screens/NotificationScreen';
 import Profile from '../screens/Profile';
 
 const Stack = createStackNavigator();
@@ -29,6 +30,7 @@ const BottomBarStack = () => {
       <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
       <Stack.Screen name="Calender" component={Calender} />
       <Stack.Screen name="AI" component={Ai} />
+      <Stack.Screen name="Notification" component={Notification} />
       <Stack.Screen name="Profile" component={Profile} />
     </Stack.Navigator>
   );

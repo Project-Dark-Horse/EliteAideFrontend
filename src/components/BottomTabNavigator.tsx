@@ -4,12 +4,13 @@ import { CurvedBottomBar } from 'react-native-curved-bottom-bar';
 import CustomButton from './CustomButton';
 import TabBar from './TabBar';
 import Profile from '../screens/Profile';
-import Calender from '../screens/Calender'
 import Ai from '../screens/Ai'
 import HomeStack from '../navigators/HomeStack';
 import { useNavigation } from '@react-navigation/native'; // Import if not already imported
 import Icon from 'react-native-vector-icons/Ionicons';
 import NotificationsComponent from './UpperNavBar/NotificationComponent';
+import NotificationScreen from '../screens/NotificationScreen';
+import CalendarScreen from '../screens/CalendarScreen';
 
 const BottomTabNavigator: React.FC = () => {
   const renderTabBar = ({ routeName, selectedTab, navigate }: any) => {
@@ -26,20 +27,20 @@ const BottomTabNavigator: React.FC = () => {
       height={74}
       circleWidth={58}
       bgColor="#111111"
-      initialRouteName="HomeStackMain"  
+      initialRouteName="HomeStackMain"
       borderTopLeftRight
       renderCircle={({ selectedTab, navigate }) => <CustomButton />}
       tabBar={renderTabBar}
     >
       <CurvedBottomBar.Screen name="HomeStackMain" position="LEFT" component={HomeStack} options={{ headerShown: false }} />
-      <CurvedBottomBar.Screen name="Calender" position="LEFT" component={Calender} options={{ headerShown: false }} />
+      <CurvedBottomBar.Screen name="Calendar" position="LEFT" component={CalendarScreen}  options={{ headerShown: false }}/>
       <CurvedBottomBar.Screen name="Ai" position="RIGHT" component={Ai} options={{ headerShown: false }} />
       <CurvedBottomBar.Screen name="Profile" position="RIGHT" component={Profile} options={{
         headerShown: true,
         headerTitle: 'Profile',
         headerTitleAlign: 'center',
-        
-        
+
+
         headerLeft: () => (
         <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
             <Icon name="chevron-back" size={20} color="white" />
@@ -72,10 +73,10 @@ const styles = StyleSheet.create({
   },
   bottomBar: {},
   backButton: {
-    marginLeft: 15, 
+    marginLeft: 15,
   },
   backButtonText: {
-    color: '#F8F8F8', 
+    color: '#F8F8F8',
   }
 });
 
