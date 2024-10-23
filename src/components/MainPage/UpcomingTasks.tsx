@@ -12,7 +12,7 @@ const UpcomingTasks = [
     title: 'Team Meeting',
     description: 'Group discussion for the new product',
     time: '10 AM',
-    backgroundColor: '#5560C4',
+    backgroundColor: '#4956C7',
     iconName: 'people', 
   },
   {
@@ -20,7 +20,7 @@ const UpcomingTasks = [
     title: 'Design Review',
     description: 'Review of the new design prototype',
     time: '2 PM',
-    backgroundColor: '#36AAB9',
+    backgroundColor: '#3C8FA9',
     iconName: 'chatbubble', 
   },
   {
@@ -28,7 +28,7 @@ const UpcomingTasks = [
     title: 'Code Review',
     description: 'Review of the recent code changes',
     time: '4 PM',
-    backgroundColor: '#499FCE',
+    backgroundColor: '#3D83AA',
     iconName: 'notifications', 
   },
 ];
@@ -37,7 +37,7 @@ const UpcomingTasksComponent: React.FC = () => {
   return (
     <Surface style={tw`p-4 bg-[#111111]`}>
       <SeeAllCards title="Upcoming Tasks" onSeeAllPress={() => console.log('See all pressed')} />
-      <FlatList
+      <FlatList 
         horizontal
         data={UpcomingTasks}
         keyExtractor={(item) => item.id.toString()}  // Convert id to string

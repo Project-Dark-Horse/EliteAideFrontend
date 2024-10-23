@@ -12,7 +12,7 @@ const PinnedTasksData = [
     description: 'Group discussion for the new product',
     time: '10 AM',
     day: 'Friday',
-    backgroundColor: '#1D1E23',
+    backgroundColor: '#1E1E1E',
     iconName: 'people', 
   },
   {
@@ -21,7 +21,7 @@ const PinnedTasksData = [
     description: 'Review of the new design prototype',
     time: '2 PM',
     day: 'Friday',
-    backgroundColor: '#1D1E23',
+    backgroundColor: '#1E1E1E',
     iconName: 'chatbubble', 
   },
 ];
