@@ -1,4 +1,3 @@
-// src/types/navigation.ts
 import { StackNavigationProp } from '@react-navigation/stack';
 
 export type RootStackParamList = {
@@ -11,7 +10,10 @@ export type RootStackParamList = {
   EnterEmail:undefined;
   Otp:undefined;
   ChatScreen:undefined;
-  BottomTabNavigator:undefined;
+  Notifications: undefined;
 };
 
 export type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
+
+
+

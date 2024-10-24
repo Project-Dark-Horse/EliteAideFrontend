@@ -87,7 +87,6 @@ const styles = StyleSheet.create({
     fontSize: 23,
     fontWeight: '500',
     color: '#FFFFFF',
-    fontFamily: 'Nunito',
     textAlign: 'center',
   },
   descriptionText: {
@@ -96,7 +95,6 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     color: '#979797',
     textAlign: 'center',
-    fontFamily: 'Nunito',
   },
 });
 

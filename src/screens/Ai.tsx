@@ -1,60 +1,156 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, TextInput } from 'react-native';
-import  tw  from 'twrnc';
-import LinearGradient from 'react-native-linear-gradient';
+import { View, Text, TextInput, TouchableOpacity, FlatList, KeyboardAvoidingView, Platform, Image } from 'react-native';
+import tw from 'twrnc';
+import bot from '../assets/bot.png';
+import { setIn } from 'formik';
 
-const Ai: React.FC = () => {
-  const [code, setCode] = useState(['', '', '', '']);
+interface Message {
+  id: string;
+  text: string;
+  sender: 'bot' | 'user';
+}
 
-  const handleCodeChange = (text: string, index: number) => {
-    const newCode = [...code];
-    newCode[index] = text;
-    setCode(newCode);
+const ChatScreen = () => {
+  const [messages, setMessages] = useState<Message[]>([
+    { id: '1', text: 'Hey, how is your productivity treating you?', sender: 'bot' },
+  ]);
+
+  const [input, setInput] = useState('');
+
+  const sendMessage = () => {
+    if (input.trim()) {
+      const newMessage: Message = {
+        id: Math.random().toString(),
+        text: input,
+        sender: 'user',
+      };
+      setMessages((prevMessages) => [newMessage, ...prevMessages]);
+      setInput('');  // clean up
+    }
   };
 
-  return (
-    <View style={tw`flex-1 bg-black`}>
-      <LinearGradient
-        colors={['#000', '#1c1c1c', '#0d0d0d']}
-        style={tw`absolute inset-0`}
-      />
-      <TouchableOpacity style={tw`mt-12 ml-5`}>
-        <Text style={tw`text-white text-3xl`}>{'<'}</Text>
-      </TouchableOpacity>
-      <View style={tw`flex-1 justify-center items-center px-5`}>
-        <Text style={tw`text-white text-base text-center mb-2`}>
-          Enter the 4-digit code sent to demo@gmail.com
-        </Text>
-        <TouchableOpacity>
-          <Text style={tw`text-blue-400 text-sm underline mb-7`}>Wrong address? Re-enter</Text>
-        </TouchableOpacity>
-        <View style={tw`flex-row justify-between w-[80%] mb-5`}>
-          {code.map((digit, index) => (
-            <TextInput
-              key={index}
-              style={tw`w-12 h-12 border border-blue-400 rounded-md text-center text-white text-xl`}
-              value={digit}
-              onChangeText={(text) => handleCodeChange(text, index)}
-              keyboardType="numeric"
-              maxLength={1}
+  
+
+  const renderItem = ({ item }: { item: Message }) => (
+    <View
+      style={tw`mb-3 flex ${item.sender === 'user' ? 'flex-row-reverse' : 'flex-row'} items-${item.sender === 'user' ? 'end' : 'start'}`}
+    >
+      {item.sender === 'bot' && (
+        <Image source={bot} style={tw`w-10 h-10 rounded-full mr-5 mt-4`} />
+      )}
+      <View
+        style={[
+          tw`relative p-3 rounded-lg max-w-3/4 border`,
+          {
+            borderColor: item.sender === 'user' ? '#9CA3AF' : '#3272A0',
+            backgroundColor: '#1D1E23',
+            shadowColor: 'white',
+            shadowOffset: { width: 0, height: 1 },
+            shadowOpacity: 0.2,
+            shadowRadius: 3,
+            elevation: 5,
+            borderRadius: 7,
+          },
+        ]}
+      >
+        <Text style={tw`text-white`}>{item.text}</Text>
+
+        {/* Bot tail */}
+        {item.sender === 'bot' && (
+          <>
+            <View
+              style={[
+                tw`absolute left-[-17px] w-0 h-0 border-t-[10px] border-r-[17px] border-b-[11px]`,
+                {
+                  borderRightColor: '#3272A0',
+                  borderTopColor: 'transparent',
+                  borderBottomColor: 'transparent',
+                  bottom: 10,
+                },
+              ]}
             />
-          ))}
-        </View>
-        <TouchableOpacity>
-          <Text style={tw`text-blue-400 mb-7 text-center`}>Resend code</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={tw`w-[80%] bg-gray-800 rounded-full h-12 justify-center mb-5`}>
-          <Text style={tw`text-white text-center text-lg`}>Continue</Text>
-        </TouchableOpacity>
-        <View style={tw`flex-row`}>
-          <Text style={tw`text-gray-500 text-sm`}>Don't have an account? </Text>
-          <TouchableOpacity>
-            <Text style={tw`text-blue-400 text-sm`}>Create One</Text>
+            <View
+              style={[
+                tw`absolute left-[-10px] w-0 h-0 border-t-[10px] border-r-[11px] border-b-[10px]`,
+                {
+                  borderRightColor: '#1D1E23',
+                  borderTopColor: 'transparent',
+                  borderBottomColor: 'transparent',
+                  bottom: 11,
+                },
+              ]}
+            />
+          </>
+        )}
+
+        {/* User tail */}
+        {item.sender === 'user' && (
+          <>
+            <View
+              style={[
+                tw`absolute right-[-16px] w-0 h-0 border-t-[11px] border-l-[15px] border-b-[9px]`,
+                {
+                  borderLeftColor: 'grey',
+                  borderTopColor: 'transparent',
+                  borderBottomColor: 'transparent',
+                  bottom: 9,
+                },
+              ]}
+            />
+            <View
+              style={[
+                tw`absolute right-[-10px] w-0 h-0 border-t-[10px] border-l-[11px] border-b-[6px]`,
+                {
+                  borderLeftColor: '#1D1E23',
+                  borderTopColor: 'transparent',
+                  borderBottomColor: 'transparent',
+                  bottom: 12,
+                },
+              ]}
+            />
+          </>
+        )}
+      </View>
+    </View>
+  );
+
+  return (
+    <View style={tw`flex-1 bg-[#111111]`}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={80}
+        style={tw`flex-1`}
+      >
+        <FlatList
+          data={messages}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+          inverted
+          style={tw`p-4`}
+        />
+
+        <View style={tw`flex-row items-center p-4 bg-[#111111] mb-25`}>
+          <TextInput
+            style={tw`flex-1 px-4 py-2 rounded-md bg-[#1D1E23] text-white`}
+            value={input}
+            onChangeText={setInput}
+            placeholder="Type a message..."
+            placeholderTextColor="#ccc"
+            multiline
+            numberOfLines={2}
+          />
+
+          <TouchableOpacity
+            activeOpacity={0.7}
+            style={tw`bg-gray-500 p-2 rounded-md ml-2`}
+            onPress={sendMessage}
+          >
+            <Text style={tw`text-white`}>Send</Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </View>
   );
 };
 
-export default Ai;
+export default ChatScreen;
