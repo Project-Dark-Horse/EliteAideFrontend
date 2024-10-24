@@ -14,15 +14,6 @@ const WelcomeScreen = () => {
       source={require('../assets/welcome-bg.png')} // Replace with your background image path
       style={styles.container}
     >
-      {/* Welcome Text Section (commented out if not used) */}
-      {/* <View style={styles.welcomeSection}>
-        <Text style={styles.welcomeText}>Welcome to Elite Aide</Text>
-        <Text style={styles.descriptionText}>
-          Where your tasks find order, and productivity meets ease.
-        </Text>
-      </View> */}
-
-      {/* Login Button */}
       <View style={styles.buttonContainer}>
         <TouchableOpacity
           onPress={() => {
