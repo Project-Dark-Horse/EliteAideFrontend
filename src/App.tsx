@@ -11,6 +11,8 @@ import Calender from './screens/Calender';
 import Login from './screens/Login';
 import SignUp from './screens/SignUp';
 import EnterEmail from './screens/EnterEmail';
+import ChatScreen from './screens/ChatScreen';
+
 import Otp from './screens/Otp';
 import WelcomeScreen from './screens/Welcome';
 const tasks =[
@@ -37,6 +39,7 @@ export default function App() {
         <Stack.Screen name="SignUp" component={SignUp} options={{ headerShown: false }}  />
         <Stack.Screen name="Email" component={EmailScreen} options={{ headerShown: false }}/>
         <Stack.Screen name="BottomTabNavigator" component={BottomTabNavigator} options={{ headerShown: false }}/>
+        <Stack.Screen name="Chat" component={ChatScreen} options={{ headerShown: false }}/>
 
 
        </Stack.Navigator>
