@@ -1,11 +1,7 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import Home from '../screens/Home';
-import ToDo from '../screens/HomeScreens/Todo';
-import Progress from '../screens/HomeScreens/Progress';
-import Done from '../screens/HomeScreens/Done';
 import Calender from '../screens/Calender';
-import Ai from '../screens/ChatScreen';
 import Profile from '../screens/Profile';
 import ChatScreen from '../screens/ChatScreen';
 

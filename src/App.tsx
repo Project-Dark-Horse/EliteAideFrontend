@@ -1,16 +1,9 @@
 import * as React from 'react';
-import { View, StatusBar, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import LoginScreen from './screens/LoginScreen';
-import RegisterScreen from './screens/RegisterScreen';
 import BottomTabNavigator from './components/BottomTabNavigator';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-
-import OTPVerificationScreen from './screens/OTPVerificationScreen';
-import EmailScreen from './screens/EmailScreen';
-import TopNavBar from './components/UpperNavBar/TopNavBar';
-import Calender from './screens/Calender';
 import Login from './screens/Login';
 import SignUp from './screens/SignUp';
 import EnterEmail from './screens/EnterEmail';
@@ -37,8 +30,6 @@ export default function App() {
         <Stack.Screen name="EnterEmail" component={EnterEmail} options={{ headerShown: false }}  />
         <Stack.Screen name="SignUp" component={SignUp} options={{ headerShown: false }}  />
         <Stack.Screen name="Otp" component={Otp} options={{ headerShown: false }}/>
-        <Stack.Screen name="Email" component={EmailScreen} options={{ headerShown: false }}/>
-        <Stack.Screen name="OTPVerification" component={OTPVerificationScreen} options={{ headerShown: false }}/>
         <Stack.Screen name="BottomTabNavigator" component={BottomTabNavigator} options={{ headerShown: false }}/>
 
                 
