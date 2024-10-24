@@ -13,7 +13,7 @@ import SignUp from './SignUp';
 import Otp from './Otp';
 
 
-const avatarr = require('../assets/bot.png');
+import avatarr from '../assets/bot.png';
 
 interface Message {
   id: string;
