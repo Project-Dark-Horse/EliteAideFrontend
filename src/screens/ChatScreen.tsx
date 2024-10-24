@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, FlatList, KeyboardAvoidingView, Platform, Image, ScrollView } from 'react-native';
 import tw from 'twrnc';
 
-const avatarr = require('../assets/bot.png');
+import avatarr from '../assets/bot.png';
 
 interface Message {
   id: string;
