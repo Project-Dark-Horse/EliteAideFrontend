@@ -1,7 +1,17 @@
-
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, FlatList, KeyboardAvoidingView, Platform, Image, ScrollView } from 'react-native';
 import tw from 'twrnc';
+import RadialGradient from 'react-native-radial-gradient';
+import Svg, { Defs, Stop, Rect } from 'react-native-svg';
+import { BlurView } from '@react-native-community/blur';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import LinearGradient from 'react-native-linear-gradient';
+import { Button } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
+import { HomeScreenNavigationProp } from '../types/navigation';
+import SignUp from './SignUp';
+import Otp from './Otp';
+
 
 const avatarr = require('../assets/bot.png');
 
