@@ -4,13 +4,16 @@ import { StyleSheet, TouchableOpacity, Text } from 'react-native';
 import { CurvedBottomBar } from 'react-native-curved-bottom-bar';
 import CustomButton from './CustomButton';
 import TabBar from './TabBar';
-import Profile from '../screens/Profile';
+import Profile from '../screens/ProfileScreen';
 import Calender from '../screens/Calender';
 import Ai from '../screens/Ai';
 import HomeStack from '../navigators/HomeStack';
 import { useNavigation } from '@react-navigation/native'; // Import if not already imported
 import Icon from 'react-native-vector-icons/Ionicons';
 import NotificationsComponent from './UpperNavBar/NotificationComponent';
+import NotificationScreen from '../screens/NotificationScreen';
+import CalendarScreen from '../screens/CalendarScreen';
+
 const BottomTabNavigator: React.FC = () => {
   const renderTabBar = ({ routeName, selectedTab, navigate }: any) => {
     return <TabBar routeName={routeName} selectedTab={selectedTab} navigate={navigate} />;
@@ -30,7 +33,7 @@ const BottomTabNavigator: React.FC = () => {
       tabBar={renderTabBar}
     >
       <CurvedBottomBar.Screen name="HomeStackMain" position="LEFT" component={HomeStack} options={{ headerShown: false }} />
-      <CurvedBottomBar.Screen name="Calender" position="LEFT" component={Calender} options={{ headerShown: false }} />
+      <CurvedBottomBar.Screen name="Calendar" position="LEFT" component={CalendarScreen}  options={{ headerShown: false }}/>
       <CurvedBottomBar.Screen name="Ai" position="RIGHT" component={Ai} options={{ headerShown: false }} />
       <CurvedBottomBar.Screen name="Profile" position="RIGHT" component={Profile} options={{
         headerShown: true,
@@ -69,10 +72,10 @@ const styles = StyleSheet.create({
   },
   bottomBar: {},
   backButton: {
-    marginLeft: 15, // Adjust padding as needed
+    marginLeft: 15,// Adjust padding as needed
   },
   backButtonText: {
     color: '#F8F8F8',
-  },
+  }
 });
 export default BottomTabNavigator;

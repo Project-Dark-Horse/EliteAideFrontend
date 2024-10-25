@@ -13,6 +13,7 @@ const UpcomingTasks = [
     description: 'Group discussion for the new product',
     time: '10 AM',
     backgroundColor: '#4956C7',
+    backgroundColor: '#4956C7',
     iconName: 'people', 
   },
   {

@@ -7,6 +7,10 @@ import TopNavBar from '../components/UpperNavBar/TopNavBar';
 import axios from 'axios';
 import tw from 'twrnc';
 
+interface Task {
+  id: string;
+  title: string;
+}
 
 const api = axios.create({
   baseURL: 'https://api.eliteaide.tech/', 
@@ -15,26 +19,28 @@ const api = axios.create({
     'Content-Type': 'application/json',
   },
 });
+
 const Home: React.FC = () => {
   const navigation = useNavigation<HomeScreenNavigationProp>();
 
-  
-  const [upcomingTasks, setUpcomingTasks] = useState<any[]>([]);
-  const [pinnedTasks, setPinnedTasks] = useState<any[]>([]);
-  const [loadingUpcoming, setLoadingUpcoming] = useState<boolean>(true);
-  const [loadingPinned, setLoadingPinned] = useState<boolean>(true);
-  const [errorUpcoming, setErrorUpcoming] = useState<boolean>(false);
-  const [errorPinned, setErrorPinned] = useState<boolean>(false);
+  const [upcomingTasks, setUpcomingTasks] = useState<Task[]>([]);
+  const [pinnedTasks, setPinnedTasks] = useState<Task[]>([]);
+  const [loadingUpcoming, setLoadingUpcoming] = useState(true);
+  const [loadingPinned, setLoadingPinned] = useState(true);
+  const [errorUpcoming, setErrorUpcoming] = useState(false);
+  const [errorPinned, setErrorPinned] = useState(false);
 
   // Fetch Upcoming Tasks
   useEffect(() => {
     const fetchUpcomingTasks = async () => {
+      setLoadingUpcoming(true);
+      setErrorUpcoming(false);
       try {
         const response = await api.get('/upcoming-tasks');
         setUpcomingTasks(response.data);
-        setLoadingUpcoming(false);
       } catch (error) {
         setErrorUpcoming(true);
+      } finally {
         setLoadingUpcoming(false);
       }
     };
@@ -44,17 +50,25 @@ const Home: React.FC = () => {
   // Fetch Pinned Tasks
   useEffect(() => {
     const fetchPinnedTasks = async () => {
+      setLoadingPinned(true);
+      setErrorPinned(false);
       try {
         const response = await api.get('/pinned-tasks');
         setPinnedTasks(response.data);
-        setLoadingPinned(false);
       } catch (error) {
         setErrorPinned(true);
+      } finally {
         setLoadingPinned(false);
       }
     };
     fetchPinnedTasks();
   }, []);
+
+  const tiles = [
+    { title: "To-do", screen: "ToDo" },
+    { title: "Progress", screen: "Progress" },
+    { title: "Done", screen: "Done" },
+  ];
 
   return (
     <View style={tw`flex-1 bg-[#111111] p-4 px-2`}>
@@ -62,9 +76,9 @@ const Home: React.FC = () => {
 
       {/* Tiles for navigation */}
       <View style={tw`flex-row justify-between mt-2`}>
-        <Tile title="To-do" onPress={() => navigation.navigate('ToDo')} />
-        <Tile title="Progress" onPress={() => navigation.navigate('Progress')} />
-        <Tile title="Done" onPress={() => navigation.navigate('Done')} />
+        {tiles.map((tile, index) => (
+          <Tile key={index} title={tile.title} onPress={() => navigation.navigate(tile.screen)} />
+        ))}
       </View>
 
       {/* Upcoming Tasks Section */}
@@ -101,4 +115,5 @@ const Home: React.FC = () => {
     </View>
   );
 };
+
 export default Home;

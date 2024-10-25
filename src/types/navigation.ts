@@ -11,6 +11,7 @@ export type RootStackParamList = {
   Otp:undefined;
   ChatScreen:undefined;
   Notifications: undefined;
+  BottomTabNavigator:undefined;
 };
 
 export type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Login'>;
