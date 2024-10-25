@@ -10,14 +10,13 @@ const WelcomeScreen = () => {
 
   return (
     <ImageBackground
-      // eslint-disable-next-line no-undef
       source={require('../assets/welcome-bg.png')} // Replace with your background image path
       style={styles.container}
     >
       <View style={styles.buttonContainer}>
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate('BottomTabNavigator');
+            navigation.navigate('Login'); // Navigate to Login screen
             setPressed(!pressed);
           }}
           style={[tw`rounded-2xl`, styles.loginButton]}
@@ -30,8 +29,7 @@ const WelcomeScreen = () => {
           <Text style={tw`text-white`}>Don’t have an account? </Text>
           <TouchableOpacity
             onPress={() => {
-              
-              navigation.navigate('EnterEmail');
+              navigation.navigate('EnterEmail'); // Navigate to EnterEmail screen
               setPressed(!pressed);
             }}
           >
