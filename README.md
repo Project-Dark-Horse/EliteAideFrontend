@@ -11,6 +11,9 @@ main
 │
 ├── feature/     // features
 │   └── (development of the user profile page)
+|
+├── api-handling/     // features
+│   └── (api and functionality)
 │
 ├── bugfix/  // bugs and errors
 │   └── (fix for issue #1245, related to button click)
@@ -18,6 +21,7 @@ main
 ├── release/1.0.0                  // apk and bundling
 │   ├── feature/
 │   ├── bugfix/
+|   |── api-handling/
 │   └── (final adjustments for release 1.0.0)
 │
 └── hotfix/        // critical issues
