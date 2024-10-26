@@ -30,6 +30,7 @@ export default function App() {
           <Stack.Screen name="Otp" component={Otp} options={{ headerShown: false }} />
           <Stack.Screen name="BottomTabNavigator" component={BottomTabNavigator} options={{ headerShown: false }} />
           <Stack.Screen name="Calendar" component={CalendarScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="Notification" component={NotificationScreen} options={{ headerShown: false }}/>
           <Stack.Screen 
             name="MyTaskScreen" 
             component={MyTaskScreen}
