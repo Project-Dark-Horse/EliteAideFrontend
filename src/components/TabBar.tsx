@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, StyleSheet } from 'react-native';
+import { TouchableOpacity, StyleSheet, View, Image } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 type TabBarProps = {
@@ -10,33 +10,22 @@ type TabBarProps = {
 
 const TabBar: React.FC<TabBarProps> = ({ routeName, selectedTab, navigate }) => {
   const renderIcon = (): JSX.Element => {
-    let icon: string;
-
     switch (routeName) {
       case 'HomeStackMain':
-        icon = 'home';
-        break;
-      case 'Profile':
-        icon = 'person';
-        break;
-      case 'Calender':
-        icon = 'calendar-outline';
-        break;
+        return <Ionicons name="home" size={24} color={selectedTab === 'HomeStackMain' ? '#384766' : '#555555'} />;
+      case 'Calendar':
+        return <Ionicons name="calendar-outline" size={24} color={selectedTab === 'Calendar' ? '#65779E' : '#555555'} />;
       case 'Ai':
-        icon = 'logo-react';
-        break;
+        return (
+          <View style={styles.aiIconContainer}>
+            <Image source={require('../assets/tabbarai.png')} style={styles.iconImage} />
+          </View>
+        );
+      case 'Profile':
+        return <Ionicons name="person" size={24} color={selectedTab === 'Profile' ? '#555555' : '#555555'} />;
       default:
-        icon = 'alert-circle-outline';
-        break;
+        return <Ionicons name="alert-circle-outline" size={24} color="gray" />;
     }
-
-    return (
-      <Ionicons
-        name={icon}
-        size={25}
-        color={routeName === selectedTab ? '#384766' : 'gray'}
-      />
-    );
   };
 
   return (
@@ -50,9 +39,21 @@ const styles = StyleSheet.create({
   tabbarItem: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'space-evenly',
-    
-  }
+    justifyContent: 'center',
+  },
+  aiIconContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderColor: '#555555',  // "off grey" color for border
+    borderWidth: 2,
+    borderRadius: 12,
+    padding: 4,
+  },
+  iconImage: {
+    width: 24,
+    height: 24,
+    resizeMode: 'contain',
+  },
 });
 
 export default TabBar;
