@@ -1,11 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, ActivityIndicator } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View } from 'react-native';
+import CustomMessageComponent from '../components/MainPage/message';
+import Tile from '../components/MainPage/Tile';
 import { useNavigation } from '@react-navigation/native';
 import { HomeScreenNavigationProp } from '../types/navigation';
-import Tile from '../components/MainPage/Tile';
+import UpcomingTasksComponent from '../components/MainPage/UpcomingTasks';
+import PinnedTasks from '../components/MainPage/PinnedTasks';
 import TopNavBar from '../components/UpperNavBar/TopNavBar';
-import axios from 'axios';
 import tw from 'twrnc';
+import axios from 'axios';
+
+// Import images from assets folder
+import TodoImage from '../assets/todo.png';
+import ProgressImage from '../assets/progress.png';
+import DoneImage from '../assets/done.png';
 
 interface Task {
   id: string;
@@ -64,54 +72,29 @@ const Home: React.FC = () => {
     fetchPinnedTasks();
   }, []);
 
+  // Define tiles with titles, screens, and images
   const tiles = [
-    { title: "To-do", screen: "ToDo" },
-    { title: "Progress", screen: "Progress" },
-    { title: "Done", screen: "Done" },
+    { title: "To-do", screen: "ToDo", image: TodoImage },
+    { title: "Progress", screen: "Progress", image: ProgressImage },
+    { title: "Done", screen: "Done", image: DoneImage },
   ];
 
   return (
     <View style={tw`flex-1 bg-[#111111] p-4 px-2`}>
       <TopNavBar />
-
-      {/* Tiles for navigation */}
+      <CustomMessageComponent />
       <View style={tw`flex-row justify-between mt-2`}>
         {tiles.map((tile, index) => (
-          <Tile key={index} title={tile.title} onPress={() => navigation.navigate(tile.screen)} />
+          <Tile 
+            key={index}
+            title={tile.title}
+            onPress={() => navigation.navigate(tile.screen)}
+            image={tile.image} // Pass image prop to Tile
+            backgroundColor={''}          />
         ))}
       </View>
-
-      {/* Upcoming Tasks Section */}
-      <Text style={tw`text-white text-lg mt-4 mb-2`}>Upcoming Tasks</Text>
-      {loadingUpcoming ? (
-        <ActivityIndicator size="large" color="#ffffff" />
-      ) : errorUpcoming ? (
-        <Text style={tw`text-red-500`}>Failed to load upcoming tasks</Text>
-      ) : (
-        <View style={tw`mt-2`}>
-          {upcomingTasks.map((task) => (
-            <View key={task.id} style={tw`p-2 bg-gray-800 rounded-lg mb-2`}>
-              <Text style={tw`text-white`}>{task.title}</Text>
-            </View>
-          ))}
-        </View>
-      )}
-
-      {/* Pinned Tasks Section */}
-      <Text style={tw`text-white text-lg mt-4 mb-2`}>Pinned Tasks</Text>
-      {loadingPinned ? (
-        <ActivityIndicator size="large" color="#ffffff" />
-      ) : errorPinned ? (
-        <Text style={tw`text-red-500`}>Failed to load pinned tasks</Text>
-      ) : (
-        <View style={tw`mt-2`}>
-          {pinnedTasks.map((task) => (
-            <View key={task.id} style={tw`p-2 bg-gray-800 rounded-lg mb-2`}>
-              <Text style={tw`text-white`}>{task.title}</Text>
-            </View>
-          ))}
-        </View>
-      )}
+      <UpcomingTasksComponent />
+      <PinnedTasks />
     </View>
   );
 };

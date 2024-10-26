@@ -1,25 +1,30 @@
-import React from "react";
-import { View, Text, TouchableOpacity } from 'react-native';
-import Ionicons from "react-native-vector-icons/Ionicons";
-import tw from 'twrnc'; // Assuming you are using this for styling
+import React from 'react';
+import { View, Text, Image, TouchableOpacity } from 'react-native';
+import tw from 'twrnc';
 
-interface TileComponentProp {
-    title: string;
-    onPress: () => void;
+interface TileProps {
+  title: string;
+  onPress: () => void;
+  image: any; // Set the type to `any` or `ImageSourcePropType` for React Native images
+  backgroundColor: string;
 }
 
-const Tile: React.FC<TileComponentProp> = ({ title, onPress }) => {
-    return (
-        <TouchableOpacity 
-            style={tw`bg-[#1E1E1E] rounded-xl  border-[0.15] border-[#4B6890] py-4 flex-1 items-center justify-center m-5`}
-            onPress={onPress}
-        >
-            <View style={tw`items-center`}>
-                <Ionicons name="clipboard" size={24} color="#4F46E5" />
-                <Text style={tw`text-white text-sm mt-2`}>{title}</Text>
-            </View>
-        </TouchableOpacity>
-    );
-};
+const Tile: React.FC<TileProps> = ({ title, onPress, image, backgroundColor }) => (
+  <TouchableOpacity 
+    onPress={onPress} 
+    style={[
+      tw`flex-col items-center justify-center m-2 p-3 rounded-lg`,
+      { width: 80, height: 78, backgroundColor, backdropFilter: 'blur(26px)' },
+    ]}
+  >
+    <View style={[
+      tw`items-center justify-center rounded-lg p-2`,
+      { borderColor: 'rgba(255, 255, 255, 0.1)', borderWidth: 1, borderRadius: 10 }
+    ]}>
+      <Image source={image} style={tw`w-10 h-10`} resizeMode="contain" />
+    </View>
+    <Text style={tw`text-white text-xs font-semibold mt-2`}>{title}</Text>
+  </TouchableOpacity>
+);
 
 export default Tile;
