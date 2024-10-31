@@ -4,7 +4,7 @@ import { CurvedBottomBar } from 'react-native-curved-bottom-bar';
 import CustomButton from './CustomButton';
 import TabBar from './TabBar';
 import Profile from '../screens/MyProfile';
-import CalendarScreen from '../screens/Calendar';
+import CalendarScreen from '../screens/Calendar/Calendar';
 import Ai from '../screens/Ai';
 import HomeStack from '../navigators/HomeStack';
 import { useNavigation } from '@react-navigation/native';
@@ -23,7 +23,7 @@ const BottomTabNavigator: React.FC = () => {
       style={styles.bottomBar}
       shadowStyle={styles.shadow}
       height={74}
-      circleWidth={65} // Adjust circle width
+      circleWidth={60} // Adjust circle width
       bgColor="#111111"
       initialRouteName="HomeStackMain"
       borderTopLeftRight

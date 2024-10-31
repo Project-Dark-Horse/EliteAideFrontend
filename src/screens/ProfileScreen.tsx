@@ -1,58 +1,90 @@
 import React, { useEffect, useState } from 'react';
-import { Text, View, Alert } from 'react-native';
+import { Text, View, Alert, ActivityIndicator } from 'react-native';
 import UserInfo from '../components/Profile/UserInfo';
-import TaskCard from '../components/Profile/TaskBar';
+import TaskCard from '../components/Profile/TaskCard';
 import ProfileMenu from '../components/Profile/ProfileMenu';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import tw from 'twrnc';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../types/navigation';
+import { BASE_URL } from '@env';
+
+type ProfileScreenNavigationProp = StackNavigationProp<RootStackParamList, 'ProfileScreen'>;
+
+interface UserInfoType {
+  name: string;
+  email: string;
+  avatar?: string;
+}
+
+interface TaskData {
+  total: number;
+  pending: number;
+  done: number;
+}
 
 const ProfileScreen = () => {
-  const navigation = useNavigation();
-
-  // State variables for user info and task data
-  const [userInfo, setUserInfo] = useState(null);
-  const [totalTasks, setTotalTasks] = useState(125);  // Initial values
-  const [pendingTasks, setPendingTasks] = useState(25);
-  const [doneTasks, setDoneTasks] = useState(100);
+  const navigation = useNavigation<ProfileScreenNavigationProp>();
+  const [userInfo, setUserInfo] = useState<UserInfoType | null>(null);
+  const [taskData, setTaskData] = useState<TaskData>({ total: 0, pending: 0, done: 0 });
+  const [loadingUserInfo, setLoadingUserInfo] = useState(true);
+  const [loadingTaskData, setLoadingTaskData] = useState(true);
 
   useEffect(() => {
     fetchUserInfo();
     fetchTaskData();
   }, []);
 
-  // Fetch user info from API
   const fetchUserInfo = async () => {
+    setLoadingUserInfo(true);
     try {
-      const response = await fetch('https://api.eliteaide.tech/');
+      const token = await AsyncStorage.getItem('access_token');
+      const response = await fetch(`${BASE_URL}/v1/users/profile/`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      if (!response.ok) throw new Error('Failed to fetch user info');
       const data = await response.json();
-      setUserInfo(data);
+      setUserInfo(data.message.user_data);
     } catch (error) {
-      console.error('Error fetching user info:', error);
+      Alert.alert('Error', 'Unable to load user info');
+    } finally {
+      setLoadingUserInfo(false);
     }
   };
 
-  // Fetch task data from API
   const fetchTaskData = async () => {
+    setLoadingTaskData(true);
     try {
-      const response = await fetch('https://api.eliteaide.tech/');
+      const token = await AsyncStorage.getItem('access_token');
+      const response = await fetch(`${BASE_URL}/v1/tasks/user-tasks/`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      if (!response.ok) throw new Error('Failed to fetch task data');
       const data = await response.json();
-      setTotalTasks(data.total);
-      setPendingTasks(data.pending);
-      setDoneTasks(data.done);
+      setTaskData({ total: data.total, pending: data.pending, done: data.done });
     } catch (error) {
-      console.error('Error fetching task data:', error);
+      Alert.alert('Error', 'Unable to load task data');
+    } finally {
+      setLoadingTaskData(false);
     }
   };
 
-  // Handle card press events for the profile menu
   const handleCardPress = (menuTitle: string) => {
     switch (menuTitle) {
       case 'My Activity':
-        Alert.alert('Navigating to My Activity');
         navigation.navigate('MyActivityScreen');
         break;
       case 'Settings':
-        Alert.alert('Navigating to Settings');
+        navigation.navigate('SettingsScreen');
         break;
       case 'About Elite Aide':
         Alert.alert('About Elite Aide', 'Version 1.0.0');
@@ -65,57 +97,49 @@ const ProfileScreen = () => {
     }
   };
 
-  // Handle user logout
   const handleLogout = async () => {
     try {
-      const response = await fetch('https://api.eliteaide.tech/logout', {
+      const token = await AsyncStorage.getItem('access_token');
+      const response = await fetch(`${BASE_URL}/v1/users/logout/`, {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
       });
       if (response.ok) {
+        await AsyncStorage.clear();
         Alert.alert('Logged out successfully');
+        navigation.navigate('Login');
       } else {
         Alert.alert('Logout failed');
       }
     } catch (error) {
-      console.error('Error during logout:', error);
       Alert.alert('Logout failed', 'Unable to connect to the server');
     }
   };
 
   return (
-    <View style={tw`flex-1 bg-[#111111]`}>
+    <View style={tw`flex-1 bg-[#111111] p-4`}>
       <View style={tw`items-center mt-6`}>
-        {/* Display user info if available, otherwise show loading */}
-        {userInfo ? (
+        {loadingUserInfo ? (
+          <ActivityIndicator size="large" color="#fff" />
+        ) : userInfo ? (
           <UserInfo userInfo={userInfo} />
         ) : (
-          <Text style={tw`text-white`}>Loading user info...</Text>
+          <Text style={tw`text-white`}>Error loading user info</Text>
         )}
 
-        {/* Display task card */}
-        <TaskCard total={totalTasks} pending={pendingTasks} done={doneTasks} />
+        {loadingTaskData ? (
+          <ActivityIndicator size="large" color="#fff" />
+        ) : (
+          <TaskCard total={taskData.total} pending={taskData.pending} done={taskData.done} />
+        )}
 
-        {/* Profile menu options */}
-        <ProfileMenu 
-          title="My Activity" 
-          iconName="stats-chart" 
-          onPress={() => handleCardPress('My Activity')}
-        />
-        <ProfileMenu 
-          title="Settings" 
-          iconName="settings" 
-          onPress={() => handleCardPress('Settings')}
-        />
-        <ProfileMenu 
-          title="About Elite Aide" 
-          iconName="information-circle-outline" 
-          onPress={() => handleCardPress('About Elite Aide')}
-        />
-        <ProfileMenu 
-          title="Logout" 
-          iconName="log-out" 
-          onPress={() => handleCardPress('Logout')}
-        />
+        <ProfileMenu title="My Activity" iconName="stats-chart" onPress={() => handleCardPress('My Activity')} />
+        <ProfileMenu title="Settings" iconName="settings" onPress={() => handleCardPress('Settings')} />
+        <ProfileMenu title="About Elite Aide" iconName="information-circle-outline" onPress={() => handleCardPress('About Elite Aide')} />
+        <ProfileMenu title="Logout" iconName="log-out" onPress={() => handleCardPress('Logout')} />
       </View>
     </View>
   );

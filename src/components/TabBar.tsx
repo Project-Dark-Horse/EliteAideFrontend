@@ -43,15 +43,12 @@ const styles = StyleSheet.create({
   },
   aiIconContainer: {
     alignItems: 'center',
-    justifyContent: 'center',
-    borderColor: '#555555',  // "off grey" color for border
-    borderWidth: 2,
-    borderRadius: 12,
-    padding: 4,
+    justifyContent: 'center', // "off grey" color for border
+    padding: 6,
   },
   iconImage: {
-    width: 24,
-    height: 24,
+    width: 26,
+    height: 26,
     resizeMode: 'contain',
   },
 });

@@ -13,7 +13,6 @@ const UpcomingTasks = [
     description: 'Group discussion for the new product',
     time: '10 AM',
     backgroundColor: '#4956C7',
-    backgroundColor: '#4956C7',
     iconName: 'people', 
   },
   {
@@ -37,7 +36,7 @@ const UpcomingTasks = [
 const UpcomingTasksComponent: React.FC = () => {
   return (
     <Surface style={tw`p-4 bg-[#111111]`}>
-      <SeeAllCards title="Upcoming Tasks" onSeeAllPress={() => console.log('See all pressed')} />
+      <SeeAllCards title="Upcoming Tasks" onSeeAll={() => console.log('See all pressed')} />
       <FlatList 
         horizontal
         data={UpcomingTasks}
@@ -49,7 +48,8 @@ const UpcomingTasksComponent: React.FC = () => {
             description={item.description}
             time={item.time}
             backgroundColor={item.backgroundColor}
-            iconName={item.iconName}           />
+            iconName={item.iconName}
+          />
         )}
         contentContainerStyle={tw`py-1`}
         showsHorizontalScrollIndicator={false}

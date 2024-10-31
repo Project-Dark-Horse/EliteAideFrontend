@@ -1,19 +1,11 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import Home from '../screens/Home';
-import Calender from '../screens/Calender';
+import Calendar from '../screens/Calendar/Calendar';
 import ChatScreen from '../screens/ChatScreen';
-import Notification from '../screens/NotificationScreen';
-import { ProfileScreen } from "../screens/ProfileScreen"
-
-// Define the navigation param list for all screens in the stack
-export type RootStackParamList = {
-  Home: undefined;
-  Calender: undefined;
-  ChatScreen: undefined;
-  Notification: undefined;
-  Profile: undefined;
-};
+import Notification from '../screens/Notification';
+import ProfileScreen from "../screens/MyProfile";
+import { RootStackParamList } from '../types/navigation';  // Adjust this path accordingly
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -34,10 +26,10 @@ const BottomBarStack: React.FC = () => {
       }}
     >
       <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
-      <Stack.Screen name="Calender" component={Calender} options={{ headerShown: false }}  />
-      <Stack.Screen name="ChatScreen" component={ChatScreen} options={{ headerShown: false }}  />
-      <Stack.Screen name="Notification" component={Notification} options={{ headerShown: false }}  />
-      <Stack.Screen name="ProfileScreen" component={ProfileScreen} options={{ headerShown: false }}  />
+      <Stack.Screen name="Calendar" component={Calendar} options={{ headerShown: false }} />
+      <Stack.Screen name="ChatScreen" component={ChatScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="Notification" component={Notification} options={{ headerShown: false }} />
+      <Stack.Screen name="MyProfile" component={ProfileScreen} options={{ headerShown: false }} />
     </Stack.Navigator>
   );
 };

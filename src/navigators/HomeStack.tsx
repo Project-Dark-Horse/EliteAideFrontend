@@ -4,9 +4,13 @@ import Home from '../screens/Home';
 import ToDo from '../screens/HomeScreens/Todo';
 import Progress from '../screens/HomeScreens/Progress';
 import Done from '../screens/HomeScreens/Done';
-import Notification from '../screens/NotificationScreen';
-// import { useNavigation } from '@react-navigation/native';  // Import navigation hook
-// import MyActivity from '../screens/MyActivityScreen';
+import Notification from '../screens/Notification';
+import Profile from '../screens/MyProfile';
+import TaskAnalysis from '../screens/Tasks/TaskAnalysis';
+import { useNavigation } from '@react-navigation/native'; 
+import MyActivity from '../screens/MyActivity';
+import NotificationScreen from '../screens/Notification';
+
 
 const Stack = createStackNavigator();
 
@@ -31,7 +35,19 @@ const HomeStack = () => {
       <Stack.Screen name="ToDo" component={ToDo} />
       <Stack.Screen name="Progress" component={Progress} />
       <Stack.Screen name="Done" component={Done} />
-      <Stack.Screen name="Notification" component={Notification} />
+      
+      <Stack.Screen
+        name="TaskAnalysis"
+        component={TaskAnalysis}
+        options={{ title: "Progress Overview" }}
+      />
+
+      <Stack.Screen
+        name="Notification"
+        component={Notification}
+        options={{ title: "Notifications" }}
+      />
+
     </Stack.Navigator>
   );
 };

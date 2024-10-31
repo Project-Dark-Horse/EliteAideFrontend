@@ -6,10 +6,9 @@ import tw from 'twrnc';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
 import { Button } from 'react-native-paper';
-import { RouteProp, useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
 import Toast from 'react-native-toast-message';
-import { OTPRouteProp, OTPNavigationProp } from '../types/navigation'; // import types
+import { OTPRouteProp, OTPNavigationProp } from '../types/navigation';
+import { BASE_URL } from '@env';
 
 type Props = {
   route: OTPRouteProp;
@@ -23,21 +22,20 @@ const Otp: React.FC<Props> = ({ route, navigation }) => {
   const [isResendDisabled, setIsResendDisabled] = useState(true);
   const [timer, setTimer] = useState(30);
   const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
   const otpRefs = useRef<(TextInput | null)[]>([]);
 
+  // Countdown timer for resend button
   useEffect(() => {
     const countdown = setInterval(() => {
       setTimer((prev) => (prev > 0 ? prev - 1 : 0));
     }, 1000);
 
-    if (timer === 0) {
-      setIsResendDisabled(false);
-    }
+    if (timer === 0) setIsResendDisabled(false);
 
     return () => clearInterval(countdown);
   }, [timer]);
 
+  // Function to handle OTP input change
   const handleOtpChange = (value: string, index: number) => {
     if (/^[0-9]*$/.test(value) && value.length <= 1) {
       const newOtp = [...otp];
@@ -46,12 +44,9 @@ const Otp: React.FC<Props> = ({ route, navigation }) => {
 
       if (value && index < otp.length - 1) {
         otpRefs.current[index + 1]?.focus();
-      }
-      if (!value && index > 0) {
+      } else if (!value && index > 0) {
         otpRefs.current[index - 1]?.focus();
       }
-
-      setErrorMessage('');
     } else {
       Toast.show({
         type: 'error',
@@ -60,36 +55,50 @@ const Otp: React.FC<Props> = ({ route, navigation }) => {
     }
   };
 
+  // Function to verify OTP
   const handleVerifyOtp = async () => {
     const userOtp = otp.join('');
+    console.log('Entered OTP:', userOtp);
+
     if (userOtp.length === 4) {
       setLoading(true);
-      setErrorMessage('');
       try {
         const response = await fetch(`${BASE_URL}v1/users/otp/validate/`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, otp: userOtp }),
         });
-
         const data = await response.json();
+        console.log('OTP Verification Response:', data);
         setLoading(false);
 
         if (data.message?.toLowerCase() === 'otp verified') {
           Toast.show({ type: 'success', text1: 'OTP verified successfully!' });
           navigation.replace('SignUp', { email, otp: userOtp, key: data.key });
+        } else if (data.message?.toLowerCase() === 'otp expired') {
+          Toast.show({
+            type: 'error',
+            text1: 'OTP Expired',
+            text2: 'Your OTP has expired. Please request a new one.',
+          });
         } else {
-          setErrorMessage('Invalid OTP. Please try again.');
+          Toast.show({ type: 'error', text1: 'Invalid OTP. Please try again.' });
         }
       } catch (error) {
         setLoading(false);
+        console.error('Error verifying OTP:', error);
         Toast.show({ type: 'error', text1: 'Network error. Please try again.' });
       }
     } else {
-      setErrorMessage('Please enter the 4-digit OTP');
+      Toast.show({
+        type: 'error',
+        text1: 'Incomplete OTP',
+        text2: 'Please enter the 4-digit OTP',
+      });
     }
   };
 
+  // Function to resend OTP
   const handleResendOtp = async () => {
     setIsResendDisabled(true);
     setOtp(['', '', '', '']);
@@ -104,6 +113,7 @@ const Otp: React.FC<Props> = ({ route, navigation }) => {
       });
 
       const data = await response.json();
+      console.log('OTP Resend Response:', data);
       setLoading(false);
 
       if (data.success) {
@@ -113,6 +123,7 @@ const Otp: React.FC<Props> = ({ route, navigation }) => {
       }
     } catch (error) {
       setLoading(false);
+      console.error('Error resending OTP:', error);
       Toast.show({ type: 'error', text1: 'Failed to resend OTP. Please check your connection.' });
     }
   };
@@ -136,6 +147,9 @@ const Otp: React.FC<Props> = ({ route, navigation }) => {
         <TouchableOpacity
           style={tw`w-10 h-10 justify-center items-center top--39 bg-[#1D1E23] rounded-2xl`}
           onPress={() => navigation.goBack()}
+          accessibilityRole="button"
+          accessibilityLabel="Go back button"
+          accessibilityHint="Navigates to the previous screen"
         >
           <Ionicons name="chevron-back" size={28} color="#fff" />
         </TouchableOpacity>
@@ -143,7 +157,7 @@ const Otp: React.FC<Props> = ({ route, navigation }) => {
         <Text style={tw`text-white text-2xl mt-4`}>Enter the 4-digit code sent to</Text>
         <Text style={tw`text-white text-lg mt-4`}>{email}</Text>
 
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
           <Text style={tw`text-[#979797] mt-3`}>Wrong Address? Re-enter</Text>
         </TouchableOpacity>
 
@@ -162,8 +176,6 @@ const Otp: React.FC<Props> = ({ route, navigation }) => {
           ))}
         </View>
 
-        {errorMessage ? <Text style={tw`text-red-500 mb-3`}>{errorMessage}</Text> : null}
-
         <TouchableOpacity onPress={handleResendOtp} disabled={isResendDisabled}>
           <Text style={tw`text-blue-400 mb-7`}>
             {isResendDisabled ? `Resend code in ${timer}s` : 'Resend code'}
@@ -180,11 +192,13 @@ const Otp: React.FC<Props> = ({ route, navigation }) => {
             shadowOpacity: 0.15,
             shadowRadius: 0.5,
             elevation: 2,
-            overflow: 'visible',
           }]}
           contentStyle={tw`py-1`}
           labelStyle={tw`text-sm text-white`}
           buttonColor="#1D1E23"
+          accessibilityRole="button"
+          accessibilityLabel="Verify OTP button"
+          accessibilityHint="Verifies the entered OTP"
         >
           {loading ? <ActivityIndicator size="small" color="#fff" /> : 'Continue'}
         </Button>
