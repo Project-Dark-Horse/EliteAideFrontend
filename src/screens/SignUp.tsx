@@ -1,252 +1,214 @@
 import { BlurView } from '@react-native-community/blur';
-import React, { useState, useEffect } from 'react';
-import { 
-  View, 
-  Text, 
-  TextInput, 
-  TouchableOpacity, 
-  SafeAreaView, 
-  Alert,
-  ActivityIndicator 
-} from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
-import { Checkbox, Button } from 'react-native-paper';
+import React, { useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, SafeAreaView, ActivityIndicator, Alert } from 'react-native';
+import { Button } from 'react-native-paper';
 import RadialGradient from 'react-native-radial-gradient';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import { HomeScreenNavigationProp } from '../types/navigation';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import tw from 'twrnc';
+import CheckBox from '@react-native-community/checkbox';
+import { SignUpScreenNavigationProp } from '../types/navigation';
+import { BASE_URL } from '@env';
 
-const API_URL = 'https://api.eliteaide.tech/v1/users/register/';
+type SignUpRouteProp = RouteProp<{ SignUp: { email: string; otp: string } }, 'SignUp'>;
 
-interface RouteParams {
-  email: string;
-  otp: string;
+interface FormData {
+  first_name: string;
+  last_name: string;
+  username: string;
+  mobile_number: string;
+  password: string;
+  confirmPassword: string;
 }
 
-interface FormErrors {
-  firstName?: string;
-  lastName?: string;
-  username?: string;
+interface Errors {
+  email?: string;
   password?: string;
   confirmPassword?: string;
+  terms?: string;
 }
 
-const SignUp = () => {
-  // State management
-  const [formData, setFormData] = useState({
-    email: '',
-    otp: '',
+const SignUpScreen = () => {
+  const navigation = useNavigation<SignUpScreenNavigationProp>();
+  const route = useRoute<SignUpRouteProp>();
+
+  const { email, otp } = route.params;
+
+  const [formData, setFormData] = useState<FormData>({
     first_name: '',
     last_name: '',
     username: '',
+    mobile_number: '',
     password: '',
-    confirmPassword: '' // Added for password confirmation
+    confirmPassword: '',
   });
   const [agreeTerms, setAgreeTerms] = useState(false);
-  const [errors, setErrors] = useState<FormErrors>({});
+  const [errors, setErrors] = useState<Errors>({});
   const [isLoading, setIsLoading] = useState(false);
 
-  // Navigation and route
-  const navigation = useNavigation<HomeScreenNavigationProp>();
-  const route = useRoute();
-  const { email, otp } = route.params as RouteParams;
-
-  useEffect(() => {
-    if (email && otp) {
-      setFormData(prev => ({
-        ...prev,
-        email,
-        otp
-      }));
+  const validateForm = () => {
+    const newErrors: Errors = {};
+    if (!/\S+@\S+\.\S+/.test(email)) {
+      newErrors.email = 'Please enter a valid email address';
     }
-  }, [email, otp]);
-
-  // Validation function
-  const validateForm = (): boolean => {
-    const newErrors: FormErrors = {};
-    
-    if (!formData.first_name.trim()) {
-      newErrors.firstName = 'First name is required';
+    if (formData.password.length < 8 || !/(?=.*\d)(?=.*[!@#$%^&*])/.test(formData.password)) {
+      newErrors.password = 'Password should contain at least 8 characters, a number or symbol';
     }
-    
-    if (!formData.last_name.trim()) {
-      newErrors.lastName = 'Last name is required';
-    }
-    
-    if (!formData.username.trim()) {
-      newErrors.username = 'Username is required';
-    }
-    
-    if (formData.password.length < 8) {
-      newErrors.password = 'Password must be at least 8 characters';
-    } else if (!/(?=.*\d)(?=.*[!@#$%^&*])/.test(formData.password)) {
-      newErrors.password = 'Password must contain at least one number and one symbol';
-    }
-    
     if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
+      newErrors.confirmPassword = 'Password do not match';
     }
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  // API call function
   const signUpUser = async () => {
+    setIsLoading(true);
     try {
-      const response = await fetch(API_URL, {
+      const response = await fetch(`${BASE_URL}v1/users/register/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          email: formData.email,
-          otp: formData.otp,
+          email,
+          otp,
           username: formData.username,
           first_name: formData.first_name,
           last_name: formData.last_name,
-          password: formData.password
-        })
+          password: formData.password,
+          mobile_number: formData.mobile_number || null,
+        }),
       });
+
       const result = await response.json();
-      return { success: response.ok, data: result };
+      setIsLoading(false);
+
+      if (response.ok) {
+        Alert.alert('Success', 'Account created successfully!', [
+          { text: 'OK', onPress: () => navigation.navigate('Login') },
+        ]);
+      } else {
+        Alert.alert('Error', result.message || 'Something went wrong. Please try again.');
+      }
     } catch (error) {
-      console.error(error);
-      throw error;
+      setIsLoading(false);
+      Alert.alert('Error', 'Failed to connect to server. Please try again later.');
     }
   };
 
-  // Handle sign up
-  const handleSignUp = async () => {
-    if (!agreeTerms) {
-      Alert.alert('Error', 'Please agree to the Terms and Privacy Policy');
-      return;
-    }
-
-    if (!validateForm()) {
-      Alert.alert('Error', 'Please fix the form errors');
-      return;
-    }
-
-    setIsLoading(true);
-    
-    try {
-      const response = await signUpUser();
-      
-      if (response.success) {
-        Alert.alert('Success', 'Account created successfully', [
-          { text: 'OK', onPress: () => navigation.navigate('Home') }
-        ]);
-      } else {
-        Alert.alert('Error', response.data.message || 'Registration failed');
-      }
-    } catch (error) {
-      Alert.alert('Error', 'An unexpected error occurred');
-    } finally {
-      setIsLoading(false);
+  const handleSignUp = () => {
+    if (validateForm() && agreeTerms) {
+      signUpUser();
+    } else if (!agreeTerms) {
+      setErrors({ ...errors, terms: 'Please agree to the terms and conditions' });
     }
   };
 
   return (
-    <SafeAreaView style={tw`flex-1 bg-gray-900`}>
+    <SafeAreaView style={tw`flex-1`}>
       <RadialGradient
         style={tw`absolute inset-0`}
-        colors={['#4956C7', '#111111', '#111111']}
+        colors={['#4956C7', '#000000']}
         center={[330, 99]}
         radius={350}
       />
-
       <BlurView
         style={tw`absolute inset-1`}
         blurType="extraDark"
         blurAmount={100}
         reducedTransparencyFallbackColor="rgba(0,0,0,0.3)"
       />
-      <View style={tw`px-3 flex-1`}>
-        <TouchableOpacity 
-          style={tw`w-10 h-10 justify-center items-center bg-[#1D1E23] rounded-2xl mb-4`}
-          onPress={() => navigation.goBack()}>
-          <Ionicons name="chevron-back" size={28} color="#fff" />
+      
+      <View style={tw`flex-1 px-5`}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={tw`w-10 h-10 justify-center items-center bg-[#1D1E23] rounded-2xl mt-5`}>
+          <Ionicons name="chevron-back" size={28} color="#FFFFFF" />
         </TouchableOpacity>
 
-        <Text style={tw`text-white text-3xl font-bold mb-3`}>Sign Up</Text>
-        <Text style={tw`text-gray-400 mb-8`}>Ready to be your own boss?</Text>
+        <Text style={tw`text-[#FFFFFF] text-3xl font-semibold mt-25`}>Sign Up</Text>
+        <Text style={tw`text-[#979797] mt-2`}>Ready to be your own boss?</Text>
 
-        <View style={tw`flex-row mb-6`}>
+        <View style={tw`flex-row mt-6`}>
           <TextInput
-            style={tw`flex-1 text-white p-3 rounded-2xl mr-2 border border-gray-600`}
+            style={tw`flex-1 text-[#FFFFFF] p-3 rounded-lg border border-[#555555] mr-2`}
             placeholder="First Name"
             placeholderTextColor="#979797"
             value={formData.first_name}
-            onChangeText={text => setFormData({ ...formData, first_name: text })}
+            onChangeText={(text) => setFormData({ ...formData, first_name: text })}
           />
           <TextInput
-            style={tw`flex-1 text-white p-3 rounded-2xl ml-2 border border-gray-600`}
+            style={tw`flex-1 text-[#FFFFFF] p-3 rounded-lg border border-[#555555] ml-2`}
             placeholder="Last Name"
             placeholderTextColor="#979797"
             value={formData.last_name}
-            onChangeText={text => setFormData({ ...formData, last_name: text })}
+            onChangeText={(text) => setFormData({ ...formData, last_name: text })}
           />
         </View>
 
         <TextInput
-          style={tw`text-white p-3 rounded-2xl mb-4 border border-gray-600`}
+          style={tw`text-[#FFFFFF] p-3 rounded-lg border border-[#555555] mt-4`}
           placeholder="Username"
           placeholderTextColor="#979797"
           value={formData.username}
-          onChangeText={text => setFormData({ ...formData, username: text })}
+          onChangeText={(text) => setFormData({ ...formData, username: text })}
         />
 
         <TextInput
-          style={tw`text-white p-3 rounded-2xl mb-1 border border-gray-600`}
+          style={tw`text-[#FFFFFF] p-3 rounded-lg border border-[#555555] mt-4`}
+          placeholder="Mobile Number (Optional)"
+          placeholderTextColor="#979797"
+          value={formData.mobile_number}
+          onChangeText={(text) => setFormData({ ...formData, mobile_number: text })}
+        />
+
+        <TextInput
+          style={tw`text-[#FFFFFF] p-3 rounded-lg border border-[#555555] mt-4`}
           placeholder="Set a Password"
           placeholderTextColor="#979797"
           secureTextEntry
           value={formData.password}
-          onChangeText={text => setFormData({ ...formData, password: text })}
+          onChangeText={(text) => setFormData({ ...formData, password: text })}
         />
-
-        <Text style={tw`text-red-500 text-xs mb-4`}>
-          Password should contain at least 8 characters, a number or symbol
-        </Text>
+        {errors.password && <Text style={tw`text-[#C23333] text-xs mt-1`}>{errors.password}</Text>}
 
         <TextInput
-          style={tw`text-white p-3 rounded-2xl mb-4 border border-gray-600`}
+          style={tw`text-[#FFFFFF] p-3 rounded-lg border border-[#555555] mt-4`}
           placeholder="Re-enter Password"
-          placeholderTextColor="#6b7280"
+          placeholderTextColor="#979797"
           secureTextEntry
           value={formData.confirmPassword}
-          onChangeText={text => setFormData({ ...formData, confirmPassword: text })}
+          onChangeText={(text) => setFormData({ ...formData, confirmPassword: text })}
         />
+        {errors.confirmPassword && <Text style={tw`text-[#C23333] text-xs mt-1`}>{errors.confirmPassword}</Text>}
 
-        {errors.confirmPassword && (
-          <Text style={tw`text-red-500 text-xs mb-4`}>
-            {errors.confirmPassword}
-          </Text>
-        )}
-
-        <View style={tw`flex-row items-center mb-4`}>
-          <Checkbox
-            status={agreeTerms ? 'checked' : 'unchecked'}
-            onPress={() => setAgreeTerms(!agreeTerms)}
-            color="#3b82f6"
+        <View style={tw`flex-row items-center mt-6`}>
+          <CheckBox
+            value={agreeTerms}
+            onValueChange={() => setAgreeTerms(!agreeTerms)}
+            tintColors={{ true: '#65779E', false: '#979797' }}
           />
-          <Text style={tw`text-white ml-2`}>
+          <Text style={tw`text-[#FFFFFF] ml-2`}>
             I agree to all the <Text style={tw`text-[#65779E]`}>Terms</Text> and <Text style={tw`text-[#65779E]`}>Privacy Policies</Text>
           </Text>
         </View>
+        {errors.terms && <Text style={tw`text-[#C23333] text-xs mt-1`}>{errors.terms}</Text>}
 
         <Button
-          mode="elevated"
+          mode="contained"
           onPress={handleSignUp}
-          style={tw`rounded-2xl mb-4`}
-          labelStyle={tw`text-sm text-white`}
-          buttonColor="#1D1E23"
+          style={[tw`rounded-lg mt-6`, { backgroundColor: '#1D1E23'  }]}
+          contentStyle={tw`py-2`}
+          labelStyle={[tw`text-lg`, { color: '#FFFFFF' }]}
         >
-          {isLoading ? <ActivityIndicator color="#fff" /> : 'Create Account'}
+          {isLoading ? <ActivityIndicator color="#FFFFFF" /> : 'Sign Up'}
         </Button>
+
+        <View style={tw`flex-row justify-center mt-8`}>
+          <Text style={tw`text-[#FFFFFF]`}>Already have an account? </Text>
+          <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+            <Text style={tw`text-[#65779E] font-semibold`}>Login</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </SafeAreaView>
   );
 };
 
-export default SignUp;
+export default SignUpScreen;

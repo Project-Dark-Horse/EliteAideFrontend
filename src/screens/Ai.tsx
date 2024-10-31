@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, FlatList, KeyboardAvoidingView, Platform, Image } from 'react-native';
 import tw from 'twrnc';
 import bot from '../assets/bot.png';
-import { setIn } from 'formik';
 
 interface Message {
   id: string;
@@ -17,7 +16,29 @@ const ChatScreen = () => {
 
   const [input, setInput] = useState('');
 
-  const sendMessage = () => {
+  const getBotResponse = async (message: string) => {
+    try {
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer YOUR_OPENAI_API_KEY`, // Replace with your OpenAI API Key
+        },
+        body: JSON.stringify({
+          model: 'gpt-3.5-turbo', // or the appropriate model you want to use
+          messages: [{ role: 'user', content: message }],
+        }),
+      });
+
+      const data = await response.json();
+      return data.choices[0].message.content;
+    } catch (error) {
+      console.error('Error fetching bot response:', error);
+      return 'Oops! Something went wrong. Please try again later.';
+    }
+  };
+
+  const sendMessage = async () => {
     if (input.trim()) {
       const newMessage: Message = {
         id: Math.random().toString(),
@@ -25,11 +46,18 @@ const ChatScreen = () => {
         sender: 'user',
       };
       setMessages((prevMessages) => [newMessage, ...prevMessages]);
-      setInput('');  // clean up
+      setInput('');
+
+      // Get bot response
+      const botResponse = await getBotResponse(input);
+      const botMessage: Message = {
+        id: Math.random().toString(),
+        text: botResponse,
+        sender: 'bot',
+      };
+      setMessages((prevMessages) => [botMessage, ...prevMessages]);
     }
   };
-
-  
 
   const renderItem = ({ item }: { item: Message }) => (
     <View

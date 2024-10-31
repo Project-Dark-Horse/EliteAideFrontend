@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Alert, Text, View } from 'react-native';
 import UserInfo from '../components/Profile/UserInfo';
-import TaskCard from '../components/Profile/TaskBar';
+import TaskCard from '../components/Profile/TaskCard';
 import ProfileMenu from '../components/Profile/ProfileMenu';
 import { useNavigation } from '@react-navigation/native';
 import tw from 'twrnc';
+import { BASE_URL } from '@env';
 
 const ProfileScreen = () => {
   const navigation = useNavigation();
@@ -16,14 +17,14 @@ const ProfileScreen = () => {
   const [doneTasks, setDoneTasks] = useState(100);
 
   useEffect(() => {
-    fetchUserInfo();
+    if (!userInfo) fetchUserInfo();
     fetchTaskData();
-  }, []);
+  }, [userInfo]);
 
   // Fetch user info from API
   const fetchUserInfo = async () => {
     try {
-      const response = await fetch('https://api.eliteaide.tech/');
+      const response = await fetch('https://api.eliteaide.tech/userinfo');
       const data = await response.json();
       setUserInfo(data);
     } catch (error) {
@@ -34,7 +35,7 @@ const ProfileScreen = () => {
   // Fetch task data from API
   const fetchTaskData = async () => {
     try {
-      const response = await fetch('https://api.eliteaide.tech/');
+      const response = await fetch('https://api.eliteaide.tech/tasks');
       const data = await response.json();
       setTotalTasks(data.total);
       setPendingTasks(data.pending);
@@ -53,6 +54,7 @@ const ProfileScreen = () => {
         break;
       case 'Settings':
         Alert.alert('Navigating to Settings');
+        navigation.navigate('SettingsScreen');
         break;
       case 'About Elite Aide':
         Alert.alert('About Elite Aide', 'Version 1.0.0');

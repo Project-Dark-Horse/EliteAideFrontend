@@ -5,16 +5,14 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import Login from './screens/Login';
 import EnterEmail from './screens/EnterEmail';
 import SignUp from './screens/SignUp';
-import NotificationScreen from './screens/NotificationScreen';
-import CalendarScreen from './screens/CalendarScreen';
-import MyActivityScreen from './screens/MyActivityScreen';
+import NotificationScreen from './screens/Notification';
+import MyActivityScreen from './screens/MyActivity';
 import Otp from './screens/Otp';
 import MyTaskScreen from './screens/MyTaskScreen';
 import BottomTabNavigator from './components/BottomTabNavigator';
-import { RootStackParamList } from '../src/types/navigation'; // Import RootStackParamList
+import { RootStackParamList } from '../src/types/navigation';
 import WelcomeScreen from './screens/WelcomeScreen';
-
-
+import Calendar from './screens/Calendar/Calendar';
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -29,10 +27,24 @@ export default function App() {
           <Stack.Screen name="SignUp" component={SignUp} options={{ headerShown: false }} />
           <Stack.Screen name="Otp" component={Otp} options={{ headerShown: false }} />
           <Stack.Screen name="BottomTabNavigator" component={BottomTabNavigator} options={{ headerShown: false }} />
-          <Stack.Screen name="Calendar" component={CalendarScreen} options={{ headerShown: false }} />
-          <Stack.Screen name="Notification" component={NotificationScreen} options={{ headerShown: false }}/>
+          <Stack.Screen name="Calendar" component={Calendar} options={{ headerShown: false }} />
           <Stack.Screen 
-            name="MyTaskScreen" 
+            name="Notification" 
+            component={NotificationScreen} 
+            options={{
+              headerShown: true,
+              headerTitle: 'Notifications',
+              headerTitleAlign: 'center',
+              headerStyle: {
+                backgroundColor: '#111111',
+                elevation: 0,
+                shadowOpacity: 0,
+              },
+              headerTintColor: '#fff',
+            }}
+          />
+          <Stack.Screen 
+            name="MyTask" 
             component={MyTaskScreen}
             options={{
               headerShown: true,
@@ -47,26 +59,11 @@ export default function App() {
             }}
           />
           <Stack.Screen 
-            name="MyActivityScreen" 
+            name="MyActivity" 
             component={MyActivityScreen}
             options={{
               headerShown: true,
               headerTitle: 'My Activity',
-              headerTitleAlign: 'center',
-              headerStyle: {
-                backgroundColor: '#111111',
-                elevation: 0,
-                shadowOpacity: 0,
-              },
-              headerTintColor: '#fff',
-            }}
-          />
-          <Stack.Screen 
-            name="NotificationScreen" 
-            component={NotificationScreen} 
-            options={{
-              headerShown: true,
-              headerTitle: 'Notifications',
               headerTitleAlign: 'center',
               headerStyle: {
                 backgroundColor: '#111111',

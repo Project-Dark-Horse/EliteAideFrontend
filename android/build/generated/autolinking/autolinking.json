@@ -57,6 +57,30 @@
         }
       }
     },
+    "@react-native-community/checkbox": {
+      "root": "/Users/shriyakapil/PDH/hogwarts/eliteaidefrontend/node_modules/@react-native-community/checkbox",
+      "name": "@react-native-community/checkbox",
+      "platforms": {
+        "ios": {
+          "podspecPath": "/Users/shriyakapil/PDH/hogwarts/eliteaidefrontend/node_modules/@react-native-community/checkbox/RNCCheckbox.podspec",
+          "version": "0.5.17",
+          "configurations": [],
+          "scriptPhases": []
+        },
+        "android": {
+          "sourceDir": "/Users/shriyakapil/PDH/hogwarts/eliteaidefrontend/node_modules/@react-native-community/checkbox/android",
+          "packageImportPath": "import com.reactnativecommunity.checkbox.ReactCheckBoxPackage;",
+          "packageInstance": "new ReactCheckBoxPackage()",
+          "buildTypes": [],
+          "componentDescriptors": [],
+          "cmakeListsPath": "/Users/shriyakapil/PDH/hogwarts/eliteaidefrontend/node_modules/@react-native-community/checkbox/android/build/generated/source/codegen/jni/CMakeLists.txt",
+          "cxxModuleCMakeListsModuleName": null,
+          "cxxModuleCMakeListsPath": null,
+          "cxxModuleHeaderName": null,
+          "isPureCxxDependency": false
+        }
+      }
+    },
     "react-native-curved-bottom-bar": {
       "root": "/Users/shriyakapil/PDH/hogwarts/eliteaidefrontend/node_modules/react-native-curved-bottom-bar",
       "name": "react-native-curved-bottom-bar",
@@ -83,7 +107,7 @@
       "platforms": {
         "ios": {
           "podspecPath": "/Users/shriyakapil/PDH/hogwarts/eliteaidefrontend/node_modules/react-native-gesture-handler/RNGestureHandler.podspec",
-          "version": "2.20.2",
+          "version": "2.20.1",
           "configurations": [],
           "scriptPhases": []
         },
@@ -207,7 +231,7 @@
       "platforms": {
         "ios": {
           "podspecPath": "/Users/shriyakapil/PDH/hogwarts/eliteaidefrontend/node_modules/react-native-screens/RNScreens.podspec",
-          "version": "3.34.1",
+          "version": "3.34.0",
           "configurations": [],
           "scriptPhases": []
         },
