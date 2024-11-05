@@ -1,6 +1,5 @@
-// Step 1 - EnterEmail.tsx
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ActivityIndicator, Image } from 'react-native';
 import RadialGradient from 'react-native-radial-gradient';
 import { BlurView } from '@react-native-community/blur';
 import tw from 'twrnc';
@@ -11,6 +10,9 @@ import { useNavigation } from '@react-navigation/native';
 import * as Yup from 'yup';
 import Toast from 'react-native-toast-message';
 import { BASE_URL } from '@env';
+
+// Import the logo image
+import LogoImage from '../assets/vector.png';
 
 type EmailScreenNavigationProp = {
   navigate: (screen: string, params?: any) => void;
@@ -86,7 +88,7 @@ const EnterEmail: React.FC = () => {
     try {
       await emailValidationSchema.validate({ email });
       const emailExists = await checkEmailExists(email);
-
+  
       if (!emailExists) {
         const otpSent = await sendOtp(email);
         if (otpSent) {
@@ -99,10 +101,11 @@ const EnterEmail: React.FC = () => {
         }
       } else {
         Toast.show({
-          type: 'error',
+          type: 'info',
           text1: 'Email Exists',
-          text2: 'The email ID already exists.',
+          text2: 'The email ID already exists. Please log in.',
         });
+        navigation.navigate('Login'); // Navigate to the login screen if email exists
       }
     } catch (error) {
       Toast.show({
@@ -134,6 +137,20 @@ const EnterEmail: React.FC = () => {
         blurAmount={70}
         reducedTransparencyFallbackColor="rgba(0,0,0,0.3)"
       />
+
+      {/* Logo Image at specified position */}
+      <Image
+        source={LogoImage}
+        style={{
+          position: 'absolute',
+          top: 201.09, // Position from the top
+          left: 20, // Position from the left
+          width: 119.96, // Width as per design
+          height: 54.53, // Height as per design
+          transform: [{ rotate: '0.81deg' }], // Slight rotation if needed
+        }}
+      />
+
       <View style={tw`flex-1 justify-center px-6 bg-transparent mt-5`}>
         <TouchableOpacity 
           onPress={navigation.goBack} 

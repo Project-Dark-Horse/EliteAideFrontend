@@ -5,7 +5,7 @@ import ToDo from '../screens/HomeScreens/Todo';
 import Progress from '../screens/HomeScreens/Progress';
 import Done from '../screens/HomeScreens/Done';
 import Notification from '../screens/Notification';
-import Profile from '../screens/MyProfile';
+import Profile from '../screens/ProfileScreen';
 import TaskAnalysis from '../screens/Tasks/TaskAnalysis';
 import { useNavigation } from '@react-navigation/native'; 
 import MyActivity from '../screens/MyActivity';
