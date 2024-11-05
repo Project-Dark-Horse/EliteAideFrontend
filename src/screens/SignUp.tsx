@@ -9,6 +9,8 @@ import tw from 'twrnc';
 import CheckBox from '@react-native-community/checkbox';
 import { SignUpScreenNavigationProp } from '../types/navigation';
 import { BASE_URL } from '@env';
+import * as Yup from 'yup';
+import Toast from 'react-native-toast-message';
 
 type SignUpRouteProp = RouteProp<{ SignUp: { email: string; otp: string } }, 'SignUp'>;
 
@@ -94,11 +96,39 @@ const SignUpScreen = () => {
     }
   };
 
-  const handleSignUp = () => {
-    if (validateForm() && agreeTerms) {
-      signUpUser();
-    } else if (!agreeTerms) {
-      setErrors({ ...errors, terms: 'Please agree to the terms and conditions' });
+  const handleSubmit = async () => {
+    try {
+      await emailValidationSchema.validate({ email });
+  
+      // Step 1: Check if the email already exists
+      const emailExists = await emailExists(email);
+  
+      if (emailExists) {
+        // If the email exists, prompt the user to log in and navigate to the Login screen
+        Toast.show({
+          type: 'info',
+          text1: 'Email Exists',
+          text2: 'This email is already registered. Please log in.',
+        });
+        navigation.navigate('Login'); // Navigate to the login screen if email exists
+      } else {
+        // Step 2: Send OTP only if the email does not exist
+        const otpSent = await sendOtp(email);
+        if (otpSent) {
+          Toast.show({
+            type: 'success',
+            text1: 'OTP Sent',
+            text2: 'A verification code has been sent to your email.',
+          });
+          handleOtpNavigation();
+        }
+      }
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Validation Error',
+        text2: error instanceof Yup.ValidationError ? error.message : 'An unknown error occurred',
+      });
     }
   };
 

@@ -2,9 +2,9 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import Home from '../screens/Home';
 import Calendar from '../screens/Calendar/Calendar';
-import ChatScreen from '../screens/ChatScreen';
+import ChatScreen from '../screens/Ai';
 import Notification from '../screens/Notification';
-import ProfileScreen from "../screens/MyProfile";
+import ProfileScreen from "../screens/ProfileScreen";
 import { RootStackParamList } from '../types/navigation';  // Adjust this path accordingly
 
 const Stack = createStackNavigator<RootStackParamList>();

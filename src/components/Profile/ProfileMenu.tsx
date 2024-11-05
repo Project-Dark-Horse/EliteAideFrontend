@@ -15,15 +15,15 @@ interface Menu {
 const ProfileMenu: React.FC<Menu> = ({ title, iconName, onPress }) => {
     return (
         <TouchableOpacity onPress={onPress} style={tw`my-2`}>
-            <Card style={[tw`rounded-2xl`, { width: width * 0.9, height: width * 0.125, backgroundColor: '#1e1e1e' }]}>
+            <Card style={[tw`rounded-2xl px-4 py-2`, { width: width * 0.9, backgroundColor: '#1e1e1e', elevation: 2 }]}>
                 <Card.Content style={tw`flex-row justify-between items-center`}>
                     <View style={tw`flex-row items-center`}>
-                        <Ionicons name={iconName} size={20} color="#979797" />
-                        <Text style={tw`text-[#979797] text-sm ml-3`}>{title}</Text>
+                        <Ionicons name={iconName} size={22} color="#979797" />
+                        <Text style={tw`text-[#F8F8F8] text-sm ml-3`}>{title}</Text>
                     </View>
                     <Ionicons
                         name="chevron-forward"
-                        size={15}
+                        size={18}
                         color="#F8F8F8"
                     />
                 </Card.Content>

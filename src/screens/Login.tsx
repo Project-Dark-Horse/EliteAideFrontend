@@ -1,3 +1,5 @@
+import React, { useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, Alert, Image } from 'react-native';
 import { Button } from 'react-native-paper';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import tw from 'twrnc';
@@ -5,15 +7,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import LinearGradient from 'react-native-linear-gradient';
 import { BlurView } from '@react-native-community/blur';
 import RadialGradient from 'react-native-radial-gradient';
-import React, { useState } from 'react';
 import { BASE_URL } from '@env';
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  Alert,
-} from 'react-native';
+
+// Import the logo image
+import LogoImage from '../assets/vector.png';
 
 const LoginScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -22,10 +19,13 @@ const LoginScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async () => {
+    console.log("Login button pressed"); // Log login button press
+
     setIsLoading(true);
+    console.log("API Request:", `${BASE_URL}v1/users/login/`); // Log the API endpoint
+    console.log("Request Payload:", { email_or_username: email, password }); // Log payload data
+
     try {
-      console.log('Initiating login transaction...');
-    
       const response = await fetch(`${BASE_URL}v1/users/login/`, {
         method: 'POST',
         headers: {
@@ -33,31 +33,30 @@ const LoginScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
         },
         body: JSON.stringify({ email_or_username: email, password }),
       });
-  
-      console.log('Transaction Status:', response.status);
+
       const data = await response.json();
-      console.log('Transaction Response Data:', JSON.stringify(data, null, 2));
-  
+      console.log("API Response Status:", response.status); // Log response status
+      console.log("API Response Data:", data); // Log response data
+
       if (response.ok && data.message?.access) {
         const { access, refresh } = data.message;
-  
         await AsyncStorage.setItem('accessToken', access);
         await AsyncStorage.setItem('refreshToken', refresh);
-  
-        console.log('Login successful, access token stored:', access);
-  
-        // Navigate to the BottomTabNavigator instead of Home
-        navigation.navigate('BottomTabNavigator'); 
+        console.log("Access token saved:", access); // Log token storage
+        console.log("Refresh token saved:", refresh);
+
+        navigation.navigate('BottomTabNavigator');
       } else {
         const errorMessage = data.message || 'An error occurred';
-        console.log('Login failed, Error message:', errorMessage);
+        console.error("API Error Message:", errorMessage); // Log specific error message from API
         Alert.alert('Login failed', errorMessage);
       }
     } catch (error) {
-      console.error('Login transaction error:', error);
+      console.error("Network Error:", error); // Log network or unexpected error
       Alert.alert('Login failed', 'An error occurred');
     } finally {
       setIsLoading(false);
+      console.log("Loading state set to false"); // Log loading state reset
     }
   };
 
@@ -75,10 +74,27 @@ const LoginScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
         blurAmount={70}
         reducedTransparencyFallbackColor="rgba(0,0,0,0.3)"
       />
+
+      {/* Logo Image */}
+      <Image
+        source={LogoImage}
+        style={{
+          position: 'absolute',
+          top: 201.09,
+          left: 20,
+          width: 119.96,
+          height: 54.53,
+          transform: [{ rotate: '0.81deg' }],
+        }}
+      />
+
       <View style={tw`flex-1 justify-center px-6 bg-transparent mt-5`}>
         <TouchableOpacity
           style={tw`w-10 h-10 justify-center items-center top--39 bg-[#1D1E23] rounded-2xl`}
-          onPress={() => navigation.goBack()}
+          onPress={() => {
+            console.log("Back button pressed"); // Log back button press
+            navigation.goBack();
+          }}
         >
           <Ionicons name="chevron-back" size={28} color="#fff" />
         </TouchableOpacity>
@@ -96,7 +112,10 @@ const LoginScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
             placeholder="Username or Email address"
             placeholderTextColor="#6F6F6F"
             value={email}
-            onChangeText={setEmail}
+            onChangeText={(text) => {
+              setEmail(text);
+              console.log("Email input:", text); // Log email input
+            }}
           />
         </View>
 
@@ -111,10 +130,16 @@ const LoginScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
             placeholderTextColor="#6F6F6F"
             secureTextEntry={!showPassword}
             value={password}
-            onChangeText={setPassword}
+            onChangeText={(text) => {
+              setPassword(text);
+              console.log("Password input:", text); // Log password input
+            }}
           />
           <TouchableOpacity
-            onPress={() => setShowPassword(!showPassword)}
+            onPress={() => {
+              setShowPassword(!showPassword);
+              console.log("Show password toggled:", !showPassword); // Log toggle action
+            }}
             style={tw`absolute right-4 top-4`}
           >
             <Ionicons name={showPassword ? 'eye-off' : 'eye'} size={22} color="#979797" />
@@ -122,7 +147,10 @@ const LoginScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
         </View>
 
         {/* Forgot Password */}
-        <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
+        <TouchableOpacity onPress={() => {
+          console.log("Forgot password link clicked"); // Log forgot password press
+          navigation.navigate('ForgotPassword');
+        }}>
           <Text style={tw`text-[#1D79BC] text-sm mt-3`}>Forgot Password?</Text>
         </TouchableOpacity>
 
@@ -130,7 +158,7 @@ const LoginScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
         <Button
           mode="elevated"
           onPress={handleLogin}
-          loading={isLoading} // Show loading indicator on button
+          loading={isLoading}
           style={[
             tw`rounded-2xl top-20`,
             {
@@ -151,7 +179,10 @@ const LoginScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
         {/* Create Account Link */}
         <View style={tw`flex-row justify-center top-25`}>
           <Text style={tw`text-white`}>Don’t have an account? </Text>
-          <TouchableOpacity onPress={() => navigation.navigate('EnterEmail')}>
+          <TouchableOpacity onPress={() => {
+            console.log("Create account link clicked"); // Log create account link press
+            navigation.navigate('EnterEmail');
+          }}>
             <Text style={tw`text-[#65779E] font-semibold`}>Create One</Text>
           </TouchableOpacity>
         </View>

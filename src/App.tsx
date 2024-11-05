@@ -13,6 +13,7 @@ import BottomTabNavigator from './components/BottomTabNavigator';
 import { RootStackParamList } from '../src/types/navigation';
 import WelcomeScreen from './screens/WelcomeScreen';
 import Calendar from './screens/Calendar/Calendar';
+import SettingsScreen from './screens/SettingsScreen';
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -28,6 +29,7 @@ export default function App() {
           <Stack.Screen name="Otp" component={Otp} options={{ headerShown: false }} />
           <Stack.Screen name="BottomTabNavigator" component={BottomTabNavigator} options={{ headerShown: false }} />
           <Stack.Screen name="Calendar" component={Calendar} options={{ headerShown: false }} />
+          <Stack.Screen name="SettingsScreen" component={SettingsScreen} />
           <Stack.Screen 
             name="Notification" 
             component={NotificationScreen} 

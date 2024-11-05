@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ActivityIndicator, Image } from 'react-native';
 import RadialGradient from 'react-native-radial-gradient';
 import { BlurView } from '@react-native-community/blur';
 import tw from 'twrnc';
@@ -9,6 +9,9 @@ import { Button } from 'react-native-paper';
 import Toast from 'react-native-toast-message';
 import { OTPRouteProp, OTPNavigationProp } from '../types/navigation';
 import { BASE_URL } from '@env';
+
+// Import the logo image
+import LogoImage from '../assets/vector.png';
 
 type Props = {
   route: OTPRouteProp;
@@ -141,6 +144,19 @@ const Otp: React.FC<Props> = ({ route, navigation }) => {
         blurType="extraDark"
         blurAmount={70}
         reducedTransparencyFallbackColor="rgba(0,0,0,0.3)"
+      />
+
+      {/* Logo Image at specified position */}
+      <Image
+        source={LogoImage}
+        style={{
+          position: 'absolute',
+          top: 201.09, // Position from the top
+          left: 20, // Position from the left
+          width: 119.96, // Width as per design
+          height: 54.53, // Height as per design
+          transform: [{ rotate: '0.81deg' }], // Slight rotation if needed
+        }}
       />
 
       <View style={tw`flex-1 justify-center px-6 bg-transparent mt-5`}>

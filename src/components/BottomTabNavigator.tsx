@@ -3,7 +3,7 @@ import { StyleSheet, TouchableOpacity, Text } from 'react-native';
 import { CurvedBottomBar } from 'react-native-curved-bottom-bar';
 import CustomButton from './CustomButton';
 import TabBar from './TabBar';
-import Profile from '../screens/MyProfile';
+import Profile from '../screens/ProfileScreen';
 import CalendarScreen from '../screens/Calendar/Calendar';
 import Ai from '../screens/Ai';
 import HomeStack from '../navigators/HomeStack';

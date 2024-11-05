@@ -13,9 +13,11 @@ import { BASE_URL } from '@env';
 type ProfileScreenNavigationProp = StackNavigationProp<RootStackParamList, 'ProfileScreen'>;
 
 interface UserInfoType {
-  name: string;
   email: string;
-  avatar?: string;
+  username: string;
+  first_name: string;
+  last_name: string;
+  mobile_number: string;
 }
 
 interface TaskData {
@@ -78,6 +80,29 @@ const ProfileScreen = () => {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      const token = await AsyncStorage.getItem('refresh_token');
+      const response = await fetch(`${BASE_URL}/v1/users/logout/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ refresh_token: token }),
+      });
+      if (response.ok) {
+        await AsyncStorage.clear();
+        Alert.alert('Logged out successfully');
+        navigation.navigate('Login');
+      } else {
+        Alert.alert('Logout failed');
+      }
+    } catch (error) {
+      Alert.alert('Logout failed', 'Unable to connect to the server');
+    }
+  };
+
   const handleCardPress = (menuTitle: string) => {
     switch (menuTitle) {
       case 'My Activity':
@@ -92,30 +117,12 @@ const ProfileScreen = () => {
       case 'Logout':
         handleLogout();
         break;
+      case 'Logout from All Devices':
+        // Placeholder for "Logout from all devices" functionality
+        Alert.alert('Info', 'Logout from all devices is currently in progress.');
+        break;
       default:
         console.log('Unknown menu item');
-    }
-  };
-
-  const handleLogout = async () => {
-    try {
-      const token = await AsyncStorage.getItem('access_token');
-      const response = await fetch(`${BASE_URL}/v1/users/logout/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-      if (response.ok) {
-        await AsyncStorage.clear();
-        Alert.alert('Logged out successfully');
-        navigation.navigate('Login');
-      } else {
-        Alert.alert('Logout failed');
-      }
-    } catch (error) {
-      Alert.alert('Logout failed', 'Unable to connect to the server');
     }
   };
 
@@ -140,6 +147,7 @@ const ProfileScreen = () => {
         <ProfileMenu title="Settings" iconName="settings" onPress={() => handleCardPress('Settings')} />
         <ProfileMenu title="About Elite Aide" iconName="information-circle-outline" onPress={() => handleCardPress('About Elite Aide')} />
         <ProfileMenu title="Logout" iconName="log-out" onPress={() => handleCardPress('Logout')} />
+        <ProfileMenu title="Logout from All Devices" iconName="log-out" onPress={() => handleCardPress('Logout from All Devices')} />
       </View>
     </View>
   );
