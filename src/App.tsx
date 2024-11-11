@@ -29,7 +29,7 @@ export default function App() {
           <Stack.Screen name="Otp" component={Otp} options={{ headerShown: false }} />
           <Stack.Screen name="BottomTabNavigator" component={BottomTabNavigator} options={{ headerShown: false }} />
           <Stack.Screen name="Calendar" component={Calendar} options={{ headerShown: false }} />
-          <Stack.Screen name="SettingsScreen" component={SettingsScreen} />
+          <Stack.Screen name="SettingsScreen" component={SettingsScreen} options={{ headerShown: false }}/>
           <Stack.Screen 
             name="Notification" 
             component={NotificationScreen} 

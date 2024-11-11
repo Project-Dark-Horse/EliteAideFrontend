@@ -17,12 +17,12 @@ const TabBar: React.FC<TabBarProps> = ({ routeName, selectedTab, navigate }) => 
         return <Ionicons name="calendar-outline" size={24} color={selectedTab === 'Calendar' ? '#65779E' : '#555555'} />;
       case 'Ai':
         return (
-          <View style={styles.aiIconContainer}>
+          <View style={[styles.aiIconContainer, selectedTab === 'Ai' && styles.selectedAI]}>
             <Image source={require('../assets/tabbarai.png')} style={styles.iconImage} />
           </View>
         );
       case 'Profile':
-        return <Ionicons name="person" size={24} color={selectedTab === 'Profile' ? '#555555' : '#555555'} />;
+        return <Ionicons name="person" size={24} color={selectedTab === 'Profile' ? '#384766' : '#555555'} />;
       default:
         return <Ionicons name="alert-circle-outline" size={24} color="gray" />;
     }
@@ -43,8 +43,12 @@ const styles = StyleSheet.create({
   },
   aiIconContainer: {
     alignItems: 'center',
-    justifyContent: 'center', // "off grey" color for border
+    justifyContent: 'center',
     padding: 6,
+  },
+  selectedAI: {
+    backgroundColor: '#384766', // Optional background to highlight selected "AI" tab
+    borderRadius: 20,
   },
   iconImage: {
     width: 26,
