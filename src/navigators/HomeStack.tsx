@@ -9,7 +9,8 @@ import Profile from '../screens/ProfileScreen';
 import TaskAnalysis from '../screens/Tasks/TaskAnalysis';
 import { useNavigation } from '@react-navigation/native'; 
 import MyActivity from '../screens/MyActivity';
-import NotificationScreen from '../screens/Notification';
+import ManualTaskCreate from '../screens/ManualTaskCreate';
+
 
 
 const Stack = createStackNavigator();
@@ -47,6 +48,12 @@ const HomeStack = () => {
         component={Notification}
         options={{ title: "Notifications" }}
       />
+
+      <Stack.Screen
+        name="ManualTaskCreate"
+        component={ManualTaskCreate}
+        options={{ title: "Create New Task" }}
+      />  
 
     </Stack.Navigator>
   );

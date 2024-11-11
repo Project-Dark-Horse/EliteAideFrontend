@@ -101,7 +101,7 @@ const CreateTaskScreen = () => {
         {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
-            <IconIonicons name="arrow-back" size={24} color="#fff" />
+            <IconIonicons name="chevron-back" size={24} color="#fff" />
           </TouchableOpacity>
           <TouchableOpacity>
             <IconIonicons name="notifications-outline" size={24} color="#fff" />

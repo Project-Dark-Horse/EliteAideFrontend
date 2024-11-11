@@ -1,11 +1,11 @@
 import React from 'react';
-import { View, Text, Image, TouchableOpacity } from 'react-native';
+import { View, Text, Image, TouchableOpacity, ImageSourcePropType } from 'react-native';
 import tw from 'twrnc';
 
 interface TileProps {
   title: string;
   onPress: () => void;
-  image: any; // Set the type to `any` or `ImageSourcePropType` for React Native images
+  image: ImageSourcePropType; // Use ImageSourcePropType for images
   backgroundColor: string;
 }
 
@@ -14,7 +14,7 @@ const Tile: React.FC<TileProps> = ({ title, onPress, image, backgroundColor }) =
     onPress={onPress} 
     style={[
       tw`flex-col items-center justify-center m-2 p-3 rounded-lg`,
-      { width: 80, height: 78, backgroundColor, backdropFilter: 'blur(26px)' },
+      { width: 80, height: 78, backgroundColor },
     ]}
   >
     <View style={[

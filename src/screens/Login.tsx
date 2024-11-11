@@ -9,7 +9,6 @@ import { BlurView } from '@react-native-community/blur';
 import RadialGradient from 'react-native-radial-gradient';
 import { BASE_URL } from '@env';
 
-// Import the logo image
 import LogoImage from '../assets/vector.png';
 
 const LoginScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
@@ -17,49 +16,105 @@ const LoginScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [debugMessage, setDebugMessage] = useState('');
 
+  // const handleLogin = async () => {
+  //   setIsLoading(true);
+  //   setDebugMessage('Starting login process...');
+
+  //   try {
+  //     // Log the request URL for debugging
+  //     console.log(`Requesting login at: ${BASE_URL}v1/users/login/`);
+  //     setDebugMessage(`Requesting login at: ${BASE_URL}v1/users/login/`);
+
+  //     const response = await fetch(`${BASE_URL}v1/users/login/`, {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify({ email_or_username: email, password }),
+  //     });
+
+  //     // Log the response status
+  //     console.log(`Response status: ${response.status}`);
+  //     setDebugMessage(`Response status: ${response.status}`);
+
+  //     const data = await response.json();
+  //     console.log('Response data:', data);
+  //     setDebugMessage(`Response data: ${JSON.stringify(data)}`);
+
+  //     if (response.ok && data.message?.access) {
+  //       const { access, refresh } = data.message;
+
+  //       // Store the tokens in AsyncStorage
+  //       await AsyncStorage.setItem('accessToken', access);
+  //       await AsyncStorage.setItem('refreshToken', refresh);
+
+  //       // Log success message and navigate
+  //       console.log('Login successful, tokens stored.');
+  //       setDebugMessage('Login successful, navigating to main screen...');
+        
+  //       navigation.navigate('BottomTabNavigator');
+  //     } else {
+  //       const errorMessage = data.message || 'An error occurred';
+  //       console.error('Login failed:', errorMessage);
+  //       setDebugMessage(`Login failed: ${errorMessage}`);
+  //       Alert.alert('Login failed', errorMessage);
+  //     }
+  //   } catch (error) {
+  //     console.error('Login error:', error);
+  //     setDebugMessage(`Login error: ${error.message}`);
+  //     Alert.alert('Login failed', 'An error occurred');
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
   const handleLogin = async () => {
-    console.log("Login button pressed"); // Log login button press
-
     setIsLoading(true);
-    console.log("API Request:", `${BASE_URL}v1/users/login/`); // Log the API endpoint
-    console.log("Request Payload:", { email_or_username: email, password }); // Log payload data
-
+    setDebugMessage('Simulating login process...');
+  
     try {
-      const response = await fetch(`${BASE_URL}v1/users/login/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      // Simulated API response delay
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+  
+      // Mock data for successful login
+      const mockResponse = {
+        message: {
+          access: 'mock_access_token',
+          refresh: 'mock_refresh_token',
         },
-        body: JSON.stringify({ email_or_username: email, password }),
-      });
-
-      const data = await response.json();
-      console.log("API Response Status:", response.status); // Log response status
-      console.log("API Response Data:", data); // Log response data
-
-      if (response.ok && data.message?.access) {
-        const { access, refresh } = data.message;
+      };
+  
+      console.log('Response data:', mockResponse);
+      setDebugMessage(`Response data: ${JSON.stringify(mockResponse)}`);
+  
+      if (mockResponse.message?.access) {
+        const { access, refresh } = mockResponse.message;
+  
+        // Store the tokens in AsyncStorage
         await AsyncStorage.setItem('accessToken', access);
         await AsyncStorage.setItem('refreshToken', refresh);
-        console.log("Access token saved:", access); // Log token storage
-        console.log("Refresh token saved:", refresh);
-
+  
+        // Log success message and navigate
+        console.log('Login successful, tokens stored.');
+        setDebugMessage('Login successful, navigating to main screen...');
+        
         navigation.navigate('BottomTabNavigator');
       } else {
-        const errorMessage = data.message || 'An error occurred';
-        console.error("API Error Message:", errorMessage); // Log specific error message from API
+        const errorMessage = 'Simulated login failed: No access token';
+        console.error(errorMessage);
+        setDebugMessage(errorMessage);
         Alert.alert('Login failed', errorMessage);
       }
     } catch (error) {
-      console.error("Network Error:", error); // Log network or unexpected error
+      console.error('Login error:', error);
+      setDebugMessage(`Login error: ${error.message}`);
       Alert.alert('Login failed', 'An error occurred');
     } finally {
       setIsLoading(false);
-      console.log("Loading state set to false"); // Log loading state reset
     }
   };
-
+  
   return (
     <View style={tw`flex-1`}>
       <RadialGradient
@@ -91,10 +146,7 @@ const LoginScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
       <View style={tw`flex-1 justify-center px-6 bg-transparent mt-5`}>
         <TouchableOpacity
           style={tw`w-10 h-10 justify-center items-center top--39 bg-[#1D1E23] rounded-2xl`}
-          onPress={() => {
-            console.log("Back button pressed"); // Log back button press
-            navigation.goBack();
-          }}
+          onPress={() => navigation.goBack()}
         >
           <Ionicons name="chevron-back" size={28} color="#fff" />
         </TouchableOpacity>
@@ -112,10 +164,7 @@ const LoginScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
             placeholder="Username or Email address"
             placeholderTextColor="#6F6F6F"
             value={email}
-            onChangeText={(text) => {
-              setEmail(text);
-              console.log("Email input:", text); // Log email input
-            }}
+            onChangeText={(text) => setEmail(text)}
           />
         </View>
 
@@ -130,16 +179,10 @@ const LoginScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
             placeholderTextColor="#6F6F6F"
             secureTextEntry={!showPassword}
             value={password}
-            onChangeText={(text) => {
-              setPassword(text);
-              console.log("Password input:", text); // Log password input
-            }}
+            onChangeText={(text) => setPassword(text)}
           />
           <TouchableOpacity
-            onPress={() => {
-              setShowPassword(!showPassword);
-              console.log("Show password toggled:", !showPassword); // Log toggle action
-            }}
+            onPress={() => setShowPassword(!showPassword)}
             style={tw`absolute right-4 top-4`}
           >
             <Ionicons name={showPassword ? 'eye-off' : 'eye'} size={22} color="#979797" />
@@ -147,10 +190,7 @@ const LoginScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
         </View>
 
         {/* Forgot Password */}
-        <TouchableOpacity onPress={() => {
-          console.log("Forgot password link clicked"); // Log forgot password press
-          navigation.navigate('ForgotPassword');
-        }}>
+        <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
           <Text style={tw`text-[#1D79BC] text-sm mt-3`}>Forgot Password?</Text>
         </TouchableOpacity>
 
@@ -173,16 +213,18 @@ const LoginScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
           labelStyle={tw`text-sm text-white`}
           buttonColor="#1D1E23"
         >
-          Login
+          {isLoading ? "Logging in..." : "Login"}
         </Button>
+
+        {/* Debug Message */}
+        {debugMessage ? (
+          <Text style={tw`text-red-500 text-xs mt-4`}>Debug: {debugMessage}</Text>
+        ) : null}
 
         {/* Create Account Link */}
         <View style={tw`flex-row justify-center top-25`}>
           <Text style={tw`text-white`}>Don’t have an account? </Text>
-          <TouchableOpacity onPress={() => {
-            console.log("Create account link clicked"); // Log create account link press
-            navigation.navigate('EnterEmail');
-          }}>
+          <TouchableOpacity onPress={() => navigation.navigate('EnterEmail')}>
             <Text style={tw`text-[#65779E] font-semibold`}>Create One</Text>
           </TouchableOpacity>
         </View>
