@@ -11,6 +11,7 @@ MERGED from [:react-native-screens] /Users/shriyakapil/EliteAideFrontend/node_mo
 MERGED from [:react-native-async-storage_async-storage] /Users/shriyakapil/EliteAideFrontend/node_modules/@react-native-async-storage/async-storage/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:2:1-7:12
 MERGED from [:react-native-community_blur] /Users/shriyakapil/EliteAideFrontend/node_modules/@react-native-community/blur/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:2:1-7:12
 MERGED from [:react-native-community_checkbox] /Users/shriyakapil/EliteAideFrontend/node_modules/@react-native-community/checkbox/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:2:1-7:12
+MERGED from [:react-native-community_datetimepicker] /Users/shriyakapil/EliteAideFrontend/node_modules/@react-native-community/datetimepicker/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:2:1-9:12
 MERGED from [:react-native-curved-bottom-bar] /Users/shriyakapil/EliteAideFrontend/node_modules/react-native-curved-bottom-bar/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:2:1-7:12
 MERGED from [:react-native-linear-gradient] /Users/shriyakapil/EliteAideFrontend/node_modules/react-native-linear-gradient/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:2:1-7:12
 MERGED from [:react-native-radial-gradient] /Users/shriyakapil/EliteAideFrontend/node_modules/react-native-radial-gradient/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:2:1-7:12
@@ -98,6 +99,8 @@ ADDED from /Users/shriyakapil/EliteAideFrontend/android/app/src/main/AndroidMani
 MERGED from /Users/shriyakapil/EliteAideFrontend/android/app/src/main/AndroidManifest.xml:5:5-25:19
 MERGED from /Users/shriyakapil/EliteAideFrontend/android/app/src/main/AndroidManifest.xml:5:5-25:19
 INJECTED from /Users/shriyakapil/EliteAideFrontend/android/app/src/debug/AndroidManifest.xml:5:5-8:50
+MERGED from [:react-native-community_datetimepicker] /Users/shriyakapil/EliteAideFrontend/node_modules/@react-native-community/datetimepicker/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:7:5-20
+MERGED from [:react-native-community_datetimepicker] /Users/shriyakapil/EliteAideFrontend/node_modules/@react-native-community/datetimepicker/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:7:5-20
 MERGED from [com.facebook.react:react-android:0.75.4] /Users/shriyakapil/.gradle/caches/8.8/transforms/1f00369f60fb558f4c67464032b9f89f/transformed/react-android-0.75.4-debug/AndroidManifest.xml:18:5-22:19
 MERGED from [com.facebook.react:react-android:0.75.4] /Users/shriyakapil/.gradle/caches/8.8/transforms/1f00369f60fb558f4c67464032b9f89f/transformed/react-android-0.75.4-debug/AndroidManifest.xml:18:5-22:19
 MERGED from [com.google.android.material:material:1.6.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/7b318836775473582af6a678efbc7360/transformed/material-1.6.1/AndroidManifest.xml:24:5-20
@@ -189,6 +192,8 @@ MERGED from [:react-native-community_blur] /Users/shriyakapil/EliteAideFrontend/
 MERGED from [:react-native-community_blur] /Users/shriyakapil/EliteAideFrontend/node_modules/@react-native-community/blur/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:5:5-44
 MERGED from [:react-native-community_checkbox] /Users/shriyakapil/EliteAideFrontend/node_modules/@react-native-community/checkbox/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:5:5-44
 MERGED from [:react-native-community_checkbox] /Users/shriyakapil/EliteAideFrontend/node_modules/@react-native-community/checkbox/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:5:5-44
+MERGED from [:react-native-community_datetimepicker] /Users/shriyakapil/EliteAideFrontend/node_modules/@react-native-community/datetimepicker/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:5:5-44
+MERGED from [:react-native-community_datetimepicker] /Users/shriyakapil/EliteAideFrontend/node_modules/@react-native-community/datetimepicker/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:5:5-44
 MERGED from [:react-native-curved-bottom-bar] /Users/shriyakapil/EliteAideFrontend/node_modules/react-native-curved-bottom-bar/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:5:5-44
 MERGED from [:react-native-curved-bottom-bar] /Users/shriyakapil/EliteAideFrontend/node_modules/react-native-curved-bottom-bar/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:5:5-44
 MERGED from [:react-native-linear-gradient] /Users/shriyakapil/EliteAideFrontend/node_modules/react-native-linear-gradient/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:5:5-44

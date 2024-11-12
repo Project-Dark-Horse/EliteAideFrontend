@@ -81,6 +81,31 @@
         }
       }
     },
+    "@react-native-community/datetimepicker": {
+      "root": "/Users/shriyakapil/EliteAideFrontend/node_modules/@react-native-community/datetimepicker",
+      "name": "@react-native-community/datetimepicker",
+      "platforms": {
+        "ios": {
+          "podspecPath": "/Users/shriyakapil/EliteAideFrontend/node_modules/@react-native-community/datetimepicker/RNDateTimePicker.podspec",
+          "version": "8.2.0",
+          "configurations": [],
+          "scriptPhases": []
+        },
+        "android": {
+          "sourceDir": "/Users/shriyakapil/EliteAideFrontend/node_modules/@react-native-community/datetimepicker/android",
+          "packageImportPath": "import com.reactcommunity.rndatetimepicker.RNDateTimePickerPackage;",
+          "packageInstance": "new RNDateTimePickerPackage()",
+          "buildTypes": [],
+          "libraryName": "RNDateTimePickerCGen",
+          "componentDescriptors": [],
+          "cmakeListsPath": "/Users/shriyakapil/EliteAideFrontend/node_modules/@react-native-community/datetimepicker/android/build/generated/source/codegen/jni/CMakeLists.txt",
+          "cxxModuleCMakeListsModuleName": null,
+          "cxxModuleCMakeListsPath": null,
+          "cxxModuleHeaderName": null,
+          "isPureCxxDependency": false
+        }
+      }
+    },
     "react-native-curved-bottom-bar": {
       "root": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-curved-bottom-bar",
       "name": "react-native-curved-bottom-bar",

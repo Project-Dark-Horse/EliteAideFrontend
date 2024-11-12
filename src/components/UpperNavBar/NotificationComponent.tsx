@@ -4,6 +4,7 @@ import { TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import tw from 'twrnc';
 import { HomeScreenNavigationProp } from '../../types/navigation';
+import NotificationScreen from '../../screens/Notification/Notification';
 
 const NotificationsComponent: React.FC = () => {
   const [pressed, setPressed] = useState(false);
@@ -18,7 +19,7 @@ const NotificationsComponent: React.FC = () => {
           setPressed(!pressed);
         }}
       >
-        <Icon name="notifications" size={24} color="#646464" />
+        <Icon name="notifications" size={24} color="#65779E" />
       </TouchableOpacity>
     </View>
   );

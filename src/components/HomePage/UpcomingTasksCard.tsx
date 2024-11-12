@@ -2,7 +2,7 @@ import React from 'react';
 import { View } from 'react-native';
 import { Card, Text } from 'react-native-paper';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import tw from 'twrnc'; // Import twrnc for styling
+import tw from 'twrnc'; 
 
 interface CardProps {
   id: number;

@@ -1,5 +1,6 @@
+// BottomTabNavigator.tsx
 import React from 'react';
-import { StyleSheet, TouchableOpacity, Text } from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 import { CurvedBottomBar } from 'react-native-curved-bottom-bar';
 import CustomButton from '../components/Button/CustomButton';
 import TabBar from '../components/TabBar';
@@ -7,23 +8,20 @@ import Profile from '../screens/Profile/ProfileScreen';
 import CalendarScreen from '../screens/Calendar/Calendar';
 import Ai from '../screens/Ai/Ai';
 import HomeStack from './HomeStack';
-import { useNavigation } from '@react-navigation/native';
-import Icon from 'react-native-vector-icons/Ionicons';
-import NotificationsComponent from '../components/UpperNavBar/NotificationComponent';
+import Header from '../components/CommonHeader'; // Import the custom Header component
 
 const BottomTabNavigator: React.FC = () => {
   const renderTabBar = ({ routeName, selectedTab, navigate }: any) => {
     return <TabBar routeName={routeName} selectedTab={selectedTab} navigate={navigate} />;
   };
-  
-  const navigation = useNavigation();
+
   return (
     <CurvedBottomBar.Navigator
       type="DOWN"
       style={styles.bottomBar}
       shadowStyle={styles.shadow}
       height={74}
-      circleWidth={60} // Adjust circle width
+      circleWidth={60}
       bgColor="#111111"
       initialRouteName="HomeStackMain"
       borderTopLeftRight
@@ -32,28 +30,38 @@ const BottomTabNavigator: React.FC = () => {
       } } />}
       tabBar={renderTabBar}
     >
-      <CurvedBottomBar.Screen name="HomeStackMain" position="LEFT" component={HomeStack} options={{ headerShown: false }} />
-      <CurvedBottomBar.Screen name="Calendar" position="LEFT" component={CalendarScreen} options={{ headerShown: false }} />
-      <CurvedBottomBar.Screen name="Ai" position="RIGHT" component={Ai} options={{ headerShown: false }} />
-      <CurvedBottomBar.Screen name="Profile" position="RIGHT" component={Profile} options={{
-        headerShown: true,
-        headerTitle: 'Profile',
-        headerTitleAlign: 'center',
-        headerLeft: () => (
-          <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-            <Icon name="chevron-back" size={20} color="white" />
-          </TouchableOpacity>
-        ),
-        headerRight: () => (
-          <NotificationsComponent />
-        ),
-        headerStyle: {
-          height: 55,
-          backgroundColor: '#111111',
-          shadowColor: 'transparent',
-        },
-        headerTintColor: '#fff',
-      }} />
+      <CurvedBottomBar.Screen 
+      name="HomeStackMain" 
+      position="LEFT" 
+      component={HomeStack} 
+      options={{ 
+      headerShown: false  
+  }} 
+/>
+      <CurvedBottomBar.Screen 
+        name="Calendar" 
+        position="LEFT" 
+        component={CalendarScreen} 
+        options={{ 
+          header: () => <Header title="Calendar" showTitle={false} />
+        }} 
+      />
+      <CurvedBottomBar.Screen 
+        name="Ai" 
+        position="RIGHT" 
+        component={Ai} 
+        options={{ 
+          header: () => <Header title="Let’s get things done!" showTitle={false} />
+        }} 
+      />
+      <CurvedBottomBar.Screen 
+        name="Profile" 
+        position="RIGHT" 
+        component={Profile} 
+        options={{ 
+          header: () => <Header title="Profile" showTitle={true} />
+        }} 
+      />
     </CurvedBottomBar.Navigator>
   );
 };
@@ -61,21 +69,12 @@ const BottomTabNavigator: React.FC = () => {
 const styles = StyleSheet.create({
   shadow: {
     shadowColor: '#222E49',
-    shadowOffset: {
-      width: 2,
-      height: -15,
-    },
+    shadowOffset: { width: 2, height: -15 },
     shadowOpacity: 0.7,
     shadowRadius: 15,
     elevation: 100,
   },
   bottomBar: {},
-  backButton: {
-    marginLeft: 15,
-  },
-  backButtonText: {
-    color: '#F8F8F8',
-  }
 });
 
 export default BottomTabNavigator;

@@ -1,7 +1,17 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, FlatList, KeyboardAvoidingView, Platform, Image } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  FlatList,
+  KeyboardAvoidingView,
+  Platform,
+  Image,
+} from 'react-native';
 import tw from 'twrnc';
 import bot from '../../assets/bot.png';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 interface Message {
   id: string;
@@ -11,30 +21,26 @@ interface Message {
 
 const ChatScreen = () => {
   const [messages, setMessages] = useState<Message[]>([
-    { id: '1', text: 'Hey, how is your productivity treating you?', sender: 'bot' },
+    { id: '1', text: 'Hey, how is your productivity treating you? Tell me how can I help you!', sender: 'bot' },
   ]);
 
   const [input, setInput] = useState('');
 
-  const getBotResponse = async (message: string) => {
-    try {
-      const response = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer YOUR_OPENAI_API_KEY`, // Replace with your OpenAI API Key
-        },
-        body: JSON.stringify({
-          model: 'gpt-3.5-turbo', // or the appropriate model you want to use
-          messages: [{ role: 'user', content: message }],
-        }),
-      });
-
-      const data = await response.json();
-      return data.choices[0].message.content;
-    } catch (error) {
-      console.error('Error fetching bot response:', error);
-      return 'Oops! Something went wrong. Please try again later.';
+  const handleResponse = (response) => {
+    if (response.error) {
+      if (response.error.includes("completion date")) {
+        // If error mentions "completion date," prompt for a valid date
+        setMessages((prevMessages) => [
+          { id: Math.random().toString(), text: "Please enter the completion date.", sender: 'bot' },
+          ...prevMessages,
+        ]);
+      } else {
+        // For any other error, prompt for title information
+        setMessages((prevMessages) => [
+          { id: Math.random().toString(), text: "Please provide the title information for the task.", sender: 'bot' },
+          ...prevMessages,
+        ]);
+      }
     }
   };
 
@@ -48,36 +54,35 @@ const ChatScreen = () => {
       setMessages((prevMessages) => [newMessage, ...prevMessages]);
       setInput('');
 
-      // Get bot response
-      const botResponse = await getBotResponse(input);
-      const botMessage: Message = {
-        id: Math.random().toString(),
-        text: botResponse,
-        sender: 'bot',
-      };
-      setMessages((prevMessages) => [botMessage, ...prevMessages]);
+      // Simulating a backend response
+      const response = await mockBackendRequest(input); // Replace with actual backend call
+      handleResponse(response);
     }
+  };
+
+  const mockBackendRequest = async (message) => {
+    // Simulated backend response based on input
+    if (message.toLowerCase().includes("date")) {
+      return { error: "Please provide a valid completion date and time for the task." };
+    }
+    return { error: "Please provide the task title." };
   };
 
   const renderItem = ({ item }: { item: Message }) => (
     <View
-      style={tw`mb-3 flex ${item.sender === 'user' ? 'flex-row-reverse' : 'flex-row'} items-${item.sender === 'user' ? 'end' : 'start'}`}
+      style={tw`mb-3 flex ${item.sender === 'user' ? 'flex-row-reverse' : 'flex-row'} items-start`}
     >
       {item.sender === 'bot' && (
         <Image source={bot} style={tw`w-10 h-10 rounded-full mr-5 mt-4`} />
       )}
       <View
         style={[
-          tw`relative p-3 rounded-lg max-w-3/4 border`,
+          tw`relative p-3 rounded-lg max-w-3/4`,
           {
-            borderColor: item.sender === 'user' ? '#9CA3AF' : '#3272A0',
-            backgroundColor: '#1D1E23',
-            shadowColor: 'white',
-            shadowOffset: { width: 0, height: 1 },
-            shadowOpacity: 0.2,
-            shadowRadius: 3,
-            elevation: 5,
+            backgroundColor: item.sender === 'user' ? '#3272A0' : '#1D1E23',
             borderRadius: 7,
+            borderWidth: 1,
+            borderColor: item.sender === 'user' ? '#3272A0' : '#666',
           },
         ]}
       >
@@ -118,7 +123,7 @@ const ChatScreen = () => {
               style={[
                 tw`absolute right-[-16px] w-0 h-0 border-t-[11px] border-l-[15px] border-b-[9px]`,
                 {
-                  borderLeftColor: 'grey',
+                  borderLeftColor: '#3272A0',
                   borderTopColor: 'transparent',
                   borderBottomColor: 'transparent',
                   bottom: 9,
@@ -142,12 +147,14 @@ const ChatScreen = () => {
     </View>
   );
 
+  const quickReplies = ['Create task', 'Set a goal', 'Roast me', 'Show my day', 'Pending tasks'];
+
   return (
     <View style={tw`flex-1 bg-[#111111]`}>
       <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        behavior={Platform.OS === 'android' ? 'padding' : 'height'}
         keyboardVerticalOffset={80}
-        style={tw`flex-1`}
+        style={tw`flex-1 pb-9`} // paddingBottom to stay above the tab navigator
       >
         <FlatList
           data={messages}
@@ -155,11 +162,24 @@ const ChatScreen = () => {
           keyExtractor={(item) => item.id}
           inverted
           style={tw`p-4`}
+          ListHeaderComponent={
+            <View style={tw`flex-row flex-wrap mb-8`}>
+              {quickReplies.map((reply) => (
+                <TouchableOpacity
+                  key={reply}
+                  style={tw`bg-[#1D1E23] rounded-lg px-4 py-2 mr-2 mb-2`}
+                  onPress={() => setInput(reply)}
+                >
+                  <Text style={tw`text-white`}>{reply}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          }
         />
 
         <View style={tw`flex-row items-center p-4 bg-[#111111] mb-25`}>
           <TextInput
-            style={tw`flex-1 px-4 py-2 rounded-md bg-[#1D1E23] text-white`}
+            style={tw`flex-1 px-4 py-2 rounded-full bg-[#1D1E23] text-white`}
             value={input}
             onChangeText={setInput}
             placeholder="Type a message..."
@@ -168,12 +188,21 @@ const ChatScreen = () => {
             numberOfLines={2}
           />
 
+          {/* Mic Icon */}
           <TouchableOpacity
             activeOpacity={0.7}
-            style={tw`bg-gray-500 p-2 rounded-md ml-2`}
+            style={tw`bg-[#3272A0] p-2 rounded-full ml-2`}
+          >
+            <Icon name="mic" size={20} color="#fff" />
+          </TouchableOpacity>
+
+          {/* Send Icon */}
+          <TouchableOpacity
+            activeOpacity={0.7}
+            style={tw`bg-[#3272A0] p-2 rounded-full ml-2`}
             onPress={sendMessage}
           >
-            <Text style={tw`text-white`}>Send</Text>
+            <Icon name="send" size={20} color="#fff" />
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
