@@ -29,13 +29,11 @@ const ChatScreen = () => {
   const handleResponse = (response) => {
     if (response.error) {
       if (response.error.includes("completion date")) {
-        // If error mentions "completion date," prompt for a valid date
         setMessages((prevMessages) => [
           { id: Math.random().toString(), text: "Please enter the completion date.", sender: 'bot' },
           ...prevMessages,
         ]);
       } else {
-        // For any other error, prompt for title information
         setMessages((prevMessages) => [
           { id: Math.random().toString(), text: "Please provide the title information for the task.", sender: 'bot' },
           ...prevMessages,
@@ -61,7 +59,6 @@ const ChatScreen = () => {
   };
 
   const mockBackendRequest = async (message) => {
-    // Simulated backend response based on input
     if (message.toLowerCase().includes("date")) {
       return { error: "Please provide a valid completion date and time for the task." };
     }
@@ -154,7 +151,7 @@ const ChatScreen = () => {
       <KeyboardAvoidingView
         behavior={Platform.OS === 'android' ? 'padding' : 'height'}
         keyboardVerticalOffset={80}
-        style={tw`flex-1 pb-9`} // paddingBottom to stay above the tab navigator
+        style={tw`flex-1 pb-9`}
       >
         <FlatList
           data={messages}
