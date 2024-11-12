@@ -1,13 +1,12 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import Home from '../screens/Home';
+import Home from '../screens/HomeScreens/Home';
 import Calendar from '../screens/Calendar/Calendar';
-import ChatScreen from '../screens/Ai';
-import Notification from '../screens/Notification';
-import ProfileScreen from "../screens/ProfileScreen";
-import { RootStackParamList } from '../types/navigation';  // Adjust this path accordingly
-import ManualTaskCreate from '../screens/ManualTaskCreate';
-
+import ChatScreen from '../screens/Ai/Ai';
+import Notification from '../screens/Notification/Notification';
+import ProfileScreen from "../screens/Profile/ProfileScreen";
+import ManualTaskCreate from '../screens/Ai/ManualTaskCreate';
+import { RootStackParamList } from '../types/navigation';
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -33,7 +32,6 @@ const BottomBarStack: React.FC = () => {
       <Stack.Screen name="Notification" component={Notification} options={{ headerShown: false }} />
       <Stack.Screen name="MyProfile" component={ProfileScreen} options={{ headerShown: false }} />
       <Stack.Screen name="ManualTaskCreate" component={ManualTaskCreate} options={{ headerShown: false }} />
-
     </Stack.Navigator>
   );
 };

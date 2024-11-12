@@ -1,35 +1,23 @@
-// navigators/ProfileStack.tsx
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import ProfileScreen from '../screens/ProfileScreen';
-import SettingsScreen from '../screens/SettingsScreen';
-import NotificationScreen from '../screens/Notification';
-import MyActivityScreen from '../screens/MyActivity';
-import ManualTaskCreate from '../screens/ManualTaskCreate';
+import ProfileScreen from '../screens/Profile/ProfileScreen';
+import SettingsScreen from '../screens/Profile/SettingsScreen';
+import EditProfileScreen from '../screens/Profile/EditProfile';
+//import PrivacySecurityScreen from '../screens/Profile/PrivacySecurity';
+import NotificationsScreen from '../screens/Notification/Notification';
 
+const Stack = createStackNavigator();
 
-const ProfileStack = createStackNavigator();
-
-const ProfileStackNavigator = () => {
+const ProfileStack = () => {
   return (
-    <ProfileStack.Navigator
-      screenOptions={{
-        headerStyle: {
-          backgroundColor: '#111111',
-        },
-        headerTintColor: '#fff',
-        headerTitleStyle: {
-          fontWeight: 'bold',
-        },
-      }}
-    >
-      <ProfileStack.Screen name="Profile" component={ProfileScreen} options={{ title: 'Profile' }} />
-      <ProfileStack.Screen name="Settings" component={SettingsScreen} options={{ title: 'Settings' }} />
-      <ProfileStack.Screen name="Notifications" component={NotificationScreen} options={{ title: 'Notifications' }} />
-      <ProfileStack.Screen name="ManualTaskCreate" component={ManualTaskCreate} options={{ title: 'Create New Task' }} />
-      <ProfileStack.Screen name="MyActivity" component={MyActivityScreen} options={{ title: 'My Activity' }} />
-    </ProfileStack.Navigator>
+    <Stack.Navigator screenOptions={{ headerShown: true, headerStyle: { backgroundColor: '#111111' }, headerTintColor: '#fff' }}>
+      <Stack.Screen name="Profile" component={ProfileScreen} options={{ title: 'Profile' }} />
+      <Stack.Screen name="Settings" component={SettingsScreen} options={{ title: 'Settings' }} />
+      <Stack.Screen name="EditProfile" component={EditProfileScreen} options={{ title: 'Edit Profile' }} />
+      {/* <Stack.Screen name="PrivacySecurity" component={PrivacySecurityScreen} options={{ title: 'Privacy & Security' }} /> */}
+      <Stack.Screen name="Notifications" component={NotificationsScreen} options={{ title: 'Notifications' }} />
+    </Stack.Navigator>
   );
 };
 
-export default ProfileStackNavigator;
+export default ProfileStack;
