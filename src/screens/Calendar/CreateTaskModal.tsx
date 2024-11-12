@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useMemo } from 'react';
-import { View, Modal, TouchableOpacity, TextInput, Text, Alert } from 'react-native';
+import { View, Modal, TouchableOpacity, TextInput, Text, Alert, Platform } from 'react-native';
 import { Button } from 'react-native-paper';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import tw from 'twrnc';
 import { styles } from './styles';
 
@@ -12,7 +13,8 @@ interface CreateTaskModalProps {
 }
 
 const CreateTaskModal: React.FC<CreateTaskModalProps> = ({ isVisible, setIsVisible, selectedDate, setTasks }) => {
-  const [localTask, setLocalTask] = useState({ summary: '', detail: '', time: '09:00' });
+  const [localTask, setLocalTask] = useState({ summary: '', detail: '', time: selectedDate });
+  const [showTimePicker, setShowTimePicker] = useState(false);
 
   const handleCreateTask = useCallback(() => {
     if (localTask.summary.trim() === '') {
@@ -20,14 +22,9 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({ isVisible, setIsVisib
       return;
     }
 
-    if (!/^\d{2}:\d{2}$/.test(localTask.time)) {
-      Alert.alert('Invalid Time Format', 'Please enter the time in HH:MM format.');
-      return;
-    }
-
     const newTaskObj = {
       id: Date.now(),
-      time: localTask.time,
+      time: formatTime(localTask.time),
       summary: localTask.summary,
       detail: localTask.detail,
       date: selectedDate,
@@ -35,9 +32,13 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({ isVisible, setIsVisib
     };
 
     setTasks((prevTasks) => [...prevTasks, newTaskObj]);
-    setLocalTask({ summary: '', detail: '', time: '09:00' });
+    setLocalTask({ summary: '', detail: '', time: selectedDate });
     setIsVisible(false);
   }, [localTask, selectedDate, setTasks, setIsVisible]);
+
+  const formatTime = (date: Date) => {
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  };
 
   const getRandomColor = useMemo(() => {
     const colors = ['#4CAF50', '#2196F3', '#9C27B0', '#00BCD4', '#FF9800'];
@@ -70,15 +71,25 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({ isVisible, setIsVisib
             onChangeText={(text) => setLocalTask((prev) => ({ ...prev, detail: text }))}
             accessibilityLabel="Task Detail Input"
           />
-          <TextInput
-            style={styles.input}
-            placeholder="Time (HH:MM)"
-            placeholderTextColor="#86868B"
-            value={localTask.time}
-            onChangeText={(text) => setLocalTask((prev) => ({ ...prev, time: text }))}
-            accessibilityLabel="Task Time Input"
-            keyboardType="numeric"
-          />
+          <TouchableOpacity
+            style={[styles.input, { justifyContent: 'center' }]}
+            onPress={() => setShowTimePicker(true)}
+          >
+            <Text style={{ color: '#fff' }}>Time: {formatTime(localTask.time)}</Text>
+          </TouchableOpacity>
+          {showTimePicker && (
+            <DateTimePicker
+              value={localTask.time}
+              mode="time"
+              display="default"
+              onChange={(event, selectedDate) => {
+                setShowTimePicker(Platform.OS === 'ios');
+                if (selectedDate) {
+                  setLocalTask((prev) => ({ ...prev, time: selectedDate }));
+                }
+              }}
+            />
+          )}
           <Button
             mode="contained"
             onPress={handleCreateTask}

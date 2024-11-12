@@ -1,22 +1,43 @@
 import React from 'react';
 import { Appbar, Button } from 'react-native-paper';
-import { View } from 'react-native';
-import tw from 'twrnc';
+import { StyleSheet } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-const Header = () => {
+export default function Header() {
+  const insets = useSafeAreaInsets();
+
   return (
-    <Appbar.Header style={tw`bg-[#111111] mt-4`}>
-      <Appbar.Content title="Today" titleStyle={tw`text-white text-lg`} />
+    <Appbar.Header style={[styles.header, { marginTop: insets.top }]}>
+      <Appbar.Content 
+        title="Today" 
+        titleStyle={styles.title} 
+      />
       <Button
-        mode="elevated"
-        dark
-        style={tw`mr-2 bg-[#1D1E23] px-4` }
+        mode="contained"
+        style={styles.button}
+        labelStyle={styles.buttonLabel}
         onPress={() => console.log('Create task')}
       >
         Create task
       </Button>
     </Appbar.Header>
   );
-};
+}
 
-export default Header;
+const styles = StyleSheet.create({
+  header: {
+    backgroundColor: '#111111',
+  },
+  title: {
+    color: 'white',
+    fontSize: 18,
+  },
+  button: {
+    marginRight: 8,
+    backgroundColor: '#1D1E23',
+    paddingHorizontal: 16,
+  },
+  buttonLabel: {
+    color: 'white',
+  },
+});
