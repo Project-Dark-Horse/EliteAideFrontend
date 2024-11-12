@@ -144,7 +144,7 @@ const TaskCreationScreen: React.FC = () => {
   return (
     <View style={tw`flex-1 bg-[#111111]`}>
       <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        behavior={Platform.OS === 'android' ? 'padding' : 'height'}
         keyboardVerticalOffset={80}
         style={tw`flex-1`}
       >
