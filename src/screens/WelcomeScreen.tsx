@@ -1,20 +1,18 @@
+// src/screens/WelcomeScreen.tsx
 import React, { useState } from 'react';
 import { View, Text, ImageBackground, TouchableOpacity } from 'react-native';
 import { Button } from 'react-native-paper';
 import tw from 'twrnc';
-import { useNavigation } from '@react-navigation/native';
-import { HomeScreenNavigationProp } from '../types/navigation';
 
-const WelcomeScreen = () => {
-  const navigation = useNavigation<HomeScreenNavigationProp>();
+const WelcomeScreen = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = () => {
     setIsLoading(true);
     setTimeout(() => {
-      navigation.navigate('Login');
+      navigation.navigate('Login'); // Navigates to Login screen
       setIsLoading(false);
-    }, 1000); // Adjust delay if needed
+    }, 1000);
   };
 
   return (
@@ -50,11 +48,11 @@ const WelcomeScreen = () => {
 
       {/* Create Account Link */}
       <View style={tw`flex-row justify-center top-75`}>
-          <Text style={tw`text-white`}>Don't have an account? </Text>
-          <TouchableOpacity onPress={() => navigation.navigate('EnterEmail')}>
-            <Text style={tw`text-[#65779E] font-semibold`}>Create One</Text>
-          </TouchableOpacity>
-        </View>
+        <Text style={tw`text-white`}>Don't have an account? </Text>
+        <TouchableOpacity onPress={() => navigation.navigate('EnterEmail')}>
+          <Text style={tw`text-[#65779E] font-semibold`}>Create One</Text>
+        </TouchableOpacity>
+      </View>
     </ImageBackground>
   );
 };
