@@ -291,7 +291,7 @@
       "platforms": {
         "ios": {
           "podspecPath": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-svg/RNSVG.podspec",
-          "version": "15.8.0",
+          "version": "15.9.0",
           "configurations": [],
           "scriptPhases": []
         },
@@ -307,6 +307,7 @@
             "RNSVGDefsComponentDescriptor",
             "RNSVGFeBlendComponentDescriptor",
             "RNSVGFeColorMatrixComponentDescriptor",
+            "RNSVGFeCompositeComponentDescriptor",
             "RNSVGFeFloodComponentDescriptor",
             "RNSVGFeGaussianBlurComponentDescriptor",
             "RNSVGFeMergeComponentDescriptor",

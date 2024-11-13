@@ -185,13 +185,13 @@ const ChatScreen = () => {
             numberOfLines={2}
           />
 
-          {/* Mic Icon */}
+          {/* Mic Icon
           <TouchableOpacity
             activeOpacity={0.7}
             style={tw`bg-[#3272A0] p-2 rounded-full ml-2`}
           >
             <Icon name="mic" size={20} color="#fff" />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
           {/* Send Icon */}
           <TouchableOpacity
