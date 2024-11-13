@@ -1,23 +1,27 @@
 // src/components/CommonHeader.tsx
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import NotificationsComponent from '../components/UpperNavBar/NotificationComponent';
+import { HomeScreenNavigationProp } from '../types/navigation';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 interface HeaderProps {
   title?: string;
   showTitle?: boolean;
+  showNotificationIcon?: boolean;
 }
 
-const Header: React.FC<HeaderProps> = ({ title = "Profile", showTitle = true }) => {
-  const navigation = useNavigation();
+const CommonHeader: React.FC<HeaderProps> = ({ title = "Profile", showTitle = true, showNotificationIcon = true }) => {
+  const navigation = useNavigation<HomeScreenNavigationProp>();
 
   return (
     <View style={styles.headerContainer}>
-      {/* Back button */}
+      {/* Back Button */}
       <TouchableOpacity onPress={() => navigation.goBack()} style={styles.iconButton}>
-        <Icon name="chevron-back" size={24} color="#65779E" />
+        <FontAwesome name="chevron-circle-left" size={29} color="#65779E" />
       </TouchableOpacity>
 
       {/* Title */}
@@ -27,12 +31,14 @@ const Header: React.FC<HeaderProps> = ({ title = "Profile", showTitle = true }) 
         </Text>
       )}
 
-      {/* Right icons (search and notification) */}
+      {/* Right Icons (Search and Notifications) */}
       <View style={styles.iconContainer}>
         <TouchableOpacity style={styles.iconButton}>
           <Icon name="search-outline" size={24} color="#65779E" />
         </TouchableOpacity>
-        <NotificationsComponent />
+
+        {/* Conditionally show Notifications Icon */}
+        {showNotificationIcon && <NotificationsComponent navigation={navigation} />}
       </View>
     </View>
   );
@@ -46,15 +52,15 @@ const styles = StyleSheet.create({
     height: 55,
     backgroundColor: '#111111',
     paddingHorizontal: 10,
-    position: 'relative', // Needed for absolute positioning of the title
+    position: 'relative',
   },
   title: {
     color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
-    position: 'absolute', // Center the title absolutely
+    position: 'absolute',
     left: '50%',
-    transform: [{ translateX: -24 }], // Offset to keep it centered
+    transform: [{ translateX: -50 }], // Center title better based on dynamic width
   },
   iconContainer: {
     flexDirection: 'row',
@@ -65,4 +71,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Header;
+export default CommonHeader;

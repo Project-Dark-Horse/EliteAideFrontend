@@ -23,8 +23,14 @@ const CalendarScreen = () => {
   const [isCalendarVisible, setIsCalendarVisible] = useState(false);
   const [isCreateTaskVisible, setIsCreateTaskVisible] = useState(false);
   const [tasks, setTasks] = useState<Task[]>([
-    { id: 1, time: '08:00', summary: 'Team Meeting', detail: 'Group discussion for the new product', date: new Date(), color: '#4CAF50' },
+    { id: 1, time: '08:00', summary: 'Team Meeting', detail: 'Group discussion for the new product', date: new Date(), color: '#1D1E23' },
     { id: 2, time: '09:00', summary: 'Design Review', detail: 'Reviewing new design prototype', date: new Date(), color: '#2196F3' },
+    { id: 2, time: '14:00', summary: 'Design Review', detail: 'Reviewing new design prototype', date: new Date(), color: '#1D1E23' },
+    { id: 2, time: '09:00', summary: 'Design Review', detail: 'Reviewing new design prototype', date: new Date(), color: '#36AAB9' },
+    { id: 2, time: '16:00', summary: 'Design Review', detail: 'Reviewing new design prototype', date: new Date(), color: '#5560C4' },
+    { id: 2, time: '10:00', summary: 'Design Review', detail: 'Reviewing new design prototype', date: new Date(), color: '#B29361' },
+    { id: 2, time: '11:00', summary: 'Design Review', detail: 'Reviewing new design prototype', date: new Date(), color: '#10443E' },
+    
   ]);
 
   // Function to add a new task

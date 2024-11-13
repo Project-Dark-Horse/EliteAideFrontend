@@ -4,13 +4,17 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
 import tw from 'twrnc';
 import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack'; // Corrected import
+import { RootStackParamList } from '../../types/navigation';
+
+type SettingsScreenNavigationProp = StackNavigationProp<RootStackParamList, 'SettingsScreen'>;
 
 const settingsOptions = [
   { title: 'Task Settings', icon: 'settings-outline', screen: 'TaskSettingsScreen' },
-  { title: 'Privacy & Security', icon: 'lock-closed-outline', screen: 'PrivacyScreen' },
-  { title: 'Edit Profile', icon: 'person-outline', screen: 'EditProfileScreen' },
+  { title: 'Privacy & Security', icon: 'lock-closed-outline', screen: 'PrivacySecurity' },
+  { title: 'Edit Profile', icon: 'person-outline', screen: 'EditProfile' },
   { title: 'Storage and data', icon: 'folder-outline', screen: 'StorageScreen' },
-  { title: 'Notifications', icon: 'notifications-outline', screen: 'NotificationSettingsScreen' },
+  { title: 'Notifications', icon: 'notifications-outline', screen: 'Notifications' },
   { title: 'Chats', icon: 'chatbox-outline', screen: 'ChatSettingsScreen' },
   { title: 'Invite a friend', icon: 'people-outline' },
   { title: 'Help', icon: 'help-circle-outline', screen: 'HelpScreen' },
@@ -19,11 +23,10 @@ const settingsOptions = [
 ];
 
 const SettingsScreen: React.FC = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<SettingsScreenNavigationProp>();
 
   const handleOptionPress = (option: any) => {
     if (option.screen) {
-      // Navigate to the specified screen
       navigation.navigate(option.screen);
     } else if (option.title === 'Invite a friend') {
       Alert.alert('Invite a Friend', 'This feature is coming soon!');
@@ -38,7 +41,7 @@ const SettingsScreen: React.FC = () => {
 
   return (
     <View style={tw`flex-1 bg-[#000000]`}>
-      {/* Header with Black Gradient */}
+      {/* Custom Header */}
       <LinearGradient
         colors={['#000000', '#000000']}
         start={{ x: 0, y: 0 }}

@@ -1,3 +1,4 @@
+// src/components/UpperNavBar/TopNavBar.tsx
 import React from 'react';
 import { View, TouchableOpacity } from 'react-native';
 import tw from 'twrnc';
@@ -5,7 +6,11 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import PhotoComponent from './PhotoComponent';
 import NotificationsComponent from '../UpperNavBar/NotificationComponent';
 
-const TopNavBar: React.FC = () => {
+interface TopNavBarProps {
+  navigation: any;
+}
+
+const TopNavBar: React.FC<TopNavBarProps> = ({ navigation }) => {
   return (
     <View style={tw`w-full h-10 flex-row justify-between items-center bg-[#111111] px-2.5 mt-7`}>
       {/* Profile Photo */}
@@ -18,8 +23,8 @@ const TopNavBar: React.FC = () => {
           <Ionicons name="search-outline" size={24} color="#65779E" />
         </TouchableOpacity>
 
-        {/* Notifications Icon */}
-        <NotificationsComponent />
+        {/* Notifications Icon with navigation prop */}
+        <NotificationsComponent navigation={navigation} />
       </View>
     </View>
   );

@@ -21,8 +21,8 @@ const TabBar: React.FC<TabBarProps> = ({ routeName, selectedTab, navigate }) => 
             <Image source={require('../assets/tabbarai.png')} style={styles.iconImage} />
           </View>
         );
-      case 'Profile':
-        return <Ionicons name="person" size={24} color={selectedTab === 'Profile' ? '#384766' : '#555555'} />;
+        case 'Profile':
+          return <Ionicons name="person" size={24} color={selectedTab === 'ProfileStack' ? '#384766' : '#555555'} />;
       default:
         return <Ionicons name="alert-circle-outline" size={24} color="gray" />;
     }

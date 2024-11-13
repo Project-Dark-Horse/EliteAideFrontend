@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { View, Text, Modal, TouchableOpacity, Image, StyleSheet, FlatList, ListRenderItemInfo } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import completepng from '../assets/complete.png';
-import deletepng from '../assets/deletearrow.png';
+import completepng from '../../assets/complete.png';
+import deletepng from '../../assets/deletearrow.png';
 
-// Define the type for task items
 interface Task {
   id: string;
   title: string;
@@ -15,12 +14,15 @@ interface Task {
 
 const tasks: Task[] = [
   { id: '1', title: 'Team Meeting', description: 'Group discussion for the new product', time: '8-9 AM' },
-  { id: '2', title: 'Team Meeting', description: 'Group discussion for the new product', time: '8-9 AM' },
+  { id: '2', title: 'Client Call', description: 'Monthly check-in with the client', time: '10-11 AM' },
 ];
 
-const GreetingPopup: React.FC = () => {
-  const [modalVisible, setModalVisible] = useState(true);
+interface GreetingPopupProps {
+  visible: boolean;
+  onClose: () => void;
+}
 
+const GreetingPopup: React.FC<GreetingPopupProps> = ({ visible, onClose }) => {
   const renderTask = ({ item }: ListRenderItemInfo<Task>) => (
     <View style={styles.taskItem}>
       <Ionicons name="calendar-outline" size={24} color="#FFFFFF" />
@@ -34,7 +36,7 @@ const GreetingPopup: React.FC = () => {
   );
 
   return (
-    <Modal visible={modalVisible} transparent animationType="fade">
+    <Modal visible={visible} transparent animationType="fade">
       <View style={styles.modalOverlay}>
         <View style={styles.modalContainer}>
           <Text style={styles.modalTitle}>While you were gone, these tasks were marked as autocomplete</Text>
@@ -48,7 +50,6 @@ const GreetingPopup: React.FC = () => {
           
           <Text style={styles.subtitle}>Check your tasks</Text>
           
-          {/* Task Card */}
           <View style={styles.taskCard}>
             <View style={styles.cardHeader}>
               <Ionicons name="calendar-outline" size={24} color="#FFFFFF" />
@@ -65,8 +66,7 @@ const GreetingPopup: React.FC = () => {
             <View style={[styles.dot, styles.inactiveDot]} />
             <View style={[styles.dot, styles.inactiveDot]} />
           </View>
-          
-          {/* Actions with Custom Arrows */}
+
           <View style={styles.actionRow}>
             <TouchableOpacity style={styles.actionItem}>
               <Image source={deletepng} style={styles.actionIcon} />
@@ -78,13 +78,9 @@ const GreetingPopup: React.FC = () => {
             </TouchableOpacity>
           </View>
           
-          {/* Continue Button */}
-          <TouchableOpacity style={styles.continueButton} onPress={() => setModalVisible(false)}>
+          <TouchableOpacity style={styles.continueButton} onPress={onClose}>
             <Text style={styles.continueText}>Continue</Text>
           </TouchableOpacity>
-          
-          {/* Pagination Indicator */}
-         
         </View>
       </View>
     </Modal>
@@ -246,6 +242,13 @@ const styles = StyleSheet.create({
   },
   inactiveDot: {
     backgroundColor: '#333333',
+  },
+  checkCircleBackground: {
+    backgroundColor: '#3DCCBB',
+    borderRadius: 20,
+    padding: 4,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 

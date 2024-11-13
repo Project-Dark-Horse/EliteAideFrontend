@@ -1,27 +1,22 @@
+// src/components/UpperNavBar/NotificationsComponent.tsx
+import React from 'react';
+import { TouchableOpacity } from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
-import React, { useState } from 'react';
-import { TouchableOpacity, View } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
 import tw from 'twrnc';
-import { HomeScreenNavigationProp } from '../../types/navigation';
-import NotificationScreen from '../../screens/Notification/Notification';
 
 const NotificationsComponent: React.FC = () => {
-  const [pressed, setPressed] = useState(false);
-  const navigation = useNavigation<HomeScreenNavigationProp>();
+  const navigation = useNavigation();
+
+  const handlePress = () => {
+    console.log('Navigating to Notification');
+    navigation.navigate('Notification'); // Make sure 'Notification' exists in the navigation stack
+  };
 
   return (
-    <View style={tw`flex-row justify-end items-center`}>
-      <TouchableOpacity
-        onPress={() => {
-          console.log('Navigating to Notification');
-          navigation.navigate('Notification');
-          setPressed(!pressed);
-        }}
-      >
-        <Icon name="notifications" size={24} color="#65779E" />
-      </TouchableOpacity>
-    </View>
+    <TouchableOpacity onPress={handlePress} style={tw`mr-3`}>
+      <Ionicons name="notifications" size={24} color="#65779E" />
+    </TouchableOpacity>
   );
 };
 

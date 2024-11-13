@@ -1,6 +1,8 @@
+// Assuming your CalendarPopup.tsx is in the src/components folder
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Calendar, DateData } from 'react-native-calendars';
+import formatDate from '../../utils/formatDate'; // Adjust the relative path as necessary
 
 interface CalendarPopupProps {
   selectedDate: Date;
@@ -8,17 +10,19 @@ interface CalendarPopupProps {
   setIsCalendarVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const CalendarPopup: React.FC<CalendarPopupProps> = ({ selectedDate, setSelectedDate, setIsCalendarVisible }) => {
+const CalendarPopup: React.FC<CalendarPopupProps> = ({
+  selectedDate,
+  setSelectedDate,
+  setIsCalendarVisible,
+}) => {
   const onDayPress = (day: DateData) => {
     setSelectedDate(new Date(day.timestamp));
     setIsCalendarVisible(false);
   };
 
-  const formatDate = (date: Date) => date.toISOString().split('T')[0];
-
-  const markedDates = selectedDate
-    ? { [formatDate(selectedDate)]: { selected: true, selectedColor: '#3a4d7c' } }
-    : {};
+  const markedDates = {
+    [formatDate(selectedDate)]: { selected: true, selectedColor: '#3a4d7c' },
+  };
 
   return (
     <View style={styles.calendarContainer} accessible accessibilityLabel="Calendar Popup">

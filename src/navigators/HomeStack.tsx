@@ -5,6 +5,7 @@ import ToDo from '../screens/HomeScreens/Todo';
 import Progress from '../screens/HomeScreens/Progress';
 import Done from '../screens/HomeScreens/Done';
 import TaskAnalysis from '../screens/Tasks/TaskAnalysis';
+import NotificationScreen from '../screens/Notification/Notification';
 
 const Stack = createStackNavigator();
 
@@ -16,6 +17,7 @@ const HomeStack = () => {
       <Stack.Screen name="Progress" component={Progress} />
       <Stack.Screen name="Done" component={Done} />
       <Stack.Screen name="TaskAnalysis" component={TaskAnalysis} options={{ title: 'Progress Overview' }} />
+      <Stack.Screen name="Notification" component={NotificationScreen} options={{ headerShown: false }} />
     </Stack.Navigator>
   );
 };
