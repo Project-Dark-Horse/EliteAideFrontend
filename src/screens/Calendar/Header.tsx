@@ -1,8 +1,6 @@
 import React from 'react';
-import { View, TouchableOpacity, Text } from 'react-native';
-import tw from 'twrnc';
-import Icon from 'react-native-vector-icons/Feather';
-import LinearGradient from 'react-native-linear-gradient';
+import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 interface HeaderProps {
   onCalendarPress: () => void;
@@ -10,40 +8,59 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ onCalendarPress, onCreateTaskPress }) => (
-  <View
-    style={[
-      tw`flex-row justify-between items-center mb-4 py-4 px-4 rounded-lg`,
-      {
-        backgroundColor: '#2C2C2E', // Dark background for header container
-        elevation: 4,
-        shadowColor: '#000',
-        shadowOpacity: 0.2,
-        shadowRadius: 10,
-      },
-    ]}
-  >
+  <View style={styles.headerContainer}>
     {/* Date Section */}
-    <TouchableOpacity onPress={onCalendarPress} style={tw`flex-row items-center`}>
-      <Text style={tw`text-2xl text-white font-semibold`}>Today</Text>
-      <Icon name="chevron-down" size={26} color="white" style={tw`ml-1`} />
+    <TouchableOpacity onPress={onCalendarPress} style={styles.dateContainer}>
+      <Text style={styles.dateText}>Today</Text>
+      <FontAwesome name="chevron-down" size={16} color="#979797" style={styles.chevronIcon} />
     </TouchableOpacity>
 
-    {/* Create Task Button with dual-tone gradient background */}
-    <TouchableOpacity onPress={onCreateTaskPress}>
-      <LinearGradient
-        colors={['#4C669F', '#3B5998']}
-        style={[
-          tw`rounded-lg px-4 py-1 flex-row items-center`,
-          {
-            borderColor: '#3B5998', // Slightly darker shade for border
-            borderWidth: 1,
-          },
-        ]}
-      >
-        <Text style={tw`text-sm font-semibold text-white`}>Create Task</Text>
-      </LinearGradient>
+    {/* Create Task Button */}
+    <TouchableOpacity onPress={onCreateTaskPress} style={styles.createTaskButton}>
+      <Text style={styles.createTaskText}>Create task</Text>
     </TouchableOpacity>
   </View>
 );
+
+const styles = StyleSheet.create({
+  headerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    backgroundColor: '#111111',
+  },
+  dateContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  dateText: {
+    color: '#FFFFFF',
+    fontSize: 18,
+    fontWeight: '500',
+  },
+  chevronIcon: {
+    marginLeft: 4,
+  },
+  createTaskButton: {
+    backgroundColor: '#1D1E23',
+    borderRadius: 20,
+    paddingVertical: 6,
+    paddingHorizontal: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#FFFFFF',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  createTaskText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '500',
+  },
+});
 
 export default React.memo(Header);

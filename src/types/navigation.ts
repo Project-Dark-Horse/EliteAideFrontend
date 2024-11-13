@@ -2,6 +2,7 @@ import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 
 export type RootStackParamList = {
+  BottomBarStack: { screen: string };
   Home: undefined;
   ToDo: undefined;
   Progress: undefined;
@@ -22,6 +23,8 @@ export type RootStackParamList = {
   ProfileScreen: undefined;
   MyActivityScreen: undefined;
   SettingsScreen: undefined;
+  ProfileStack: undefined;
+  ManualTaskCreate: undefined;
 };
 
 

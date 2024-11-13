@@ -6,6 +6,7 @@ import BottomTabNavigator from './navigators/BottomTabNavigator';
 import AuthStack from './navigators/AuthStack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { View, ActivityIndicator, Alert } from 'react-native';
+import BottomBarStack from './navigators/BottomBarStack';
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);

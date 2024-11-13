@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useMemo } from 'react';
 import { View, ScrollView, Text, TouchableOpacity } from 'react-native';
 import tw from 'twrnc';
+import LinearGradient from 'react-native-linear-gradient';
 
 interface WeekViewProps {
   selectedDate: Date;
@@ -39,19 +40,37 @@ const WeekView: React.FC<WeekViewProps> = ({ selectedDate, onSelectDate }) => {
         {dates.map((date, index) => {
           const isSelected = date.toDateString() === selectedDate.toDateString();
           return (
-            <TouchableOpacity
-              key={index}
-              onPress={() => onSelectDate(date)}
-              style={tw`items-center justify-center w-14 h-20 mx-1
-                ${isSelected ? 'bg-[#1C1C1E] rounded-3xl border-2 border-[#0A84FF]' : ''}`}
-            >
-              <Text style={tw`text-[#86868B] text-xs ${isSelected ? 'text-white' : ''}`}>
-                {daysOfWeek[date.getDay()]}
-              </Text>
-              <Text style={tw`text-white text-xl font-bold mt-1`}>
-                {date.getDate()}
-              </Text>
-            </TouchableOpacity>
+            <View key={index} style={tw`mx-1 ${isSelected ? 'rounded-3xl overflow-hidden' : ''}`}>
+              {isSelected ? (
+                <LinearGradient
+                  colors={['#16213C', '#3272A0', '#3272A0', '#3272A0', '#1E4E8D']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={tw`w-14 h-20 justify-center items-center`}
+                >
+                  <View style={tw`bg-[#1C1C1E] w-12 h-18 rounded-3xl justify-center items-center`}>
+                    <Text style={tw`text-white text-xs`}>
+                      {daysOfWeek[date.getDay()]}
+                    </Text>
+                    <Text style={tw`text-white text-xl font-bold mt-1`}>
+                      {date.getDate()}
+                    </Text>
+                  </View>
+                </LinearGradient>
+              ) : (
+                <TouchableOpacity
+                  onPress={() => onSelectDate(date)}
+                  style={tw`items-center justify-center w-14 h-20`}
+                >
+                  <Text style={tw`text-[#86868B] text-xs`}>
+                    {daysOfWeek[date.getDay()]}
+                  </Text>
+                  <Text style={tw`text-white text-xl font-bold mt-1`}>
+                    {date.getDate()}
+                  </Text>
+                </TouchableOpacity>
+              )}
+            </View>
           );
         })}
       </ScrollView>

@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import tw from 'twrnc';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import bot from '../assets/bot.png';
+import bot from '../../assets/bot.png';
 
 // Define interfaces for Categories and Urgency Levels
 interface Category {

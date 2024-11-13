@@ -4,7 +4,7 @@ import { View, Text, ImageBackground, TouchableOpacity } from 'react-native';
 import { Button } from 'react-native-paper';
 import tw from 'twrnc';
 
-const WelcomeScreen = ({ navigation }) => {
+const WelcomeScreen = ({ navigation}) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = () => {

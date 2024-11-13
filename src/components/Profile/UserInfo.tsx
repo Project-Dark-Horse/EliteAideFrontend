@@ -5,7 +5,16 @@ import tw from 'twrnc';
 
 const avatarr = require('../../assets/ManAvatar.png');
 
-const UserInfo: React.FC = () => {
+interface UserInfoProps {
+    userInfo: {
+        first_name: string;
+        last_name: string;
+        email: string;
+        position: string;
+    };
+}
+
+const UserInfo: React.FC<UserInfoProps> = ({ userInfo }) => {
     return (
         <LinearGradient
             colors={['#16213c', '#1d1e23', '#0b0c10']}
@@ -19,9 +28,9 @@ const UserInfo: React.FC = () => {
                     style={tw`w-16 h-16 rounded-full`}
                 />
                 <View style={tw`ml-7 flex-1`}>
-                    <Text style={tw`text-white text-lg`}>Arush Gupta</Text>
-                    <Text style={tw`text-[#979797] text-sm`}>arushguptaa12gmail.com</Text>
-                    <Text style={tw`text-[#979797] text-sm`}>Marketing Manager</Text>
+                    <Text style={tw`text-white text-lg`}>{`${userInfo.first_name} ${userInfo.last_name}`}</Text>
+                    <Text style={tw`text-[#979797] text-sm`}>{userInfo.email}</Text>
+                    <Text style={tw`text-[#979797] text-sm`}>{userInfo.position}</Text>
                 </View>
             </View>
         </LinearGradient>

@@ -1,9 +1,12 @@
+// src/screens/Notification/NotificationScreen.tsx
 import React, { useState } from 'react';
-import { View, FlatList, Text, StyleSheet } from 'react-native';
+import { View, FlatList, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Card, Title } from 'react-native-paper';
 import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Ionicons';
+import CommonHeader from '../../components/CommonHeader';
+
 
 interface Notification {
   id: number;
@@ -22,20 +25,9 @@ const NotificationScreen: React.FC = () => {
     { id: 5, icon: 'document-text', title: "Your task 'Submit monthly report' is due in 1 hour! Don't forget!", description: '', type: 'task' }
   ]);
 
-  const getIconColor = (type: Notification['type']) => {
-    switch (type) {
-      case 'task': return '#007AFF';
-      case 'warning': return '#FFD60A';
-      case 'success': return '#34C759';
-      case 'info': return '#5856D6';
-      default: return '#646464';
-    }
-  };
-
   const renderNotification = ({ item }: { item: Notification }) => (
     <Card style={styles.card}>
       <Card.Content style={styles.cardContent}>
-        {/* Icon with Gradient Background */}
         <LinearGradient
           colors={['#3272A0', '#3272A0', '#1E4E8D']}
           start={{ x: 0, y: 0 }}
@@ -45,7 +37,6 @@ const NotificationScreen: React.FC = () => {
           <Icon name={item.icon} size={24} color="#FFFFFF" />
         </LinearGradient>
         
-        {/* Text Content */}
         <View style={styles.textContainer}>
           <Title style={styles.title}>{item.title}</Title>
         </View>
@@ -55,6 +46,11 @@ const NotificationScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      {/* Common Header with Title and Back Button, without Notification Icon */}
+      <CommonHeader title="Notifications" showTitle={true} showNotificationIcon={false} />
+      
+
+      {/* Notifications List */}
       <FlatList
         data={notifications}
         renderItem={renderNotification}
