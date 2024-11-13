@@ -12,9 +12,9 @@ const CustomButton: React.FC<CustomButtonProps> = ({ onPress }) => (
     <TouchableOpacity
       onPress={onPress}
       style={[
-        tw`w-16 h-16 bg-[#384766] rounded-full justify-center items-center`,
+        tw`w-16 h-10  rounded-full justify-center items-center`,
         {
-          shadowColor: '#000',
+          shadowColor: '#384766',
           shadowOffset: { width: 0, height: 2 },
           shadowOpacity: 0.3,
           shadowRadius: 4,
@@ -27,7 +27,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({ onPress }) => (
     >
       <Image
         source={require('../../assets/plustabbar.png')}
-        style={tw`w-6 h-6`}
+        style={tw`w-45px h-45px`}
         resizeMode="contain"
       />
     </TouchableOpacity>
