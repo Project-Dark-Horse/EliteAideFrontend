@@ -1,112 +1,232 @@
-import React, { useState, useCallback, useMemo } from 'react';
-import { View, Modal, TouchableOpacity, TextInput, Text, Alert, Platform } from 'react-native';
-import { Button } from 'react-native-paper';
+import React, { useState, useCallback } from 'react';
+import { View, Modal, TouchableOpacity, TextInput, Text, Platform } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import tw from 'twrnc';
 import { styles } from './styles';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import { ScrollView, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { Task } from '../../types/Task';
 
 interface CreateTaskModalProps {
   isVisible: boolean;
-  setIsVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsVisible: (visible: boolean) => void;
   selectedDate: Date;
-  setTasks: React.Dispatch<React.SetStateAction<any[]>>;
+  onSave: (newTask: Omit<Task, 'id'>) => void;
 }
 
-const CreateTaskModal: React.FC<CreateTaskModalProps> = ({ isVisible, setIsVisible, selectedDate, setTasks }) => {
-  const [localTask, setLocalTask] = useState({ summary: '', detail: '', time: selectedDate });
+const CATEGORIES = [
+  { id: 'work', label: 'Work', color: '#FF6B6B', icon: 'briefcase' },
+  { id: 'personal', label: 'Personal', color: '#4ECDC4', icon: 'person' },
+  // Add other categories as needed
+];
+
+const PRIORITIES = [
+  { id: 'high', label: 'High', color: '#FF6B6B' },
+  { id: 'medium', label: 'Medium', color: '#FFD93D' },
+  { id: 'low', label: 'Low', color: '#6BCB77' },
+];
+
+const CreateTaskModal: React.FC<CreateTaskModalProps> = ({ isVisible, setIsVisible, selectedDate, onSave }) => {
+  const [taskData, setTaskData] = useState({
+    title: '',
+    description: '',
+    category: '',
+    priority: '',
+    time: new Date(),
+    reminder: false
+  });
   const [showTimePicker, setShowTimePicker] = useState(false);
 
+  const handleClose = useCallback(() => {
+    setTaskData({
+      title: '',
+      description: '',
+      category: '',
+      priority: '',
+      time: new Date(),
+      reminder: false
+    });
+    setIsVisible(false);
+  }, [setIsVisible]);
+
   const handleCreateTask = useCallback(() => {
-    if (localTask.summary.trim() === '') {
-      Alert.alert('Error', 'Please enter a task summary.');
+    if (!taskData.title.trim()) {
+      // Show error toast or alert
       return;
     }
 
-    const newTaskObj = {
+    const newTask = {
       id: Date.now(),
-      time: formatTime(localTask.time),
-      summary: localTask.summary,
-      detail: localTask.detail,
+      summary: taskData.title,
+      detail: taskData.description,
+      category: taskData.category,
+      priority: taskData.priority,
+      time: formatTime(taskData.time),
       date: selectedDate,
-      color: getRandomColor(),
+      reminder: taskData.reminder,
+      completed: false,
+      color: CATEGORIES.find((cat: { id: string }) => cat.id === taskData.category)?.color || '#666'
     };
 
-    setTasks((prevTasks) => [...prevTasks, newTaskObj]);
-    setLocalTask({ summary: '', detail: '', time: selectedDate });
-    setIsVisible(false);
-  }, [localTask, selectedDate, setTasks, setIsVisible]);
+    onSave(newTask);
+    handleClose();
+  }, [taskData, selectedDate, onSave]);
 
   const formatTime = (date: Date) => {
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    return date.toLocaleTimeString([], { 
+      hour: '2-digit', 
+      minute: '2-digit',
+      hour12: true 
+    });
   };
-
-  const getRandomColor = useMemo(() => {
-    const colors = ['#4CAF50', '#2196F3', '#9C27B0', '#00BCD4', '#FF9800'];
-    return () => colors[Math.floor(Math.random() * colors.length)];
-  }, []);
 
   return (
     <Modal
       visible={isVisible}
-      transparent={true}
+      transparent
       animationType="fade"
-      onRequestClose={() => setIsVisible(false)}
+      statusBarTranslucent
     >
       <View style={styles.modalOverlay}>
-        <View style={styles.modalContent}>
-          <Text style={styles.modalTitle}>Create New Task</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Task Summary"
-            placeholderTextColor="#86868B"
-            value={localTask.summary}
-            onChangeText={(text) => setLocalTask((prev) => ({ ...prev, summary: text }))}
-            accessibilityLabel="Task Summary Input"
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Task Detail"
-            placeholderTextColor="#86868B"
-            value={localTask.detail}
-            onChangeText={(text) => setLocalTask((prev) => ({ ...prev, detail: text }))}
-            accessibilityLabel="Task Detail Input"
-          />
-          <TouchableOpacity
-            style={[styles.input, { justifyContent: 'center' }]}
-            onPress={() => setShowTimePicker(true)}
-          >
-            <Text style={{ color: '#fff' }}>Time: {formatTime(localTask.time)}</Text>
-          </TouchableOpacity>
-          {showTimePicker && (
-            <DateTimePicker
-              value={localTask.time}
-              mode="time"
-              display="default"
-              onChange={(event, selectedDate) => {
-                setShowTimePicker(Platform.OS === 'ios');
-                if (selectedDate) {
-                  setLocalTask((prev) => ({ ...prev, time: selectedDate }));
-                }
-              }}
-            />
-          )}
-          <Button
-            mode="contained"
-            onPress={handleCreateTask}
-            style={tw`bg-[#0A84FF] mt-4`}
-            labelStyle={tw`text-sm text-white`}
-          >
-            Add Task
-          </Button>
-          <Button
-            mode="text"
-            onPress={() => setIsVisible(false)}
-            style={tw`mt-2`}
-            labelStyle={tw`text-sm text-white`}
-          >
-            Cancel
-          </Button>
-        </View>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalHeaderTitle}>Create New Task</Text>
+              <TouchableOpacity onPress={handleClose}>
+                <Ionicons name="close" size={24} color="#F8F8F8" />
+              </TouchableOpacity>
+            </View>
+
+            <ScrollView 
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={styles.scrollViewContent}
+            >
+              <View style={styles.inputContainer}>
+                <Ionicons name="pencil" size={20} color="#979797" />
+                <TextInput
+                  style={styles.input}
+                  placeholder="Task Title"
+                  placeholderTextColor="#979797"
+                  value={taskData.title}
+                  onChangeText={text => setTaskData(prev => ({ ...prev, title: text }))}
+                />
+              </View>
+
+              <View style={[styles.inputContainer, { height: 100, alignItems: 'flex-start' }]}>
+                <Ionicons name="document-text" size={20} color="#666" style={{ marginTop: 12 }} />
+                <TextInput
+                  style={[styles.input, { height: 100, textAlignVertical: 'top' }]}
+                  placeholder="Description"
+                  placeholderTextColor="#666"
+                  multiline
+                  value={taskData.description}
+                  onChangeText={text => setTaskData(prev => ({ ...prev, description: text }))}
+                />
+              </View>
+
+              <Text style={styles.sectionTitle}>Category</Text>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                <View style={styles.categoriesContainer}>
+                  {CATEGORIES.map(category => (
+                    <TouchableOpacity
+                      key={category.id}
+                      style={[
+                        styles.categoryButton,
+                        taskData.category === category.id && styles.selectedCategory,
+                        { backgroundColor: category.color + '20' }
+                      ]}
+                      onPress={() => setTaskData(prev => ({ ...prev, category: category.id }))}
+                    >
+                      <Ionicons 
+                        name={category.icon} 
+                        size={20} 
+                        color={category.color} 
+                      />
+                      <Text style={[
+                        styles.categoryText,
+                        { color: category.color }
+                      ]}>
+                        {category.label}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </ScrollView>
+
+              <Text style={styles.sectionTitle}>Priority</Text>
+              <View style={styles.priorityContainer}>
+                {PRIORITIES.map(priority => (
+                  <TouchableOpacity
+                    key={priority.id}
+                    style={[
+                      styles.priorityButton,
+                      taskData.priority === priority.id && styles.selectedPriority,
+                      { borderColor: priority.color }
+                    ]}
+                    onPress={() => setTaskData(prev => ({ ...prev, priority: priority.id }))}
+                  >
+                    <Text style={[
+                      styles.priorityText,
+                      { color: priority.color }
+                    ]}>
+                      {priority.label}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+
+              <TouchableOpacity
+                style={styles.timeButton}
+                onPress={() => setShowTimePicker(true)}
+              >
+                <Ionicons name="time" size={20} color="#979797" />
+                <Text style={styles.timeText}>
+                  {formatTime(taskData.time)}
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.reminderButton}
+                onPress={() => setTaskData(prev => ({ ...prev, reminder: !prev.reminder }))}
+              >
+                <View style={styles.reminderLeft}>
+                  <Ionicons name="notifications" size={20} color="#979797" />
+                  <Text style={styles.reminderText}>Reminder</Text>
+                </View>
+                <View style={[
+                  styles.toggleButton,
+                  taskData.reminder && styles.toggleActive
+                ]}>
+                  <View style={[
+                    styles.toggleCircle,
+                    taskData.reminder && styles.toggleCircleActive
+                  ]} />
+                </View>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.createButton}
+                onPress={handleCreateTask}
+              >
+                <Text style={styles.createButtonText}>Create Task</Text>
+              </TouchableOpacity>
+            </ScrollView>
+
+            {showTimePicker && (
+              <DateTimePicker
+                value={taskData.time}
+                mode="time"
+                is24Hour={false}
+                display="spinner"
+                onChange={(event, selectedDate) => {
+                  setShowTimePicker(Platform.OS === 'ios');
+                  if (selectedDate) {
+                    setTaskData(prev => ({ ...prev, time: selectedDate }));
+                  }
+                }}
+              />
+            )}
+          </View>
+        </TouchableWithoutFeedback>
       </View>
     </Modal>
   );

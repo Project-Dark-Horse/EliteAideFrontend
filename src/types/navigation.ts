@@ -25,6 +25,10 @@ export type RootStackParamList = {
   SettingsScreen: undefined;
   ProfileStack: undefined;
   ManualTaskCreate: undefined;
+  DeleteTaskPopup: {
+    taskId: string;
+  };
+  MyTaskScreen: undefined;  // Add this line
 };
 
 

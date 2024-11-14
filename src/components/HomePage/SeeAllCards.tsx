@@ -11,9 +11,8 @@ interface TopBarProps {
 
 const SeeAllCards: React.FC<TopBarProps> = ({ title }) => {
   const navigation = useNavigation();
-
   const handleSeeAllPress = () => {
-    navigation.navigate('MyTaskScreen');
+    navigation.navigate('MyTaskScreen' as never);
   };
 
   return (

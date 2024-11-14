@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Text, View, Alert, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { Text, View, Alert, ActivityIndicator, TouchableOpacity, Image, ScrollView } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import UserInfo from '../../components/Profile/UserInfo';
 import TaskCard from '../../components/Profile/TaskCard';
@@ -10,6 +10,7 @@ import tw from 'twrnc';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../types/navigation';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import MyActivityScreen from './MyActivity';
 
 import { BASE_URL } from '@env';
 import { StyleSheet } from 'react-native';
@@ -94,7 +95,7 @@ const ProfileScreen = () => {
   const handleCardPress = (menuTitle: string) => {
     switch (menuTitle) {
       case 'My Activity':
-        navigation.navigate('MyActivityScreen');
+        navigation.navigate('MyActivity');
         break;
       case 'SettingsScreen':
         navigation.navigate('SettingsScreen');
@@ -136,61 +137,60 @@ const ProfileScreen = () => {
     }
   };
 
-  // Custom Header Component
+  // Updated Header Component
   const Header = () => (
-    <View style={tw`flex-row items-center justify-between px-4 py-4 bg-[#000000]`}>
-      <TouchableOpacity onPress={() => navigation.goBack()}>
-        <FontAwesome name="chevron-circle-left" size={29} color="#384766" />
+    <View style={tw`flex-row items-center justify-between px-4 py-4 bg-[#111111]`}>
+      <TouchableOpacity 
+        style={tw`bg-[#1D1E23] w-10 h-10 rounded-full items-center justify-center`}
+        onPress={() => navigation.goBack()}
+      >
+        <Ionicons name="chevron-back" size={24} color="#384766" />
       </TouchableOpacity>
-      <Text style={tw`text-white text-lg font-semi-bold`}>Profile</Text>
-      <View style={tw`flex-row`}>
-        <TouchableOpacity style={tw`mr-4`}>
-          <FontAwesome name="search" size={24} color="#384766" />
+      <Text style={tw`text-white text-lg font-medium`}>Profile</Text>
+      <View style={tw`flex-row gap-4`}>
+        <TouchableOpacity>
+          <Ionicons name="search-outline" size={24} color="#384766" />
         </TouchableOpacity>
         <TouchableOpacity>
-          <FontAwesome name="bell" size={24} color="#384766" />
+          <Ionicons name="notifications-outline" size={24} color="#384766" />
         </TouchableOpacity>
       </View>
     </View>
   );
 
   return (
-    <View style={tw`flex-1 bg-[#000000]`}>
+    <View style={tw`flex-1 bg-[#111111]`}>
       <Header />
-      <View style={tw`p-4`}>
-        <View style={tw`items-center`}>
-          {loadingUserInfo ? (
-            <ActivityIndicator size="large" color="#fff" />
-          ) : userInfo ? (
-            <UserInfo userInfo={userInfo} />
-          ) : (
-            <Text style={tw`text-white`}>Error loading user info</Text>
-          )}
-
-          {loadingTaskData ? (
-            <ActivityIndicator size="large" color="#fff" />
-          ) : (
+      <ScrollView style={tw`flex-1`} showsVerticalScrollIndicator={false}>
+        {loadingUserInfo || loadingTaskData ? (
+          <ActivityIndicator size="large" color="#384766" style={tw`mt-4`} />
+        ) : (
+          <View style={tw`items-center`}>
+            <UserInfo userInfo={userInfo || defaultUserInfo} />
             <TaskCard total={taskData.total} pending={taskData.pending} done={taskData.done} />
-          )}
-
-          <ProfileMenu title="My Activity" iconName="stats-chart" onPress={() => handleCardPress('My Activity')} />
-          <ProfileMenu title="Settings" iconName="settings" onPress={() => handleCardPress('SettingsScreen')} />
-          <ProfileMenu title="About Elite Aide" iconName="information-circle-outline" onPress={() => handleCardPress('About Elite Aide')} />
-          <ProfileMenu title="Logout" iconName="log-out" onPress={() => handleCardPress('Logout')} />
-          <ProfileMenu title="Logout from All Devices" iconName="log-out" onPress={() => handleCardPress('Logout from All Devices')} />
-        </View>
-        </View>
-      </View>
-    
+            <ProfileMenu title="My Activity" iconName="time-outline" onPress={() => handleCardPress('My Activity')} />
+            <ProfileMenu title="Settings" iconName="settings-outline" onPress={() => handleCardPress('SettingsScreen')} />
+            <ProfileMenu title="About Elite Aid" iconName="information-circle-outline" onPress={() => handleCardPress('About Elite Aide')} />
+            <ProfileMenu title="Logout" iconName="log-out-outline" onPress={() => handleCardPress('Logout')} />
+            <ProfileMenu title="Logout from all devices" iconName="log-out-outline" onPress={() => handleCardPress('Logout from All Devices')} />
+          </View>
+        )}
+      </ScrollView>
+    </View>
   );
-  
 };
+
 const styles = StyleSheet.create({
-  iconName: {
-    backgroundColor: '#65779E',
-    borderRadius: 20,
-    padding: 8,
-  },
+  cardShadow: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  }
 });
 
 export default ProfileScreen;

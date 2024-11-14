@@ -3,8 +3,8 @@ import { View, Modal, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import tw from 'twrnc';
 import Header from './Header';
-import WeekView from './WeekView';
-import DaySchedule from './DaySchedule';
+import WeekView from './WeekViewScreen';
+import DaySchedule from './DayScheduleScreen';
 import CalendarPopup from './CalendarPopup';
 import CreateTaskModal from './CreateTaskModal';
 import { styles } from './styles';
@@ -16,6 +16,7 @@ interface Task {
   detail: string;
   date: Date;
   color: string;
+  completed?: boolean;
 }
 
 const CalendarScreen = () => {
@@ -23,14 +24,51 @@ const CalendarScreen = () => {
   const [isCalendarVisible, setIsCalendarVisible] = useState(false);
   const [isCreateTaskVisible, setIsCreateTaskVisible] = useState(false);
   const [tasks, setTasks] = useState<Task[]>([
-    { id: 1, time: '08:00', summary: 'Team Meeting', detail: 'Group discussion for the new product', date: new Date(), color: '#1D1E23' },
-    { id: 2, time: '09:00', summary: 'Design Review', detail: 'Reviewing new design prototype', date: new Date(), color: '#2196F3' },
-    { id: 2, time: '14:00', summary: 'Design Review', detail: 'Reviewing new design prototype', date: new Date(), color: '#1D1E23' },
-    { id: 2, time: '09:00', summary: 'Design Review', detail: 'Reviewing new design prototype', date: new Date(), color: '#36AAB9' },
-    { id: 2, time: '16:00', summary: 'Design Review', detail: 'Reviewing new design prototype', date: new Date(), color: '#5560C4' },
-    { id: 2, time: '10:00', summary: 'Design Review', detail: 'Reviewing new design prototype', date: new Date(), color: '#B29361' },
-    { id: 2, time: '11:00', summary: 'Design Review', detail: 'Reviewing new design prototype', date: new Date(), color: '#10443E' },
-    
+    { 
+      id: 1, 
+      time: '8 AM', 
+      summary: 'Team Meeting', 
+      detail: 'Group discussion for the new product', 
+      date: new Date(), 
+      color: '#1D1E23',
+      completed: true
+    },
+    { 
+      id: 2, 
+      time: '9 AM', 
+      summary: 'Team Meeting', 
+      detail: 'Group discussion for the new product', 
+      date: new Date(), 
+      color: '#2196F3',
+      completed: true
+    },
+    { 
+      id: 3, 
+      time: '9 AM', 
+      summary: 'Team Meeting', 
+      detail: 'Group discussion for the new product', 
+      date: new Date(), 
+      color: '#36AAB9',
+      completed: false
+    },
+    { 
+      id: 4, 
+      time: '11 AM', 
+      summary: 'Team Meeting', 
+      detail: 'Group discussion for the new product', 
+      date: new Date(), 
+      color: '#5560C4',
+      completed: false
+    },
+    { 
+      id: 5, 
+      time: '1 PM', 
+      summary: 'Team Meeting', 
+      detail: 'Group discussion for the new product', 
+      date: new Date(), 
+      color: '#B29361',
+      completed: false
+    }
   ]);
 
   // Function to add a new task
@@ -77,7 +115,7 @@ const CalendarScreen = () => {
         isVisible={isCreateTaskVisible}
         setIsVisible={setIsCreateTaskVisible}
         selectedDate={selectedDate}
-        onSaveTask={addTask} // Pass addTask to save new tasks
+        onSave={addTask} // Pass addTask to save new tasks
       />
     </SafeAreaView>
   );

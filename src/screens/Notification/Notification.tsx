@@ -1,9 +1,8 @@
 // src/screens/Notification/NotificationScreen.tsx
 import React, { useState } from 'react';
-import { View, FlatList, StyleSheet } from 'react-native';
+import { View, FlatList, StyleSheet, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Card, Title } from 'react-native-paper';
-import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/Ionicons';
 import CommonHeader from '../../components/CommonHeader';
 
@@ -12,33 +11,42 @@ interface Notification {
   id: number;
   icon: string;
   title: string;
-  description: string;
   type: 'task' | 'warning' | 'success' | 'info';
+  emoji?: string;
 }
 
 const NotificationScreen: React.FC = () => {
   const [notifications, setNotifications] = useState<Notification[]>([
-    { id: 1, icon: 'document-text', title: "Your task 'Submit monthly report' is due in 1 hour! Don't forget!", description: '', type: 'task' },
-    { id: 2, icon: 'calendar', title: "Uh-oh! The 'Budget review' task is overdue. Let's tackle it!", description: '', type: 'warning' },
-    { id: 3, icon: 'checkmark-circle', title: "Your task 'Submit invoice' has been automatically completed. No action needed!", description: '', type: 'success' },
-    { id: 4, icon: 'moon', title: "You've completed 4 tasks today! Great job! Check tomorrow's tasks for a head start.", description: '', type: 'info' },
-    { id: 5, icon: 'document-text', title: "Your task 'Submit monthly report' is due in 1 hour! Don't forget!", description: '', type: 'task' }
+    { id: 1, icon: 'calendar', title: "Your task 'Submit monthly report' is due in 1 hour! Don't forget!", type: 'task', emoji: '⏳' },
+    { id: 2, icon: 'calendar', title: "Uh-oh! The 'Budget review' task is overdue. Let's tackle it!", type: 'warning', emoji: '⚠️' },
+    { id: 3, icon: 'document-text', title: "Your task 'Submit invoice' has been automatically completed. No action needed!", type: 'success' },
+    { id: 4, icon: 'chatbubble', title: "You've completed 4 tasks today! Great job! Check tomorrow's tasks for a head start", type: 'info', emoji: '🌙' },
+    { id: 5, icon: 'document-text', title: "Your task 'Submit monthly report' is due in 1 hour! Don't forget!", type: 'task', emoji: '⏳' }
   ]);
+
+  const getNotificationColor = (type: string) => {
+    switch (type) {
+      case 'task':
+        return ['#2C2C2E', '#2C2C2E'];
+      case 'warning':
+        return ['#2C2C2E', '#2C2C2E'];
+      case 'success':
+        return ['#2C2C2E', '#2C2C2E'];
+      case 'info':
+        return ['#2C2C2E', '#2C2C2E'];
+      default:
+        return ['#2C2C2E', '#2C2C2E'];
+    }
+  };
 
   const renderNotification = ({ item }: { item: Notification }) => (
     <Card style={styles.card}>
       <Card.Content style={styles.cardContent}>
-        <LinearGradient
-          colors={['#3272A0', '#3272A0', '#1E4E8D']}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={styles.iconBackground}
-        >
-          <Icon name={item.icon} size={24} color="#FFFFFF" />
-        </LinearGradient>
-        
+        <Icon name={item.icon} size={20} color="#3272A0" />
         <View style={styles.textContainer}>
-          <Title style={styles.title}>{item.title}</Title>
+          <Text style={styles.title}>
+            {item.emoji && `${item.emoji} `}{item.title}
+          </Text>
         </View>
       </Card.Content>
     </Card>
@@ -46,11 +54,7 @@ const NotificationScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Common Header with Title and Back Button, without Notification Icon */}
       <CommonHeader title="Notifications" showTitle={true} showNotificationIcon={false} />
-      
-
-      {/* Notifications List */}
       <FlatList
         data={notifications}
         renderItem={renderNotification}
@@ -64,34 +68,32 @@ const NotificationScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#111111',
+    backgroundColor: '#000000',
   },
   list: {
-    padding: 10,
+    padding: 16,
   },
   card: {
-    marginTop: 15,
-    backgroundColor: '#1D1E23',
-    borderRadius: 10,
+    marginBottom: 8,
+    backgroundColor: '#2C2C2E',
+    borderRadius: 12,
+    elevation: 0,
+    borderWidth: 0,
   },
   cardContent: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  iconBackground: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 15,
+    padding: 12,
   },
   textContainer: {
     flex: 1,
+    marginLeft: 12,
   },
   title: {
     color: '#FFFFFF',
-    fontSize: 14,
+    fontSize: 15,
+    opacity: 0.8,
+    fontWeight: '400',
   },
 });
 

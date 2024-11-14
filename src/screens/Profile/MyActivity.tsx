@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, FlatList, Text, StyleSheet } from 'react-native';
+import { View, FlatList, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
 
@@ -22,31 +22,28 @@ const MyActivityScreen: React.FC = () => {
     { id: 8, time: '12 AM', description: "Task 'Submit tax forms' is now rescheduled for Sep 23.", type: 'reschedule' },
   ];
 
-  const getIconName = (type: Activity['type']) => {
-    switch (type) {
-      case 'add': return 'add-circle-outline';
-      case 'complete': return 'checkmark-circle-outline';
-      case 'delete': return 'trash-outline';
-      case 'reschedule': return 'calendar-outline';
-      case 'modify': return 'create-outline';
-      default: return 'information-circle-outline';
-    }
-  };
-
   const renderActivity = ({ item }: { item: Activity }) => (
     <View style={styles.activityCard}>
-      <View style={styles.timeContainer}>
-        <Text style={styles.time}>{item.time}</Text>
-      </View>
+      <Text style={styles.time}>{item.time}</Text>
       <View style={styles.contentContainer}>
-        <Icon name={getIconName(item.type)} size={20} color="#FFFFFF" style={styles.icon} />
-        <Text style={styles.description}>{item.description}</Text>
+        <Text style={styles.description}>
+          {item.type === 'add' && '📝 '}
+          {item.type === 'delete' && '🗑️ '}
+          {item.type === 'reschedule' && '⏰ '}
+          {item.description}
+        </Text>
       </View>
     </View>
   );
 
   return (
     <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
+        <TouchableOpacity style={styles.backButton}>
+          <Icon name="chevron-back" size={24} color="#FFFFFF" />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>My Activity</Text>
+      </View>
       <FlatList
         data={activities}
         renderItem={renderActivity}
@@ -60,45 +57,57 @@ const MyActivityScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#111111',
+    backgroundColor: '#000000',
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+    paddingTop: 8,
+    position: 'relative',
+  },
+  backButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#1C1C1E',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    left: 16,
+    zIndex: 1,
+  },
+  headerTitle: {
+    color: '#FFFFFF',
+    fontSize: 20,
+    fontWeight: '600',
+    flex: 1,
+    textAlign: 'center',
+    marginLeft: 'auto',
+    marginRight: 'auto',
   },
   listContent: {
-    padding: 18,
+    padding: 16,
   },
   activityCard: {
     flexDirection: 'row',
-    backgroundColor: '#1D1E23',
-    borderRadius: 10,
-    marginBottom: 10,
-    overflow: 'hidden',
+    backgroundColor: '#1C1C1E',
+    borderRadius: 12,
+    marginBottom: 8,
+    padding: 16,
   },
-  timeContainer: {
-    width: 60,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 8,
-    borderRightWidth: 1,
-    borderRightColor: '#2C2C2E',
+  time: {
+    color: '#3272A0',
+    fontSize: 14,
+    width: 55,
   },
   contentContainer: {
     flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 22,
-    paddingHorizontal: 16,
-  },
-  time: {
-    color: '#8E8E93',
-    fontSize: 12,
-  },
-  icon: {
-    marginRight: 12,
   },
   description: {
     color: '#FFFFFF',
-    fontSize: 14,
-    flex: 1,
+    fontSize: 15,
+    opacity: 0.8,
   },
 });
 

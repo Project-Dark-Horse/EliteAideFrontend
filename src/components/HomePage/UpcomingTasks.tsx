@@ -8,6 +8,8 @@ import tw from 'twrnc';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { BASE_URL } from '@env';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 
 interface Task {
   id: number;
@@ -24,7 +26,16 @@ const sampleTasks: Task[] = [
   { id: 3, title: 'Code Review', description: 'Review of the recent code changes', time: '4 PM', backgroundColor: '#3D83AA', iconName: 'notifications' },
 ];
 
+// Add this type for navigation
+type RootStackParamList = {
+  MyTasks: undefined;
+  // ... other screens
+};
+
+type NavigationProp = StackNavigationProp<RootStackParamList>;
+
 const UpcomingTasksComponent: React.FC = () => {
+  const navigation = useNavigation<NavigationProp>();
   const [tasks, setTasks] = useState<Task[]>(sampleTasks);
   const [loading, setLoading] = useState(false);
 
@@ -62,7 +73,10 @@ const UpcomingTasksComponent: React.FC = () => {
 
   return (
     <Surface style={tw`p-4 bg-[#111111]`}>
-      <SeeAllCards title="Upcoming Tasks" onSeeAllPress={() => console.log('See all pressed')} />
+      <SeeAllCards 
+        title="Upcoming Tasks" 
+        onSeeAllPress={() => navigation.navigate('MyTaskScreen')}
+      />
       {loading ? (
         <ActivityIndicator size="small" color="#fff" />
       ) : (
