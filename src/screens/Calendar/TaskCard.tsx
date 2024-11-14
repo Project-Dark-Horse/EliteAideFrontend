@@ -1,7 +1,7 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import tw from 'twrnc';
-import Icon from 'react-native-vector-icons/Feather';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 interface Task {
   id: number;
@@ -10,6 +10,7 @@ interface Task {
   detail: string;
   date: Date;
   color: string;
+  completed?: boolean;
 }
 
 interface TaskCardProps {
@@ -17,14 +18,32 @@ interface TaskCardProps {
 }
 
 const TaskCard: React.FC<TaskCardProps> = ({ task }) => (
-  <View style={tw`flex-row items-center mb-4 bg-[${task.color}] rounded-lg p-3`}>
-    <View style={tw`flex-1`}>
-      <Text style={tw`text-white font-bold`}>{task.summary}</Text>
-      <Text style={tw`text-white text-xs`}>{task.detail}</Text>
+  <TouchableOpacity 
+    style={[
+      tw`flex-row items-center mb-2 rounded-xl p-3`,
+      { backgroundColor: task.color }
+    ]}
+  >
+    <View style={tw`mr-2`}>
+      <Ionicons name="briefcase-outline" size={20} color="white" />
     </View>
-    <Text style={tw`text-white text-xs`}>{task.time} - {parseInt(task.time) + 1}:00</Text>
-    <Icon name="more-vertical" size={20} color="white" style={tw`ml-2`} />
-  </View>
+    <View style={tw`flex-1`}>
+      <Text style={tw`text-white font-semibold text-base`}>
+        {task.summary}
+      </Text>
+      <Text style={tw`text-white/70 text-sm mt-0.5`}>
+        {task.detail}
+      </Text>
+    </View>
+    <View style={tw`flex-row items-center`}>
+      <Text style={tw`text-white/70 text-sm mr-2`}>
+        {task.time}
+      </Text>
+      {task.completed && (
+        <Ionicons name="checkmark-circle" size={20} color="#4CAF50" />
+      )}
+    </View>
+  </TouchableOpacity>
 );
 
 export default React.memo(TaskCard);

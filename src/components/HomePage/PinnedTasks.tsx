@@ -29,7 +29,7 @@ const PinnedTasksData = [
 const PinnedTasks: React.FC = () => {
   return (
     <Surface style={tw`p-4 bg-[#111111] flex-1`}>
-      <SeeAllCards title="Weekly Tasks" onSeeAllPress={() => console.log('See all pressed')} />
+      <SeeAllCards title="Weekly Tasks" />
       <FlatList
         data={PinnedTasksData}
         keyExtractor={(item) => item.id.toString()}  

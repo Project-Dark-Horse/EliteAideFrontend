@@ -1,86 +1,170 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
+
+const { width } = Dimensions.get('window');
 
 export const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    backgroundColor: '#00000033',
     justifyContent: 'center',
     alignItems: 'center',
   },
   modalContent: {
-    backgroundColor: '#2C2C2E',
-    borderRadius: 12,
-    padding: 24,
-    width: '85%',
+    backgroundColor: '#1D1E23',
+    borderRadius: 16,
+    padding: 20,
+    width: width * 0.9,
+    maxHeight: '85%',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.5,
-    shadowRadius: 6,
-    elevation: 8,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 10,
+    elevation: 5,
   },
-  calendarContainer: {
-    backgroundColor: '#1E1E2E',
-    borderRadius: 12,
-    padding: 12,
-    marginBottom: 16,
-  },
-  calendarHeader: {
+  modalHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: 24,
+    paddingBottom: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#384766',
   },
-  monthYearText: {
-    color: '#FFF',
+  modalHeaderTitle: {
     fontSize: 20,
-    fontWeight: '700',
+    fontWeight: '600',
+    color: '#F8F8F8',
   },
-  weekDaysContainer: {
+  inputContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginBottom: 12,
-  },
-  weekDayText: {
-    color: '#A1A1A4',
-    fontSize: 13,
-  },
-  daysContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-  },
-  dayCell: {
-    width: '14.28%',
-    aspectRatio: 1,
-    justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 8,
-    marginVertical: 4,
-  },
-  dayText: {
-    color: '#D1D1D4',
-    fontSize: 16,
-  },
-  selectedDay: {
-    backgroundColor: '#0A84FF',
+    marginBottom: 16,
+    padding: 12,
+    backgroundColor: '#333333',
     borderRadius: 12,
-    padding: 8,
-  },
-  selectedDayText: {
-    color: '#FFF',
-    fontWeight: 'bold',
+    borderWidth: 1,
+    borderColor: '#384766',
   },
   input: {
-    backgroundColor: '#333336',
-    borderRadius: 10,
-    padding: 14,
-    marginBottom: 14,
-    color: '#FFF',
+    flex: 1,
+    marginLeft: 10,
+    color: '#F8F8F8',
+    fontSize: 16,
+  },
+  sectionTitle: {
+    fontSize: 17,
+    fontWeight: '600',
+    marginVertical: 12,
+    color: '#F8F8F8',
+  },
+  categoriesContainer: {
+    flexDirection: 'row',
+    marginBottom: 20,
+    paddingVertical: 8,
+  },
+  categoryButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 12,
+    borderRadius: 12,
+    marginRight: 12,
+    borderWidth: 1,
+  },
+  selectedCategory: {
+    backgroundColor: '#384766',
+  },
+  categoryText: {
+    marginLeft: 8,
+    fontSize: 15,
+    fontWeight: '500',
+  },
+  priorityContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
+  priorityButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 12,
+    borderWidth: 1,
+    minWidth: width * 0.25,
+    alignItems: 'center',
+  },
+  selectedPriority: {
+    backgroundColor: '#384766',
+  },
+  priorityText: {
+    fontWeight: '500',
     fontSize: 15,
   },
-  modalTitle: {
-    color: '#FFF',
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 18,
+  timeButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 14,
+    backgroundColor: '#333333',
+    borderRadius: 12,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: '#384766',
+  },
+  timeText: {
+    marginLeft: 12,
+    color: '#F8F8F8',
+    fontSize: 16,
+  },
+  reminderButton: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 14,
+    backgroundColor: '#333333',
+    borderRadius: 12,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: '#384766',
+  },
+  reminderLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  reminderText: {
+    marginLeft: 12,
+    color: '#F8F8F8',
+    fontSize: 16,
+  },
+  toggleButton: {
+    width: 44,
+    height: 26,
+    borderRadius: 13,
+    backgroundColor: '#333333',
+    padding: 2,
+  },
+  toggleActive: {
+    backgroundColor: '#36AAB9',
+  },
+  toggleCircle: {
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    backgroundColor: '#F8F8F8',
+  },
+  toggleCircleActive: {
+    transform: [{ translateX: 18 }],
+  },
+  createButton: {
+    backgroundColor: '#36AAB9',
+    padding: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  createButtonText: {
+    color: '#F8F8F8',
+    fontWeight: '600',
+    fontSize: 17,
+  },
+  scrollViewContent: {
+    paddingBottom: 20,
   },
 });

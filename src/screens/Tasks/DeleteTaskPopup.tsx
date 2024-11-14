@@ -2,19 +2,23 @@ import React, { useState } from 'react';
 import { View, Text, Modal, TouchableOpacity, StyleSheet } from 'react-native';
 import tw from 'twrnc';
 
-const DeleteTaskPopup = () => {
-  const [modalVisible, setModalVisible] = useState(true);
+interface DeleteTaskPopupProps {
+  visible: boolean;
+  onClose: () => void;
+  onDelete: () => void;
+}
 
+const DeleteTaskPopup: React.FC<DeleteTaskPopupProps> = ({ visible, onClose, onDelete }) => {
   return (
-    <Modal visible={modalVisible} transparent animationType="fade">
+    <Modal visible={visible} transparent animationType="fade">
       <View style={styles.modalOverlay}>
         <View style={[styles.modalContainer, tw`bg-[rgba(255,255,255,0.08)]`]}>
           <Text style={[styles.modalTitle, tw`text-white`]}>Delete this task?</Text>
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={[styles.cancelButton, tw`border border-blue-500`]} onPress={() => setModalVisible(false)}>
+            <TouchableOpacity style={[styles.cancelButton, tw`border border-blue-500`]} onPress={onClose}>
               <Text style={[styles.cancelText, tw`text-white`]}>Cancel</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.yesButton, tw`bg-[#1D1E23]`]}>
+            <TouchableOpacity style={[styles.yesButton, tw`bg-[#1D1E23]`]} onPress={onDelete}>
               <Text style={[styles.yesText, tw`text-white`]}>Yes</Text>
             </TouchableOpacity>
           </View>
