@@ -18,92 +18,46 @@ const LoginScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [debugMessage, setDebugMessage] = useState('');
 
-  // const handleLogin = async () => {
-  //   setIsLoading(true);
-  //   setDebugMessage('Starting login process...');
-
-  //   try {
-  //     // Log the request URL for debugging
-  //     console.log(`Requesting login at: ${BASE_URL}v1/users/login/`);
-  //     setDebugMessage(`Requesting login at: ${BASE_URL}v1/users/login/`);
-
-  //     const response = await fetch(`${BASE_URL}v1/users/login/`, {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify({ email_or_username: email, password }),
-  //     });
-
-  //     // Log the response status
-  //     console.log(`Response status: ${response.status}`);
-  //     setDebugMessage(`Response status: ${response.status}`);
-
-  //     const data = await response.json();
-  //     console.log('Response data:', data);
-  //     setDebugMessage(`Response data: ${JSON.stringify(data)}`);
-
-  //     if (response.ok && data.message?.access) {
-  //       const { access, refresh } = data.message;
-
-  //       // Store the tokens in AsyncStorage
-  //       await AsyncStorage.setItem('accessToken', access);
-  //       await AsyncStorage.setItem('refreshToken', refresh);
-
-  //       // Log success message and navigate
-  //       console.log('Login successful, tokens stored.');
-  //       setDebugMessage('Login successful, navigating to main screen...');
-        
-  //       navigation.navigate('BottomTabNavigator');
-  //     } else {
-  //       const errorMessage = data.message || 'An error occurred';
-  //       console.error('Login failed:', errorMessage);
-  //       setDebugMessage(`Login failed: ${errorMessage}`);
-  //       Alert.alert('Login failed', errorMessage);
-  //     }
-  //   } catch (error) {
-  //     console.error('Login error:', error);
-  //     setDebugMessage(`Login error: ${error.message}`);
-  //     Alert.alert('Login failed', 'An error occurred');
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
   const handleLogin = async () => {
     setIsLoading(true);
-    setDebugMessage('Simulating login process...');
-  
+    setDebugMessage('Starting login process...');
+
     try {
-      // Simulated API response delay
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-  
-      // Mock data for successful login
-      const mockResponse = {
-        message: {
-          access: 'mock_access_token',
-          refresh: 'mock_refresh_token',
+      // Log the request URL for debugging
+      console.log(`Requesting login at: ${BASE_URL}/users/login/`);
+
+      const response = await fetch(`${BASE_URL}/users/login/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      };
-  
-      console.log('Response data:', mockResponse);
-      setDebugMessage(`Response data: ${JSON.stringify(mockResponse)}`);
-  
-      if (mockResponse.message?.access) {
-        const { access, refresh } = mockResponse.message;
-  
+        body: JSON.stringify({ email_or_username: email, password }),
+      });
+
+      // Log the response status
+      console.log(`Response status: ${response.status}`);
+      setDebugMessage(`Response status: ${response.status}`);
+
+      const data = await response.json();
+      console.log('Response data:', data);
+      setDebugMessage(`Response data: ${JSON.stringify(data)}`);
+
+      if (response.ok && data.message?.access) {
+        const { access, refresh } = data.message;
+
         // Store the tokens in AsyncStorage
         await AsyncStorage.setItem('accessToken', access);
         await AsyncStorage.setItem('refreshToken', refresh);
-  
+
         // Log success message and navigate
         console.log('Login successful, tokens stored.');
         setDebugMessage('Login successful, navigating to main screen...');
         
         navigation.navigate('BottomTabNavigator');
       } else {
-        const errorMessage = 'Simulated login failed: No access token';
-        console.error(errorMessage);
-        setDebugMessage(errorMessage);
+        const errorMessage = data.message || 'An error occurred';
+        console.error('Login failed:', errorMessage);
+        setDebugMessage(`Login failed: ${errorMessage}`);
         Alert.alert('Login failed', errorMessage);
       }
     } catch (error) {
@@ -114,6 +68,7 @@ const LoginScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
       setIsLoading(false);
     }
   };
+ 
   
   return (
     <View style={tw`flex-1`}>

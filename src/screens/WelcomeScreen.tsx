@@ -3,16 +3,11 @@ import React, { useState } from 'react';
 import { View, Text, ImageBackground, TouchableOpacity } from 'react-native';
 import { Button } from 'react-native-paper';
 import tw from 'twrnc';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const WelcomeScreen = ({ navigation}) => {
-  const [isLoading, setIsLoading] = useState(false);
-
+const WelcomeScreen = ({ navigation }: { navigation: any }) => {
   const handleLogin = () => {
-    setIsLoading(true);
-    setTimeout(() => {
-      navigation.navigate('Login'); // Navigates to Login screen
-      setIsLoading(false);
-    }, 1000);
+    navigation.navigate('Login');
   };
 
   return (
@@ -25,7 +20,6 @@ const WelcomeScreen = ({ navigation}) => {
         <Button
           mode="elevated"
           onPress={handleLogin}
-          loading={isLoading}
           style={[
             tw`rounded-full`,
             {

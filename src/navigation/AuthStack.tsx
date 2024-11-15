@@ -5,7 +5,7 @@ import WelcomeScreen from '../screens/WelcomeScreen';
 import LoginScreen from '../screens/Auth/LoginScreen';
 import SignUpScreen from '../screens/Auth/SignUpScreen';
 import OtpScreen from '../screens/Auth/OtpScreen';
-import ForgetPasswordScreen from '../screens/Auth/ForgetPasswordScreen';
+import ForgetPasswordScreen from '../screens/Auth/ForgotPasswordScreen';
 
 // Add type definition for stack params
 type AuthStackParamList = {
@@ -25,7 +25,7 @@ const AuthStack = () => {
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="SignUp" component={SignUpScreen} />
       <Stack.Screen name="Otp" component={OtpScreen} />
-      <Stack.Screen name="ForgetPassword" component={ForgetPasswordScreen} />
+      <Stack.Screen name="ForgetPassword" component={ForgetPasswordScreen as React.FC} />
     </Stack.Navigator>
   );
 };

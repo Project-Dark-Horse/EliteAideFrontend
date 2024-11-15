@@ -30,11 +30,16 @@ interface TaskData {
   done: number;
 }
 
-const defaultUserInfo: UserInfoType = {
-  email: 'sampleuser@example.com',
-  first_name: 'Sample',
-  last_name: 'User',
-  position: 'Marketing Manager',
+const defaultUserInfo = {
+  message: {
+    user_data: {
+      email: '',
+      username: '',
+      first_name: '',
+      last_name: '',
+      mobile_number: '',
+    }
+  }
 };
 
 const ProfileScreen = () => {
@@ -43,29 +48,46 @@ const ProfileScreen = () => {
   const [taskData, setTaskData] = useState<TaskData>({ total: 0, pending: 0, done: 0 });
   const [loadingUserInfo, setLoadingUserInfo] = useState(true);
   const [loadingTaskData, setLoadingTaskData] = useState(true);
+  const [profileData, setProfileData] = useState<any | null>(null);
 
   useEffect(() => {
-    fetchUserInfo();
+    fetchProfileData();
     fetchTaskData();
   }, []);
 
-  const fetchUserInfo = async () => {
-    setLoadingUserInfo(true);
+  const fetchProfileData = async () => {
     try {
-      const token = await AsyncStorage.getItem('access_token');
-      const response = await fetch(`${BASE_URL}/v1/users/profile/`, {
+      setLoadingUserInfo(true);
+      const accessToken = await AsyncStorage.getItem('access_token');
+      
+      if (!accessToken) {
+        throw new Error('No access token found');
+      }
+
+      console.log('Fetching profile from:', `${BASE_URL}/users/profile/`);
+      
+      const response = await fetch(`${BASE_URL}/users/profile/`, {
         method: 'GET',
         headers: {
+          'Authorization': `Bearer ${accessToken}`,
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+          
         },
       });
-      if (!response.ok) throw new Error('Failed to fetch user info');
+
+      console.log('Response status:', response.status);
       const data = await response.json();
-      setUserInfo(data.message.user_data);
+      console.log('Profile Response:', data);
+
+      if (response.ok) {
+        setProfileData(data);
+        setUserInfo(data);
+      } else {
+        throw new Error(data.error || 'Failed to fetch profile');
+      }
     } catch (error) {
-      Alert.alert('Error', 'Unable to load user info');
-      setUserInfo(defaultUserInfo);
+      console.error('Profile fetch error:', error);
+      Alert.alert('Error', 'Unable to load profile data');
     } finally {
       setLoadingUserInfo(false);
     }
@@ -104,10 +126,38 @@ const ProfileScreen = () => {
         Alert.alert('About Elite Aide', 'Version 1.0.0');
         break;
       case 'Logout':
-        handleLogout();
+        Alert.alert(
+          'Logout',
+          'Are you sure you want to logout?',
+          [
+            { text: 'Cancel', style: 'cancel' },
+            { text: 'Logout', onPress: handleLogout }
+          ]
+        );
         break;
       case 'Logout from All Devices':
-        Alert.alert('Info', 'Logout from all devices is currently in progress.');
+        Alert.alert(
+          'Logout from All Devices',
+          'Are you sure you want to logout from all devices?',
+          [
+            { text: 'Cancel', style: 'cancel' },
+            { text: 'Logout', onPress: handleLogoutAllDevices }
+          ]
+        );
+        break;
+      case 'Delete Account':
+        Alert.alert(
+          'Delete Account',
+          'Are you sure you want to delete your account? This action cannot be undone.',
+          [
+            { text: 'Cancel', style: 'cancel' },
+            { 
+              text: 'Delete', 
+              onPress: handleDeleteAccount,
+              style: 'destructive'
+            }
+          ]
+        );
         break;
       default:
         console.log('Unknown menu item');
@@ -116,28 +166,114 @@ const ProfileScreen = () => {
 
   const handleLogout = async () => {
     try {
-      const token = await AsyncStorage.getItem('refresh_token');
-      const response = await fetch(`${BASE_URL}/v1/users/logout/`, {
+      const refreshToken = await AsyncStorage.getItem('refresh_token');
+      const accessToken = await AsyncStorage.getItem('access_token');
+      
+      console.log('Refresh Token:', refreshToken); // Debug log
+      
+      if (!refreshToken || !accessToken) {
+        // Clear any remaining tokens and navigate to login
+        await AsyncStorage.multiRemove(['access_token', 'refresh_token']);
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Login' }],
+        });
+        return;
+      }
+
+      const response = await fetch(`${BASE_URL}/users/logout/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${accessToken}`,
         },
-        body: JSON.stringify({ refresh_token: token }),
+        body: JSON.stringify({
+          refresh_token: refreshToken
+        }),
       });
-      if (response.ok) {
-        await AsyncStorage.clear();
-        Alert.alert('Logged out successfully');
-        navigation.navigate('Login');
-      } else {
-        Alert.alert('Logout failed');
-      }
+
+      console.log('Logout Response:', response.status); // Debug log
+
+      // Even if the logout API fails, we should clear tokens and redirect to login
+      await AsyncStorage.multiRemove(['access_token', 'refresh_token']);
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Login' }],
+      });
+
     } catch (error) {
-      Alert.alert('Logout failed', 'Unable to connect to the server');
+      console.error('Logout error:', error);
+      // Even on error, clear tokens and redirect to login
+      await AsyncStorage.multiRemove(['access_token', 'refresh_token']);
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Login' }],
+      });
     }
   };
 
-  // Updated Header Component
+  const handleLogoutAllDevices = async () => {
+    try {
+      const accessToken = await AsyncStorage.getItem('access_token');
+      
+      if (!accessToken) {
+        throw new Error('No access token found');
+      }
+
+      const response = await fetch(`${BASE_URL}v1/user/logout-all/`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        await AsyncStorage.multiRemove(['access_token', 'refresh_token']);
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Login' }],
+        });
+      } else {
+        throw new Error('Logout from all devices failed');
+      }
+    } catch (error) {
+      console.error('Logout all devices error:', error);
+      Alert.alert('Error', 'Failed to logout from all devices. Please try again.');
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    try {
+      const accessToken = await AsyncStorage.getItem('access_token');
+      
+      if (!accessToken) {
+        throw new Error('No access token found');
+      }
+
+      const response = await fetch(`${BASE_URL}/users/profile/delete/`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.ok) {
+        await AsyncStorage.multiRemove(['access_token', 'refresh_token']);
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Login' }],
+        });
+      } else {
+        throw new Error('Failed to delete account');
+      }
+    } catch (error) {
+      console.error('Delete account error:', error);
+      Alert.alert('Error', 'Failed to delete account. Please try again.');
+    }
+  };
+
   const Header = () => (
     <View style={tw`flex-row items-center justify-between px-4 py-4 bg-[#111111]`}>
       <TouchableOpacity 
@@ -163,10 +299,13 @@ const ProfileScreen = () => {
       <Header />
       <ScrollView style={tw`flex-1`} showsVerticalScrollIndicator={false}>
         {loadingUserInfo || loadingTaskData ? (
-          <ActivityIndicator size="large" color="#384766" style={tw`mt-4`} />
+          <ActivityIndicator size="small" color="#384766" style={tw`mt-4`} />
         ) : (
           <View style={tw`items-center`}>
-            <UserInfo userInfo={userInfo || defaultUserInfo} />
+            <UserInfo 
+              userInfo={userInfo || defaultUserInfo} 
+              isLoading={loadingUserInfo} 
+            />
             <TaskCard total={taskData.total} pending={taskData.pending} done={taskData.done} />
             <ProfileMenu title="My Activity" iconName="time-outline" onPress={() => handleCardPress('My Activity')} />
             <ProfileMenu title="Settings" iconName="settings-outline" onPress={() => handleCardPress('SettingsScreen')} />
