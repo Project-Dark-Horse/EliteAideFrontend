@@ -12,14 +12,15 @@ export type RootStackParamList = {
   BottomTabNavigator: undefined;
   MyProfile: undefined;
   Calendar: undefined;
-  MyTask: undefined; // Add this line
   MyActivity: undefined; // Add this line
   WelcomeScreen: undefined;
   EnterEmail: undefined;  // No parameters expected
   Otp: { email: string }; // Otp screen expects an 'email' parameter
   SignUp: { email: string; otp: string; key: string }; // SignUp screen expects 'email', 'otp', and 'key'
   Login: undefined; // N
-  ForgotPassword: undefined; 
+  ForgotPassword: {
+    email?: string;
+  };
   ProfileScreen: undefined;
   MyActivityScreen: undefined;
   SettingsScreen: undefined;
@@ -29,6 +30,11 @@ export type RootStackParamList = {
     taskId: string;
   };
   MyTaskScreen: undefined;  // Add this line
+  ResetPassword: {
+    email: string;
+    otp: string;
+  };
+  MyTasksScreen: undefined;  // Add this line
 };
 
 

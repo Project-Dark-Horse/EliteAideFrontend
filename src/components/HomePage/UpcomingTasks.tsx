@@ -28,7 +28,7 @@ const sampleTasks: Task[] = [
 
 // Add this type for navigation
 type RootStackParamList = {
-  MyTasks: undefined;
+  MyTaskScreen: undefined;
   // ... other screens
 };
 
@@ -75,7 +75,7 @@ const UpcomingTasksComponent: React.FC = () => {
     <Surface style={tw`p-4 bg-[#111111]`}>
       <SeeAllCards 
         title="Upcoming Tasks" 
-        onSeeAllPress={() => navigation.navigate('MyTaskScreen')}
+        onPress={() => navigation.navigate('MyTaskScreen')}
       />
       {loading ? (
         <ActivityIndicator size="small" color="#fff" />

@@ -7,9 +7,10 @@ import { useNavigation } from '@react-navigation/native';
 
 interface TopBarProps {
   title: string;
+  onPress?: () => void;
 }
 
-const SeeAllCards: React.FC<TopBarProps> = ({ title }) => {
+const SeeAllCards: React.FC<TopBarProps> = ({ title, onPress }) => {
   const navigation = useNavigation();
   const handleSeeAllPress = () => {
     navigation.navigate('MyTaskScreen' as never);

@@ -12,7 +12,7 @@ import Toast from 'react-native-toast-message';
 import { BASE_URL } from '@env';
 
 // Import the logo image
-import LogoImage from '../assets/vector.png';
+import LogoImage from '../../assets/vector.png';
 
 type EmailScreenNavigationProp = {
   navigate: (screen: string, params?: any) => void;

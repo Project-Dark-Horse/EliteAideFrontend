@@ -20,7 +20,7 @@ interface Task {
   rightContainerStyle?: ViewStyle;
 }
 
-type MyTasksScreenNavigationProp = StackNavigationProp<RootStackParamList, 'MyTasks'>;
+type MyTasksScreenNavigationProp = StackNavigationProp<RootStackParamList, 'MyTasksScreen'>;
 
 interface Props {
   navigation: MyTasksScreenNavigationProp;

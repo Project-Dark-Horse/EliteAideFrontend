@@ -1,9 +1,14 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image, KeyboardTypeOptions } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, Image, KeyboardTypeOptions, Alert, ScrollView } from 'react-native';
 import RadialGradient from 'react-native-radial-gradient';
 import { BlurView } from '@react-native-community/blur';
 import tw from 'twrnc';
 import profilePic from '../../assets/ManAvatar.png';
+import { useNavigation } from '@react-navigation/native';
+import { BASE_URL } from '@env';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Icon } from 'react-native-paper';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 interface TextInputFieldProps {
   label: string;
@@ -46,51 +51,133 @@ const TextInputField: React.FC<TextInputFieldProps> = ({ label, value, onChangeT
 };
 
 const EditProfile: React.FC = () => {
-  const [name, setName] = useState('Arush Kumar');
-  const [username, setUsername] = useState('Arush');
-  const [occupation, setOccupation] = useState('Marketing Manager');
-  const [email, setEmail] = useState('arushkumardemo12@gmail.com');
-  const [phone, setPhone] = useState('+91 99999 99999');
+  const navigation = useNavigation();
+  const [isLoading, setIsLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    first_name: '',
+    last_name: '',
+    username: '',
+    email: '',
+    mobile_number: '',
+    occupation: '',
+  });
+
+  useEffect(() => {
+    fetchProfileData();
+  }, []);
+
+  const fetchProfileData = async () => {
+    try {
+      const token = await AsyncStorage.getItem('userToken');
+      const response = await fetch(`${BASE_URL}/users/profile/`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const userData = data.message.user_data;
+        setFormData(userData);
+      }
+    } catch (error) {
+      console.error('Error fetching profile:', error);
+    }
+  };
+
+  const handleUpdateProfile = async () => {
+    setIsLoading(true);
+    try {
+      const token = await AsyncStorage.getItem('userToken');
+      const response = await fetch(`${BASE_URL}/users/profile/update/`, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_data: formData
+        }),
+      });
+
+      if (response.ok) {
+        Alert.alert('Success', 'Profile updated successfully');
+        navigation.goBack();
+      } else {
+        const errorData = await response.json();
+        Alert.alert('Error', errorData.message || 'Failed to update profile');
+      }
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      Alert.alert('Error', 'Failed to update profile');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const renderInputField = (label: string, value: string, field: keyof typeof formData) => {
+    return (
+      <View style={tw`mb-6`}>
+        <Text style={tw`text-[#666666] text-base mb-2`}>{label}</Text>
+        <View style={tw`bg-[#111111] rounded-2xl p-4 border border-[#333333]`}>
+          <TextInput
+            style={tw`text-white text-lg`}
+            value={value}
+            onChangeText={(text) => setFormData(prev => ({ ...prev, [field]: text }))}
+            keyboardType={field === 'email' ? 'email-address' : field === 'mobile_number' ? 'phone-pad' : 'default'}
+            placeholderTextColor="#666666"
+          />
+        </View>
+      </View>
+    );
+  };
 
   return (
-    <View style={[tw`flex-1`, { backgroundColor: '#111111' }]}>
-      {/* Top-Right Gradient */}
-      <RadialGradient
-        style={tw`absolute inset-0`}
-        colors={['#4956C7', '#111111', '#111111']}
-        center={[330, 99]}
-        radius={350}
-      />
-
-      {/* Main Blur effect over the entire background */}
-      <BlurView
-        style={tw`absolute inset-1`}
-        blurType="extraDark"
-        blurAmount={70}
-        reducedTransparencyFallbackColor="rgba(0,0,0,0.3)"
-      />
-
-      {/* Profile Picture Section with Two Placeholders */}
-      <View style={tw`items-center mt-5`}>
-        <View style={tw`flex-row items-center justify-center space-x-4 p-5`}>
-          {/* Current Profile Image */}
-          <Image source={profilePic} style={tw`w-16 h-16 rounded-full`} />
-          
-          {/* Second Placeholder (for edit/add option) */}
-          <View style={tw`w-16 h-16 rounded-full bg-[#555555]`} />
-        </View>
-        <TouchableOpacity style={tw`mt-3`}>
-          <Text style={tw`text-[#65779E] text-sm`}>Edit picture or avatar</Text>
+    <View style={tw`flex-1 bg-black`}>
+      {/* Header */}
+      <View style={tw`flex-row items-center justify-between px-4 pt-12 pb-4`}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Icon source={{uri: 'chevron-back'}} size={24} color="#fff" />
         </TouchableOpacity>
+        <Text style={tw`text-white text-xl font-semibold`}>Edit Profile</Text>
+        <View style={tw`w-8`} /> {/* Placeholder for alignment */}
       </View>
 
-      {/* Form Fields */}
-      <View style={tw`px-6 mt-5`}>
-        <TextInputField label="Name" value={name} onChangeText={setName} />
-        <TextInputField label="Username" value={username} onChangeText={setUsername} />
-        <TextInputField label="Occupation" value={occupation} onChangeText={setOccupation} />
-        <TextInputField label="Email id" value={email} onChangeText={setEmail} keyboardType="email-address" />
-        <TextInputField label="Phone Number" value={phone} onChangeText={setPhone} keyboardType="phone-pad" />
+      <ScrollView style={tw`flex-1 px-4`}>
+        {/* Profile Picture Section */}
+        <View style={tw`items-center mt-6 mb-8`}>
+          <View style={tw`flex-row space-x-4`}>
+            <Image 
+              source={require('../../assets/ManAvatar.png')} 
+              style={tw`w-16 h-16 rounded-full`}
+            />
+            <View style={tw`w-16 h-16 rounded-full bg-[#333333]`} />
+          </View>
+          <TouchableOpacity style={tw`mt-3`}>
+            <Text style={tw`text-[#4956C7] text-base`}>Edit picture or avatar</Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Form Fields */}
+        {renderInputField('Name', formData.first_name, 'first_name')}
+        {renderInputField('Username', formData.username, 'username')}
+        {renderInputField('Occupation', formData.occupation || '', 'occupation')}
+        {renderInputField('Email id', formData.email, 'email')}
+        {renderInputField('Phone Number', formData.mobile_number, 'mobile_number')}
+      </ScrollView>
+
+      {/* Save Button - Fixed at bottom */}
+      <View style={tw`px-4 pb-8 pt-4`}>
+        <TouchableOpacity 
+          style={tw`bg-[#4956C7] p-4 rounded-2xl`}
+          onPress={handleUpdateProfile}
+          disabled={isLoading}
+        >
+          <Text style={tw`text-white text-center text-lg font-semibold`}>
+            {isLoading ? 'Saving...' : 'Save Changes'}
+          </Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
