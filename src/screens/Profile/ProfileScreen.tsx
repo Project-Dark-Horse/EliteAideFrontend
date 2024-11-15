@@ -1,335 +1,271 @@
-import React, { useEffect, useState } from 'react';
-import { Text, View, Alert, ActivityIndicator, TouchableOpacity, Image, ScrollView } from 'react-native';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import UserInfo from '../../components/Profile/UserInfo';
-import TaskCard from '../../components/Profile/TaskCard';
-import ProfileMenu from '../../components/Profile/ProfileMenu';
+import React from 'react';
+import { View, Text, Image, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import tw from 'twrnc';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../../types/navigation';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import MyActivityScreen from './MyActivity';
-
-import { BASE_URL } from '@env';
-import { StyleSheet } from 'react-native';
-
-type ProfileScreenNavigationProp = StackNavigationProp<RootStackParamList, 'ProfileScreen'>;
-
-interface UserInfoType {
-  email: string;
-  first_name: string;
-  last_name: string;
-  position: string;
-}
-
-interface TaskData {
-  total: number;
-  pending: number;
-  done: number;
-}
-
-const defaultUserInfo = {
-  message: {
-    user_data: {
-      email: '',
-      username: '',
-      first_name: '',
-      last_name: '',
-      mobile_number: '',
-    }
-  }
-};
 
 const ProfileScreen = () => {
-  const navigation = useNavigation<ProfileScreenNavigationProp>();
-  const [userInfo, setUserInfo] = useState<UserInfoType | null>(null);
-  const [taskData, setTaskData] = useState<TaskData>({ total: 0, pending: 0, done: 0 });
-  const [loadingUserInfo, setLoadingUserInfo] = useState(true);
-  const [loadingTaskData, setLoadingTaskData] = useState(true);
-  const [profileData, setProfileData] = useState<any | null>(null);
-
-  useEffect(() => {
-    fetchProfileData();
-    fetchTaskData();
-  }, []);
-
-  const fetchProfileData = async () => {
-    try {
-      setLoadingUserInfo(true);
-      const accessToken = await AsyncStorage.getItem('access_token');
-      
-      if (!accessToken) {
-        throw new Error('No access token found');
-      }
-
-      console.log('Fetching profile from:', `${BASE_URL}/users/profile/`);
-      
-      const response = await fetch(`${BASE_URL}/users/profile/`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
-          
-        },
-      });
-
-      console.log('Response status:', response.status);
-      const data = await response.json();
-      console.log('Profile Response:', data);
-
-      if (response.ok) {
-        setProfileData(data);
-        setUserInfo(data);
-      } else {
-        throw new Error(data.error || 'Failed to fetch profile');
-      }
-    } catch (error) {
-      console.error('Profile fetch error:', error);
-      Alert.alert('Error', 'Unable to load profile data');
-    } finally {
-      setLoadingUserInfo(false);
-    }
-  };
-
-  const fetchTaskData = async () => {
-    setLoadingTaskData(true);
-    try {
-      const token = await AsyncStorage.getItem('access_token');
-      const response = await fetch(`${BASE_URL}/v1/tasks/user-tasks/`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-      if (!response.ok) throw new Error('Failed to fetch task data');
-      const data = await response.json();
-      setTaskData({ total: data.total, pending: data.pending, done: data.done });
-    } catch (error) {
-      Alert.alert('Error', 'Unable to load task data');
-    } finally {
-      setLoadingTaskData(false);
-    }
-  };
-
-  const handleCardPress = (menuTitle: string) => {
-    switch (menuTitle) {
-      case 'My Activity':
-        navigation.navigate('MyActivity');
-        break;
-      case 'SettingsScreen':
-        navigation.navigate('SettingsScreen');
-        break;
-      case 'About Elite Aide':
-        Alert.alert('About Elite Aide', 'Version 1.0.0');
-        break;
-      case 'Logout':
-        Alert.alert(
-          'Logout',
-          'Are you sure you want to logout?',
-          [
-            { text: 'Cancel', style: 'cancel' },
-            { text: 'Logout', onPress: handleLogout }
-          ]
-        );
-        break;
-      case 'Logout from All Devices':
-        Alert.alert(
-          'Logout from All Devices',
-          'Are you sure you want to logout from all devices?',
-          [
-            { text: 'Cancel', style: 'cancel' },
-            { text: 'Logout', onPress: handleLogoutAllDevices }
-          ]
-        );
-        break;
-      case 'Delete Account':
-        Alert.alert(
-          'Delete Account',
-          'Are you sure you want to delete your account? This action cannot be undone.',
-          [
-            { text: 'Cancel', style: 'cancel' },
-            { 
-              text: 'Delete', 
-              onPress: handleDeleteAccount,
-              style: 'destructive'
-            }
-          ]
-        );
-        break;
-      default:
-        console.log('Unknown menu item');
-    }
-  };
+  const navigation = useNavigation();
 
   const handleLogout = async () => {
     try {
-      const refreshToken = await AsyncStorage.getItem('refresh_token');
-      const accessToken = await AsyncStorage.getItem('access_token');
-      
-      console.log('Refresh Token:', refreshToken); // Debug log
-      
-      if (!refreshToken || !accessToken) {
-        // Clear any remaining tokens and navigate to login
-        await AsyncStorage.multiRemove(['access_token', 'refresh_token']);
-        navigation.reset({
-          index: 0,
-          routes: [{ name: 'Login' }],
-        });
-        return;
-      }
-
-      const response = await fetch(`${BASE_URL}/users/logout/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify({
-          refresh_token: refreshToken
-        }),
-      });
-
-      console.log('Logout Response:', response.status); // Debug log
-
-      // Even if the logout API fails, we should clear tokens and redirect to login
-      await AsyncStorage.multiRemove(['access_token', 'refresh_token']);
+      await AsyncStorage.removeItem('accessToken');
       navigation.reset({
         index: 0,
-        routes: [{ name: 'Login' }],
+        routes: [{ name: 'Login' as never }],
       });
-
     } catch (error) {
       console.error('Logout error:', error);
-      // Even on error, clear tokens and redirect to login
-      await AsyncStorage.multiRemove(['access_token', 'refresh_token']);
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'Login' }],
-      });
     }
   };
 
-  const handleLogoutAllDevices = async () => {
-    try {
-      const accessToken = await AsyncStorage.getItem('access_token');
-      
-      if (!accessToken) {
-        throw new Error('No access token found');
-      }
-
-      const response = await fetch(`${BASE_URL}v1/user/logout-all/`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
+  const handleLogoutAll = async () => {
+    Alert.alert(
+      'Logout from all devices',
+      'Are you sure you want to logout from all devices?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
         },
-      });
-
-      if (response.ok) {
-        await AsyncStorage.multiRemove(['access_token', 'refresh_token']);
-        navigation.reset({
-          index: 0,
-          routes: [{ name: 'Login' }],
-        });
-      } else {
-        throw new Error('Logout from all devices failed');
-      }
-    } catch (error) {
-      console.error('Logout all devices error:', error);
-      Alert.alert('Error', 'Failed to logout from all devices. Please try again.');
-    }
-  };
-
-  const handleDeleteAccount = async () => {
-    try {
-      const accessToken = await AsyncStorage.getItem('access_token');
-      
-      if (!accessToken) {
-        throw new Error('No access token found');
-      }
-
-      const response = await fetch(`${BASE_URL}/users/profile/delete/`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
+        {
+          text: 'Logout',
+          onPress: async () => {
+            try {
+              await AsyncStorage.removeItem('accessToken');
+              // Add API call to invalidate all tokens
+              navigation.reset({
+                index: 0,
+                routes: [{ name: 'Login' as never }],
+              });
+            } catch (error) {
+              console.error('Logout error:', error);
+            }
+          },
         },
-      });
-
-      if (response.ok) {
-        await AsyncStorage.multiRemove(['access_token', 'refresh_token']);
-        navigation.reset({
-          index: 0,
-          routes: [{ name: 'Login' }],
-        });
-      } else {
-        throw new Error('Failed to delete account');
-      }
-    } catch (error) {
-      console.error('Delete account error:', error);
-      Alert.alert('Error', 'Failed to delete account. Please try again.');
-    }
+      ]
+    );
   };
-
-  const Header = () => (
-    <View style={tw`flex-row items-center justify-between px-4 py-4 bg-[#111111]`}>
-      <TouchableOpacity 
-        style={tw`bg-[#1D1E23] w-10 h-10 rounded-full items-center justify-center`}
-        onPress={() => navigation.goBack()}
-      >
-        <Ionicons name="chevron-back" size={24} color="#384766" />
-      </TouchableOpacity>
-      <Text style={tw`text-white text-lg font-medium`}>Profile</Text>
-      <View style={tw`flex-row gap-4`}>
-        <TouchableOpacity>
-          <Ionicons name="search-outline" size={24} color="#384766" />
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <Ionicons name="notifications-outline" size={24} color="#384766" />
-        </TouchableOpacity>
-      </View>
-    </View>
-  );
 
   return (
-    <View style={tw`flex-1 bg-[#111111]`}>
-      <Header />
-      <ScrollView style={tw`flex-1`} showsVerticalScrollIndicator={false}>
-        {loadingUserInfo || loadingTaskData ? (
-          <ActivityIndicator size="small" color="#384766" style={tw`mt-4`} />
-        ) : (
-          <View style={tw`items-center`}>
-            <UserInfo 
-              userInfo={userInfo || defaultUserInfo} 
-              isLoading={loadingUserInfo} 
+    <SafeAreaView style={styles.container}>
+      {/* Header */}
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Icon name="chevron-back" size={24} color="#fff" />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Profile</Text>
+        <View style={styles.headerRight}>
+          <TouchableOpacity style={styles.iconButton}>
+            <Icon name="search" size={24} color="#6B7280" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.iconButton}>
+            <Icon name="notifications" size={24} color="#6B7280" />
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      {/* Profile Card */}
+      <View style={styles.profileCard}>
+        <View style={styles.profileInfo}>
+          <View style={styles.avatarContainer}>
+            <Image
+              source={require('../../assets/ManAvatar.png')}
+              style={styles.avatar}
             />
-            <TaskCard total={taskData.total} pending={taskData.pending} done={taskData.done} />
-            <ProfileMenu title="My Activity" iconName="time-outline" onPress={() => handleCardPress('My Activity')} />
-            <ProfileMenu title="Settings" iconName="settings-outline" onPress={() => handleCardPress('SettingsScreen')} />
-            <ProfileMenu title="About Elite Aid" iconName="information-circle-outline" onPress={() => handleCardPress('About Elite Aide')} />
-            <ProfileMenu title="Logout" iconName="log-out-outline" onPress={() => handleCardPress('Logout')} />
-            <ProfileMenu title="Logout from all devices" iconName="log-out-outline" onPress={() => handleCardPress('Logout from All Devices')} />
+            <TouchableOpacity style={styles.editButton}>
+              <Icon name="pencil" size={16} color="#fff" />
+            </TouchableOpacity>
           </View>
-        )}
-      </ScrollView>
-    </View>
+          <View style={styles.userInfo}>
+            <Text style={styles.userName}>Priyanka Deshmukh</Text>
+            <Text style={styles.userEmail}>priyankadeshmukh.h@gmail.com.com</Text>
+            <Text style={styles.userRole}>Software Developer</Text>
+          </View>
+        </View>
+      </View>
+
+      {/* Tasks Summary */}
+      <TouchableOpacity style={styles.taskCard}>
+        <Text style={styles.taskTitle}>Your tasks</Text>
+        <View style={styles.taskStats}>
+          <View style={styles.statItem}>
+            <Icon name="flash" size={24} color="#3B82F6" />
+            <Text style={styles.statNumber}>125</Text>
+            <Text style={styles.statLabel}>total</Text>
+          </View>
+          <View style={styles.statItem}>
+            <Icon name="time" size={24} color="#3B82F6" />
+            <Text style={styles.statNumber}>25</Text>
+            <Text style={styles.statLabel}>pending</Text>
+          </View>
+          <View style={styles.statItem}>
+            <Icon name="checkmark-circle" size={24} color="#3B82F6" />
+            <Text style={styles.statNumber}>100</Text>
+            <Text style={styles.statLabel}>done</Text>
+          </View>
+        </View>
+      </TouchableOpacity>
+
+      {/* Menu Items */}
+      <View style={styles.menuContainer}>
+        <TouchableOpacity 
+          style={styles.menuItem}
+          onPress={() => navigation.navigate('MyActivity' as never)}
+        >
+          <Icon name="time" size={24} color="#6B7280" />
+          <Text style={styles.menuText}>My Activity</Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity 
+          style={styles.menuItem}
+          onPress={() => navigation.navigate('SettingsScreen' as never)}
+        >
+          <Icon name="settings" size={24} color="#6B7280" />
+          <Text style={styles.menuText}>Settings</Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity 
+          style={styles.menuItem}
+          onPress={() => navigation.navigate('About' as never)}
+        >
+          <Icon name="information-circle" size={24} color="#6B7280" />
+          <Text style={styles.menuText}>About Elite Aid</Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity 
+          style={styles.menuItem}
+          onPress={handleLogout}
+        >
+          <Icon name="log-out" size={24} color="#6B7280" />
+          <Text style={styles.menuText}>Logout</Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity 
+          style={styles.menuItem}
+          onPress={handleLogoutAll}
+        >
+          <Icon name="log-out" size={24} color="#6B7280" />
+          <Text style={styles.menuText}>Logout from all devices</Text>
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  cardShadow: {
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  }
+  container: {
+    flex: 1,
+    backgroundColor: '#111111',
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#fff',
+  },
+  headerRight: {
+    flexDirection: 'row',
+    gap: 16,
+  },
+  iconButton: {
+    padding: 4,
+  },
+  profileCard: {
+    backgroundColor: '#1D1E23',
+    margin: 16,
+    borderRadius: 16,
+    padding: 16,
+  },
+  profileInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 16,
+  },
+  avatarContainer: {
+    position: 'relative',
+  },
+  avatar: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+  },
+  editButton: {
+    position: 'absolute',
+    right: -4,
+    bottom: -4,
+    backgroundColor: '#3B82F6',
+    borderRadius: 12,
+    padding: 4,
+  },
+  userInfo: {
+    flex: 1,
+  },
+  userName: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#fff',
+  },
+  userEmail: {
+    fontSize: 14,
+    color: '#9CA3AF',
+  },
+  userRole: {
+    fontSize: 14,
+    color: '#9CA3AF',
+  },
+  taskCard: {
+    backgroundColor: '#1D1E23',
+    margin: 16,
+    borderRadius: 16,
+    padding: 16,
+  },
+  taskTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#fff',
+    marginBottom: 16,
+  },
+  taskStats: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  statItem: {
+    alignItems: 'center',
+  },
+  statNumber: {
+    fontSize: 24,
+    fontWeight: '600',
+    color: '#fff',
+    marginTop: 8,
+  },
+  statLabel: {
+    fontSize: 14,
+    color: '#9CA3AF',
+  },
+  menuContainer: {
+    padding: 16,
+    gap: 16,
+  },
+  menuItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    backgroundColor: '#1D1E23',
+    padding: 16,
+    borderRadius: 16,
+  },
+  menuText: {
+    fontSize: 16,
+    color: '#fff',
+  },
 });
 
 export default ProfileScreen;

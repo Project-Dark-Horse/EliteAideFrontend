@@ -24,9 +24,9 @@ const LoginScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
 
     try {
       // Log the request URL for debugging
-      console.log(`Requesting login at: ${BASE_URL}/users/login/`);
+      console.log(`Requesting login at: ${BASE_URL}v1/users/login/`);
 
-      const response = await fetch(`${BASE_URL}/users/login/`, {
+      const response = await fetch(`${BASE_URL}v1/users/login/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -61,8 +61,13 @@ const LoginScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
         Alert.alert('Login failed', errorMessage);
       }
     } catch (error) {
-      console.error('Login error:', error);
-      setDebugMessage(`Login error: ${error.message}`);
+      if (error instanceof Error) {
+        console.error('Login error:', error);
+        setDebugMessage(`Login error: ${error.message}`);
+      } else {
+        console.error('Login error:', error);
+        setDebugMessage('Login error: An unknown error occurred');
+      }
       Alert.alert('Login failed', 'An error occurred');
     } finally {
       setIsLoading(false);

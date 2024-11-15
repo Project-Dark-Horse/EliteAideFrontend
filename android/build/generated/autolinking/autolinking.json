@@ -106,6 +106,30 @@
         }
       }
     },
+    "react-native-config": {
+      "root": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-config",
+      "name": "react-native-config",
+      "platforms": {
+        "ios": {
+          "podspecPath": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-config/react-native-config.podspec",
+          "version": "1.5.3",
+          "configurations": [],
+          "scriptPhases": []
+        },
+        "android": {
+          "sourceDir": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-config/android",
+          "packageImportPath": "import com.lugg.RNCConfig.RNCConfigPackage;",
+          "packageInstance": "new RNCConfigPackage()",
+          "buildTypes": [],
+          "componentDescriptors": [],
+          "cmakeListsPath": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-config/android/build/generated/source/codegen/jni/CMakeLists.txt",
+          "cxxModuleCMakeListsModuleName": null,
+          "cxxModuleCMakeListsPath": null,
+          "cxxModuleHeaderName": null,
+          "isPureCxxDependency": false
+        }
+      }
+    },
     "react-native-curved-bottom-bar": {
       "root": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-curved-bottom-bar",
       "name": "react-native-curved-bottom-bar",

@@ -167,4 +167,67 @@ export const styles = StyleSheet.create({
   scrollViewContent: {
     paddingBottom: 20,
   },
+  messageWrapper: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    marginVertical: 4,
+    paddingHorizontal: 16,
+  },
+  userMessageWrapper: {
+    flexDirection: 'row-reverse',
+  },
+  aiAvatar: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    marginHorizontal: 8,
+  },
+  userAvatar: {
+    // Any specific user avatar styles
+  },
+  messageBox: {
+    padding: 10,
+    borderRadius: 12,
+  },
+  aiMessageBox: {
+    backgroundColor: '#F0F0F0', // or your preferred AI message background color
+  },
+  userMessageBox: {
+    backgroundColor: 'transparent', // or your preferred user message background color
+  },
+  messageText: {
+    color: '#000',
+  },
+  userMessageText: {
+    color: '#fff',
+  },
+  chatTail: {
+    width: 0,
+    height: 0,
+    position: 'absolute',
+    borderStyle: 'solid',
+  },
+  aiChatTail: {
+    borderTopWidth: 8,
+    borderRightWidth: 8,
+    borderBottomWidth: 0,
+    borderLeftWidth: 0,
+    borderTopColor: 'transparent',
+    borderRightColor: '#E8E8E8', // Match your AI message background color
+    left: -8,
+    bottom: 8,
+  },
+  userChatTail: {
+    borderTopWidth: 8,
+    borderRightWidth: 0,
+    borderBottomWidth: 0,
+    borderLeftWidth: 8,
+    borderTopColor: 'transparent',
+    borderLeftColor: '#007AFF', // Match your user message background color
+    right: -8,
+    bottom: 8,
+  },
+  spacer: {
+    width: 40, // Adjust this value based on your layout needs
+  },
 });
