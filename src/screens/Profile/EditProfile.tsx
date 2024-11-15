@@ -69,7 +69,7 @@ const EditProfile: React.FC = () => {
   const fetchProfileData = async () => {
     try {
       const token = await AsyncStorage.getItem('userToken');
-      const response = await fetch(`${BASE_URL}/users/profile/`, {
+      const response = await fetch(`${BASE_URL}v1/users/profile/`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -90,7 +90,7 @@ const EditProfile: React.FC = () => {
     setIsLoading(true);
     try {
       const token = await AsyncStorage.getItem('userToken');
-      const response = await fetch(`${BASE_URL}/users/profile/update/`, {
+      const response = await fetch(`${BASE_URL}v1/users/profile/update/`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,

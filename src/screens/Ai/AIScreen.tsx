@@ -2,352 +2,922 @@ import React, { useState } from 'react';
 import {
   View,
   Text,
-  TextInput,
   TouchableOpacity,
-  FlatList,
+  StyleSheet,
+  SafeAreaView,
+  StatusBar,
+  TextInput,
+  Modal,
+  ScrollView,
   KeyboardAvoidingView,
   Platform,
   Image,
 } from 'react-native';
-import tw from 'twrnc';
-import bot from '../../assets/bot.png';
-import Icon from 'react-native-vector-icons/Ionicons';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { Calendar } from 'react-native-calendars';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import IconIonicons from 'react-native-vector-icons/Ionicons';
+import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
+import LinearGradient from 'react-native-linear-gradient';
+import BotAvatar from '../../assets/bot.png';
+import UserAvatar from '../../assets/ManAvatar.png';
+import GradientBorder from '../../components/GradientBorder';
+
+
+interface TaskCategory {
+  id: string;
+  icon: string;
+  label: string;
+}
+
+type RootStackParamList = {
+  CreateTask: undefined;
+};
+
+type NavigationProp = StackNavigationProp<RootStackParamList, 'CreateTask'>;
+
+import axios from 'axios';
+import { getAccessToken } from '../../utils/auth';
 import { BASE_URL } from '@env';
 
 interface Message {
-  id: string;
   text: string;
-  sender: 'bot' | 'user';
+  isAI: boolean;
 }
 
-interface TaskPromptResponse {
-  error?: string;
-  missing_fields?: string[];
-  success?: boolean;
-  nextPrompt?: string;
-}
-
-interface AccumulatedPrompt {
-  title?: string;
-  description?: string;
-  dueDate?: string;
-}
-
-const categories = [
-  { id: 'health', icon: '❤️', label: 'Health' },
-  { id: 'travel', icon: '🚗', label: 'Travel' },
-  { id: 'work', icon: '💼', label: 'Work' },
-  { id: 'shopping', icon: '🛒', label: 'Shopping' },
-  { id: 'finance', icon: '💰', label: 'Finance' },
-  { id: 'personal', icon: '👤', label: 'Personal' },
-];
-
-
-// Add these flow-related types
-interface TaskCreationState {
-  name?: string;
-  description?: string;
-  category?: string;
-  priority?: 'High' | 'Medium' | 'Low';
-  deadline?: Date;
-  autoComplete?: boolean;
-}
-// Update mockBackendRequest to handle the task creation flow
-const mockBackendRequest = async (input: string, currentTask?: TaskCreationState): Promise<TaskPromptResponse> => {
-  if (input.toLowerCase().includes('create') || input.toLowerCase().includes('task')) {
-    return {
-      success: true,
-      nextPrompt: "Let's Create Your Task! What's the name of your task?"
+interface PromptResponse {
+  message: {
+    message: string;
+    task_details: {
+      id: number;
+      title: string;
+      description: string;
+      due_date: string;
+      // ... other task details
     };
-  }
-
-  if (!currentTask?.name) {
-    return {
-      success: true,
-      nextPrompt: "Would you like to describe it a bit more?"
-    };
-  }
-
-  if (!currentTask?.description) {
-    return {
-      success: true,
-      nextPrompt: "What kind of task is this?"
-    };
-  }
-
-  if (!currentTask?.category) {
-    return {
-      success: true,
-      nextPrompt: "How urgent is it?"
-    };
-  }
-
-  if (!currentTask?.priority) {
-    return {
-      success: true,
-      nextPrompt: "When's the deadline?"
-    };
-  }
-
-  // Add more flow steps as needed
-
-  return {
-    success: true,
-    nextPrompt: "Would you like me to auto-complete this task when certain conditions are met?"
   };
-};
+}
 
-const ChatScreen = () => {
+const AIScreen = () => {
+  const navigation = useNavigation<NavigationProp>();
+
+  // States
+  const [taskName, setTaskName] = useState('Finish the monthly report');
+  const [taskDescription, setTaskDescription] = useState('Complete the report, review it with the team, and submit.');
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [selectedTime, setSelectedTime] = useState(new Date());
+  const [showTimePicker, setShowTimePicker] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState('work');
+  const [priority, setPriority] = useState('high');
+  const [autoComplete, setAutoComplete] = useState(true);
+  const [showNameInput, setShowNameInput] = useState(false);
+  const [showDescInput, setShowDescInput] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
-    { id: '1', text: 'Hey, how is your productivity treating you! Tell me how can I help you!', sender: 'bot' },
+    { text: "Hey, how is your productivity treating you? Tell me how can I help you!", isAI: true }
   ]);
+  const [currentPrompt, setCurrentPrompt] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  const [input, setInput] = useState('');
-  const [currentTask, setCurrentTask] = useState<TaskCreationState>({});
-  const [accumulatedPrompt, setAccumulatedPrompt] = useState<AccumulatedPrompt>({});
+  const categories: TaskCategory[] = [
+    { id: 'health', icon: '❤️', label: 'Health' },
+    { id: 'travel', icon: '✈️', label: 'Travel' },
+    { id: 'work', icon: '💼', label: 'Work' },
+    { id: 'shopping', icon: '🛍️', label: 'Shopping' },
+    { id: 'finance', icon: '💰', label: 'Finance' },
+    { id: 'personal', icon: '👤', label: 'Personal' },
+  ];
 
-  const createTaskFromPrompt = async (prompt: string) => {
+  const handlePromptSubmit = async (prompt: string) => {
     try {
-      const fullPrompt = [
-        accumulatedPrompt.title && `title: ${accumulatedPrompt.title}`,
-        accumulatedPrompt.description && `description: ${accumulatedPrompt.description}`,
-        accumulatedPrompt.dueDate && `due date: ${accumulatedPrompt.dueDate}`,
-        prompt
-      ].filter(Boolean).join('. ');
-
-      const token = await AsyncStorage.getItem('access_token');
-      const response = await fetch(`${BASE_URL}/tasks/prompts/`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ prompt: fullPrompt }),
-      });
-
-      const data = await response.json();
+      setIsLoading(true);
+      const token = await getAccessToken();
       
-      if (!response.ok) {
-        if (data.missing_fields) {
-          setAccumulatedPrompt(prev => ({
-            ...prev,
-          }));
+      if (!token) {
+        navigation.navigate('Login' as never);
+        return;
+      }
+
+      // Add user message to chat
+      setMessages(prev => [...prev, { text: prompt, isAI: false }]);
+
+      const response = await axios.post<PromptResponse>(
+        `${BASE_URL}/v1/tasks/prompts/`,
+        { prompt },
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
         }
-        return {
-          error: data.message,
-          missing_fields: data.missing_fields
-        };
-      }
+      );
 
-      setAccumulatedPrompt({});
-      return {
-        success: true,
-        nextPrompt: data.message
-      };
+      // Add AI response to chat
+      if (response.data.message) {
+        setMessages(prev => [...prev, { 
+          text: response.data.message.message, 
+          isAI: true 
+        }]);
+
+        // Update task details if provided
+        if (response.data.message.task_details) {
+          const { title, description, due_date } = response.data.message.task_details;
+          setTaskName(title);
+          setTaskDescription(description);
+          if (due_date) {
+            setSelectedDate(new Date(due_date));
+          }
+        }
+      }
     } catch (error) {
-      console.error('Error creating task:', error);
-      return {
-        error: 'Failed to create task. Please try again.'
-      };
-    }
-  };
-
-  const handleResponse = async (response: TaskPromptResponse) => {
-    if (response.error) {
-      if (response.missing_fields?.length) {
-        const missingFieldsMessage = `Please provide: ${response.missing_fields.join(', ')}`;
-        setMessages(prevMessages => [
-          { id: Math.random().toString(), text: missingFieldsMessage, sender: 'bot' },
-          ...prevMessages,
-        ]);
-      } else {
-        setMessages(prevMessages => [
-          { id: Math.random().toString(), text: response.error || 'An error occurred', sender: 'bot' },
-          ...prevMessages,
-        ]);
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status === 401) {
+          navigation.navigate('Login' as never);
+        } else {
+          const errorMessage = error.response?.data?.message || 'Failed to process request';
+          setMessages(prev => [...prev, { 
+            text: errorMessage, 
+            isAI: true 
+          }]);
+        }
       }
-    } else if (response.success) {
-      setMessages(prevMessages => [
-        { id: Math.random().toString(), text: "Task created successfully! Anything else I can help you with?", sender: 'bot' },
-        ...prevMessages,
-      ]);
-    } else if (response.nextPrompt) {
-      setMessages(prevMessages => [
-        { id: Math.random().toString(), text: response.nextPrompt || '', sender: 'bot' },
-        ...prevMessages,
-      ]);
+      console.error('Error submitting prompt:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const sendMessage = async () => {
-    if (input.trim()) {
-      const newMessage: Message = {
-        id: Math.random().toString(),
-        text: input,
-        sender: 'user',
-      };
-      setMessages(prevMessages => [newMessage, ...prevMessages]);
-      setInput('');
+  const handleSave = async () => {
+    try {
+      const token = await getAccessToken();
+      if (!token) {
+        navigation.navigate('Login' as never);
+        return;
+      }
 
-      // If the message starts with "create" or contains task-related keywords
-      if (input.toLowerCase().includes('create') || 
-          input.toLowerCase().includes('task') || 
-          input.toLowerCase().includes('reminder')) {
-        const response = await createTaskFromPrompt(input);
-        await handleResponse(response);
-      } else {
-        // Handle the task creation flow
-        const response = await mockBackendRequest(input, currentTask);
-        await handleResponse(response);
+      const taskData = {
+        prompt: `Create a task titled "${taskName}" with description "${taskDescription}" due on ${selectedDate.toISOString()} with ${priority} priority in ${selectedCategory} category`
+      };
+
+      const response = await axios.post(
+        `${BASE_URL}/v1/tasks/prompts/`,
+        taskData,
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+
+      if (response.data.message?.task_details) {
+        navigation.goBack();
+      }
+    } catch (error) {
+      console.error('Error saving task:', error);
+      if (axios.isAxiosError(error) && error.response?.status === 401) {
+        navigation.navigate('Login' as never);
       }
     }
   };
 
-  const renderItem = ({ item }: { item: Message }) => (
-    <View style={tw`mb-3 flex ${item.sender === 'user' ? 'flex-row-reverse' : 'flex-row'} items-start`}>
-      {item.sender === 'bot' && (
-        <View style={tw`w-10 h-10 rounded-full mr-2 bg-[#1D1E23] items-center justify-center`}>
-          <Image source={bot} style={tw`w-8 h-8`} />
-        </View>
+  const renderMessage = (message: string, isAI: boolean) => (
+    <View style={[styles.messageWrapper, isAI ? {} : styles.userMessageWrapper]}>
+      {isAI ? (
+        <Image source={BotAvatar} style={styles.aiAvatar} />
+      ) : (
+        <Image source={UserAvatar} style={[styles.aiAvatar, styles.userAvatar]} />
       )}
-      <View
-        style={[
-          tw`relative p-3 rounded-lg max-w-3/4`,
-          {
-            backgroundColor: '#1D1E23',
-            borderRadius: 12,
-          },
-        ]}
-      >
-        <Text style={tw`text-white`}>{item.text}</Text>
-        
-        {/* Render category buttons if message asks for category */}
-        {item.text === "What kind of task is this?" && (
-          <View style={tw`flex-row flex-wrap mt-2`}>
-            {categories.map((category) => (
-              <TouchableOpacity
-                key={category.id}
-                style={tw`bg-[#2D2E33] rounded-full px-4 py-2 mr-2 mb-2 flex-row items-center`}
-              >
-                <Text style={tw`mr-1`}>{category.icon}</Text>
-                <Text style={tw`text-white`}>{category.label}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        )}
-
-        {/* Render priority buttons */}
-        {item.text === "How urgent is it?" && (
-          <View style={tw`flex-row mt-2`}>
-            {['High', 'Medium', 'Low'].map((priority) => (
-              <TouchableOpacity
-                key={priority}
-                style={tw`bg-[#2D2E33] rounded-full px-4 py-2 mr-2`}
-              >
-                <Text style={tw`text-white`}>
-                  {priority === 'High' ? '🔴' : priority === 'Medium' ? '🟠' : '🔵'} {priority}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        )}
-
-        {/* Calendar picker */}
-        {item.text === "When's the deadline?" && (
-          <View style={tw`mt-2 bg-[#2D2E33] rounded-lg p-2`}>
-            <Calendar
-              theme={{
-                backgroundColor: '#2D2E33',
-                calendarBackground: '#2D2E33',
-                textSectionTitleColor: '#ffffff',
-                selectedDayBackgroundColor: '#3272A0',
-                selectedDayTextColor: '#ffffff',
-                todayTextColor: '#3272A0',
-                dayTextColor: '#ffffff',
-                monthTextColor: '#ffffff',
-              }}
-            />
-            <View style={tw`flex-row items-center justify-between mt-2`}>
-              <Text style={tw`text-white`}>Time</Text>
-              <TextInput
-                style={tw`bg-[#1D1E23] text-white px-4 py-2 rounded-lg`}
-                placeholder="11:38"
-                placeholderTextColor="#666"
-              />
-              <TouchableOpacity style={tw`px-2`}>
-                <Text style={tw`text-white`}>AM</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        )}
-      </View>
+      <GradientBorder style={{ flex: 1, maxWidth: '80%' }} isUser={!isAI}>
+        <View style={[
+          styles.messageBox,
+          isAI ? styles.aiMessageBox : styles.userMessageBox
+        ]}>
+          <Text style={[
+            styles.messageText,
+            !isAI && styles.userMessageText
+          ]}>{message}</Text>
+        </View>
+        <View style={[
+          styles.chatTail,
+          isAI ? styles.aiChatTail : styles.userChatTail
+        ]} />
+      </GradientBorder>
+      {!isAI && <View style={styles.spacer} />}
     </View>
   );
 
-  const quickReplies = ['Create task', 'Set a goal', 'Roast me', 'Show my day', 'Pending tasks'];
+  const renderDatePicker = () => {
+    if (!showDatePicker) return null;
+
+    if (Platform.OS === 'ios') {
+      return (
+        <Modal
+          transparent
+          animationType="slide"
+          visible={showDatePicker}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.datePickerContainer}>
+              <View style={styles.datePickerHeader}>
+                <TouchableOpacity 
+                  onPress={() => setShowDatePicker(false)}
+                  style={styles.datePickerButton}
+                >
+                  <Text style={styles.datePickerButtonText}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity 
+                  onPress={() => setShowDatePicker(false)}
+                  style={styles.datePickerButton}
+                >
+                  <Text style={[styles.datePickerButtonText, { color: '#3272A0' }]}>Done</Text>
+                </TouchableOpacity>
+              </View>
+              <DateTimePicker
+                value={selectedDate}
+                mode="date"
+                display="spinner"
+                onChange={(event: DateTimePickerEvent, date?: Date) => {
+                  if (date) setSelectedDate(date);
+                }}
+                textColor="#FFFFFF"
+                themeVariant="dark"
+                style={styles.datePickerIOS}
+              />
+            </View>
+          </View>
+        </Modal>
+      );
+    }
+
+    // Android picker
+    return (
+      <DateTimePicker
+        value={selectedDate}
+        mode="date"
+        display="default"
+        onChange={(event: DateTimePickerEvent, date?: Date) => {
+          setShowDatePicker(false);
+          if (date) setSelectedDate(date);
+        }}
+        themeVariant="dark"
+      />
+    );
+  };
+
+  const renderTimePicker = () => {
+    if (!showTimePicker) return null;
+
+    if (Platform.OS === 'ios') {
+      return (
+        <Modal
+          transparent
+          animationType="slide"
+          visible={showTimePicker}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.datePickerContainer}>
+              <View style={styles.datePickerHeader}>
+                <TouchableOpacity 
+                  onPress={() => setShowTimePicker(false)}
+                  style={styles.datePickerButton}
+                >
+                  <Text style={styles.datePickerButtonText}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity 
+                  onPress={() => setShowTimePicker(false)}
+                  style={styles.datePickerButton}
+                >
+                  <Text style={[styles.datePickerButtonText, { color: '#3272A0' }]}>Done</Text>
+                </TouchableOpacity>
+              </View>
+              <DateTimePicker
+                value={selectedTime}
+                mode="time"
+                display="spinner"
+                onChange={(event: DateTimePickerEvent, date?: Date) => {
+                  if (date) setSelectedTime(date);
+                }}
+                textColor="#FFFFFF"
+                themeVariant="dark"
+                style={styles.datePickerIOS}
+              />
+            </View>
+          </View>
+        </Modal>
+      );
+    }
+
+    // Android picker
+    return (
+      <DateTimePicker
+        value={selectedTime}
+        mode="time"
+        display="default"
+        onChange={(event: DateTimePickerEvent, date?: Date) => {
+          setShowTimePicker(false);
+          if (date) setSelectedTime(date);
+        }}
+        themeVariant="dark"
+      />
+    );
+  };
 
   return (
-    <View style={tw`flex-1 bg-[#111111]`}>
+    <View style={styles.container}>
       <KeyboardAvoidingView
-        behavior={Platform.OS === 'android' ? 'padding' : 'height'}
-        keyboardVerticalOffset={80}
-        style={tw`flex-1 pb-9`}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.keyboardView}
       >
-        <FlatList
-          data={messages}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id}
-          inverted
-          style={tw`p-4`}
-          ListHeaderComponent={
-            <View style={tw`flex-row flex-wrap mb-8`}>
-              {quickReplies.map((reply) => (
-                <TouchableOpacity
-                  key={reply}
-                  style={tw`bg-[#1D1E23] rounded-lg px-4 py-2 mr-2 mb-2`}
-                  onPress={() => setInput(reply)}
-                >
-                  <Text style={tw`text-white`}>{reply}</Text>
+        <ScrollView
+          style={styles.chatContainer}
+          contentContainerStyle={styles.chatContent}
+          showsVerticalScrollIndicator={false}
+        >
+          {renderMessage("Hey, how is your productivity treating you? Tell me how can I help you!", true)}
+
+          <View style={styles.quickReplies}>
+            {['Create task', 'Set a goal', 'Roast me', 'Show my day', 'Pending tasks'].map((action) => (
+              <GradientBorder key={action}>
+                <TouchableOpacity style={styles.quickReplyButton}>
+                  <Text style={styles.quickReplyText}>{action}</Text>
                 </TouchableOpacity>
-              ))}
+              </GradientBorder>
+            ))}
+          </View>
+
+          {renderMessage(taskName, false)}
+          {renderMessage("Would you like to describe it a bit more?", true)}
+          {renderMessage(taskDescription, false)}
+          {renderMessage("What kind of task is this?", true)}
+
+          <View style={styles.categoryContainer}>
+            {categories.map((category) => (
+              <GradientBorder key={category.id}>
+                <TouchableOpacity
+                  style={[
+                    styles.categoryButton,
+                    selectedCategory === category.id && styles.selectedCategory
+                  ]}
+                  onPress={() => setSelectedCategory(category.id)}
+                >
+                  <Text style={styles.categoryIcon}>{category.icon}</Text>
+                  <Text style={styles.categoryLabel}>{category.label}</Text>
+                </TouchableOpacity>
+              </GradientBorder>
+            ))}
+          </View>
+
+          {renderMessage("How urgent is it?", true)}
+          <View style={styles.priorityContainer}>
+            {[
+              { id: 'high', color: '#FF4444', label: 'High' },
+              { id: 'medium', color: '#FFA500', label: 'Medium' },
+              { id: 'low', color: '#44FF44', label: 'Low' },
+            ].map((item) => (
+              <TouchableOpacity
+                key={item.id}
+                style={[
+                  styles.priorityButton,
+                  priority === item.id && styles.selectedPriority,
+                ]}
+                onPress={() => setPriority(item.id)}
+              >
+                <View style={[styles.priorityDot, { backgroundColor: item.color }]} />
+                <Text style={styles.priorityText}>{item.label}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+
+          {renderMessage("When's the deadline?", true)}
+          <GradientBorder>
+            <TouchableOpacity
+              style={styles.dateTimeButton}
+              onPress={() => setShowDatePicker(true)}
+            >
+              <IconIonicons name="calendar-outline" size={20} color="#fff" />
+              <Text style={styles.dateTimeText}>
+                {selectedDate.toLocaleDateString('en-US', {
+                  month: 'long',
+                  day: 'numeric',
+                  year: 'numeric',
+                })}
+              </Text>
+            </TouchableOpacity>
+          </GradientBorder>
+
+          <GradientBorder>
+            <TouchableOpacity
+              style={styles.dateTimeButton}
+              onPress={() => setShowTimePicker(true)}
+            >
+              <IconIonicons name="time-outline" size={20} color="#fff" />
+              <Text style={styles.dateTimeText}>
+                {selectedTime.toLocaleTimeString('en-US', {
+                  hour: 'numeric',
+                  minute: '2-digit',
+                })}
+              </Text>
+            </TouchableOpacity>
+          </GradientBorder>
+
+          {renderDatePicker()}
+          {renderTimePicker()}
+
+          {renderMessage("Would you like me to auto-complete this task when certain conditions are met?", true)}
+          <View style={styles.autoCompleteContainer}>
+            <Text style={styles.autoCompleteText}>Autocomplete task:</Text>
+            <TouchableOpacity
+              style={[styles.toggle, autoComplete && styles.toggleActive]}
+              onPress={() => setAutoComplete(!autoComplete)}
+            >
+              <View style={[styles.toggleHandle, autoComplete && styles.toggleHandleActive]} />
+            </TouchableOpacity>
+          </View>
+
+          {renderMessage("Alright, here's your task summary. Does everything look good?", true)}
+
+          <GradientBorder>
+            <View style={styles.taskSummary}>
+              <View style={styles.taskSummaryHeader}>
+                <IconIonicons name="document-text-outline" size={24} color="#fff" />
+                <Text style={styles.taskSummaryTitle}>{taskName}</Text>
+              </View>
+              <Text style={styles.taskSummaryDesc}>{taskDescription}</Text>
+              <Text style={styles.taskSummaryTime}>
+                Due date: {selectedDate.toLocaleDateString()} {selectedTime.toLocaleTimeString()}
+              </Text>
             </View>
-          }
-        />
+          </GradientBorder>
 
-        <View style={tw`flex-row items-center p-4 bg-[#111111] mb-25`}>
+          <View style={styles.bottomButtons}>
+            <TouchableOpacity style={styles.editButton}>
+              <Text style={styles.editButtonText}>Edit</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+              <Text style={styles.saveButtonText}>Save task</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.bottomPadding} />
+        </ScrollView>
+
+        <View style={styles.inputContainer}>
           <TextInput
-            style={tw`flex-1 px-4 py-2 rounded-full bg-[#1D1E23] text-white`}
-            value={input}
-            onChangeText={setInput}
-            placeholder="Type a message..."
-            placeholderTextColor="#ccc"
+            style={styles.input}
+            value={currentPrompt}
+            onChangeText={setCurrentPrompt}
+            placeholder="Type your message..."
+            placeholderTextColor="#666"
             multiline
-            numberOfLines={2}
+            editable={!isLoading}
           />
-
-          {/* Mic Icon
-          <TouchableOpacity
-            activeOpacity={0.7}
-            style={tw`bg-[#3272A0] p-2 rounded-full ml-2`}
+          <TouchableOpacity 
+            style={[styles.sendButton, isLoading && styles.sendButtonDisabled]}
+            onPress={() => {
+              if (currentPrompt.trim() && !isLoading) {
+                handlePromptSubmit(currentPrompt.trim());
+                setCurrentPrompt('');
+              }
+            }}
+            disabled={isLoading}
           >
-            <Icon name="mic" size={20} color="#fff" />
-          </TouchableOpacity> */}
-
-          {/* Send Icon */}
-          <TouchableOpacity
-            activeOpacity={0.7}
-            style={tw`bg-[#3272A0] p-2 rounded-full ml-2`}
-            onPress={sendMessage}
-          >
-            <Icon name="send" size={20} color="#fff" />
+            <IconIonicons 
+              name="send" 
+              size={24} 
+              color={isLoading ? "#666" : "#fff"} 
+            />
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
+
+      {/* Modals */}
+      <Modal visible={showNameInput} transparent animationType="slide">
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Task Name</Text>
+            <TextInput
+              style={styles.modalInput}
+              value={taskName}
+              onChangeText={setTaskName}
+              placeholder="Enter task name"
+              placeholderTextColor="#666"
+            />
+            <TouchableOpacity
+              style={styles.modalButton}
+              onPress={() => setShowNameInput(false)}
+            >
+              <Text style={styles.modalButtonText}>Done</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      <Modal visible={showDescInput} transparent animationType="slide">
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Task Description</Text>
+            <TextInput
+              style={[styles.modalInput, styles.modalTextArea]}
+              value={taskDescription}
+              onChangeText={setTaskDescription}
+              placeholder="Enter task description"
+              placeholderTextColor="#666"
+              multiline
+              numberOfLines={4}
+            />
+            <TouchableOpacity
+              style={styles.modalButton}
+              onPress={() => setShowDescInput(false)}
+            >
+              <Text style={styles.modalButtonText}>Done</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
 
-export default ChatScreen;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#111111',
+  },
+  keyboardView: {
+    flex: 1,
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 16,
+    backgroundColor: '#111111',
+  },
+  headerRight: {
+    flexDirection: 'row',
+    gap: 16,
+  },
+  headerIcon: {
+    padding: 4,
+  },
+  chatContainer: {
+    flex: 1,
+  },
+  chatContent: {
+    padding: 16,
+    paddingBottom: Platform.OS === 'ios' ? 100 : 80,
+  },
+  messageWrapper: {
+    flexDirection: 'row',
+    marginBottom: 16,
+    alignItems: 'flex-start',
+  },
+  userMessageWrapper: {
+    flexDirection: 'row-reverse',
+    justifyContent: 'flex-start',
+  },
+  aiAvatar: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    marginHorizontal: 8,
+  },
+  userAvatar: {
+    marginLeft: 8,
+  },
+  spacer: {
+    width: 32,
+  },
+  messageBox: {
+    padding: 12,
+  },
+  aiMessageBox: {
+    backgroundColor: 'transparent',
+  },
+  userMessageBox: {
+    backgroundColor: 'transparent',
+  },
+  messageText: {
+    color: '#FFFFFF',
+    fontSize: 13,
+    lineHeight: 18,
+  },
+  userMessageText: {
+    color: '#FFFFFF',
+    fontSize: 13,
+    lineHeight: 18,
+  },
+  quickReplies: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginBottom: 16,
+  },
+  quickReplyButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    backgroundColor: 'transparent',
+  },
+  quickReplyText: {
+    color: '#FFFFFF',
+    fontSize: 13,
+  },
+  categoryContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginBottom: 16,
+  },
+  categoryButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    backgroundColor: 'transparent',
+  },
+  selectedCategory: {
+    backgroundColor: '#3272A0',
+  },
+  categoryIcon: {
+    marginRight: 4,
+    fontSize: 16,
+  },
+  categoryLabel: {
+    color: '#FFFFFF',
+    fontSize: 13,
+  },
+  priorityContainer: {
+    flexDirection: 'row',
+    gap: 8,
+    marginBottom: 16,
+  },
+  priorityButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#2C2C2E',
+    borderRadius: 20,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+  },
+  selectedPriority: {
+    backgroundColor: '#3A3A3C',
+    borderColor: '#0A84FF',
+    borderWidth: 1,
+  },
+  priorityDot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    marginRight: 8,
+  },
+  priorityText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+  },
+  datePickerButton: {
+    backgroundColor: '#2C2C2E',
+    borderRadius: 20,
+    padding: 12,
+    marginBottom: 8,
+  },
+  modalDatePickerButton: {
+    padding: 8,
+  },
+  datePickerText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    textAlign: 'center',
+  },
+  timePickerButton: {
+    backgroundColor: '#2C2C2E',
+    borderRadius: 20,
+    padding: 12,
+    marginBottom: 16,
+  },
+  timePickerText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    textAlign: 'center',
+  },
+  autoCompleteContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+  },
+  autoCompleteText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+  },
+  toggle: {
+    width: 51,
+    height: 31,
+    backgroundColor: '#3A3A3C',
+    borderRadius: 15.5,
+    padding: 2,
+  },
+  toggleActive: {
+    backgroundColor: '#0A84FF',
+  },
+  toggleHandle: {
+    width: 27,
+    height: 27,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 13.5,
+  },
+  toggleHandleActive: {
+    transform: [{ translateX: 20 }],
+  },
+  taskSummary: {
+    padding: 16,
+    backgroundColor: 'transparent',
+  },
+  taskSummaryHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  taskSummaryTitle: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  taskSummaryDesc: {
+    color: '#FFFFFF',
+    fontSize: 13,
+    lineHeight: 18,
+  },
+  taskSummaryTime: {
+    color: '#8E8E93',
+    fontSize: 12,
+  },
+  bottomButtons: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  editButton: {
+    flex: 1,
+    backgroundColor: '#2C2C2E',
+    borderRadius: 8,
+    padding: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  editButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '500',
+  },
+  saveButton: {
+    flex: 1,
+    backgroundColor: '#0A84FF',
+    borderRadius: 8,
+    padding: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  saveButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'flex-end',
+  },
+  modalContent: {
+    backgroundColor: '#1C1C1E',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 20,
+  },
+  modalTitle: {
+    color: '#FFFFFF',
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 16,
+  },
+  modalInput: {
+    backgroundColor: '#2C2C2E',
+    borderRadius: 10,
+    padding: 12,
+    color: '#FFFFFF',
+    fontSize: 16,
+    marginBottom: 16,
+  },
+  modalTextArea: {
+    height: 100,
+    textAlignVertical: 'top',
+  },
+  modalButton: {
+    backgroundColor: '#0A84FF',
+    borderRadius: 10,
+    padding: 14,
+    alignItems: 'center',
+  },
+  modalButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  bottomPadding: {
+    height: 36,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'flex-end',
+  },
+  datePickerContainer: {
+    backgroundColor: '#1D1E23',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    paddingBottom: Platform.OS === 'ios' ? 40 : 0,
+  },
+  datePickerHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#2C2C2E',
+  },
+ 
+  datePickerButtonText: {
+    color: '#FFFFFF',
+  },
+  datePickerIOS: {
+    height: 200,
+    backgroundColor: '#1D1E23',
+  },
+  dateTimeButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+    gap: 8,
+  },
+  dateTimeText: {
+    color: '#FFFFFF',
+    fontSize: 13,
+  },
+  chatTail: {
+    position: 'absolute',
+    bottom: 8,
+    width: 0,
+    height: 0,
+    backgroundColor: 'transparent',
+  },
+  aiChatTail: {
+    left: -8,
+    borderTopWidth: 8,
+    borderRightWidth: 8,
+    borderBottomWidth: 8,
+    borderTopColor: 'transparent',
+    borderRightColor: '#3272A0',
+    borderBottomColor: 'transparent',
+  },
+  userChatTail: {
+    right: -8,
+    borderTopWidth: 8,
+    borderLeftWidth: 8,
+    borderBottomWidth: 8,
+    borderTopColor: 'transparent',
+    borderLeftColor: '#3272A0',
+    borderBottomColor: 'transparent',
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+    backgroundColor: '#1C1C1E',
+    borderTopWidth: 1,
+    borderTopColor: '#2C2C2E',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+  },
+  input: {
+    flex: 1,
+    backgroundColor: '#2C2C2E',
+    borderRadius: 20,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    color: '#FFFFFF',
+    fontSize: 16,
+    marginRight: 8,
+    maxHeight: 100,
+  },
+  sendButton: {
+    padding: 8,
+    borderRadius: 20,
+    backgroundColor: '#0A84FF',
+  },
+  sendButtonDisabled: {
+    backgroundColor: '#2C2C2E',
+  },
+});
+
+export default AIScreen;
+    
