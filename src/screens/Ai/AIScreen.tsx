@@ -101,7 +101,7 @@ const AIScreen = () => {
       setMessages(prev => [...prev, { text: prompt, isAI: false }]);
 
       const response = await axios.post<PromptResponse>(
-        `${BASE_URL}/v1/tasks/prompts/`,
+        `${BASE_URL}v1/tasks/prompts/`,
         { prompt },
         {
           headers: {
@@ -159,7 +159,7 @@ const AIScreen = () => {
       };
 
       const response = await axios.post(
-        `${BASE_URL}/v1/tasks/prompts/`,
+        `${BASE_URL}v1/tasks/prompts/`,
         taskData,
         {
           headers: {
