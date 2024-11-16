@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { View, TouchableOpacity, Modal, Text } from 'react-native';
+import { View, TouchableOpacity, Modal, Text, Image } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import CustomMessageComponent from '../../components/HomePage/message';
 import Tile from '../../components/HomePage/Tile';
 import { useNavigation } from '@react-navigation/native';
@@ -15,12 +14,13 @@ import tw from 'twrnc';
 import TodoImage from '../../assets/todo.png';
 import ProgressImage from '../../assets/progress.png';
 import DoneImage from '../../assets/done.png';
+import BotImage from '../../assets/bot.png';
 
 const Home: React.FC = () => {
   const navigation = useNavigation<HomeScreenNavigationProp>();
   const [isGreetingVisible, setIsGreetingVisible] = useState(false); // Control overlay visibility
   const [showProgressOverlay, setShowProgressOverlay] = useState(false);
-  const completedTasks = 5; // Example value, replace with actual data
+  const completedTasks = 1; // Example value, replace with actual data
   const totalTasks = 10; // Example value, replace with actual data
 
   const progress = Math.round((completedTasks / totalTasks) * 100) || 0;
@@ -70,7 +70,7 @@ const Home: React.FC = () => {
             />
           </Svg>
           <View style={tw`absolute inset-0 items-center justify-center`}>
-            <Ionicons name="time-outline" size={16} color="#F8F8F8" />
+            <Image source={BotImage} style={{ width: 20, height: 20 }} />
           </View>
         </TouchableOpacity>
       </View>

@@ -1,24 +1,21 @@
 import React, { useState } from 'react';
-import { View, Modal, TouchableOpacity } from 'react-native';
+import { View, Modal, TouchableOpacity, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import tw from 'twrnc';
 import Header from './Header';
 import WeekView from './WeekViewScreen';
 import DaySchedule from './DayScheduleScreen';
 import CalendarPopup from './CalendarPopup';
-import CreateTaskModal from './CreateTaskModal';
+import CreateTaskModal from '../Ai/ManualTaskCreate';
 import { styles } from './styles';
+import { Task } from '../../types/Task'; // Adjust the path as necessary
 
-interface Task {
-  id: number;
-  time: string;
-  summary: string;
-  detail: string;
-  date: Date;
-  color: string;
-  completed?: boolean;
+interface CreateTaskModalProps {
+  isVisible: boolean;
+  setIsVisible: (visible: boolean) => void;
+  selectedDate: Date;
+  onSave: (newTask: Omit<Task, "id">) => void;
 }
-
 const CalendarScreen = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [isCalendarVisible, setIsCalendarVisible] = useState(false);
@@ -31,7 +28,10 @@ const CalendarScreen = () => {
       detail: 'Group discussion for the new product', 
       date: new Date(), 
       color: '#1D1E23',
-      completed: true
+      completed: true,
+      category: 'Work',
+      priority: 'High',
+      reminder: true
     },
     { 
       id: 2, 
@@ -40,7 +40,10 @@ const CalendarScreen = () => {
       detail: 'Group discussion for the new product', 
       date: new Date(), 
       color: '#2196F3',
-      completed: true
+      completed: true,
+      category: 'Work',
+      priority: 'Medium',
+      reminder: true
     },
     { 
       id: 3, 
@@ -49,7 +52,10 @@ const CalendarScreen = () => {
       detail: 'Group discussion for the new product', 
       date: new Date(), 
       color: '#36AAB9',
-      completed: false
+      completed: false,
+      category: 'Work',
+      priority: 'Low',
+      reminder: true
     },
     { 
       id: 4, 
@@ -58,7 +64,10 @@ const CalendarScreen = () => {
       detail: 'Group discussion for the new product', 
       date: new Date(), 
       color: '#5560C4',
-      completed: false
+      completed: false,
+      category: 'Work',
+      priority: 'High',
+      reminder: true
     },
     { 
       id: 5, 
@@ -67,7 +76,10 @@ const CalendarScreen = () => {
       detail: 'Group discussion for the new product', 
       date: new Date(), 
       color: '#B29361',
-      completed: false
+      completed: false,
+      category: 'Work',
+      priority: 'Medium',
+      reminder: true
     }
   ]);
 

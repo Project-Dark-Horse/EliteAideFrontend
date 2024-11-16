@@ -33,11 +33,11 @@ const LoginScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
       });
 
       console.log(`Response status: ${response.status}`);
-      setDebugMessage(`Response status: ${response.status}`);
+      
 
       const data = await response.json();
       console.log('Response data:', data);
-      setDebugMessage(`Response data: ${JSON.stringify(data)}`);
+      
 
       if (response.ok && data.message?.access) {
         const { access, refresh } = data.message;

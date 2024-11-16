@@ -2,419 +2,328 @@ import React, { useState } from 'react';
 import {
   View,
   Text,
+  TextInput,
   TouchableOpacity,
   StyleSheet,
   SafeAreaView,
-  StatusBar,
-  TextInput,
-  Modal,
+  Platform,
+  Switch,
   ScrollView,
   KeyboardAvoidingView,
-  Platform,
-  Image,
+  Alert,
+  ActivityIndicator,
+  Dimensions,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import IconIonicons from 'react-native-vector-icons/Ionicons';
-import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
-import LinearGradient from 'react-native-linear-gradient';
-import BotAvatar from '../../assets/bot.png';
-import UserAvatar from '../../assets/ManAvatar.png';
-import GradientBorder from '../../components/GradientBorder';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import axios from 'axios';
+import { getAccessToken } from '../../utils/auth';
+import { BASE_URL } from '@env';
+import api from '../../types/api';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-
-interface TaskCategory {
+interface Category {
   id: string;
   icon: string;
   label: string;
+  color?: string;
 }
 
-type RootStackParamList = {
-  CreateTask: undefined;
+interface TaskResponse {
+  message: {
+    message: string;
+  };
+}
+
+interface TaskPayload {
+  title: string;
+  description: string;
+  priority: string;
+  status: string;
+  due_date: string;
+  type: string;
+}
+
+interface Task {
+  id: string;
+  title: string;
+  description: string;
+  priority: string;
+  status: string;
+  due_date: string;
+  type: string;
+}
+
+interface CreateTaskModalProps {
+  isVisible: boolean;
+  setIsVisible: (visible: boolean) => void;
+  selectedDate: Date;
+  onSave: (newTask: Omit<Task, "id">) => void;
+}
+
+const CATEGORIES: Category[] = [
+  { id: 'personal', icon: '👤', label: 'Personal', color: '#FF9F0A' },
+  { id: 'work', icon: '💼', label: 'Work', color: '#32ADE6' },
+  { id: 'health', icon: '❤️', label: 'Health', color: '#FF453A' },
+  { id: 'finance', icon: '💰', label: 'Finance', color: '#32D74B' },
+  { id: 'travel', icon: '✈️', label: 'Travel', color: '#BF5AF2' },
+  { id: 'shopping', icon: '🛒', label: 'Shopping', color: '#FF9F0A' },
+];
+
+const PRIORITIES = [
+  { id: 'High', color: '#FF453A', icon: '🔴' },
+  { id: 'Medium', color: '#FF9F0A', icon: '🟠' },
+  { id: 'Low', color: '#32ADE6', icon: '🔵' },
+];
+
+const priorityMap: Record<string, string> = {
+  'High': 'high',
+  'Medium': 'medium',
+  'Low': 'low',
 };
 
-type NavigationProp = StackNavigationProp<RootStackParamList, 'CreateTask'>;
+const BOTTOM_TAB_HEIGHT = Platform.OS === 'ios' ? 85 : 65; // Height including safe area
+const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
-const CreateTaskScreen = () => {
-  const navigation = useNavigation<NavigationProp>();
+type RootStackParamList = {
+  Login: undefined;
+  // ... other screens
+};
 
-  // States
-  const [taskName, setTaskName] = useState('Finish the monthly report');
-  const [taskDescription, setTaskDescription] = useState('Complete the report, review it with the team, and submit.');
-  const [selectedDate, setSelectedDate] = useState(new Date());
+const ManualTaskCreate = () => {
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [priority, setPriority] = useState('High');
+  const [date, setDate] = useState(new Date());
+  const [time, setTime] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [selectedTime, setSelectedTime] = useState(new Date());
   const [showTimePicker, setShowTimePicker] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState('work');
-  const [priority, setPriority] = useState('high');
-  const [autoComplete, setAutoComplete] = useState(true);
-  const [showNameInput, setShowNameInput] = useState(false);
-  const [showDescInput, setShowDescInput] = useState(false);
+  const [autoComplete, setAutoComplete] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const categories: TaskCategory[] = [
-    { id: 'health', icon: '❤️', label: 'Health' },
-    { id: 'travel', icon: '✈️', label: 'Travel' },
-    { id: 'work', icon: '💼', label: 'Work' },
-    { id: 'shopping', icon: '🛍️', label: 'Shopping' },
-    { id: 'finance', icon: '💰', label: 'Finance' },
-    { id: 'personal', icon: '👤', label: 'Personal' },
-  ];
-
-  const renderMessage = (message: string, isAI: boolean) => (
-    <View style={[styles.messageWrapper, isAI ? {} : styles.userMessageWrapper]}>
-      {isAI ? (
-        <Image source={BotAvatar} style={styles.aiAvatar} />
-      ) : (
-        <Image source={UserAvatar} style={[styles.aiAvatar, styles.userAvatar]} />
-      )}
-      <GradientBorder style={{ flex: 1, maxWidth: '80%' }} isUser={!isAI}>
-        <View style={[
-          styles.messageBox,
-          isAI ? styles.aiMessageBox : styles.userMessageBox
-        ]}>
-          <Text style={[
-            styles.messageText,
-            !isAI && styles.userMessageText
-          ]}>{message}</Text>
-        </View>
-        <View style={[
-          styles.chatTail,
-          isAI ? styles.aiChatTail : styles.userChatTail
-        ]} />
-      </GradientBorder>
-      {!isAI && <View style={styles.spacer} />}
-    </View>
-  );
-
-  const handleSave = () => {
-    console.log({
-      taskName,
-      taskDescription,
-      selectedCategory,
-      priority,
-      selectedDate,
-      selectedTime,
-      autoComplete,
+  const formatDate = (date: Date) => {
+    return date.toLocaleDateString('en-GB', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
     });
-    navigation.goBack();
   };
 
-  const renderDatePicker = () => {
-    if (!showDatePicker) return null;
-
-    if (Platform.OS === 'ios') {
-      return (
-        <Modal
-          transparent
-          animationType="slide"
-          visible={showDatePicker}
-        >
-          <View style={styles.modalOverlay}>
-            <View style={styles.datePickerContainer}>
-              <View style={styles.datePickerHeader}>
-                <TouchableOpacity 
-                  onPress={() => setShowDatePicker(false)}
-                  style={styles.datePickerButton}
-                >
-                  <Text style={styles.datePickerButtonText}>Cancel</Text>
-                </TouchableOpacity>
-                <TouchableOpacity 
-                  onPress={() => setShowDatePicker(false)}
-                  style={styles.datePickerButton}
-                >
-                  <Text style={[styles.datePickerButtonText, { color: '#3272A0' }]}>Done</Text>
-                </TouchableOpacity>
-              </View>
-              <DateTimePicker
-                value={selectedDate}
-                mode="date"
-                display="spinner"
-                onChange={(event: DateTimePickerEvent, date?: Date) => {
-                  if (date) setSelectedDate(date);
-                }}
-                textColor="#FFFFFF"
-                themeVariant="dark"
-                style={styles.datePickerIOS}
-              />
-            </View>
-          </View>
-        </Modal>
-      );
-    }
-
-    // Android picker
-    return (
-      <DateTimePicker
-        value={selectedDate}
-        mode="date"
-        display="default"
-        onChange={(event: DateTimePickerEvent, date?: Date) => {
-          setShowDatePicker(false);
-          if (date) setSelectedDate(date);
-        }}
-        themeVariant="dark"
-      />
-    );
+  const formatTime = (date: Date) => {
+    return date.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+    });
   };
 
-  const renderTimePicker = () => {
-    if (!showTimePicker) return null;
-
-    if (Platform.OS === 'ios') {
-      return (
-        <Modal
-          transparent
-          animationType="slide"
-          visible={showTimePicker}
-        >
-          <View style={styles.modalOverlay}>
-            <View style={styles.datePickerContainer}>
-              <View style={styles.datePickerHeader}>
-                <TouchableOpacity 
-                  onPress={() => setShowTimePicker(false)}
-                  style={styles.datePickerButton}
-                >
-                  <Text style={styles.datePickerButtonText}>Cancel</Text>
-                </TouchableOpacity>
-                <TouchableOpacity 
-                  onPress={() => setShowTimePicker(false)}
-                  style={styles.datePickerButton}
-                >
-                  <Text style={[styles.datePickerButtonText, { color: '#3272A0' }]}>Done</Text>
-                </TouchableOpacity>
-              </View>
-              <DateTimePicker
-                value={selectedTime}
-                mode="time"
-                display="spinner"
-                onChange={(event: DateTimePickerEvent, date?: Date) => {
-                  if (date) setSelectedTime(date);
-                }}
-                textColor="#FFFFFF"
-                themeVariant="dark"
-                style={styles.datePickerIOS}
-              />
-            </View>
-          </View>
-        </Modal>
+  const createTask = async () => {
+    if (isLoading) return;
+    
+    setIsLoading(true);
+    try {
+      const dueDateTime = new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate(),
+        time.getHours(),
+        time.getMinutes()
       );
-    }
 
-    // Android picker
-    return (
-      <DateTimePicker
-        value={selectedTime}
-        mode="time"
-        display="default"
-        onChange={(event: DateTimePickerEvent, date?: Date) => {
-          setShowTimePicker(false);
-          if (date) setSelectedTime(date);
-        }}
-        themeVariant="dark"
-      />
-    );
+      const payload: TaskPayload = {
+        title,
+        description,
+        priority: priorityMap[priority],
+        status: 'Pending',
+        due_date: dueDateTime.toISOString(),
+        type: selectedCategory || 'Personal',
+      };
+
+      const response = await api.post<TaskResponse>('v1/tasks/', payload);
+
+      if (response.data.message.message === 'Task created successfully') {
+        navigation.goBack();
+      }
+    } catch (error) {
+      console.error('Error creating task:', error);
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status === 401) {
+          navigation.navigate('Login');
+        } else {
+          Alert.alert('Error', 'Failed to create task. Please try again.');
+        }
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
-    <View style={styles.container}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.keyboardView}
-      >
-        {/* Header */}
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <IconIonicons name="arrow-back" size={24} color="#fff" />
+    <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Ionicons name="chevron-back" size={24} color="#fff" />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Create Task</Text>
+        <View style={styles.headerRight}>
+          <TouchableOpacity>
+            <Ionicons name="search" size={24} color="#fff" />
           </TouchableOpacity>
-          <View style={styles.headerRight}>
-            <TouchableOpacity style={styles.headerIcon}>
-              <IconIonicons name="search" size={24} color="#fff" />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.headerIcon}>
-              <IconIonicons name="notifications-outline" size={24} color="#fff" />
-            </TouchableOpacity>
-          </View>
+          <TouchableOpacity style={styles.headerIcon}>
+            <Ionicons name="notifications-outline" size={24} color="#fff" />
+          </TouchableOpacity>
         </View>
+      </View>
 
-        <ScrollView
-          style={styles.chatContainer}
-          contentContainerStyle={styles.chatContent}
+      <KeyboardAvoidingView 
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.keyboardAvoidingView}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
+      >
+        <ScrollView 
+          style={styles.scrollView}
           showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.scrollViewContent}
         >
-          {renderMessage("Hey, how is your productivity treating you? Tell me how can I help you!", true)}
-
-          <View style={styles.quickReplies}>
-            {['Create task', 'Set a goal', 'Roast me', 'Show my day', 'Pending tasks'].map((action) => (
-              <GradientBorder key={action}>
-                <TouchableOpacity style={styles.quickReplyButton}>
-                  <Text style={styles.quickReplyText}>{action}</Text>
-                </TouchableOpacity>
-              </GradientBorder>
-            ))}
-          </View>
-
-          {renderMessage(taskName, false)}
-          {renderMessage("Would you like to describe it a bit more?", true)}
-          {renderMessage(taskDescription, false)}
-          {renderMessage("What kind of task is this?", true)}
-
-          <View style={styles.categoryContainer}>
-            {categories.map((category) => (
-              <GradientBorder key={category.id}>
-                <TouchableOpacity
-                  style={[
-                    styles.categoryButton,
-                    selectedCategory === category.id && styles.selectedCategory
-                  ]}
-                  onPress={() => setSelectedCategory(category.id)}
-                >
-                  <Text style={styles.categoryIcon}>{category.icon}</Text>
-                  <Text style={styles.categoryLabel}>{category.label}</Text>
-                </TouchableOpacity>
-              </GradientBorder>
-            ))}
-          </View>
-
-          {renderMessage("How urgent is it?", true)}
-          <View style={styles.priorityContainer}>
-            {[
-              { id: 'high', color: '#FF4444', label: 'High' },
-              { id: 'medium', color: '#FFA500', label: 'Medium' },
-              { id: 'low', color: '#44FF44', label: 'Low' },
-            ].map((item) => (
-              <TouchableOpacity
-                key={item.id}
-                style={[
-                  styles.priorityButton,
-                  priority === item.id && styles.selectedPriority,
-                ]}
-                onPress={() => setPriority(item.id)}
-              >
-                <View style={[styles.priorityDot, { backgroundColor: item.color }]} />
-                <Text style={styles.priorityText}>{item.label}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-
-          {renderMessage("When's the deadline?", true)}
-          <GradientBorder>
-            <TouchableOpacity
-              style={styles.dateTimeButton}
-              onPress={() => setShowDatePicker(true)}
-            >
-              <IconIonicons name="calendar-outline" size={20} color="#fff" />
-              <Text style={styles.dateTimeText}>
-                {selectedDate.toLocaleDateString('en-US', {
-                  month: 'long',
-                  day: 'numeric',
-                  year: 'numeric',
-                })}
-              </Text>
-            </TouchableOpacity>
-          </GradientBorder>
-
-          <GradientBorder>
-            <TouchableOpacity
-              style={styles.dateTimeButton}
-              onPress={() => setShowTimePicker(true)}
-            >
-              <IconIonicons name="time-outline" size={20} color="#fff" />
-              <Text style={styles.dateTimeText}>
-                {selectedTime.toLocaleTimeString('en-US', {
-                  hour: 'numeric',
-                  minute: '2-digit',
-                })}
-              </Text>
-            </TouchableOpacity>
-          </GradientBorder>
-
-          {renderDatePicker()}
-          {renderTimePicker()}
-
-          {renderMessage("Would you like me to auto-complete this task when certain conditions are met?", true)}
-          <View style={styles.autoCompleteContainer}>
-            <Text style={styles.autoCompleteText}>Autocomplete task:</Text>
-            <TouchableOpacity
-              style={[styles.toggle, autoComplete && styles.toggleActive]}
-              onPress={() => setAutoComplete(!autoComplete)}
-            >
-              <View style={[styles.toggleHandle, autoComplete && styles.toggleHandleActive]} />
-            </TouchableOpacity>
-          </View>
-
-          {renderMessage("Alright, here's your task summary. Does everything look good?", true)}
-
-          <GradientBorder>
-            <View style={styles.taskSummary}>
-              <View style={styles.taskSummaryHeader}>
-                <IconIonicons name="document-text-outline" size={24} color="#fff" />
-                <Text style={styles.taskSummaryTitle}>{taskName}</Text>
-              </View>
-              <Text style={styles.taskSummaryDesc}>{taskDescription}</Text>
-              <Text style={styles.taskSummaryTime}>
-                Due date: {selectedDate.toLocaleDateString()} {selectedTime.toLocaleTimeString()}
-              </Text>
+          <View style={styles.form}>
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Title</Text>
+              <TextInput
+                style={styles.input}
+                value={title}
+                onChangeText={setTitle}
+                placeholder="Enter task title"
+                placeholderTextColor="#666"
+              />
             </View>
-          </GradientBorder>
 
-          <View style={styles.bottomButtons}>
-            <TouchableOpacity style={styles.editButton}>
-              <Text style={styles.editButtonText}>Edit</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-              <Text style={styles.saveButtonText}>Save task</Text>
-            </TouchableOpacity>
+            <View style={styles.row}>
+              <View style={styles.inputGroup}>
+                <Text style={styles.label}>Due Date</Text>
+                <TouchableOpacity 
+                  style={styles.dateInput}
+                  onPress={() => setShowDatePicker(true)}
+                >
+                  <Text style={styles.dateText}>{formatDate(date)}</Text>
+                  <Ionicons name="chevron-down" size={20} color="#fff" />
+                </TouchableOpacity>
+              </View>
+
+              <View style={styles.inputGroup}>
+                <Text style={styles.label}>Time</Text>
+                <TouchableOpacity 
+                  style={styles.dateInput}
+                  onPress={() => setShowTimePicker(true)}
+                >
+                  <Text style={styles.dateText}>{formatTime(time)}</Text>
+                  <Ionicons name="chevron-down" size={20} color="#fff" />
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Description</Text>
+              <TextInput
+                style={[styles.input, styles.textArea]}
+                value={description}
+                onChangeText={setDescription}
+                placeholder="Enter task description"
+                placeholderTextColor="#666"
+                multiline
+                numberOfLines={4}
+              />
+            </View>
+
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Category</Text>
+              <View style={styles.categoryGrid}>
+                {CATEGORIES.map(category => (
+                  <TouchableOpacity
+                    key={category.id}
+                    style={[
+                      styles.categoryButton,
+                      selectedCategory === category.id && styles.selectedCategory
+                    ]}
+                    onPress={() => setSelectedCategory(category.id)}
+                  >
+                    <Text style={styles.categoryIcon}>{category.icon}</Text>
+                    <Text style={styles.categoryLabel}>{category.label}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+
+            <View style={styles.inputGroup}>
+              <View style={styles.priorityRow}>
+                <Text style={styles.label}>Priority level:</Text>
+                <View style={styles.prioritySelector}>
+                  <Text style={[styles.priorityText, { color: PRIORITIES.find(p => p.id === priority)?.color }]}>
+                    {priority}
+                  </Text>
+                  <Text style={styles.priorityDot}>
+                    {PRIORITIES.find(p => p.id === priority)?.icon}
+                  </Text>
+                  <Ionicons name="chevron-down" size={20} color="#fff" />
+                </View>
+              </View>
+            </View>
+
+            <View style={styles.inputGroup}>
+              <View style={styles.autoCompleteRow}>
+                <Text style={styles.label}>Autocomplete task:</Text>
+                <Switch
+                  value={autoComplete}
+                  onValueChange={setAutoComplete}
+                  trackColor={{ false: '#1E2746', true: '#36AAB9' }}
+                  thumbColor={autoComplete ? '#fff' : '#666'}
+                />
+              </View>
+            </View>
           </View>
-
-          <View style={styles.bottomPadding} />
         </ScrollView>
+
+        <View style={styles.bottomContainer}>
+          <TouchableOpacity 
+            style={[styles.saveButton, !title ? styles.saveButtonDisabled : {}]}
+            onPress={createTask}
+            disabled={!title || isLoading}
+          >
+            {isLoading ? (
+              <ActivityIndicator color="#fff" size="small" />
+            ) : (
+              <Text style={styles.saveButtonText}>Save & Proceed</Text>
+            )}
+          </TouchableOpacity>
+        </View>
       </KeyboardAvoidingView>
 
-      {/* Modals */}
-      <Modal visible={showNameInput} transparent animationType="slide">
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Task Name</Text>
-            <TextInput
-              style={styles.modalInput}
-              value={taskName}
-              onChangeText={setTaskName}
-              placeholder="Enter task name"
-              placeholderTextColor="#666"
-            />
-            <TouchableOpacity
-              style={styles.modalButton}
-              onPress={() => setShowNameInput(false)}
-            >
-              <Text style={styles.modalButtonText}>Done</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
+      {showDatePicker && (
+        <DateTimePicker
+          value={date}
+          mode="date"
+          display="spinner"
+          onChange={(event, selectedDate) => {
+            setShowDatePicker(false);
+            if (selectedDate) setDate(selectedDate);
+          }}
+        />
+      )}
 
-      <Modal visible={showDescInput} transparent animationType="slide">
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Task Description</Text>
-            <TextInput
-              style={[styles.modalInput, styles.modalTextArea]}
-              value={taskDescription}
-              onChangeText={setTaskDescription}
-              placeholder="Enter task description"
-              placeholderTextColor="#666"
-              multiline
-              numberOfLines={4}
-            />
-            <TouchableOpacity
-              style={styles.modalButton}
-              onPress={() => setShowDescInput(false)}
-            >
-              <Text style={styles.modalButtonText}>Done</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
-    </View>
+      {showTimePicker && (
+        <DateTimePicker
+          value={time}
+          mode="time"
+          display="spinner"
+          onChange={(event, selectedDate) => {
+            setShowTimePicker(false);
+            if (selectedDate) setTime(selectedDate);
+          }}
+        />
+      )}
+    </SafeAreaView>
   );
 };
 
@@ -423,349 +332,164 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#111111',
   },
-  keyboardView: {
-    flex: 1,
-  },
   header: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
+    justifyContent: 'space-between',
     padding: 16,
-    backgroundColor: '#111111',
+    borderBottomWidth: 1,
+    borderBottomColor: '#1E2746',
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#fff',
   },
   headerRight: {
     flexDirection: 'row',
     gap: 16,
   },
   headerIcon: {
-    padding: 4,
-  },
-  chatContainer: {
-    flex: 1,
-  },
-  chatContent: {
-    padding: 16,
-    paddingBottom: Platform.OS === 'ios' ? 100 : 80,
-  },
-  messageWrapper: {
-    flexDirection: 'row',
-    marginBottom: 16,
-    alignItems: 'flex-start',
-  },
-  userMessageWrapper: {
-    flexDirection: 'row-reverse',
-    justifyContent: 'flex-start',
-  },
-  aiAvatar: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    marginHorizontal: 8,
-  },
-  userAvatar: {
     marginLeft: 8,
   },
-  spacer: {
-    width: 32,
+  keyboardAvoidingView: {
+    flex: 1,
   },
-  messageBox: {
-    padding: 12,
+  scrollView: {
+    flex: 1,
   },
-  aiMessageBox: {
-    backgroundColor: 'transparent',
+  scrollViewContent: {
+    flexGrow: 1,
+    paddingBottom: BOTTOM_TAB_HEIGHT + 80, // Add extra padding for bottom tab
   },
-  userMessageBox: {
-    backgroundColor: 'transparent',
+  form: {
+    padding: 16,
   },
-  messageText: {
-    color: '#FFFFFF',
-    fontSize: 13,
-    lineHeight: 18,
+  bottomContainer: {
+    position: 'absolute',
+    bottom: BOTTOM_TAB_HEIGHT, // Position above bottom tab
+    left: 0,
+    right: 0,
+    padding: 16,
+    backgroundColor: '#111111',
+    borderTopWidth: 1,
+    borderTopColor: '#1E2746',
   },
-  userMessageText: {
-    color: '#FFFFFF',
-    fontSize: 13,
-    lineHeight: 18,
+  inputGroup: {
+    marginBottom: 20,
   },
-  quickReplies: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-    marginBottom: 16,
-  },
-  quickReplyButton: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    backgroundColor: 'transparent',
-  },
-  quickReplyText: {
-    color: '#FFFFFF',
-    fontSize: 13,
-  },
-  categoryContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-    marginBottom: 16,
-  },
-  categoryButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    backgroundColor: 'transparent',
-  },
-  selectedCategory: {
-    backgroundColor: '#3272A0',
-  },
-  categoryIcon: {
-    marginRight: 4,
+  label: {
     fontSize: 16,
-  },
-  categoryLabel: {
-    color: '#FFFFFF',
-    fontSize: 13,
-  },
-  priorityContainer: {
-    flexDirection: 'row',
-    gap: 8,
-    marginBottom: 16,
-  },
-  priorityButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#2C2C2E',
-    borderRadius: 20,
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-  },
-  selectedPriority: {
-    backgroundColor: '#3A3A3C',
-    borderColor: '#0A84FF',
-    borderWidth: 1,
-  },
-  priorityDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    marginRight: 8,
-  },
-  priorityText: {
-    color: '#FFFFFF',
-    fontSize: 14,
-  },
-  datePickerButton: {
-    backgroundColor: '#2C2C2E',
-    borderRadius: 20,
-    padding: 12,
+    color: '#fff',
     marginBottom: 8,
   },
-  modalDatePickerButton: {
-    padding: 8,
-  },
-  datePickerText: {
-    color: '#FFFFFF',
-    fontSize: 14,
-    textAlign: 'center',
-  },
-  timePickerButton: {
-    backgroundColor: '#2C2C2E',
-    borderRadius: 20,
-    padding: 12,
-    marginBottom: 16,
-  },
-  timePickerText: {
-    color: '#FFFFFF',
-    fontSize: 14,
-    textAlign: 'center',
-  },
-  autoCompleteContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 16,
-  },
-  autoCompleteText: {
-    color: '#FFFFFF',
-    fontSize: 14,
-  },
-  toggle: {
-    width: 51,
-    height: 31,
-    backgroundColor: '#3A3A3C',
-    borderRadius: 15.5,
-    padding: 2,
-  },
-  toggleActive: {
-    backgroundColor: '#0A84FF',
-  },
-  toggleHandle: {
-    width: 27,
-    height: 27,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 13.5,
-  },
-  toggleHandleActive: {
-    transform: [{ translateX: 20 }],
-  },
-  taskSummary: {
-    padding: 16,
+  input: {
     backgroundColor: 'transparent',
-  },
-  taskSummaryHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  taskSummaryTitle: {
-    color: '#FFFFFF',
-    fontSize: 14,
-    fontWeight: 'bold',
-  },
-  taskSummaryDesc: {
-    color: '#FFFFFF',
-    fontSize: 13,
-    lineHeight: 18,
-  },
-  taskSummaryTime: {
-    color: '#8E8E93',
-    fontSize: 12,
-  },
-  bottomButtons: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-  editButton: {
-    flex: 1,
-    backgroundColor: '#2C2C2E',
-    borderRadius: 8,
-    padding: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  editButtonText: {
-    color: '#FFFFFF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#36AAB9',
+    color: '#fff',
     fontSize: 16,
-    fontWeight: '500',
+    paddingVertical: 8,
   },
-  saveButton: {
-    flex: 1,
-    backgroundColor: '#0A84FF',
-    borderRadius: 8,
-    padding: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  saveButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  modalContainer: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    justifyContent: 'flex-end',
-  },
-  modalContent: {
-    backgroundColor: '#1C1C1E',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    padding: 20,
-  },
-  modalTitle: {
-    color: '#FFFFFF',
-    fontSize: 18,
-    fontWeight: '600',
-    marginBottom: 16,
-  },
-  modalInput: {
-    backgroundColor: '#2C2C2E',
-    borderRadius: 10,
-    padding: 12,
-    color: '#FFFFFF',
-    fontSize: 16,
-    marginBottom: 16,
-  },
-  modalTextArea: {
+  textArea: {
     height: 100,
     textAlignVertical: 'top',
   },
-  modalButton: {
-    backgroundColor: '#0A84FF',
-    borderRadius: 10,
-    padding: 14,
+  row: {
+    flexDirection: 'row',
+    gap: 16,
+  },
+  dateInput: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderBottomWidth: 1,
+    borderBottomColor: '#36AAB9',
+    paddingVertical: 8,
+  },
+  dateText: {
+    color: '#fff',
+    fontSize: 16,
+  },
+  categoryGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginTop: 8,
+  },
+  categoryButton: {
+    backgroundColor: '#1E2746',
+    borderRadius: 20,
+    padding: 12,
+    alignItems: 'center',
+    width: '31%',
+    marginBottom: 8,
+  },
+  selectedCategory: {
+    borderWidth: 1,
+    borderColor: '#36AAB9',
+  },
+  categoryIcon: {
+    fontSize: 24,
+    marginBottom: 4,
+  },
+  categoryLabel: {
+    color: '#fff',
+    fontSize: 14,
+  },
+  priorityRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  prioritySelector: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  priorityText: {
+    fontSize: 16,
+    fontWeight: '500',
+  },
+  priorityDot: {
+    fontSize: 16,
+  },
+  autoCompleteRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+  },
+  saveButton: {
+    backgroundColor: '#1E2746',
+    borderRadius: 12,
+    padding: 16,
     alignItems: 'center',
   },
-  modalButtonText: {
-    color: '#FFFFFF',
+  saveButtonDisabled: {
+    opacity: 0.5,
+  },
+  saveButtonText: {
+    color: '#fff',
     fontSize: 16,
     fontWeight: '600',
   },
-  bottomPadding: {
-    height: 36,
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'flex-end',
-  },
-  datePickerContainer: {
-    backgroundColor: '#1D1E23',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    paddingBottom: Platform.OS === 'ios' ? 40 : 0,
-  },
-  datePickerHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#2C2C2E',
-  },
- 
-  datePickerButtonText: {
-    color: '#FFFFFF',
-  },
-  datePickerIOS: {
-    height: 200,
-    backgroundColor: '#1D1E23',
-  },
-  dateTimeButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 16,
-    gap: 8,
-  },
-  dateTimeText: {
-    color: '#FFFFFF',
-    fontSize: 13,
-  },
-  chatTail: {
+});
+
+// Alternative style approach using SafeAreaView for the bottom container
+const alternativeStyles = StyleSheet.create({
+  bottomContainer: {
     position: 'absolute',
-    bottom: 8,
-    width: 0,
-    height: 0,
-    backgroundColor: 'transparent',
-  },
-  aiChatTail: {
-    left: -8,
-    borderTopWidth: 8,
-    borderRightWidth: 8,
-    borderBottomWidth: 8,
-    borderTopColor: 'transparent',
-    borderRightColor: '#3272A0',
-    borderBottomColor: 'transparent',
-  },
-  userChatTail: {
-    right: -8,
-    borderTopWidth: 8,
-    borderLeftWidth: 8,
-    borderBottomWidth: 8,
-    borderTopColor: 'transparent',
-    borderLeftColor: '#3272A0',
-    borderBottomColor: 'transparent',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: '#111111',
+    borderTopWidth: 1,
+    borderTopColor: '#1E2746',
+    paddingBottom: BOTTOM_TAB_HEIGHT,
+    paddingHorizontal: 16,
+    paddingTop: 16,
   },
 });
 
-export default CreateTaskScreen;
+export default ManualTaskCreate;

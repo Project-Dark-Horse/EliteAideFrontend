@@ -6,6 +6,14 @@ import Svg, { Path, G, Circle } from 'react-native-svg';
 import { useNavigation } from '@react-navigation/native';
 import { Text } from 'react-native-paper';
 
+// Add interface for TaskCard props
+interface TaskCardProps {
+  title: string;
+  description: string;
+  time: string;
+  backgroundColor: string;
+}
+
 const TaskAnalysis = () => {
   const navigation = useNavigation();
 
@@ -40,16 +48,23 @@ const TaskAnalysis = () => {
     );
   };
 
-  const TaskCard = ({ title, description, time, backgroundColor, iconName }) => (
+  const TaskCard = ({ title, description, time, backgroundColor }: TaskCardProps) => (
     <View style={[styles.taskCard, { backgroundColor }]}>
-      <View style={styles.taskIconContainer}>
-        <Icon name={iconName} size={20} color="#fff" />
+      <View style={styles.taskCardContent}>
+        <View style={styles.taskIconContainer}>
+          <Icon name="briefcase-outline" size={20} color="#fff" />
+        </View>
+        <View style={styles.taskTextContainer}>
+          <Text style={styles.taskTitle}>{title}</Text>
+          <Text style={styles.taskDescription}>{description}</Text>
+        </View>
       </View>
-      <Text style={styles.taskTitle}>{title}</Text>
-      <Text style={styles.taskDescription}>{description}</Text>
       <View style={styles.taskTimeContainer}>
-        <Icon name="time-outline" size={14} color="#fff" />
         <Text style={styles.taskTime}>{time}</Text>
+        <View style={styles.taskControls}>
+          <Icon name="notifications-outline" size={18} color="#fff" style={styles.taskIcon} />
+          <Icon name="ellipse" size={16} color="#4CD964" />
+        </View>
       </View>
     </View>
   );
@@ -100,14 +115,12 @@ const TaskAnalysis = () => {
               description="Group discussion for the new product"
               time="10 AM"
               backgroundColor="#4e54c8"
-              iconName="people-outline"
             />
             <TaskCard
               title="Team Meeting"
               description="Group discussion for the new product"
               time="10 AM"
               backgroundColor="#4e54c8"
-              iconName="people-outline"
             />
           </View>
         </View>
@@ -125,14 +138,12 @@ const TaskAnalysis = () => {
               description="Review project milestones"
               time="2 PM"
               backgroundColor="#48dbfb"
-              iconName="document-text-outline"
             />
             <TaskCard
               title="Project Review"
               description="Review project milestones"
               time="2 PM"
               backgroundColor="#48dbfb"
-              iconName="document-text-outline"
             />
           </View>
         </View>
@@ -150,14 +161,12 @@ const TaskAnalysis = () => {
               description="Review pull requests"
               time="11 AM"
               backgroundColor="#0abde3"
-              iconName="code-slash-outline"
             />
             <TaskCard
               title="Code Review"
               description="Review pull requests"
               time="11 AM"
               backgroundColor="#0abde3"
-              iconName="code-slash-outline"
             />
           </View>
         </View>
@@ -210,22 +219,24 @@ const styles = StyleSheet.create({
   },
   legend: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginBottom: 20,
+    justifyContent: 'flex-start',
+    marginBottom: 24,
+    paddingHorizontal: 16,
+    gap: 24,
   },
   legendItem: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   legendColor: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    marginRight: 5,
+    width: 12,
+    height: 12,
+    borderRadius: 4,
+    marginRight: 8,
   },
   legendText: {
     color: '#fff',
-    fontSize: 12,
+    fontSize: 16,
   },
   section: {
     marginBottom: 20,
@@ -235,56 +246,69 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 16,
-    marginBottom: 10,
+    marginBottom: 16,
   },
   sectionTitle: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: 'bold',
   },
   seeAllText: {
-    color: '#48dbfb',
-    fontSize: 12,
+    color: '#fff',
+    fontSize: 14,
+    opacity: 0.7,
   },
   taskCardContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     paddingHorizontal: 16,
   },
   taskCard: {
-    width: '48%',
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 10,
+    width: '100%',
+    padding: 16,
+    borderRadius: 16,
+    marginBottom: 12,
+  },
+  taskCardContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   taskIconContainer: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
+    width: 40,
+    height: 40,
+    borderRadius: 12,
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 8,
+    marginRight: 12,
+  },
+  taskTextContainer: {
+    flex: 1,
   },
   taskTitle: {
     color: '#fff',
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 4,
   },
   taskDescription: {
-    color: '#fff',
-    fontSize: 12,
-    marginBottom: 8,
+    color: 'rgba(255, 255, 255, 0.7)',
+    fontSize: 14,
   },
   taskTimeContainer: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
+    marginTop: 12,
   },
   taskTime: {
     color: '#fff',
-    fontSize: 12,
-    marginLeft: 4,
+    fontSize: 14,
+  },
+  taskControls: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  taskIcon: {
+    marginRight: 12,
   },
   addButton: {
     position: 'absolute',
