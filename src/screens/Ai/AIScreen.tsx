@@ -35,28 +35,6 @@ type RootStackParamList = {
 
 type NavigationProp = StackNavigationProp<RootStackParamList, 'CreateTask'>;
 
-import axios from 'axios';
-import { getAccessToken } from '../../utils/auth';
-import { BASE_URL } from '@env';
-
-interface Message {
-  text: string;
-  isAI: boolean;
-}
-
-interface PromptResponse {
-  message: {
-    message: string;
-    task_details: {
-      id: number;
-      title: string;
-      description: string;
-      due_date: string;
-      // ... other task details
-    };
-  };
-}
-
 const AIScreen = () => {
   const navigation = useNavigation<NavigationProp>();
 
@@ -72,11 +50,6 @@ const AIScreen = () => {
   const [autoComplete, setAutoComplete] = useState(true);
   const [showNameInput, setShowNameInput] = useState(false);
   const [showDescInput, setShowDescInput] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([
-    { text: "Hey, how is your productivity treating you? Tell me how can I help you!", isAI: true }
-  ]);
-  const [currentPrompt, setCurrentPrompt] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
 
   const categories: TaskCategory[] = [
     { id: 'health', icon: '❤️', label: 'Health' },
@@ -86,99 +59,6 @@ const AIScreen = () => {
     { id: 'finance', icon: '💰', label: 'Finance' },
     { id: 'personal', icon: '👤', label: 'Personal' },
   ];
-
-  const handlePromptSubmit = async (prompt: string) => {
-    try {
-      setIsLoading(true);
-      const token = await getAccessToken();
-      
-      if (!token) {
-        navigation.navigate('Login' as never);
-        return;
-      }
-
-      // Add user message to chat
-      setMessages(prev => [...prev, { text: prompt, isAI: false }]);
-
-      const response = await axios.post<PromptResponse>(
-        `${BASE_URL}v1/tasks/prompts/`,
-        { prompt },
-        {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        }
-      );
-
-      // Add AI response to chat
-      if (response.data.message) {
-        setMessages(prev => [...prev, { 
-          text: response.data.message.message, 
-          isAI: true 
-        }]);
-
-        // Update task details if provided
-        if (response.data.message.task_details) {
-          const { title, description, due_date } = response.data.message.task_details;
-          setTaskName(title);
-          setTaskDescription(description);
-          if (due_date) {
-            setSelectedDate(new Date(due_date));
-          }
-        }
-      }
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        if (error.response?.status === 401) {
-          navigation.navigate('Login' as never);
-        } else {
-          const errorMessage = error.response?.data?.message || 'Failed to process request';
-          setMessages(prev => [...prev, { 
-            text: errorMessage, 
-            isAI: true 
-          }]);
-        }
-      }
-      console.error('Error submitting prompt:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleSave = async () => {
-    try {
-      const token = await getAccessToken();
-      if (!token) {
-        navigation.navigate('Login' as never);
-        return;
-      }
-
-      const taskData = {
-        prompt: `Create a task titled "${taskName}" with description "${taskDescription}" due on ${selectedDate.toISOString()} with ${priority} priority in ${selectedCategory} category`
-      };
-
-      const response = await axios.post(
-        `${BASE_URL}v1/tasks/prompts/`,
-        taskData,
-        {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        }
-      );
-
-      if (response.data.message?.task_details) {
-        navigation.goBack();
-      }
-    } catch (error) {
-      console.error('Error saving task:', error);
-      if (axios.isAxiosError(error) && error.response?.status === 401) {
-        navigation.navigate('Login' as never);
-      }
-    }
-  };
 
   const renderMessage = (message: string, isAI: boolean) => (
     <View style={[styles.messageWrapper, isAI ? {} : styles.userMessageWrapper]}>
@@ -205,6 +85,19 @@ const AIScreen = () => {
       {!isAI && <View style={styles.spacer} />}
     </View>
   );
+
+  const handleSave = () => {
+    console.log({
+      taskName,
+      taskDescription,
+      selectedCategory,
+      priority,
+      selectedDate,
+      selectedTime,
+      autoComplete,
+    });
+    navigation.goBack();
+  };
 
   const renderDatePicker = () => {
     if (!showDatePicker) return null;
@@ -328,6 +221,21 @@ const AIScreen = () => {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.keyboardView}
       >
+        {/* Header */}
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <IconIonicons name="arrow-back" size={24} color="#fff" />
+          </TouchableOpacity>
+          <View style={styles.headerRight}>
+            <TouchableOpacity style={styles.headerIcon}>
+              <IconIonicons name="search" size={24} color="#fff" />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.headerIcon}>
+              <IconIonicons name="notifications-outline" size={24} color="#fff" />
+            </TouchableOpacity>
+          </View>
+        </View>
+
         <ScrollView
           style={styles.chatContainer}
           contentContainerStyle={styles.chatContent}
@@ -460,34 +368,6 @@ const AIScreen = () => {
 
           <View style={styles.bottomPadding} />
         </ScrollView>
-
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.input}
-            value={currentPrompt}
-            onChangeText={setCurrentPrompt}
-            placeholder="Type your message..."
-            placeholderTextColor="#666"
-            multiline
-            editable={!isLoading}
-          />
-          <TouchableOpacity 
-            style={[styles.sendButton, isLoading && styles.sendButtonDisabled]}
-            onPress={() => {
-              if (currentPrompt.trim() && !isLoading) {
-                handlePromptSubmit(currentPrompt.trim());
-                setCurrentPrompt('');
-              }
-            }}
-            disabled={isLoading}
-          >
-            <IconIonicons 
-              name="send" 
-              size={24} 
-              color={isLoading ? "#666" : "#fff"} 
-            />
-          </TouchableOpacity>
-        </View>
       </KeyboardAvoidingView>
 
       {/* Modals */}
@@ -886,38 +766,6 @@ const styles = StyleSheet.create({
     borderLeftColor: '#3272A0',
     borderBottomColor: 'transparent',
   },
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 16,
-    backgroundColor: '#1C1C1E',
-    borderTopWidth: 1,
-    borderTopColor: '#2C2C2E',
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-  },
-  input: {
-    flex: 1,
-    backgroundColor: '#2C2C2E',
-    borderRadius: 20,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    color: '#FFFFFF',
-    fontSize: 16,
-    marginRight: 8,
-    maxHeight: 100,
-  },
-  sendButton: {
-    padding: 8,
-    borderRadius: 20,
-    backgroundColor: '#0A84FF',
-  },
-  sendButtonDisabled: {
-    backgroundColor: '#2C2C2E',
-  },
 });
 
 export default AIScreen;
-    

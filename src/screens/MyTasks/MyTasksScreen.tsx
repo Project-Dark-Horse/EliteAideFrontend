@@ -80,22 +80,25 @@ const MyTaskScreen: React.FC<Props> = ({ navigation }) => {
   ];
 
   const renderTask = (task: Task) => (
-      <View key={task.id} style={[styles.taskCard, { backgroundColor: task.color + '20' }, task.cardStyle]}>
-        <View style={[styles.leftContainer, task.leftContainerStyle]}>
-          <View style={[styles.container, { backgroundColor: task.color }]}>
-            <Icon name={task.icon} size={20} color="#FFFFFF" />
-          </View>
-        </View>
-        <View style={[styles.middleContainer, task.middleContainerStyle]}>
-          <Text style={styles.title}>{task.title}</Text>
-          <Text style={styles.description}>{task.description}</Text>
-        </View>
-        <View style={[styles.rightContainer, task.rightContainerStyle]}>
-          <Text style={styles.time}>{task.time}</Text>
-          <Icon name="checkmark-circle" size={24} color={task.color} style={styles.checkIcon} />
+    <View key={task.id} style={[styles.taskCard, task.cardStyle]}>
+      <View style={[styles.leftContainer, task.leftContainerStyle]}>
+        <View style={styles.iconContainer}>
+          <Icon name={task.icon} size={20} color="#FFFFFF" />
         </View>
       </View>
-    );
+      <View style={[styles.middleContainer, task.middleContainerStyle]}>
+        <Text style={styles.title}>{task.title}</Text>
+        <Text style={styles.description}>{task.description}</Text>
+      </View>
+      <View style={[styles.rightContainer, task.rightContainerStyle]}>
+        <View style={styles.taskControls}>
+          <Icon name="notifications-outline" size={18} color="#FFFFFF" style={styles.notificationIcon} />
+          <Icon name="ellipse" size={16} color="#4CD964" />
+        </View>
+        <Text style={styles.time}>{task.time}</Text>
+      </View>
+    </View>
+  );
 
   return (
       <SafeAreaView style={styles.container}>
@@ -119,73 +122,69 @@ const styles = StyleSheet.create({
     backgroundColor: '#111111',
     padding: 16,
   },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-    marginLeft: 16,
-  },
   scrollView: {
     flex: 1,
   },
   sectionHeader: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-    marginBottom: 12,
-  },
-  todayContainer: {
-    backgroundColor: '#1D1E23',
-    borderRadius: 12,
-    padding: 8,
+    fontSize: 20,
+    color: '#7A7A7A',
     marginBottom: 16,
-  },
-  thisWeekContainer: {
-    backgroundColor: '#1D1E23',
-    borderRadius: 12,
-    padding: 8,
+    marginTop: 8,
   },
   taskCard: {
-      flexDirection: 'row',
-      borderRadius: 8,
-      marginBottom: 8,
-      overflow: 'hidden',
-    },
-    leftContainer: {
-      padding: 13,
-      justifyContent: 'center',
-    },
-    middleContainer: {
-      flex: 1,
-      justifyContent: 'center',
-      padding: 12,
-    },
-    rightContainer: {
-      justifyContent: 'center',
-      alignItems: 'flex-end',
-      padding: 12,
-    },
+    flexDirection: 'row',
+    borderRadius: 16,
+    marginBottom: 12,
+    padding: 16,
+    backgroundColor: '#1D1E23',
+  },
+  leftContainer: {
+    marginRight: 12,
+  },
+  iconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  middleContainer: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  rightContainer: {
+    alignItems: 'flex-end',
+    justifyContent: 'space-between',
+  },
+  taskControls: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
   title: {
     fontSize: 16,
     fontWeight: 'bold',
     color: '#FFFFFF',
+    marginBottom: 4,
   },
   description: {
-    fontSize: 12,
+    fontSize: 14,
     color: '#7A7A7A',
   },
   time: {
-    fontSize: 12,
+    fontSize: 14,
     color: '#7A7A7A',
-    textAlign: 'right',
-  },
-  checkIcon: {
     marginTop: 4,
+  },
+  notificationIcon: {
+    opacity: 0.7,
+  },
+  todayContainer: {
+    marginBottom: 24,
+  },
+  thisWeekContainer: {
+    marginBottom: 24,
   },
 });
 

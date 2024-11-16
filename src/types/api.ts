@@ -61,3 +61,30 @@ export interface TasksResponse {
   next: string | null;
   previous: string | null;
 } 
+
+import axios from 'axios';
+import { getAccessToken } from '../utils/auth';
+import { BASE_URL } from '@env';
+
+const api = axios.create({
+  baseURL: BASE_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+// Add request interceptor to add token
+api.interceptors.request.use(
+  async (config) => {
+    const token = await getAccessToken();
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+export default api;

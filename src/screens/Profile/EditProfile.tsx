@@ -137,9 +137,9 @@ const EditProfile: React.FC = () => {
     <View style={tw`flex-1 bg-black`}>
       {/* Header */}
       <View style={tw`flex-row items-center justify-between px-4 pt-12 pb-4`}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Icon source={{uri: 'chevron-back'}} size={24} color="#fff" />
-        </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.goBack()}>
+  <Ionicons name="chevron-back" size={24} color="#fff" />
+</TouchableOpacity>
         <Text style={tw`text-white text-xl font-semibold`}>Edit Profile</Text>
         <View style={tw`w-8`} /> {/* Placeholder for alignment */}
       </View>
