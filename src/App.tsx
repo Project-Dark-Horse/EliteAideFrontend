@@ -14,6 +14,7 @@ import OtpScreen from './screens/Auth/OtpScreen';
 import ForgotPasswordScreen from './screens/Auth/ForgotPasswordScreen';
 import EnterEmailScreen from './screens/Auth/EnterEmailScreen';
 import WelcomeScreen from './screens/WelcomeScreen';
+import ManualTaskCreate from './screens/Ai/ManualTaskCreate';
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -58,6 +59,7 @@ const App = () => {
           <Stack.Screen name="SignUp" component={SignUpScreen} />
           <Stack.Screen name="BottomTabNavigator" component={BottomTabNavigator} />
           <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
+          <Stack.Screen name="ManualTaskCreate" component={ManualTaskCreate} />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>

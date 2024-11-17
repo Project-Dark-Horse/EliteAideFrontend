@@ -125,6 +125,8 @@ const ManualTaskCreate = () => {
     
     setIsLoading(true);
     try {
+      const token = await getAccessToken();
+
       const dueDateTime = new Date(
         date.getFullYear(),
         date.getMonth(),
@@ -142,7 +144,15 @@ const ManualTaskCreate = () => {
         type: selectedCategory || 'Personal',
       };
 
-      const response = await api.post<TaskResponse>('v1/tasks/', payload);
+      const response = await axios.post<TaskResponse>(
+        `${BASE_URL}v1/tasks/`,
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (response.data.message.message === 'Task created successfully') {
         navigation.goBack();
