@@ -81,7 +81,7 @@ const GreetingPopup: React.FC<GreetingPopupProps> = ({ visible, onClose }) => {
           {/* Action Section with Arrows */}
           <View style={styles.actionSection}>
             <View style={styles.actionItem}>
-              <Image source={require('../../assets/deletearrow.png')} style={styles.actionRow} />
+              <Ionicons name="close-circle" size={24} color="#C23333" style={styles.actionRow} />
               <Text style={styles.deleteText}>Delete</Text>
             </View>
             <View style={styles.paginationDots}>
@@ -96,7 +96,7 @@ const GreetingPopup: React.FC<GreetingPopupProps> = ({ visible, onClose }) => {
               ))}
             </View>
             <View style={styles.actionItem}>
-              <Image source={require('../../assets/complete.png')} style={styles.actionRow} />
+              <Ionicons name="checkmark-circle" size={24} color="#3DCCBB" style={styles.actionRow} />
               <Text style={styles.completeText}>Complete</Text>
             </View>
           </View>

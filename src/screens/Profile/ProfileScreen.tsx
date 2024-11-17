@@ -4,9 +4,31 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { launchImageLibrary } from 'react-native-image-picker';
 
 const ProfileScreen = () => {
   const navigation = useNavigation();
+
+  const handleEditProfilePic = () => {
+    const options = {
+      mediaType: 'photo' as const,
+      maxWidth: 300,
+      maxHeight: 300,
+      quality: 1.0 as const,
+    };
+
+    launchImageLibrary(options, (response) => {
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.errorCode) {
+        console.error('ImagePicker Error: ', response.errorMessage);
+      } else if (response.assets && response.assets.length > 0) {
+        const uri = response.assets[0].uri;
+        // Handle the selected image (e.g., upload to server or update state)
+        console.log(uri);
+      }
+    });
+  };
 
   const handleLogout = async () => {
     try {
@@ -74,7 +96,7 @@ const ProfileScreen = () => {
               source={require('../../assets/ManAvatar.png')}
               style={styles.avatar}
             />
-            <TouchableOpacity style={styles.editButton}>
+            <TouchableOpacity style={styles.editButton} onPress={handleEditProfilePic}>
               <Ionicons name="pencil" size={16} color="#fff" />
             </TouchableOpacity>
           </View>

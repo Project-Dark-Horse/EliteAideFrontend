@@ -43,7 +43,7 @@ const UpcomingTasksComponent: React.FC = () => {
     setLoading(true);
     try {
       const token = await AsyncStorage.getItem('access_token');
-      const response = await axios.get(`${BASE_URL}/v1/tasks/user-tasks/`, {
+      const response = await axios.get(`${BASE_URL}v1/tasks/user-tasks/`, {
         headers: { Authorization: `Bearer ${token}` },
         params: { page: 1, items_per_page: 3 },
       });
