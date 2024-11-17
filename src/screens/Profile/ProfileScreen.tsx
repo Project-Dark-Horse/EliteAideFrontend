@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -8,6 +8,36 @@ import { launchImageLibrary } from 'react-native-image-picker';
 
 const ProfileScreen = () => {
   const navigation = useNavigation();
+  const [userData, setUserData] = useState({ username: '', email: '' });
+
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      try {
+        const token = await AsyncStorage.getItem('accessToken');
+        const response = await fetch('https://api.eliteaide.tech/v1/users/profile/', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+          setUserData({
+            username: data.message.user_data.username,
+            email: data.message.user_data.email,
+          });
+        } else {
+          console.error('Failed to fetch profile data:', data);
+        }
+      } catch (error) {
+        console.error('Error fetching profile data:', error);
+      }
+    };
+
+    fetchProfileData();
+  }, []);
 
   const handleEditProfilePic = () => {
     const options = {
@@ -101,8 +131,8 @@ const ProfileScreen = () => {
             </TouchableOpacity>
           </View>
           <View style={styles.userInfo}>
-            <Text style={styles.userName}>Priyanka Deshmukh</Text>
-            <Text style={styles.userEmail}>priyankadeshmukh.h@gmail.com.com</Text>
+            <Text style={styles.userName}>{userData.username || 'Username'}</Text>
+            <Text style={styles.userEmail}>{userData.email || 'Email'}</Text>
             <Text style={styles.userRole}>Software Developer</Text>
           </View>
         </View>
