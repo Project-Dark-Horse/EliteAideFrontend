@@ -9,16 +9,31 @@ import HomeStack from './HomeStack';
 import Header from '../components/CommonHeader';
 import { useNavigation, CompositeNavigationProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../types/navigation';
 import ProfileStack from './ProfileStack';
 import BottomBarStack from './BottomBarStack';
-import ManualTaskCreate from '../screens/Ai/ManualTaskCreate'
-
+import ManualTaskCreate from '../screens/Ai/ManualTaskCreate';
+import { createStackNavigator } from '@react-navigation/stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 type BottomTabNavigatorProp = CompositeNavigationProp<
   StackNavigationProp<RootStackParamList, 'BottomBarStack'>,
   StackNavigationProp<RootStackParamList>
 >;
+
+// Define the RootStackParamList with all possible routes
+type RootStackParamList = {
+  HomeStackMain: undefined;
+  Calendar: undefined;
+  Ai: undefined;
+  Profile: undefined;
+  ManualTaskCreate: undefined;
+  BottomBarStack: undefined;
+  // ... other screens
+};
+
+const Stack = createStackNavigator<RootStackParamList>();
+
+const Tab = createBottomTabNavigator();
 
 const BottomTabNavigator: React.FC = () => {
   const navigation = useNavigation<BottomTabNavigatorProp>();
@@ -63,7 +78,7 @@ const BottomTabNavigator: React.FC = () => {
         position="RIGHT"
         component={Ai}
         options={{
-          header: () => <Header title="Let’s get things done!" showTitle={false} />,
+          header: () => <Header title="Let's get things done!" showTitle={false} />,
         }}
       />
       <CurvedBottomBar.Screen
@@ -74,6 +89,7 @@ const BottomTabNavigator: React.FC = () => {
           headerShown: false, // This will hide the header
         }}
       />
+      <Tab.Screen name="ManualTaskCreate" component={ManualTaskCreate} />
     </CurvedBottomBar.Navigator>
   );
 };

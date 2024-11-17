@@ -24,6 +24,7 @@ interface Message {
   text: string;
   sender: 'bot' | 'user';
   showQuickReplies?: boolean;
+  action?: 'create_task' | 'show_day' | null;
 }
 
 interface TaskDetails {
@@ -41,8 +42,28 @@ interface SuccessResponse {
   };
 }
 
-interface ErrorResponse {
-  error: string;
+interface TaskResponse {
+  message: {
+    message: string;
+    task_details: {
+      total_pages: number;
+      total_items: number;
+      current_page: number | null;
+      page_size: number;
+      data: Array<{
+        id: number;
+        title: string;
+        description: string;
+        priority: number;
+        status: string;
+        due_date: string;
+        type: string;
+        created_at: string;
+        updated_at: string;
+        creator: number;
+      }>;
+    };
+  };
 }
 
 interface ApiResponse {
@@ -73,7 +94,7 @@ const ChatScreen = () => {
   ]);
 
   const [input, setInput] = useState('');
-
+  const [showInput, setShowInput] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleResponse = (response: ApiResponse) => {
@@ -156,7 +177,7 @@ const ChatScreen = () => {
           ...prevMessages
         ]);
 
-        setQuickReplies(['Create another task', 'View my tasks', 'Show my day']);
+        setQuickReplies(['Create another task', 'Show my day']);
 
       } catch (error) {
         let errorMessage = "Sorry, something went wrong. Please try again.";
@@ -198,11 +219,127 @@ const ChatScreen = () => {
 
   const [quickReplies, setQuickReplies] = useState<string[]>([
     'Create task', 
-    'Set a goal', 
-    'Roast me', 
-    'Show my day', 
-    'Pending tasks'
+    'Show my day'
   ]);
+
+  const handleQuickReply = async (reply: string) => {
+    console.log('Quick reply selected:', reply);
+
+    if (reply === 'Create task' || reply === 'Create another task') {
+      console.log('Handling create task action');
+      setShowInput(true);
+      setMessages(prevMessages => [
+        {
+          id: Math.random().toString(),
+          text: "Please describe the task you'd like to create",
+          sender: 'bot',
+          action: 'create_task'
+        },
+        ...prevMessages
+      ]);
+    } else if (reply === 'Show my day') {
+      console.log('Handling show my day action');
+      setShowInput(false);
+      
+      // Get today's date and tomorrow's date
+      const today = new Date();
+      const tomorrow = new Date(today);
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      
+      const startDate = today.toISOString().split('T')[0];
+      const endDate = tomorrow.toISOString().split('T')[0];
+      
+      console.log('Fetching tasks between:', { startDate, endDate });
+
+      try {
+        const token = await AsyncStorage.getItem('accessToken');
+        if (!token) {
+          console.log('No token found, redirecting to login');
+          navigation.navigate('Login');
+          return;
+        }
+
+        console.log('Making API request to fetch tasks');
+        const response = await axios.get<TaskResponse>(`${BASE_URL}v1/tasks/range`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+          params: {
+            start_date: startDate,
+            end_date: endDate
+          }
+        });
+
+        console.log('API Response:', {
+          status: response.status,
+          taskCount: response.data.message.task_details.total_items,
+          tasks: response.data.message.task_details.data
+        });
+
+        const tasks = response.data.message.task_details.data;
+        const tasksList = tasks.map(task => {
+          const dueDate = new Date(task.due_date).toLocaleString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true
+          });
+          const priorityMap = {
+            1: '🟢 Low',
+            2: '🟡 Medium',
+            3: '🔴 High'
+          };
+          const priority = priorityMap[task.priority as keyof typeof priorityMap] || `Priority ${task.priority}`;
+          
+          return `• ${task.title}\n  ${priority} | Due: ${dueDate}\n  ${task.status} | ${task.type}`;
+        }).join('\n\n');
+
+        const messageText = tasks.length > 0 
+          ? `📋 Here are your upcoming tasks:\n\n${tasksList}`
+          : "✨ You have no tasks scheduled for today!";
+
+        console.log('Updating messages with formatted task list');
+        setMessages(prevMessages => [
+          {
+            id: Math.random().toString(),
+            text: messageText,
+            sender: 'bot',
+            showQuickReplies: true
+          },
+          ...prevMessages
+        ]);
+      } catch (error) {
+        console.error('Error in show my day:', {
+          error,
+          status: axios.isAxiosError(error) ? error.response?.status : 'unknown',
+          data: axios.isAxiosError(error) ? error.response?.data : 'unknown'
+        });
+
+        let errorMessage = "Sorry, I encountered an error while fetching your tasks. Please try again.";
+        if (axios.isAxiosError(error)) {
+          if (error.response?.status === 401) {
+            errorMessage = "Your session has expired. Please login again.";
+            navigation.navigate('Login');
+          }
+        }
+
+        setMessages(prevMessages => [
+          {
+            id: Math.random().toString(),
+            text: errorMessage,
+            sender: 'bot',
+            showQuickReplies: true
+          },
+          ...prevMessages
+        ]);
+      }
+    } else {
+      console.log('Handling other quick reply:', reply);
+      setInput(reply);
+      setShowInput(true);
+    }
+  };
 
   const renderItem = ({ item }: { item: Message }) => (
     <View>
@@ -314,7 +451,7 @@ const ChatScreen = () => {
             <TouchableOpacity
               key={reply}
               style={tw`bg-[#1D1E23] rounded-lg px-4 py-2 mr-2 mb-2`}
-              onPress={() => setInput(reply)}
+              onPress={() => handleQuickReply(reply)}
             >
               <Text style={tw`text-white`}>{reply}</Text>
             </TouchableOpacity>
@@ -348,34 +485,36 @@ const ChatScreen = () => {
           />
         </ScrollView>
 
-        <View style={tw`flex-row items-center p-4 bg-[#111111] mb-20`}>
-          <TextInput
-            style={[
-              tw`flex-1 px-4 py-2 rounded-full bg-[#1D1E23] text-white`,
-              { fontSize: 14 }
-            ]}
-            value={input}
-            onChangeText={setInput}
-            placeholder="Type a message..."
-            placeholderTextColor="#4B4B4B"
-            multiline
-            numberOfLines={2}
-            maxLength={1000}
-          />
-
-          <TouchableOpacity
-            activeOpacity={0.7}
-            style={tw`bg-[#3272A0] p-2 rounded-full ml-2`}
-            onPress={input.trim() && !isLoading ? sendMessage : undefined}
-            disabled={isLoading}
-          >
-            <Icon 
-              name={isLoading ? "timer-outline" : input.trim() ? "send" : "mic"} 
-              size={20} 
-              color="#fff" 
+        {showInput && (
+          <View style={tw`flex-row items-center p-4 bg-[#111111] mb-20`}>
+            <TextInput
+              style={[
+                tw`flex-1 px-4 py-2 rounded-full bg-[#1D1E23] text-white`,
+                { fontSize: 14 }
+              ]}
+              value={input}
+              onChangeText={setInput}
+              placeholder="Type a message..."
+              placeholderTextColor="#4B4B4B"
+              multiline
+              numberOfLines={2}
+              maxLength={1000}
             />
-          </TouchableOpacity>
-        </View>
+
+            <TouchableOpacity
+              activeOpacity={0.7}
+              style={tw`bg-[#3272A0] p-2 rounded-full ml-2`}
+              onPress={input.trim() && !isLoading ? sendMessage : undefined}
+              disabled={isLoading}
+            >
+              <Icon 
+                name={isLoading ? "timer-outline" : input.trim() ? "send" : "mic"} 
+                size={20} 
+                color="#fff" 
+              />
+            </TouchableOpacity>
+          </View>
+        )}
       </KeyboardAvoidingView>
     </View>
   );

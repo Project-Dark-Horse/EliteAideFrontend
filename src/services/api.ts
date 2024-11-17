@@ -1,3 +1,5 @@
+import axios from 'axios';
+
 const BASE_URL = 'https://api.eliteaide.tech/';
 
 export const apiLogin = async (email: string, password: string) => {
@@ -11,16 +13,21 @@ export const apiLogin = async (email: string, password: string) => {
 };
 
 export const apiSendMessage = async (token: string, message: string) => {
-  const response = await fetch(`${BASE_URL}v1/tasks/prompts/`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify({ message }),
-  });
-  if (!response.ok) throw new Error(`SendMessage failed: ${response.statusText}`);
-  return response.json(); // Expecting ApiResponse
+  try {
+    const response = await axios.post(
+      `${BASE_URL}v1/tasks/prompts/`,
+      { prompt: message },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data; // Expecting SuccessResponse
+  } catch (error: any) {
+    throw new Error(`SendMessage failed: ${error.response?.statusText || error.message}`);
+  }
 };
 
 export const apiRefreshToken = async (refreshToken: string) => {
