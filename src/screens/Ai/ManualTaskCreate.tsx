@@ -23,90 +23,45 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import RNPickerSelect from 'react-native-picker-select';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-interface Category {
-  id: string;
-  icon: string;
-  label: string;
-  color?: string;
-}
-
-interface TaskResponse {
-  message: {
-    message: string;
-  };
-}
-
 interface TaskPayload {
   title: string;
   description: string;
-  priority: string;
+  priority: number;
   status: string;
   due_date: string;
   type: string;
 }
-
-interface Task {
-  id: string;
-  title: string;
-  description: string;
-  priority: string;
-  status: string;
-  due_date: string;
-  type: string;
-}
-
-interface CreateTaskModalProps {
-  isVisible: boolean;
-  setIsVisible: (visible: boolean) => void;
-  selectedDate: Date;
-  onSave: (newTask: Omit<Task, "id">) => void;
-}
-
-const CATEGORIES: Category[] = [
-  { id: 'personal', icon: '👤', label: 'Personal', color: '#FF9F0A' },
-  { id: 'work', icon: '💼', label: 'Work', color: '#32ADE6' },
-  { id: 'health', icon: '💔', label: 'Health', color: '#FF453A' },
-  { id: 'finance', icon: '💰', label: 'Finance', color: '#32D74B' },
-  { id: 'travel', icon: '✈️', label: 'Travel', color: '#BF5AF2' },
-  { id: 'shopping', icon: '🛒', label: 'Shopping', color: '#FF9F0A' },
-];
-
-const PRIORITIES = [
-  { id: 'High', color: '#FF453A', icon: '🔴' },
-  { id: 'Medium', color: '#FF9F0A', icon: '🟠' },
-  { id: 'Low', color: '#32ADE6', icon: '🔵' },
-];
-
-const priorityMap: Record<string, string> = {
-  'High': 'high',
-  'Medium': 'medium',
-  'Low': 'low',
-};
-
-const BOTTOM_TAB_HEIGHT = Platform.OS === 'android' ? 85 : 65; // Height including safe area
-const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 type RootStackParamList = {
   Login: undefined;
-  // ... other screens
 };
 
-const getAccessToken = async (): Promise<string | null> => {
-  try {
-    const token = await AsyncStorage.getItem('accessToken');
-    return token;
-  } catch (error) {
-    console.error('Failed to retrieve access token:', error);
-    return null;
-  }
+const CATEGORIES = [
+  { id: 'personal', label: 'Personal', icon: '👤' },
+  { id: 'work', label: 'Work', icon: '💼' },
+  { id: 'health', label: 'Health', icon: '💔' },
+  { id: 'finance', label: 'Finance', icon: '💰' },
+  { id: 'travel', label: 'Travel', icon: '✈️' },
+  { id: 'shopping', label: 'Shopping', icon: '🛒' },
+];
+
+// Define a type for the priority keys
+type PriorityLevel = 'high' | 'medium' | 'low';
+
+const priorityMap: Record<PriorityLevel, number> = {
+  high: 1,
+  medium: 2,
+  low: 3,
 };
+
+const BOTTOM_TAB_HEIGHT = 50; 
 
 const ManualTaskCreate = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
-  const [priority, setPriority] = useState('High');
+  const [priority, setPriority] = useState<PriorityLevel>('medium');
   const [date, setDate] = useState(new Date());
   const [time, setTime] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -114,30 +69,28 @@ const ManualTaskCreate = () => {
   const [autoComplete, setAutoComplete] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString('en-GB', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-    });
-  };
+  const formatDate = (date: Date) => date.toLocaleDateString('en-GB');
+  const formatTime = (date: Date) => date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
 
-  const formatTime = (date: Date) => {
-    return date.toLocaleTimeString('en-US', {
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true,
-    });
+  const getAccessToken = async (): Promise<string | null> => {
+    try {
+      return await AsyncStorage.getItem('accessToken');
+    } catch (error) {
+      console.error('Error retrieving access token:', error);
+      return null;
+    }
   };
 
   const createTask = async () => {
     if (isLoading) return;
-    
+
     setIsLoading(true);
     try {
       const token = await getAccessToken();
       if (!token) {
-        throw new Error('No access token found');
+        Alert.alert('Authentication Error', 'Please log in to continue.');
+        navigation.navigate('Login');
+        return;
       }
 
       const dueDateTime = new Date(
@@ -149,35 +102,42 @@ const ManualTaskCreate = () => {
       );
 
       const payload: TaskPayload = {
-        title,
-        description,
+        title: title.trim(),
+        description: description.trim(),
         priority: priorityMap[priority],
         status: 'Pending',
         due_date: dueDateTime.toISOString(),
         type: selectedCategory || 'Personal',
       };
 
-      const response = await axios.post<TaskResponse>(
-        `${BASE_URL}v1/tasks/`,
-        payload,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      console.log('Payload:', payload);
+
+      const response = await axios.post(`${BASE_URL}v1/tasks/`, payload, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (response.data.message.message === 'Task created successfully') {
+        console.log('Task created successfully:', response.data.message.task_details);
         navigation.goBack();
+      } else {
+        Alert.alert('Unexpected Response', 'The server responded with an unexpected result.');
       }
     } catch (error) {
       console.error('Error creating task:', error);
       if (axios.isAxiosError(error)) {
+        console.error('Axios error response:', error.response?.data);
         if (error.response?.status === 401) {
+          Alert.alert('Authentication Error', 'Your session has expired. Please log in again.');
           navigation.navigate('Login');
+        } else if (error.response?.status === 400) {
+          Alert.alert('Validation Error', 'Please check the task details and try again.');
         } else {
-          Alert.alert('Error', 'Failed to create task. Please try again.');
+          Alert.alert('Error', 'An error occurred while creating the task.');
         }
+      } else {
+        Alert.alert('Error', 'An unexpected error occurred.');
       }
     } finally {
       setIsLoading(false);
@@ -191,26 +151,13 @@ const ManualTaskCreate = () => {
           <Ionicons name="chevron-back" size={24} color="#65779E" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Create Task</Text>
-        <View style={styles.headerRight}>
-          <TouchableOpacity>
-            <Ionicons name="search" size={24} style={styles.headerIcon} />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.headerIcon}>
-            <Ionicons name="notifications" size={24} style={styles.headerIcon} />
-          </TouchableOpacity>
-        </View>
       </View>
 
-      <KeyboardAvoidingView 
+      <KeyboardAvoidingView
         behavior={Platform.OS === 'android' ? 'padding' : 'height'}
         style={styles.keyboardAvoidingView}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
       >
-        <ScrollView 
-          style={styles.scrollView}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.scrollViewContent}
-        >
+        <ScrollView contentContainerStyle={styles.scrollViewContent}>
           <View style={styles.form}>
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Title</Text>
@@ -226,21 +173,14 @@ const ManualTaskCreate = () => {
             <View style={styles.row}>
               <View style={styles.inputGroup}>
                 <Text style={styles.label}>Due Date</Text>
-                <TouchableOpacity 
-                  style={styles.dateInput}
-                  onPress={() => setShowDatePicker(true)}
-                >
+                <TouchableOpacity style={styles.dateInput} onPress={() => setShowDatePicker(true)}>
                   <Text style={styles.dateText}>{formatDate(date)}</Text>
                   <Ionicons name="chevron-down" size={20} color="#fff" />
                 </TouchableOpacity>
               </View>
-
               <View style={styles.inputGroup}>
                 <Text style={styles.label}>Time</Text>
-                <TouchableOpacity 
-                  style={styles.dateInput}
-                  onPress={() => setShowTimePicker(true)}
-                >
+                <TouchableOpacity style={styles.dateInput} onPress={() => setShowTimePicker(true)}>
                   <Text style={styles.dateText}>{formatTime(time)}</Text>
                   <Ionicons name="chevron-down" size={20} color="#fff" />
                 </TouchableOpacity>
@@ -256,19 +196,18 @@ const ManualTaskCreate = () => {
                 placeholder="Enter task description"
                 placeholderTextColor="#666"
                 multiline
-                numberOfLines={4}
               />
             </View>
 
             <View style={styles.inputGroup}>
               <Text style={styles.label}>Category</Text>
               <View style={styles.categoryGrid}>
-                {CATEGORIES.map(category => (
+                {CATEGORIES.map((category) => (
                   <TouchableOpacity
                     key={category.id}
                     style={[
                       styles.categoryButton,
-                      selectedCategory === category.id && styles.selectedCategory
+                      selectedCategory === category.id && styles.selectedCategory,
                     ]}
                     onPress={() => setSelectedCategory(category.id)}
                   >
@@ -290,36 +229,24 @@ const ManualTaskCreate = () => {
                 ]}
                 style={pickerSelectStyles}
                 value={priority}
-                useNativeAndroidPickerStyle={false}
                 placeholder={{}}
               />
             </View>
 
             <View style={styles.inputGroup}>
-              <View style={styles.autoCompleteRow}>
-                <Text style={styles.label}>Autocomplete task:</Text>
-                <Switch
-                  value={autoComplete}
-                  onValueChange={setAutoComplete}
-                  trackColor={{ false: '#1E2746', true: '#979797' }}
-                  thumbColor={autoComplete ? '#fff' : '#666'}
-                />
-              </View>
+              <Text style={styles.label}>Autocomplete</Text>
+              <Switch value={autoComplete} onValueChange={setAutoComplete} />
             </View>
           </View>
         </ScrollView>
 
         <View style={styles.bottomContainer}>
-          <TouchableOpacity 
-            style={[styles.saveButton, !title ? styles.saveButtonDisabled : {}]}
+          <TouchableOpacity
+            style={[styles.saveButton, (!title || isLoading) && styles.saveButtonDisabled]}
             onPress={createTask}
             disabled={!title || isLoading}
           >
-            {isLoading ? (
-              <ActivityIndicator color="#fff" size="small" />
-            ) : (
-              <Text style={styles.saveButtonText}>Save & Proceed</Text>
-            )}
+            {isLoading ? <ActivityIndicator color="#fff" /> : <Text style={styles.saveButtonText}>Save & Proceed</Text>}
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
@@ -328,22 +255,19 @@ const ManualTaskCreate = () => {
         <DateTimePicker
           value={date}
           mode="date"
-          display="spinner"
           onChange={(event, selectedDate) => {
             setShowDatePicker(false);
             if (selectedDate) setDate(selectedDate);
           }}
         />
       )}
-
       {showTimePicker && (
         <DateTimePicker
           value={time}
           mode="time"
-          display="spinner"
-          onChange={(event, selectedDate) => {
+          onChange={(event, selectedTime) => {
             setShowTimePicker(false);
-            if (selectedDate) setTime(selectedDate);
+            if (selectedTime) setTime(selectedTime);
           }}
         />
       )}
@@ -562,7 +486,7 @@ const pickerSelectStyles = StyleSheet.create({
     borderColor: '#979797',
     borderRadius: 8,
     color: '#fff',
-    paddingRight: 30, // to ensure the text is never behind the icon
+    paddingRight: 30, 
     backgroundColor: 'transparent',
   },
 });
