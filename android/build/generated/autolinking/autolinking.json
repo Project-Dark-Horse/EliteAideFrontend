@@ -1,26 +1,26 @@
 {
-  "root": "/Users/shriyakapil/EliteAideFrontend",
-  "reactNativePath": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native",
+  "root": "/Users/rishabhyadav/Desktop/EliteAideFrontend",
+  "reactNativePath": "/Users/rishabhyadav/Desktop/EliteAideFrontend/node_modules/react-native",
   "reactNativeVersion": "0.75",
   "dependencies": {
     "@react-native-async-storage/async-storage": {
-      "root": "/Users/shriyakapil/EliteAideFrontend/node_modules/@react-native-async-storage/async-storage",
+      "root": "/Users/rishabhyadav/Desktop/EliteAideFrontend/node_modules/@react-native-async-storage/async-storage",
       "name": "@react-native-async-storage/async-storage",
       "platforms": {
         "ios": {
-          "podspecPath": "/Users/shriyakapil/EliteAideFrontend/node_modules/@react-native-async-storage/async-storage/RNCAsyncStorage.podspec",
-          "version": "2.1.0",
+          "podspecPath": "/Users/rishabhyadav/Desktop/EliteAideFrontend/node_modules/@react-native-async-storage/async-storage/RNCAsyncStorage.podspec",
+          "version": "2.0.0",
           "configurations": [],
           "scriptPhases": []
         },
         "android": {
-          "sourceDir": "/Users/shriyakapil/EliteAideFrontend/node_modules/@react-native-async-storage/async-storage/android",
+          "sourceDir": "/Users/rishabhyadav/Desktop/EliteAideFrontend/node_modules/@react-native-async-storage/async-storage/android",
           "packageImportPath": "import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;",
           "packageInstance": "new AsyncStoragePackage()",
           "buildTypes": [],
           "libraryName": "rnasyncstorage",
           "componentDescriptors": [],
-          "cmakeListsPath": "/Users/shriyakapil/EliteAideFrontend/node_modules/@react-native-async-storage/async-storage/android/build/generated/source/codegen/jni/CMakeLists.txt",
+          "cmakeListsPath": "/Users/rishabhyadav/Desktop/EliteAideFrontend/node_modules/@react-native-async-storage/async-storage/android/build/generated/source/codegen/jni/CMakeLists.txt",
           "cxxModuleCMakeListsModuleName": null,
           "cxxModuleCMakeListsPath": null,
           "cxxModuleHeaderName": null,
@@ -29,17 +29,17 @@
       }
     },
     "@react-native-community/blur": {
-      "root": "/Users/shriyakapil/EliteAideFrontend/node_modules/@react-native-community/blur",
+      "root": "/Users/rishabhyadav/Desktop/EliteAideFrontend/node_modules/@react-native-community/blur",
       "name": "@react-native-community/blur",
       "platforms": {
         "ios": {
-          "podspecPath": "/Users/shriyakapil/EliteAideFrontend/node_modules/@react-native-community/blur/react-native-blur.podspec",
+          "podspecPath": "/Users/rishabhyadav/Desktop/EliteAideFrontend/node_modules/@react-native-community/blur/react-native-blur.podspec",
           "version": "4.4.1",
           "configurations": [],
           "scriptPhases": []
         },
         "android": {
-          "sourceDir": "/Users/shriyakapil/EliteAideFrontend/node_modules/@react-native-community/blur/android",
+          "sourceDir": "/Users/rishabhyadav/Desktop/EliteAideFrontend/node_modules/@react-native-community/blur/android",
           "packageImportPath": "import com.reactnativecommunity.blurview.BlurViewPackage;",
           "packageInstance": "new BlurViewPackage()",
           "buildTypes": [],
@@ -49,7 +49,7 @@
             "AndroidBlurViewComponentDescriptor",
             "VibrancyViewComponentDescriptor"
           ],
-          "cmakeListsPath": "/Users/shriyakapil/EliteAideFrontend/node_modules/@react-native-community/blur/android/build/generated/source/codegen/jni/CMakeLists.txt",
+          "cmakeListsPath": "/Users/rishabhyadav/Desktop/EliteAideFrontend/node_modules/@react-native-community/blur/android/build/generated/source/codegen/jni/CMakeLists.txt",
           "cxxModuleCMakeListsModuleName": null,
           "cxxModuleCMakeListsPath": null,
           "cxxModuleHeaderName": null,
@@ -58,22 +58,22 @@
       }
     },
     "@react-native-community/checkbox": {
-      "root": "/Users/shriyakapil/EliteAideFrontend/node_modules/@react-native-community/checkbox",
+      "root": "/Users/rishabhyadav/Desktop/EliteAideFrontend/node_modules/@react-native-community/checkbox",
       "name": "@react-native-community/checkbox",
       "platforms": {
         "ios": {
-          "podspecPath": "/Users/shriyakapil/EliteAideFrontend/node_modules/@react-native-community/checkbox/RNCCheckbox.podspec",
+          "podspecPath": "/Users/rishabhyadav/Desktop/EliteAideFrontend/node_modules/@react-native-community/checkbox/RNCCheckbox.podspec",
           "version": "0.5.17",
           "configurations": [],
           "scriptPhases": []
         },
         "android": {
-          "sourceDir": "/Users/shriyakapil/EliteAideFrontend/node_modules/@react-native-community/checkbox/android",
+          "sourceDir": "/Users/rishabhyadav/Desktop/EliteAideFrontend/node_modules/@react-native-community/checkbox/android",
           "packageImportPath": "import com.reactnativecommunity.checkbox.ReactCheckBoxPackage;",
           "packageInstance": "new ReactCheckBoxPackage()",
           "buildTypes": [],
           "componentDescriptors": [],
-          "cmakeListsPath": "/Users/shriyakapil/EliteAideFrontend/node_modules/@react-native-community/checkbox/android/build/generated/source/codegen/jni/CMakeLists.txt",
+          "cmakeListsPath": "/Users/rishabhyadav/Desktop/EliteAideFrontend/node_modules/@react-native-community/checkbox/android/build/generated/source/codegen/jni/CMakeLists.txt",
           "cxxModuleCMakeListsModuleName": null,
           "cxxModuleCMakeListsPath": null,
           "cxxModuleHeaderName": null,
@@ -82,23 +82,23 @@
       }
     },
     "@react-native-community/datetimepicker": {
-      "root": "/Users/shriyakapil/EliteAideFrontend/node_modules/@react-native-community/datetimepicker",
+      "root": "/Users/rishabhyadav/Desktop/EliteAideFrontend/node_modules/@react-native-community/datetimepicker",
       "name": "@react-native-community/datetimepicker",
       "platforms": {
         "ios": {
-          "podspecPath": "/Users/shriyakapil/EliteAideFrontend/node_modules/@react-native-community/datetimepicker/RNDateTimePicker.podspec",
+          "podspecPath": "/Users/rishabhyadav/Desktop/EliteAideFrontend/node_modules/@react-native-community/datetimepicker/RNDateTimePicker.podspec",
           "version": "8.2.0",
           "configurations": [],
           "scriptPhases": []
         },
         "android": {
-          "sourceDir": "/Users/shriyakapil/EliteAideFrontend/node_modules/@react-native-community/datetimepicker/android",
+          "sourceDir": "/Users/rishabhyadav/Desktop/EliteAideFrontend/node_modules/@react-native-community/datetimepicker/android",
           "packageImportPath": "import com.reactcommunity.rndatetimepicker.RNDateTimePickerPackage;",
           "packageInstance": "new RNDateTimePickerPackage()",
           "buildTypes": [],
           "libraryName": "RNDateTimePickerCGen",
           "componentDescriptors": [],
-          "cmakeListsPath": "/Users/shriyakapil/EliteAideFrontend/node_modules/@react-native-community/datetimepicker/android/build/generated/source/codegen/jni/CMakeLists.txt",
+          "cmakeListsPath": "/Users/rishabhyadav/Desktop/EliteAideFrontend/node_modules/@react-native-community/datetimepicker/android/build/generated/source/codegen/jni/CMakeLists.txt",
           "cxxModuleCMakeListsModuleName": null,
           "cxxModuleCMakeListsPath": null,
           "cxxModuleHeaderName": null,
@@ -107,18 +107,18 @@
       }
     },
     "react-native-curved-bottom-bar": {
-      "root": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-curved-bottom-bar",
+      "root": "/Users/rishabhyadav/Desktop/EliteAideFrontend/node_modules/react-native-curved-bottom-bar",
       "name": "react-native-curved-bottom-bar",
       "platforms": {
         "ios": null,
         "android": {
-          "sourceDir": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-curved-bottom-bar/android",
+          "sourceDir": "/Users/rishabhyadav/Desktop/EliteAideFrontend/node_modules/react-native-curved-bottom-bar/android",
           "packageImportPath": "import com.curvedbottombar.CurvedBottomBarPackage;",
           "packageInstance": "new CurvedBottomBarPackage()",
           "buildTypes": [],
           "libraryName": "CurvedBottomBarView",
           "componentDescriptors": [],
-          "cmakeListsPath": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-curved-bottom-bar/android/build/generated/source/codegen/jni/CMakeLists.txt",
+          "cmakeListsPath": "/Users/rishabhyadav/Desktop/EliteAideFrontend/node_modules/react-native-curved-bottom-bar/android/build/generated/source/codegen/jni/CMakeLists.txt",
           "cxxModuleCMakeListsModuleName": null,
           "cxxModuleCMakeListsPath": null,
           "cxxModuleHeaderName": null,
@@ -127,17 +127,17 @@
       }
     },
     "react-native-gesture-handler": {
-      "root": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-gesture-handler",
+      "root": "/Users/rishabhyadav/Desktop/EliteAideFrontend/node_modules/react-native-gesture-handler",
       "name": "react-native-gesture-handler",
       "platforms": {
         "ios": {
-          "podspecPath": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-gesture-handler/RNGestureHandler.podspec",
+          "podspecPath": "/Users/rishabhyadav/Desktop/EliteAideFrontend/node_modules/react-native-gesture-handler/RNGestureHandler.podspec",
           "version": "2.21.0",
           "configurations": [],
           "scriptPhases": []
         },
         "android": {
-          "sourceDir": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-gesture-handler/android",
+          "sourceDir": "/Users/rishabhyadav/Desktop/EliteAideFrontend/node_modules/react-native-gesture-handler/android",
           "packageImportPath": "import com.swmansion.gesturehandler.RNGestureHandlerPackage;",
           "packageInstance": "new RNGestureHandlerPackage()",
           "buildTypes": [],
@@ -146,7 +146,7 @@
             "RNGestureHandlerButtonComponentDescriptor",
             "RNGestureHandlerRootViewComponentDescriptor"
           ],
-          "cmakeListsPath": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-gesture-handler/android/build/generated/source/codegen/jni/CMakeLists.txt",
+          "cmakeListsPath": "/Users/rishabhyadav/Desktop/EliteAideFrontend/node_modules/react-native-gesture-handler/android/build/generated/source/codegen/jni/CMakeLists.txt",
           "cxxModuleCMakeListsModuleName": null,
           "cxxModuleCMakeListsPath": null,
           "cxxModuleHeaderName": null,
@@ -155,23 +155,23 @@
       }
     },
     "react-native-image-picker": {
-      "root": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-image-picker",
+      "root": "/Users/rishabhyadav/Desktop/EliteAideFrontend/node_modules/react-native-image-picker",
       "name": "react-native-image-picker",
       "platforms": {
         "ios": {
-          "podspecPath": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-image-picker/react-native-image-picker.podspec",
+          "podspecPath": "/Users/rishabhyadav/Desktop/EliteAideFrontend/node_modules/react-native-image-picker/react-native-image-picker.podspec",
           "version": "7.1.2",
           "configurations": [],
           "scriptPhases": []
         },
         "android": {
-          "sourceDir": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-image-picker/android",
+          "sourceDir": "/Users/rishabhyadav/Desktop/EliteAideFrontend/node_modules/react-native-image-picker/android",
           "packageImportPath": "import com.imagepicker.ImagePickerPackage;",
           "packageInstance": "new ImagePickerPackage()",
           "buildTypes": [],
           "libraryName": "RNImagePickerSpec",
           "componentDescriptors": [],
-          "cmakeListsPath": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-image-picker/android/build/generated/source/codegen/jni/CMakeLists.txt",
+          "cmakeListsPath": "/Users/rishabhyadav/Desktop/EliteAideFrontend/node_modules/react-native-image-picker/android/build/generated/source/codegen/jni/CMakeLists.txt",
           "cxxModuleCMakeListsModuleName": null,
           "cxxModuleCMakeListsPath": null,
           "cxxModuleHeaderName": null,
@@ -180,22 +180,22 @@
       }
     },
     "react-native-linear-gradient": {
-      "root": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-linear-gradient",
+      "root": "/Users/rishabhyadav/Desktop/EliteAideFrontend/node_modules/react-native-linear-gradient",
       "name": "react-native-linear-gradient",
       "platforms": {
         "ios": {
-          "podspecPath": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-linear-gradient/BVLinearGradient.podspec",
+          "podspecPath": "/Users/rishabhyadav/Desktop/EliteAideFrontend/node_modules/react-native-linear-gradient/BVLinearGradient.podspec",
           "version": "2.8.3",
           "configurations": [],
           "scriptPhases": []
         },
         "android": {
-          "sourceDir": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-linear-gradient/android",
+          "sourceDir": "/Users/rishabhyadav/Desktop/EliteAideFrontend/node_modules/react-native-linear-gradient/android",
           "packageImportPath": "import com.BV.LinearGradient.LinearGradientPackage;",
           "packageInstance": "new LinearGradientPackage()",
           "buildTypes": [],
           "componentDescriptors": [],
-          "cmakeListsPath": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-linear-gradient/android/build/generated/source/codegen/jni/CMakeLists.txt",
+          "cmakeListsPath": "/Users/rishabhyadav/Desktop/EliteAideFrontend/node_modules/react-native-linear-gradient/android/build/generated/source/codegen/jni/CMakeLists.txt",
           "cxxModuleCMakeListsModuleName": null,
           "cxxModuleCMakeListsPath": null,
           "cxxModuleHeaderName": null,
@@ -204,17 +204,17 @@
       }
     },
     "react-native-radial-gradient": {
-      "root": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-radial-gradient",
+      "root": "/Users/rishabhyadav/Desktop/EliteAideFrontend/node_modules/react-native-radial-gradient",
       "name": "react-native-radial-gradient",
       "platforms": {
         "ios": null,
         "android": {
-          "sourceDir": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-radial-gradient/android",
+          "sourceDir": "/Users/rishabhyadav/Desktop/EliteAideFrontend/node_modules/react-native-radial-gradient/android",
           "packageImportPath": "import com.surajit.rnrg.RNRadialGradientPackage;",
           "packageInstance": "new RNRadialGradientPackage()",
           "buildTypes": [],
           "componentDescriptors": [],
-          "cmakeListsPath": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-radial-gradient/android/build/generated/source/codegen/jni/CMakeLists.txt",
+          "cmakeListsPath": "/Users/rishabhyadav/Desktop/EliteAideFrontend/node_modules/react-native-radial-gradient/android/build/generated/source/codegen/jni/CMakeLists.txt",
           "cxxModuleCMakeListsModuleName": null,
           "cxxModuleCMakeListsPath": null,
           "cxxModuleHeaderName": null,
@@ -223,23 +223,23 @@
       }
     },
     "react-native-reanimated": {
-      "root": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-reanimated",
+      "root": "/Users/rishabhyadav/Desktop/EliteAideFrontend/node_modules/react-native-reanimated",
       "name": "react-native-reanimated",
       "platforms": {
         "ios": {
-          "podspecPath": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-reanimated/RNReanimated.podspec",
+          "podspecPath": "/Users/rishabhyadav/Desktop/EliteAideFrontend/node_modules/react-native-reanimated/RNReanimated.podspec",
           "version": "3.16.1",
           "configurations": [],
           "scriptPhases": []
         },
         "android": {
-          "sourceDir": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-reanimated/android",
+          "sourceDir": "/Users/rishabhyadav/Desktop/EliteAideFrontend/node_modules/react-native-reanimated/android",
           "packageImportPath": "import com.swmansion.reanimated.ReanimatedPackage;",
           "packageInstance": "new ReanimatedPackage()",
           "buildTypes": [],
           "libraryName": "rnreanimated",
           "componentDescriptors": [],
-          "cmakeListsPath": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-reanimated/android/build/generated/source/codegen/jni/CMakeLists.txt",
+          "cmakeListsPath": "/Users/rishabhyadav/Desktop/EliteAideFrontend/node_modules/react-native-reanimated/android/build/generated/source/codegen/jni/CMakeLists.txt",
           "cxxModuleCMakeListsModuleName": null,
           "cxxModuleCMakeListsPath": null,
           "cxxModuleHeaderName": null,
@@ -248,17 +248,17 @@
       }
     },
     "react-native-safe-area-context": {
-      "root": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-safe-area-context",
+      "root": "/Users/rishabhyadav/Desktop/EliteAideFrontend/node_modules/react-native-safe-area-context",
       "name": "react-native-safe-area-context",
       "platforms": {
         "ios": {
-          "podspecPath": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-safe-area-context/react-native-safe-area-context.podspec",
+          "podspecPath": "/Users/rishabhyadav/Desktop/EliteAideFrontend/node_modules/react-native-safe-area-context/react-native-safe-area-context.podspec",
           "version": "4.14.0",
           "configurations": [],
           "scriptPhases": []
         },
         "android": {
-          "sourceDir": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-safe-area-context/android",
+          "sourceDir": "/Users/rishabhyadav/Desktop/EliteAideFrontend/node_modules/react-native-safe-area-context/android",
           "packageImportPath": "import com.th3rdwave.safeareacontext.SafeAreaContextPackage;",
           "packageInstance": "new SafeAreaContextPackage()",
           "buildTypes": [],
@@ -267,7 +267,7 @@
             "RNCSafeAreaProviderComponentDescriptor",
             "RNCSafeAreaViewComponentDescriptor"
           ],
-          "cmakeListsPath": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-safe-area-context/android/src/main/jni/CMakeLists.txt",
+          "cmakeListsPath": "/Users/rishabhyadav/Desktop/EliteAideFrontend/node_modules/react-native-safe-area-context/android/src/main/jni/CMakeLists.txt",
           "cxxModuleCMakeListsModuleName": null,
           "cxxModuleCMakeListsPath": null,
           "cxxModuleHeaderName": null,
@@ -276,17 +276,17 @@
       }
     },
     "react-native-screens": {
-      "root": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-screens",
+      "root": "/Users/rishabhyadav/Desktop/EliteAideFrontend/node_modules/react-native-screens",
       "name": "react-native-screens",
       "platforms": {
         "ios": {
-          "podspecPath": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-screens/RNScreens.podspec",
+          "podspecPath": "/Users/rishabhyadav/Desktop/EliteAideFrontend/node_modules/react-native-screens/RNScreens.podspec",
           "version": "4.1.0",
           "configurations": [],
           "scriptPhases": []
         },
         "android": {
-          "sourceDir": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-screens/android",
+          "sourceDir": "/Users/rishabhyadav/Desktop/EliteAideFrontend/node_modules/react-native-screens/android",
           "packageImportPath": "import com.swmansion.rnscreens.RNScreensPackage;",
           "packageInstance": "new RNScreensPackage()",
           "buildTypes": [],
@@ -304,7 +304,7 @@
             "RNSScreenContentWrapperComponentDescriptor",
             "RNSModalScreenComponentDescriptor"
           ],
-          "cmakeListsPath": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-screens/android/src/main/jni/CMakeLists.txt",
+          "cmakeListsPath": "/Users/rishabhyadav/Desktop/EliteAideFrontend/node_modules/react-native-screens/android/src/main/jni/CMakeLists.txt",
           "cxxModuleCMakeListsModuleName": null,
           "cxxModuleCMakeListsPath": null,
           "cxxModuleHeaderName": null,
@@ -313,17 +313,17 @@
       }
     },
     "react-native-svg": {
-      "root": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-svg",
+      "root": "/Users/rishabhyadav/Desktop/EliteAideFrontend/node_modules/react-native-svg",
       "name": "react-native-svg",
       "platforms": {
         "ios": {
-          "podspecPath": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-svg/RNSVG.podspec",
+          "podspecPath": "/Users/rishabhyadav/Desktop/EliteAideFrontend/node_modules/react-native-svg/RNSVG.podspec",
           "version": "15.9.0",
           "configurations": [],
           "scriptPhases": []
         },
         "android": {
-          "sourceDir": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-svg/android",
+          "sourceDir": "/Users/rishabhyadav/Desktop/EliteAideFrontend/node_modules/react-native-svg/android",
           "packageImportPath": "import com.horcrux.svg.SvgPackage;",
           "packageInstance": "new SvgPackage()",
           "buildTypes": [],
@@ -359,7 +359,7 @@
             "RNSVGTSpanComponentDescriptor",
             "RNSVGUseComponentDescriptor"
           ],
-          "cmakeListsPath": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-svg/android/src/main/jni/CMakeLists.txt",
+          "cmakeListsPath": "/Users/rishabhyadav/Desktop/EliteAideFrontend/node_modules/react-native-svg/android/src/main/jni/CMakeLists.txt",
           "cxxModuleCMakeListsModuleName": null,
           "cxxModuleCMakeListsPath": null,
           "cxxModuleHeaderName": null,
@@ -368,23 +368,23 @@
       }
     },
     "react-native-vector-icons": {
-      "root": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-vector-icons",
+      "root": "/Users/rishabhyadav/Desktop/EliteAideFrontend/node_modules/react-native-vector-icons",
       "name": "react-native-vector-icons",
       "platforms": {
         "ios": {
-          "podspecPath": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-vector-icons/RNVectorIcons.podspec",
+          "podspecPath": "/Users/rishabhyadav/Desktop/EliteAideFrontend/node_modules/react-native-vector-icons/RNVectorIcons.podspec",
           "version": "10.2.0",
           "configurations": [],
           "scriptPhases": []
         },
         "android": {
-          "sourceDir": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-vector-icons/android",
+          "sourceDir": "/Users/rishabhyadav/Desktop/EliteAideFrontend/node_modules/react-native-vector-icons/android",
           "packageImportPath": "import com.oblador.vectoricons.VectorIconsPackage;",
           "packageInstance": "new VectorIconsPackage()",
           "buildTypes": [],
           "libraryName": "RNVectorIconsSpec",
           "componentDescriptors": [],
-          "cmakeListsPath": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-vector-icons/android/build/generated/source/codegen/jni/CMakeLists.txt",
+          "cmakeListsPath": "/Users/rishabhyadav/Desktop/EliteAideFrontend/node_modules/react-native-vector-icons/android/build/generated/source/codegen/jni/CMakeLists.txt",
           "cxxModuleCMakeListsModuleName": null,
           "cxxModuleCMakeListsPath": null,
           "cxxModuleHeaderName": null,
@@ -554,7 +554,7 @@
         {
           "name": "--path <path>",
           "description": "Path to the React Native project root.",
-          "default": "/Users/shriyakapil/EliteAideFrontend"
+          "default": "/Users/rishabhyadav/Desktop/EliteAideFrontend"
         },
         {
           "name": "--platform <string>",
@@ -605,8 +605,7 @@
         },
         {
           "name": "--terminal <string>",
-          "description": "Launches the Metro Bundler in a new window using the specified terminal path.",
-          "default": "vscode"
+          "description": "Launches the Metro Bundler in a new window using the specified terminal path."
         },
         {
           "name": "--binary-path <string>",
@@ -765,8 +764,7 @@
         },
         {
           "name": "--terminal <string>",
-          "description": "Launches the Metro Bundler in a new window using the specified terminal path.",
-          "default": "vscode"
+          "description": "Launches the Metro Bundler in a new window using the specified terminal path."
         },
         {
           "name": "--appId <string>",
@@ -841,7 +839,7 @@
   "assets": [],
   "project": {
     "ios": {
-      "sourceDir": "/Users/shriyakapil/EliteAideFrontend/ios",
+      "sourceDir": "/Users/rishabhyadav/Desktop/EliteAideFrontend/ios",
       "xcodeProject": {
         "name": "eliteaideclient.xcodeproj",
         "path": ".",
@@ -850,7 +848,7 @@
       "assets": []
     },
     "android": {
-      "sourceDir": "/Users/shriyakapil/EliteAideFrontend/android",
+      "sourceDir": "/Users/rishabhyadav/Desktop/EliteAideFrontend/android",
       "appName": "app",
       "packageName": "com.eliteaidefrontend",
       "applicationId": "com.eliteaidefrontend",
