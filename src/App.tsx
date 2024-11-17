@@ -17,6 +17,7 @@ import WelcomeScreen from './screens/WelcomeScreen';
 import ManualTaskCreate from './screens/Ai/ManualTaskCreate';
 import MyActivityScreen from './screens/Profile/MyActivity';
 
+
 const Stack = createStackNavigator<RootStackParamList>();
 
 const App = () => {
@@ -37,7 +38,10 @@ const App = () => {
     } catch (error) {
       console.error('Auth check failed:', error);
     } finally {
-      setIsLoading(false);
+      // Introduce a delay before setting isLoading to false
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 1000); // 2000 milliseconds = 2 seconds
     }
   };
 
@@ -62,6 +66,7 @@ const App = () => {
           <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
           <Stack.Screen name="ManualTaskCreate" component={ManualTaskCreate} />
           <Stack.Screen name="MyActivity" component={MyActivityScreen} />
+          
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>

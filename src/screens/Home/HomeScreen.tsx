@@ -12,8 +12,8 @@ import GreetingPopup from './GreetingPopup';
 import tw from 'twrnc';
 
 import TodoImage from '../../assets/todo.png';
-import ProgressImage from '../../assets/Progress.png';
-import DoneImage from '../../assets/Done.png';
+import ProgressImage from '../../assets/progress.png';
+import DoneImage from '../../assets/done.png';
 import BotImage from '../../assets/bot.png';
 
 const Home: React.FC = () => {

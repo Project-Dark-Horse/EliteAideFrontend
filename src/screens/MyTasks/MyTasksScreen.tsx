@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, ScrollView, StyleSheet, ViewStyle } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text } from 'react-native-paper';
@@ -6,6 +6,8 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { BASE_URL } from '@env';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../types/navigation';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 interface Task {
   id: number;
@@ -27,57 +29,37 @@ interface Props {
 }
 
 const MyTaskScreen: React.FC<Props> = ({ navigation }) => {
-  const todayTasks: Task[] = [
-    {
-      id: 1,
-      title: "Team Meeting",
-      description: "Group discussion for the n...",
-      time: "8-9 AM",
-      icon: "briefcase",
-      color: "#1D1E23",
-      cardStyle: { borderLeftWidth: 4, borderLeftColor: "#007AFF" }
-    },
-    {
-      id: 2,
-      title: "Team Meeting",
-      description: "Group discussion for the new product",
-      time: "Fri, 9-10 AM",
-      icon: "briefcase",
-      color: "#1D1E23",
-//       middleContainerStyle: { backgroundColor: 'rgba(0, 122, 255, 0.1)' }
-    },
-    {
-      id: 3,
-      title: "Team Meeting",
-      description: "Group discussion for the new product",
-      time: "Fri, 9-10 AM\nFri, 9-10 AM",
-      icon: "briefcase",
-      color: "#1D1E23",
-//       rightContainerStyle: { backgroundColor: 'rgba(0, 122, 255, 0.2)' }
-    },
-  ];
+  const [tasks, setTasks] = useState<Task[]>([]);
 
-  const thisWeekTasks: Task[] = [
-    {
-      id: 4,
-      title: "Team Meeting",
-      description: "Group discussion for the new product",
-      time: "Fri, 9-10 AM",
-      icon: "briefcase",
-      color: "#5856D6",
-      cardStyle: { borderRadius: 20 }
-    },
-    {
-      id: 5,
-      title: "Team Meeting",
-      description: "Group discussion for the new product",
-      time: "Fri, 9-10 AM",
-      icon: "briefcase",
-      color: "#34C759",
-      leftContainerStyle: { borderRightWidth: 1, borderRightColor: '#34C759' }
-    },
+  useEffect(() => {
+    const fetchTasks = async () => {
+      try {
+        const token = await AsyncStorage.getItem('accessToken');
+        const response = await axios.get(`${BASE_URL}v1/tasks`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
 
-  ];
+        if (response.data?.message?.task_details?.data?.length > 0) {
+          const fetchedTasks = response.data.message.task_details.data.map((task: any) => ({
+            id: task.id,
+            title: task.title,
+            description: task.description,
+            time: new Date(task.due_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            icon: 'briefcase', // Adjust based on task type if needed
+            color: '#1D1E23', // Adjust based on task type if needed
+          }));
+          setTasks(fetchedTasks);
+        }
+      } catch (error) {
+        console.error('Error fetching tasks:', error);
+      }
+    };
+
+    fetchTasks();
+  }, []);
 
   const renderTask = (task: Task) => (
     <View key={task.id} style={[styles.taskCard, task.cardStyle]}>
@@ -103,13 +85,9 @@ const MyTaskScreen: React.FC<Props> = ({ navigation }) => {
   return (
       <SafeAreaView style={styles.container}>
         <ScrollView style={styles.scrollView}>
-          <Text style={styles.sectionHeader}>Today</Text>
+          <Text style={styles.sectionHeader}>All Tasks</Text>
           <View style={styles.todayContainer}>
-            {todayTasks.map(renderTask)}
-          </View>
-          <Text style={styles.sectionHeader}>This Week</Text>
-          <View style={styles.thisWeekContainer}>
-            {thisWeekTasks.map(renderTask)}
+            {tasks.map(renderTask)}
           </View>
         </ScrollView>
       </SafeAreaView>

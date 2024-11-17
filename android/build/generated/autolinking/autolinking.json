@@ -9,7 +9,7 @@
       "platforms": {
         "ios": {
           "podspecPath": "/Users/shriyakapil/EliteAideFrontend/node_modules/@react-native-async-storage/async-storage/RNCAsyncStorage.podspec",
-          "version": "2.1.0",
+          "version": "2.0.0",
           "configurations": [],
           "scriptPhases": []
         },
@@ -106,6 +106,34 @@
         }
       }
     },
+    "@react-native-picker/picker": {
+      "root": "/Users/shriyakapil/EliteAideFrontend/node_modules/@react-native-picker/picker",
+      "name": "@react-native-picker/picker",
+      "platforms": {
+        "ios": {
+          "podspecPath": "/Users/shriyakapil/EliteAideFrontend/node_modules/@react-native-picker/picker/RNCPicker.podspec",
+          "version": "2.9.0",
+          "configurations": [],
+          "scriptPhases": []
+        },
+        "android": {
+          "sourceDir": "/Users/shriyakapil/EliteAideFrontend/node_modules/@react-native-picker/picker/android",
+          "packageImportPath": "import com.reactnativecommunity.picker.RNCPickerPackage;",
+          "packageInstance": "new RNCPickerPackage()",
+          "buildTypes": [],
+          "libraryName": "rnpicker",
+          "componentDescriptors": [
+            "RNCAndroidDialogPickerComponentDescriptor",
+            "RNCAndroidDropdownPickerComponentDescriptor"
+          ],
+          "cmakeListsPath": "/Users/shriyakapil/EliteAideFrontend/node_modules/@react-native-picker/picker/android/src/main/jni/CMakeLists.txt",
+          "cxxModuleCMakeListsModuleName": null,
+          "cxxModuleCMakeListsPath": null,
+          "cxxModuleHeaderName": null,
+          "isPureCxxDependency": false
+        }
+      }
+    },
     "react-native-curved-bottom-bar": {
       "root": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-curved-bottom-bar",
       "name": "react-native-curved-bottom-bar",
@@ -132,7 +160,7 @@
       "platforms": {
         "ios": {
           "podspecPath": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-gesture-handler/RNGestureHandler.podspec",
-          "version": "2.21.0",
+          "version": "2.20.2",
           "configurations": [],
           "scriptPhases": []
         },
