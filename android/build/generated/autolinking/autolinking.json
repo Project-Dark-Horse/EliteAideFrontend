@@ -9,7 +9,7 @@
       "platforms": {
         "ios": {
           "podspecPath": "/Users/shriyakapil/EliteAideFrontend/node_modules/@react-native-async-storage/async-storage/RNCAsyncStorage.podspec",
-          "version": "2.0.0",
+          "version": "2.1.0",
           "configurations": [],
           "scriptPhases": []
         },
@@ -106,30 +106,6 @@
         }
       }
     },
-    "react-native-config": {
-      "root": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-config",
-      "name": "react-native-config",
-      "platforms": {
-        "ios": {
-          "podspecPath": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-config/react-native-config.podspec",
-          "version": "1.5.3",
-          "configurations": [],
-          "scriptPhases": []
-        },
-        "android": {
-          "sourceDir": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-config/android",
-          "packageImportPath": "import com.lugg.RNCConfig.RNCConfigPackage;",
-          "packageInstance": "new RNCConfigPackage()",
-          "buildTypes": [],
-          "componentDescriptors": [],
-          "cmakeListsPath": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-config/android/build/generated/source/codegen/jni/CMakeLists.txt",
-          "cxxModuleCMakeListsModuleName": null,
-          "cxxModuleCMakeListsPath": null,
-          "cxxModuleHeaderName": null,
-          "isPureCxxDependency": false
-        }
-      }
-    },
     "react-native-curved-bottom-bar": {
       "root": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-curved-bottom-bar",
       "name": "react-native-curved-bottom-bar",
@@ -156,7 +132,7 @@
       "platforms": {
         "ios": {
           "podspecPath": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-gesture-handler/RNGestureHandler.podspec",
-          "version": "2.20.2",
+          "version": "2.21.0",
           "configurations": [],
           "scriptPhases": []
         },
@@ -280,7 +256,7 @@
       "platforms": {
         "ios": {
           "podspecPath": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-screens/RNScreens.podspec",
-          "version": "3.35.0",
+          "version": "4.1.0",
           "configurations": [],
           "scriptPhases": []
         },
@@ -299,6 +275,8 @@
             "RNSScreenStackComponentDescriptor",
             "RNSSearchBarComponentDescriptor",
             "RNSScreenComponentDescriptor",
+            "RNSScreenFooterComponentDescriptor",
+            "RNSScreenContentWrapperComponentDescriptor",
             "RNSModalScreenComponentDescriptor"
           ],
           "cmakeListsPath": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-screens/android/src/main/jni/CMakeLists.txt",

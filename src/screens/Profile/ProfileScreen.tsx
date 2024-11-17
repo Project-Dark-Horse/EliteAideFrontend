@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Icon from 'react-native-vector-icons/Ionicons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -53,15 +53,15 @@ const ProfileScreen = () => {
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Icon name="chevron-back" size={24} color="#fff" />
+          <Ionicons name="chevron-back" size={24} color="#fff" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Profile</Text>
         <View style={styles.headerRight}>
           <TouchableOpacity style={styles.iconButton}>
-            <Icon name="search" size={24} color="#6B7280" />
+            <Ionicons name="search" size={24} color="#6B7280" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.iconButton}>
-            <Icon name="notifications" size={24} color="#6B7280" />
+            <Ionicons name="notifications" size={24} color="#6B7280" />
           </TouchableOpacity>
         </View>
       </View>
@@ -75,7 +75,7 @@ const ProfileScreen = () => {
               style={styles.avatar}
             />
             <TouchableOpacity style={styles.editButton}>
-              <Icon name="pencil" size={16} color="#fff" />
+              <Ionicons name="pencil" size={16} color="#fff" />
             </TouchableOpacity>
           </View>
           <View style={styles.userInfo}>
@@ -91,17 +91,17 @@ const ProfileScreen = () => {
         <Text style={styles.taskTitle}>Your tasks</Text>
         <View style={styles.taskStats}>
           <View style={styles.statItem}>
-            <Icon name="flash" size={24} color="#3B82F6" />
+            <Ionicons name="flash" size={24} color="#3B82F6" />
             <Text style={styles.statNumber}>125</Text>
             <Text style={styles.statLabel}>total</Text>
           </View>
           <View style={styles.statItem}>
-            <Icon name="time" size={24} color="#3B82F6" />
+            <Ionicons name="time" size={24} color="#3B82F6" />
             <Text style={styles.statNumber}>25</Text>
             <Text style={styles.statLabel}>pending</Text>
           </View>
           <View style={styles.statItem}>
-            <Icon name="checkmark-circle" size={24} color="#3B82F6" />
+            <Ionicons name="checkmark-circle" size={24} color="#3B82F6" />
             <Text style={styles.statNumber}>100</Text>
             <Text style={styles.statLabel}>done</Text>
           </View>
@@ -114,7 +114,7 @@ const ProfileScreen = () => {
           style={styles.menuItem}
           onPress={() => navigation.navigate('MyActivity' as never)}
         >
-          <Icon name="time" size={24} color="#6B7280" />
+          <Ionicons name="time" size={24} color="#6B7280" />
           <Text style={styles.menuText}>My Activity</Text>
         </TouchableOpacity>
         
@@ -122,7 +122,7 @@ const ProfileScreen = () => {
           style={styles.menuItem}
           onPress={() => navigation.navigate('SettingsScreen' as never)}
         >
-          <Icon name="settings" size={24} color="#6B7280" />
+          <Ionicons name="settings" size={24} color="#6B7280" />
           <Text style={styles.menuText}>Settings</Text>
         </TouchableOpacity>
         
@@ -130,7 +130,7 @@ const ProfileScreen = () => {
           style={styles.menuItem}
           onPress={() => navigation.navigate('About' as never)}
         >
-          <Icon name="information-circle" size={24} color="#6B7280" />
+          <Ionicons name="information-circle" size={24} color="#6B7280" />
           <Text style={styles.menuText}>About Elite Aid</Text>
         </TouchableOpacity>
         
@@ -138,7 +138,7 @@ const ProfileScreen = () => {
           style={styles.menuItem}
           onPress={handleLogout}
         >
-          <Icon name="log-out" size={24} color="#6B7280" />
+          <Ionicons name="log-out" size={24} color="#6B7280" />
           <Text style={styles.menuText}>Logout</Text>
         </TouchableOpacity>
         
@@ -146,7 +146,7 @@ const ProfileScreen = () => {
           style={styles.menuItem}
           onPress={handleLogoutAll}
         >
-          <Icon name="log-out" size={24} color="#6B7280" />
+          <Ionicons name="log-out" size={24} color="#6B7280" />
           <Text style={styles.menuText}>Logout from all devices</Text>
         </TouchableOpacity>
       </View>

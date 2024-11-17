@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.eliteaidefrontend.app-mergeDebugResources-32:/values-ru/values-ru.xml",
+            "outputFile": "com.eliteaidefrontend.app-mergeDebugResources-41:/values-ru/values-ru.xml",
             "map": [
                 {
                     "source": "/Users/shriyakapil/.gradle/caches/8.8/transforms/1f00369f60fb558f4c67464032b9f89f/transformed/react-android-0.75.4-debug/res/values-ru/values-ru.xml",
