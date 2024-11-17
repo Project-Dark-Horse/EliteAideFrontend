@@ -13,6 +13,7 @@ MERGED from [:react-native-community_blur] /Users/shriyakapil/EliteAideFrontend/
 MERGED from [:react-native-community_checkbox] /Users/shriyakapil/EliteAideFrontend/node_modules/@react-native-community/checkbox/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:2:1-7:12
 MERGED from [:react-native-community_datetimepicker] /Users/shriyakapil/EliteAideFrontend/node_modules/@react-native-community/datetimepicker/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:2:1-9:12
 MERGED from [:react-native-curved-bottom-bar] /Users/shriyakapil/EliteAideFrontend/node_modules/react-native-curved-bottom-bar/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:2:1-7:12
+MERGED from [:react-native-image-picker] /Users/shriyakapil/EliteAideFrontend/node_modules/react-native-image-picker/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:2:1-19:12
 MERGED from [:react-native-linear-gradient] /Users/shriyakapil/EliteAideFrontend/node_modules/react-native-linear-gradient/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:2:1-7:12
 MERGED from [:react-native-radial-gradient] /Users/shriyakapil/EliteAideFrontend/node_modules/react-native-radial-gradient/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:2:1-7:12
 MERGED from [:react-native-reanimated] /Users/shriyakapil/EliteAideFrontend/node_modules/react-native-reanimated/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:2:1-7:12
@@ -73,6 +74,7 @@ MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1] /Users/shriyakapi
 MERGED from [androidx.lifecycle:lifecycle-livedata-core-ktx:2.6.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/be0531961b2716e4f77b71057fe97d4a/transformed/lifecycle-livedata-core-ktx-2.6.1/AndroidManifest.xml:17:1-22:12
 MERGED from [com.facebook.react:hermes-android:0.75.4] /Users/shriyakapil/.gradle/caches/8.8/transforms/515a483ddc10df7764635ab8f497d657/transformed/hermes-android-0.75.4-debug/AndroidManifest.xml:2:1-7:12
 MERGED from [com.github.Dimezis:BlurView:version-2.0.4] /Users/shriyakapil/.gradle/caches/8.8/transforms/9bea1ad44c761268a2dda9451cd0499d/transformed/BlurView-version-2.0.4/AndroidManifest.xml:2:1-11:12
+MERGED from [androidx.exifinterface:exifinterface:1.3.3] /Users/shriyakapil/.gradle/caches/8.8/transforms/c9ad7dda442f92b4a84ef9ad9d6b409c/transformed/exifinterface-1.3.3/AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/82260e9f2a74b54ae1ccd7fbecf63c13/transformed/profileinstaller-1.3.0/AndroidManifest.xml:17:1-55:12
 MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/40b9aee51cb930aaf33ac3d5722c71f9/transformed/startup-runtime-1.1.1/AndroidManifest.xml:17:1-33:12
 MERGED from [androidx.tracing:tracing:1.1.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/8ab69d2103236ebf16d5b3a081a48b1d/transformed/tracing-1.1.0/AndroidManifest.xml:17:1-24:12
@@ -108,6 +110,8 @@ MERGED from /Users/shriyakapil/EliteAideFrontend/android/app/src/main/AndroidMan
 INJECTED from /Users/shriyakapil/EliteAideFrontend/android/app/src/debug/AndroidManifest.xml:5:5-8:50
 MERGED from [:react-native-community_datetimepicker] /Users/shriyakapil/EliteAideFrontend/node_modules/@react-native-community/datetimepicker/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:7:5-20
 MERGED from [:react-native-community_datetimepicker] /Users/shriyakapil/EliteAideFrontend/node_modules/@react-native-community/datetimepicker/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:7:5-20
+MERGED from [:react-native-image-picker] /Users/shriyakapil/EliteAideFrontend/node_modules/react-native-image-picker/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:7:5-17:19
+MERGED from [:react-native-image-picker] /Users/shriyakapil/EliteAideFrontend/node_modules/react-native-image-picker/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:7:5-17:19
 MERGED from [com.facebook.react:react-android:0.75.4] /Users/shriyakapil/.gradle/caches/8.8/transforms/1f00369f60fb558f4c67464032b9f89f/transformed/react-android-0.75.4-debug/AndroidManifest.xml:18:5-22:19
 MERGED from [com.facebook.react:react-android:0.75.4] /Users/shriyakapil/.gradle/caches/8.8/transforms/1f00369f60fb558f4c67464032b9f89f/transformed/react-android-0.75.4-debug/AndroidManifest.xml:18:5-22:19
 MERGED from [com.google.android.material:material:1.6.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/7b318836775473582af6a678efbc7360/transformed/material-1.6.1/AndroidManifest.xml:24:5-20
@@ -205,6 +209,8 @@ MERGED from [:react-native-community_datetimepicker] /Users/shriyakapil/EliteAid
 MERGED from [:react-native-community_datetimepicker] /Users/shriyakapil/EliteAideFrontend/node_modules/@react-native-community/datetimepicker/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:5:5-44
 MERGED from [:react-native-curved-bottom-bar] /Users/shriyakapil/EliteAideFrontend/node_modules/react-native-curved-bottom-bar/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:5:5-44
 MERGED from [:react-native-curved-bottom-bar] /Users/shriyakapil/EliteAideFrontend/node_modules/react-native-curved-bottom-bar/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:5:5-44
+MERGED from [:react-native-image-picker] /Users/shriyakapil/EliteAideFrontend/node_modules/react-native-image-picker/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:5:5-44
+MERGED from [:react-native-image-picker] /Users/shriyakapil/EliteAideFrontend/node_modules/react-native-image-picker/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:5:5-44
 MERGED from [:react-native-linear-gradient] /Users/shriyakapil/EliteAideFrontend/node_modules/react-native-linear-gradient/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:5:5-44
 MERGED from [:react-native-linear-gradient] /Users/shriyakapil/EliteAideFrontend/node_modules/react-native-linear-gradient/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:5:5-44
 MERGED from [:react-native-radial-gradient] /Users/shriyakapil/EliteAideFrontend/node_modules/react-native-radial-gradient/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:5:5-44
@@ -325,6 +331,8 @@ MERGED from [com.facebook.react:hermes-android:0.75.4] /Users/shriyakapil/.gradl
 MERGED from [com.facebook.react:hermes-android:0.75.4] /Users/shriyakapil/.gradle/caches/8.8/transforms/515a483ddc10df7764635ab8f497d657/transformed/hermes-android-0.75.4-debug/AndroidManifest.xml:5:5-44
 MERGED from [com.github.Dimezis:BlurView:version-2.0.4] /Users/shriyakapil/.gradle/caches/8.8/transforms/9bea1ad44c761268a2dda9451cd0499d/transformed/BlurView-version-2.0.4/AndroidManifest.xml:5:5-7:41
 MERGED from [com.github.Dimezis:BlurView:version-2.0.4] /Users/shriyakapil/.gradle/caches/8.8/transforms/9bea1ad44c761268a2dda9451cd0499d/transformed/BlurView-version-2.0.4/AndroidManifest.xml:5:5-7:41
+MERGED from [androidx.exifinterface:exifinterface:1.3.3] /Users/shriyakapil/.gradle/caches/8.8/transforms/c9ad7dda442f92b4a84ef9ad9d6b409c/transformed/exifinterface-1.3.3/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.exifinterface:exifinterface:1.3.3] /Users/shriyakapil/.gradle/caches/8.8/transforms/c9ad7dda442f92b4a84ef9ad9d6b409c/transformed/exifinterface-1.3.3/AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/82260e9f2a74b54ae1ccd7fbecf63c13/transformed/profileinstaller-1.3.0/AndroidManifest.xml:21:5-44
 MERGED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/82260e9f2a74b54ae1ccd7fbecf63c13/transformed/profileinstaller-1.3.0/AndroidManifest.xml:21:5-44
 MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/40b9aee51cb930aaf33ac3d5722c71f9/transformed/startup-runtime-1.1.1/AndroidManifest.xml:21:5-23:41
@@ -357,6 +365,22 @@ MERGED from [com.facebook.soloader:soloader:0.11.0] /Users/shriyakapil/.gradle/c
 		INJECTED from /Users/shriyakapil/EliteAideFrontend/android/app/src/debug/AndroidManifest.xml
 	android:minSdkVersion
 		INJECTED from /Users/shriyakapil/EliteAideFrontend/android/app/src/debug/AndroidManifest.xml
+provider#com.imagepicker.ImagePickerProvider
+ADDED from [:react-native-image-picker] /Users/shriyakapil/EliteAideFrontend/node_modules/react-native-image-picker/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:8:9-16:20
+	android:grantUriPermissions
+		ADDED from [:react-native-image-picker] /Users/shriyakapil/EliteAideFrontend/node_modules/react-native-image-picker/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:12:13-47
+	android:authorities
+		ADDED from [:react-native-image-picker] /Users/shriyakapil/EliteAideFrontend/node_modules/react-native-image-picker/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:10:13-71
+	android:exported
+		ADDED from [:react-native-image-picker] /Users/shriyakapil/EliteAideFrontend/node_modules/react-native-image-picker/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:11:13-37
+	android:name
+		ADDED from [:react-native-image-picker] /Users/shriyakapil/EliteAideFrontend/node_modules/react-native-image-picker/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:9:13-63
+meta-data#android.support.FILE_PROVIDER_PATHS
+ADDED from [:react-native-image-picker] /Users/shriyakapil/EliteAideFrontend/node_modules/react-native-image-picker/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:13:13-15:70
+	android:resource
+		ADDED from [:react-native-image-picker] /Users/shriyakapil/EliteAideFrontend/node_modules/react-native-image-picker/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:15:17-67
+	android:name
+		ADDED from [:react-native-image-picker] /Users/shriyakapil/EliteAideFrontend/node_modules/react-native-image-picker/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:14:17-67
 uses-permission#android.permission.SYSTEM_ALERT_WINDOW
 ADDED from [com.facebook.react:react-android:0.75.4] /Users/shriyakapil/.gradle/caches/8.8/transforms/1f00369f60fb558f4c67464032b9f89f/transformed/react-android-0.75.4-debug/AndroidManifest.xml:16:5-78
 	android:name

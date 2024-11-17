@@ -2,6 +2,7 @@ import React from 'react';
 import { View, FlatList, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useNavigation } from '@react-navigation/native';
 
 interface Activity {
   id: number;
@@ -11,6 +12,7 @@ interface Activity {
 }
 
 const MyActivityScreen: React.FC = () => {
+  const navigation = useNavigation();
   const activities: Activity[] = [
     { id: 1, time: '12 AM', description: "You added a new task: 'Prepare project proposal' on Sep 12.", type: 'add' },
     { id: 2, time: '12 AM', description: "Task 'Upload documents to drive' was automatically completed on Sep 16.", type: 'complete' },
@@ -39,7 +41,7 @@ const MyActivityScreen: React.FC = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton}>
+        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
           <Icon name="chevron-back" size={24} color="#FFFFFF" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>My Activity</Text>

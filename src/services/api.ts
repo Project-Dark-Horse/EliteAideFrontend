@@ -1,6 +1,5 @@
 import axios from 'axios';
-
-const BASE_URL = 'https://api.eliteaide.tech/';
+import { BASE_URL } from '@env';
 
 export const apiLogin = async (email: string, password: string) => {
   const response = await fetch(`${BASE_URL}v1/users/login/`, {
