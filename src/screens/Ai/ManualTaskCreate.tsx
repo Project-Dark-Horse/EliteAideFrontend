@@ -18,10 +18,10 @@ import { useNavigation } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import axios from 'axios';
-import { getAccessToken } from '../../utils/auth';
 import { BASE_URL } from '@env';
-import api from '../../types/api';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import RNPickerSelect from 'react-native-picker-select';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface Category {
   id: string;
@@ -65,7 +65,7 @@ interface CreateTaskModalProps {
 const CATEGORIES: Category[] = [
   { id: 'personal', icon: '👤', label: 'Personal', color: '#FF9F0A' },
   { id: 'work', icon: '💼', label: 'Work', color: '#32ADE6' },
-  { id: 'health', icon: '❤️', label: 'Health', color: '#FF453A' },
+  { id: 'health', icon: '💔', label: 'Health', color: '#FF453A' },
   { id: 'finance', icon: '💰', label: 'Finance', color: '#32D74B' },
   { id: 'travel', icon: '✈️', label: 'Travel', color: '#BF5AF2' },
   { id: 'shopping', icon: '🛒', label: 'Shopping', color: '#FF9F0A' },
@@ -83,12 +83,22 @@ const priorityMap: Record<string, string> = {
   'Low': 'low',
 };
 
-const BOTTOM_TAB_HEIGHT = Platform.OS === 'ios' ? 85 : 65; // Height including safe area
+const BOTTOM_TAB_HEIGHT = Platform.OS === 'android' ? 85 : 65; // Height including safe area
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 type RootStackParamList = {
   Login: undefined;
   // ... other screens
+};
+
+const getAccessToken = async (): Promise<string | null> => {
+  try {
+    const token = await AsyncStorage.getItem('accessToken');
+    return token;
+  } catch (error) {
+    console.error('Failed to retrieve access token:', error);
+    return null;
+  }
 };
 
 const ManualTaskCreate = () => {
@@ -126,6 +136,9 @@ const ManualTaskCreate = () => {
     setIsLoading(true);
     try {
       const token = await getAccessToken();
+      if (!token) {
+        throw new Error('No access token found');
+      }
 
       const dueDateTime = new Date(
         date.getFullYear(),
@@ -174,22 +187,22 @@ const ManualTaskCreate = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="chevron-back" size={24} color="#fff" />
+        <TouchableOpacity style={styles.headerButton} onPress={() => navigation.goBack()}>
+          <Ionicons name="chevron-back" size={24} color="#65779E" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Create Task</Text>
         <View style={styles.headerRight}>
           <TouchableOpacity>
-            <Ionicons name="search" size={24} color="#fff" />
+            <Ionicons name="search" size={24} style={styles.headerIcon} />
           </TouchableOpacity>
           <TouchableOpacity style={styles.headerIcon}>
-            <Ionicons name="notifications-outline" size={24} color="#fff" />
+            <Ionicons name="notifications" size={24} style={styles.headerIcon} />
           </TouchableOpacity>
         </View>
       </View>
 
       <KeyboardAvoidingView 
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        behavior={Platform.OS === 'android' ? 'padding' : 'height'}
         style={styles.keyboardAvoidingView}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
       >
@@ -267,18 +280,19 @@ const ManualTaskCreate = () => {
             </View>
 
             <View style={styles.inputGroup}>
-              <View style={styles.priorityRow}>
-                <Text style={styles.label}>Priority level:</Text>
-                <View style={styles.prioritySelector}>
-                  <Text style={[styles.priorityText, { color: PRIORITIES.find(p => p.id === priority)?.color }]}>
-                    {priority}
-                  </Text>
-                  <Text style={styles.priorityDot}>
-                    {PRIORITIES.find(p => p.id === priority)?.icon}
-                  </Text>
-                  <Ionicons name="chevron-down" size={20} color="#fff" />
-                </View>
-              </View>
+              <Text style={styles.label}>Priority</Text>
+              <RNPickerSelect
+                onValueChange={(value) => setPriority(value)}
+                items={[
+                  { label: 'High', value: 'High' },
+                  { label: 'Medium', value: 'Medium' },
+                  { label: 'Low', value: 'Low' },
+                ]}
+                style={pickerSelectStyles}
+                value={priority}
+                useNativeAndroidPickerStyle={false}
+                placeholder={{}}
+              />
             </View>
 
             <View style={styles.inputGroup}>
@@ -287,7 +301,7 @@ const ManualTaskCreate = () => {
                 <Switch
                   value={autoComplete}
                   onValueChange={setAutoComplete}
-                  trackColor={{ false: '#1E2746', true: '#36AAB9' }}
+                  trackColor={{ false: '#1E2746', true: '#979797' }}
                   thumbColor={autoComplete ? '#fff' : '#666'}
                 />
               </View>
@@ -347,8 +361,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#1E2746',
+    backgroundColor: '#111111',
   },
   headerTitle: {
     fontSize: 20,
@@ -361,6 +374,7 @@ const styles = StyleSheet.create({
   },
   headerIcon: {
     marginLeft: 8,
+    color: '#65779E',
   },
   keyboardAvoidingView: {
     flex: 1,
@@ -390,13 +404,14 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 16,
+    fontWeight: '600',
     color: '#fff',
     marginBottom: 8,
   },
   input: {
     backgroundColor: 'transparent',
     borderBottomWidth: 1,
-    borderBottomColor: '#36AAB9',
+    borderBottomColor: '#979797',
     color: '#fff',
     fontSize: 16,
     paddingVertical: 8,
@@ -414,7 +429,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     borderBottomWidth: 1,
-    borderBottomColor: '#36AAB9',
+    borderBottomColor: '#979797',
     paddingVertical: 8,
   },
   dateText: {
@@ -437,7 +452,7 @@ const styles = StyleSheet.create({
   },
   selectedCategory: {
     borderWidth: 1,
-    borderColor: '#36AAB9',
+    borderColor: '#979797',
   },
   categoryIcon: {
     fontSize: 24,
@@ -445,24 +460,24 @@ const styles = StyleSheet.create({
   },
   categoryLabel: {
     color: '#fff',
-    fontSize: 14,
+    fontSize: 12,
   },
-  priorityRow: {
+  priorityButtons: {
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'space-between',
+    marginTop: 8,
   },
-  prioritySelector: {
-    flexDirection: 'row',
+  priorityButton: {
+    padding: 10,
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: '#979797',
     alignItems: 'center',
-    gap: 8,
+    flex: 1,
+    marginHorizontal: 5,
   },
-  priorityText: {
-    fontSize: 16,
-    fontWeight: '500',
-  },
-  priorityDot: {
-    fontSize: 16,
+  selectedPriorityButton: {
+    backgroundColor: '#979797',
   },
   autoCompleteRow: {
     flexDirection: 'row',
@@ -471,10 +486,15 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   saveButton: {
-    backgroundColor: '#1E2746',
+    backgroundColor: '#1D1E23', // Card grey color
     borderRadius: 12,
     padding: 16,
     alignItems: 'center',
+    shadowColor: '#323232',
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 1,
+    shadowRadius: 4,
+    elevation: 4, // For Android shadow
   },
   saveButtonDisabled: {
     opacity: 0.5,
@@ -483,6 +503,26 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',
+  },
+  button: {
+    backgroundColor: '#323232', // Card grey color
+    shadowColor: '#323232',
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 1,
+    shadowRadius: 4,
+    elevation: 4, // For Android shadow
+  },
+  buttonShadow: {
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 4, // For Android shadow
+  },
+  headerButton: {
+    backgroundColor: '#1D1E23', // Button background color
+    borderRadius: 20,
+    padding: 8,
   },
 });
 
@@ -499,6 +539,31 @@ const alternativeStyles = StyleSheet.create({
     paddingBottom: BOTTOM_TAB_HEIGHT,
     paddingHorizontal: 16,
     paddingTop: 16,
+  },
+});
+
+const pickerSelectStyles = StyleSheet.create({
+  inputIOS: {
+    fontSize: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+    borderWidth: 1,
+    borderColor: '#979797',
+    borderRadius: 4,
+    color: '#fff',
+    paddingRight: 30, // to ensure the text is never behind the icon
+    backgroundColor: 'transparent',
+  },
+  inputAndroid: {
+    fontSize: 16,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderWidth: 0.5,
+    borderColor: '#979797',
+    borderRadius: 8,
+    color: '#fff',
+    paddingRight: 30, // to ensure the text is never behind the icon
+    backgroundColor: 'transparent',
   },
 });
 
