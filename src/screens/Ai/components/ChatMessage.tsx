@@ -8,6 +8,7 @@ interface ChatMessageProps {
   message: string;
 }
 
+
 const ChatMessage = ({ isAI, message }: ChatMessageProps) => (
   <View style={tw`flex-row items-start my-2 ${!isAI ? 'justify-end' : ''}`}>
     {isAI && (

@@ -2498,6 +2498,7 @@ drawable paused_in_debugger_background
 drawable redbox_top_border_background
 drawable ripple_effect
 drawable rn_edit_text_material
+drawable rns_rounder_top_corners_shape
 drawable test_custom_background
 drawable test_level_drawable
 drawable tooltip_frame_dark
@@ -2833,6 +2834,7 @@ id radio
 id ratio
 id react_test_id
 id rectangles
+id report_drawn
 id resume_button
 id reverseSawtooth
 id right

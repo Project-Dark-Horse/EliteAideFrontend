@@ -12,7 +12,6 @@ MERGED from [:react-native-async-storage_async-storage] /Users/shriyakapil/Elite
 MERGED from [:react-native-community_blur] /Users/shriyakapil/EliteAideFrontend/node_modules/@react-native-community/blur/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:2:1-7:12
 MERGED from [:react-native-community_checkbox] /Users/shriyakapil/EliteAideFrontend/node_modules/@react-native-community/checkbox/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:2:1-7:12
 MERGED from [:react-native-community_datetimepicker] /Users/shriyakapil/EliteAideFrontend/node_modules/@react-native-community/datetimepicker/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:2:1-9:12
-MERGED from [:react-native-config] /Users/shriyakapil/EliteAideFrontend/node_modules/react-native-config/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:2:1-7:12
 MERGED from [:react-native-curved-bottom-bar] /Users/shriyakapil/EliteAideFrontend/node_modules/react-native-curved-bottom-bar/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:2:1-7:12
 MERGED from [:react-native-linear-gradient] /Users/shriyakapil/EliteAideFrontend/node_modules/react-native-linear-gradient/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:2:1-7:12
 MERGED from [:react-native-radial-gradient] /Users/shriyakapil/EliteAideFrontend/node_modules/react-native-radial-gradient/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:2:1-7:12
@@ -24,16 +23,20 @@ MERGED from [com.google.android.material:material:1.6.1] /Users/shriyakapil/.gra
 MERGED from [androidx.appcompat:appcompat-resources:1.6.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/62e9ae2b9fdfd8c8e42c6301d91128ce/transformed/appcompat-resources-1.6.1/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.constraintlayout:constraintlayout:2.0.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/b47ad05c7a5e2463eda1153572483ba2/transformed/constraintlayout-2.0.1/AndroidManifest.xml:2:1-11:12
 MERGED from [androidx.appcompat:appcompat:1.6.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/7e3a2d85f956185beb2f1e38094026bf/transformed/appcompat-1.6.1/AndroidManifest.xml:17:1-22:12
-MERGED from [com.facebook.fresco:imagepipeline-okhttp3:3.2.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/72ac5808a6400f157cb379946e429392/transformed/imagepipeline-okhttp3-3.2.0/AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.viewpager2:viewpager2:1.0.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/5c17f33cb48ecb3b49fda8c09ac4dc04/transformed/viewpager2-1.0.0/AndroidManifest.xml:17:1-24:12
-MERGED from [androidx.fragment:fragment:1.3.6] /Users/shriyakapil/.gradle/caches/8.8/transforms/29eaa1a824e9b41e147bfed1eaebf074/transformed/fragment-1.3.6/AndroidManifest.xml:17:1-24:12
-MERGED from [androidx.activity:activity:1.6.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/9bb2e25be72713c91c8347807ae106b7/transformed/activity-1.6.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.fragment:fragment:1.6.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/017477d908d989755e8e3df011ae8316/transformed/fragment-1.6.1/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.fragment:fragment-ktx:1.6.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/4865e3636bcd0d44b25a362c1ed38e20/transformed/fragment-ktx-1.6.1/AndroidManifest.xml:17:1-22:12
+MERGED from [com.facebook.fresco:imagepipeline-okhttp3:3.2.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/72ac5808a6400f157cb379946e429392/transformed/imagepipeline-okhttp3-3.2.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.2.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/20525f9ec808a562b5b269d0f9d39459/transformed/coordinatorlayout-1.2.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.1.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/a7cf60cdef1838eeea19ad48f54cf1ed/transformed/swiperefreshlayout-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.autofill:autofill:1.1.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/b20f85a5bedfd79f75ac9fa21a2aa1bc/transformed/autofill-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.emoji2:emoji2-views-helper:1.2.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/ce53550f85d8c0450cd7a06f3ccd0486/transformed/emoji2-views-helper-1.2.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.emoji2:emoji2:1.2.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/af9fe4497f627430e2e6a9c9a98f7289/transformed/emoji2-1.2.0/AndroidManifest.xml:17:1-35:12
+MERGED from [androidx.drawerlayout:drawerlayout:1.1.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/1fbb6fe11568371168ace0c2ea38d5ac/transformed/drawerlayout-1.1.1/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.transition:transition:1.2.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/9941258bddbd56d3c131735546c19a27/transformed/transition-1.2.0/AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.dynamicanimation:dynamicanimation:1.0.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/3e128d57c4aeddfe83bcceb0d98593e8/transformed/dynamicanimation-1.0.0/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/9a0f19d3b069148bf49ef3fd2eabb93e/transformed/legacy-support-core-utils-1.0.0/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.loader:loader:1.0.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/eec922bfddc640762e59405d4b8789e4/transformed/loader-1.0.0/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.5.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/7a92540ab31e55d47e93ad49b7f9375e/transformed/lifecycle-viewmodel-savedstate-2.5.1/AndroidManifest.xml:17:1-24:12
-MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.5.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/1b2e1c9b355e48ce2fa1db22d704e1e4/transformed/lifecycle-viewmodel-2.5.1/AndroidManifest.xml:17:1-24:12
-MERGED from [androidx.savedstate:savedstate:1.2.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/8ff08c8c86fade29bf3101d5a8df8273/transformed/savedstate-1.2.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/88ca1bb2d444794eb247eb7588695d29/transformed/vectordrawable-animated-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/61d11274fb1fe008948a6aef7bfc013f/transformed/vectordrawable-1.1.0/AndroidManifest.xml:17:1-24:12
 MERGED from [com.facebook.fresco:fresco:3.2.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/8c8e80e416594952fa52856bf2371989/transformed/fresco-3.2.0/AndroidManifest.xml:2:1-7:12
 MERGED from [com.facebook.fresco:drawee:3.2.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/eeee95d55e1eac35c75f70bb980e72e7/transformed/drawee-3.2.0/AndroidManifest.xml:2:1-7:12
 MERGED from [com.facebook.fresco:nativeimagefilters:3.2.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/36c1413895de043dcfc3a48e000e9212/transformed/nativeimagefilters-3.2.0/AndroidManifest.xml:2:1-7:12
@@ -48,33 +51,36 @@ MERGED from [com.facebook.fresco:middleware:3.2.0] /Users/shriyakapil/.gradle/ca
 MERGED from [com.facebook.fresco:ui-common:3.2.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/84ee0b710741f89d03f0949854edf165/transformed/ui-common-3.2.0/AndroidManifest.xml:2:1-7:12
 MERGED from [com.facebook.fresco:soloader:3.2.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/83687ad8bbc30e19e5ca400851ab7201/transformed/soloader-3.2.0/AndroidManifest.xml:2:1-7:12
 MERGED from [com.facebook.fresco:fbcore:3.2.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/f8449455395c86dd5ae495f151fa7808/transformed/fbcore-3.2.0/AndroidManifest.xml:2:1-7:12
-MERGED from [com.facebook.react:hermes-android:0.75.4] /Users/shriyakapil/.gradle/caches/8.8/transforms/515a483ddc10df7764635ab8f497d657/transformed/hermes-android-0.75.4-debug/AndroidManifest.xml:2:1-7:12
-MERGED from [com.github.Dimezis:BlurView:version-2.0.4] /Users/shriyakapil/.gradle/caches/8.8/transforms/9bea1ad44c761268a2dda9451cd0499d/transformed/BlurView-version-2.0.4/AndroidManifest.xml:2:1-11:12
-MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.2.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/20525f9ec808a562b5b269d0f9d39459/transformed/coordinatorlayout-1.2.0/AndroidManifest.xml:17:1-24:12
-MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.1.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/a7cf60cdef1838eeea19ad48f54cf1ed/transformed/swiperefreshlayout-1.1.0/AndroidManifest.xml:17:1-24:12
-MERGED from [androidx.emoji2:emoji2-views-helper:1.2.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/ce53550f85d8c0450cd7a06f3ccd0486/transformed/emoji2-views-helper-1.2.0/AndroidManifest.xml:2:1-7:12
-MERGED from [androidx.emoji2:emoji2:1.2.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/af9fe4497f627430e2e6a9c9a98f7289/transformed/emoji2-1.2.0/AndroidManifest.xml:17:1-35:12
-MERGED from [androidx.lifecycle:lifecycle-process:2.4.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/99832869b82d74fc3c7c90e84b9d01a6/transformed/lifecycle-process-2.4.1/AndroidManifest.xml:17:1-37:12
-MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/40b9aee51cb930aaf33ac3d5722c71f9/transformed/startup-runtime-1.1.1/AndroidManifest.xml:17:1-33:12
-MERGED from [androidx.tracing:tracing:1.1.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/8ab69d2103236ebf16d5b3a081a48b1d/transformed/tracing-1.1.0/AndroidManifest.xml:17:1-24:12
-MERGED from [androidx.transition:transition:1.2.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/9941258bddbd56d3c131735546c19a27/transformed/transition-1.2.0/AndroidManifest.xml:17:1-24:12
-MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/88ca1bb2d444794eb247eb7588695d29/transformed/vectordrawable-animated-1.1.0/AndroidManifest.xml:17:1-24:12
-MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/61d11274fb1fe008948a6aef7bfc013f/transformed/vectordrawable-1.1.0/AndroidManifest.xml:17:1-24:12
-MERGED from [androidx.autofill:autofill:1.1.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/b20f85a5bedfd79f75ac9fa21a2aa1bc/transformed/autofill-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.activity:activity-ktx:1.7.2] /Users/shriyakapil/.gradle/caches/8.8/transforms/e5194f6fc05fc929187500841078374e/transformed/activity-ktx-1.7.2/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.activity:activity:1.7.2] /Users/shriyakapil/.gradle/caches/8.8/transforms/fc430bc998806196a1c835eaa7f38415/transformed/activity-1.7.2/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.savedstate:savedstate-ktx:1.2.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/78fa4966e1948ddc5cbf995ada8087fc/transformed/savedstate-ktx-1.2.1/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.savedstate:savedstate:1.2.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/b38ed92de39b404080eed48075b02998/transformed/savedstate-1.2.1/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/9a0f19d3b069148bf49ef3fd2eabb93e/transformed/legacy-support-core-utils-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.loader:loader:1.0.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/eec922bfddc640762e59405d4b8789e4/transformed/loader-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-runtime-ktx:2.6.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/f1505636e2ae5df1abf11775238ccf79/transformed/lifecycle-runtime-ktx-2.6.1/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.6.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/12233a17b9f4c8be87e9f5ef8a8a4dab/transformed/lifecycle-livedata-2.6.1/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-process:2.6.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/e4d0ed70bedc373e07c2f51225f3db82/transformed/lifecycle-process-2.6.1/AndroidManifest.xml:17:1-35:12
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.6.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/9e95e94ecf2817425836e84dcd24c6d4/transformed/lifecycle-livedata-core-2.6.1/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.6.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/845a50950f964062f22d0d0691afb601/transformed/lifecycle-viewmodel-2.6.1/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.6.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/a52ae465f31c8fcf638303e271e63bde/transformed/lifecycle-viewmodel-savedstate-2.6.1/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.core:core-ktx:1.9.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/62e8bcd94f4e846533250bcea4f00e84/transformed/core-ktx-1.9.0/AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.viewpager:viewpager:1.0.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/79174a675b195cf06cb9abbf43126fdf/transformed/viewpager-1.0.0/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.drawerlayout:drawerlayout:1.1.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/1fbb6fe11568371168ace0c2ea38d5ac/transformed/drawerlayout-1.1.1/AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.recyclerview:recyclerview:1.1.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/43c2677ae5f642d9ff67be41bb6d847d/transformed/recyclerview-1.1.0/AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.customview:customview:1.1.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/42ac0c35c70f99ac9a7aed7809f0809c/transformed/customview-1.1.0/AndroidManifest.xml:17:1-24:12
-MERGED from [androidx.core:core-ktx:1.9.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/62e8bcd94f4e846533250bcea4f00e84/transformed/core-ktx-1.9.0/AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.core:core:1.9.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/19a3848eea211a03727cbbbdeefda2de/transformed/core-1.9.0/AndroidManifest.xml:17:1-30:12
-MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/00494c329c58a95a683a704fcfd148e9/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:17:1-27:12
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.6.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/cb8bb056cd427c0313a23f9a0dd579c4/transformed/lifecycle-runtime-2.6.1/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/c93218f91ddd48417d4084c41a198099/transformed/lifecycle-viewmodel-ktx-2.6.1/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-livedata-core-ktx:2.6.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/be0531961b2716e4f77b71057fe97d4a/transformed/lifecycle-livedata-core-ktx-2.6.1/AndroidManifest.xml:17:1-22:12
+MERGED from [com.facebook.react:hermes-android:0.75.4] /Users/shriyakapil/.gradle/caches/8.8/transforms/515a483ddc10df7764635ab8f497d657/transformed/hermes-android-0.75.4-debug/AndroidManifest.xml:2:1-7:12
+MERGED from [com.github.Dimezis:BlurView:version-2.0.4] /Users/shriyakapil/.gradle/caches/8.8/transforms/9bea1ad44c761268a2dda9451cd0499d/transformed/BlurView-version-2.0.4/AndroidManifest.xml:2:1-11:12
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/82260e9f2a74b54ae1ccd7fbecf63c13/transformed/profileinstaller-1.3.0/AndroidManifest.xml:17:1-55:12
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/40b9aee51cb930aaf33ac3d5722c71f9/transformed/startup-runtime-1.1.1/AndroidManifest.xml:17:1-33:12
+MERGED from [androidx.tracing:tracing:1.1.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/8ab69d2103236ebf16d5b3a081a48b1d/transformed/tracing-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/14da540ef44295d88f81de90827b40e7/transformed/cursoradapter-1.0.0/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/e16c9ddfe2b66124738be53506130188/transformed/interpolator-1.0.0/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.cardview:cardview:1.0.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/25c0cad3ddd2c6d73244abbaf6b56a43/transformed/cardview-1.0.0/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.lifecycle:lifecycle-runtime:2.5.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/6b597b44f436961babf0dd812dedb4b3/transformed/lifecycle-runtime-2.5.1/AndroidManifest.xml:17:1-24:12
-MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/14da540ef44295d88f81de90827b40e7/transformed/cursoradapter-1.0.0/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.lifecycle:lifecycle-livedata:2.0.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/039d46b3f8e69d81b201e386d3d3d6e7/transformed/lifecycle-livedata-2.0.0/AndroidManifest.xml:17:1-22:12
-MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.5.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/88cb31a59b61ab6cb403744cb4da6e7d/transformed/lifecycle-livedata-core-2.5.1/AndroidManifest.xml:17:1-24:12
-MERGED from [androidx.arch.core:core-runtime:2.1.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/26684ce32e219bd0e087801fd8096ade/transformed/core-runtime-2.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/00494c329c58a95a683a704fcfd148e9/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:17:1-27:12
+MERGED from [androidx.arch.core:core-runtime:2.2.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/b8fda26e27fbf5cbe1e82f7a07b649c0/transformed/core-runtime-2.2.0/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.documentfile:documentfile:1.0.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/abc0f2a1ffea7105724748f19416e851/transformed/documentfile-1.0.0/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/3202facd73f33eb39ebc2f43972b630c/transformed/localbroadcastmanager-1.0.0/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.print:print:1.0.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/92645849909e92a17e37e90b95afe73a/transformed/print-1.0.0/AndroidManifest.xml:17:1-22:12
@@ -108,16 +114,18 @@ MERGED from [com.google.android.material:material:1.6.1] /Users/shriyakapil/.gra
 MERGED from [com.google.android.material:material:1.6.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/7b318836775473582af6a678efbc7360/transformed/material-1.6.1/AndroidManifest.xml:24:5-20
 MERGED from [androidx.constraintlayout:constraintlayout:2.0.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/b47ad05c7a5e2463eda1153572483ba2/transformed/constraintlayout-2.0.1/AndroidManifest.xml:9:5-20
 MERGED from [androidx.constraintlayout:constraintlayout:2.0.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/b47ad05c7a5e2463eda1153572483ba2/transformed/constraintlayout-2.0.1/AndroidManifest.xml:9:5-20
-MERGED from [com.github.Dimezis:BlurView:version-2.0.4] /Users/shriyakapil/.gradle/caches/8.8/transforms/9bea1ad44c761268a2dda9451cd0499d/transformed/BlurView-version-2.0.4/AndroidManifest.xml:9:5-20
-MERGED from [com.github.Dimezis:BlurView:version-2.0.4] /Users/shriyakapil/.gradle/caches/8.8/transforms/9bea1ad44c761268a2dda9451cd0499d/transformed/BlurView-version-2.0.4/AndroidManifest.xml:9:5-20
 MERGED from [androidx.emoji2:emoji2:1.2.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/af9fe4497f627430e2e6a9c9a98f7289/transformed/emoji2-1.2.0/AndroidManifest.xml:23:5-33:19
 MERGED from [androidx.emoji2:emoji2:1.2.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/af9fe4497f627430e2e6a9c9a98f7289/transformed/emoji2-1.2.0/AndroidManifest.xml:23:5-33:19
-MERGED from [androidx.lifecycle:lifecycle-process:2.4.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/99832869b82d74fc3c7c90e84b9d01a6/transformed/lifecycle-process-2.4.1/AndroidManifest.xml:25:5-35:19
-MERGED from [androidx.lifecycle:lifecycle-process:2.4.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/99832869b82d74fc3c7c90e84b9d01a6/transformed/lifecycle-process-2.4.1/AndroidManifest.xml:25:5-35:19
-MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/40b9aee51cb930aaf33ac3d5722c71f9/transformed/startup-runtime-1.1.1/AndroidManifest.xml:25:5-31:19
-MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/40b9aee51cb930aaf33ac3d5722c71f9/transformed/startup-runtime-1.1.1/AndroidManifest.xml:25:5-31:19
+MERGED from [androidx.lifecycle:lifecycle-process:2.6.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/e4d0ed70bedc373e07c2f51225f3db82/transformed/lifecycle-process-2.6.1/AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.lifecycle:lifecycle-process:2.6.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/e4d0ed70bedc373e07c2f51225f3db82/transformed/lifecycle-process-2.6.1/AndroidManifest.xml:23:5-33:19
 MERGED from [androidx.core:core:1.9.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/19a3848eea211a03727cbbbdeefda2de/transformed/core-1.9.0/AndroidManifest.xml:28:5-89
 MERGED from [androidx.core:core:1.9.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/19a3848eea211a03727cbbbdeefda2de/transformed/core-1.9.0/AndroidManifest.xml:28:5-89
+MERGED from [com.github.Dimezis:BlurView:version-2.0.4] /Users/shriyakapil/.gradle/caches/8.8/transforms/9bea1ad44c761268a2dda9451cd0499d/transformed/BlurView-version-2.0.4/AndroidManifest.xml:9:5-20
+MERGED from [com.github.Dimezis:BlurView:version-2.0.4] /Users/shriyakapil/.gradle/caches/8.8/transforms/9bea1ad44c761268a2dda9451cd0499d/transformed/BlurView-version-2.0.4/AndroidManifest.xml:9:5-20
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/82260e9f2a74b54ae1ccd7fbecf63c13/transformed/profileinstaller-1.3.0/AndroidManifest.xml:23:5-53:19
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/82260e9f2a74b54ae1ccd7fbecf63c13/transformed/profileinstaller-1.3.0/AndroidManifest.xml:23:5-53:19
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/40b9aee51cb930aaf33ac3d5722c71f9/transformed/startup-runtime-1.1.1/AndroidManifest.xml:25:5-31:19
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/40b9aee51cb930aaf33ac3d5722c71f9/transformed/startup-runtime-1.1.1/AndroidManifest.xml:25:5-31:19
 MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/00494c329c58a95a683a704fcfd148e9/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:24:5-25:19
 MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/00494c329c58a95a683a704fcfd148e9/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:24:5-25:19
 MERGED from [com.facebook.soloader:soloader:0.11.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/c2cb9650391557699fbe9770d9cc8fda/transformed/soloader-0.11.0/AndroidManifest.xml:11:5-15:19
@@ -195,8 +203,6 @@ MERGED from [:react-native-community_checkbox] /Users/shriyakapil/EliteAideFront
 MERGED from [:react-native-community_checkbox] /Users/shriyakapil/EliteAideFrontend/node_modules/@react-native-community/checkbox/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:5:5-44
 MERGED from [:react-native-community_datetimepicker] /Users/shriyakapil/EliteAideFrontend/node_modules/@react-native-community/datetimepicker/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:5:5-44
 MERGED from [:react-native-community_datetimepicker] /Users/shriyakapil/EliteAideFrontend/node_modules/@react-native-community/datetimepicker/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:5:5-44
-MERGED from [:react-native-config] /Users/shriyakapil/EliteAideFrontend/node_modules/react-native-config/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:5:5-44
-MERGED from [:react-native-config] /Users/shriyakapil/EliteAideFrontend/node_modules/react-native-config/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:5:5-44
 MERGED from [:react-native-curved-bottom-bar] /Users/shriyakapil/EliteAideFrontend/node_modules/react-native-curved-bottom-bar/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:5:5-44
 MERGED from [:react-native-curved-bottom-bar] /Users/shriyakapil/EliteAideFrontend/node_modules/react-native-curved-bottom-bar/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:5:5-44
 MERGED from [:react-native-linear-gradient] /Users/shriyakapil/EliteAideFrontend/node_modules/react-native-linear-gradient/android/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:5:5-44
@@ -219,26 +225,34 @@ MERGED from [androidx.constraintlayout:constraintlayout:2.0.1] /Users/shriyakapi
 MERGED from [androidx.constraintlayout:constraintlayout:2.0.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/b47ad05c7a5e2463eda1153572483ba2/transformed/constraintlayout-2.0.1/AndroidManifest.xml:5:5-7:41
 MERGED from [androidx.appcompat:appcompat:1.6.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/7e3a2d85f956185beb2f1e38094026bf/transformed/appcompat-1.6.1/AndroidManifest.xml:20:5-44
 MERGED from [androidx.appcompat:appcompat:1.6.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/7e3a2d85f956185beb2f1e38094026bf/transformed/appcompat-1.6.1/AndroidManifest.xml:20:5-44
-MERGED from [com.facebook.fresco:imagepipeline-okhttp3:3.2.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/72ac5808a6400f157cb379946e429392/transformed/imagepipeline-okhttp3-3.2.0/AndroidManifest.xml:5:5-44
-MERGED from [com.facebook.fresco:imagepipeline-okhttp3:3.2.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/72ac5808a6400f157cb379946e429392/transformed/imagepipeline-okhttp3-3.2.0/AndroidManifest.xml:5:5-44
 MERGED from [androidx.viewpager2:viewpager2:1.0.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/5c17f33cb48ecb3b49fda8c09ac4dc04/transformed/viewpager2-1.0.0/AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.viewpager2:viewpager2:1.0.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/5c17f33cb48ecb3b49fda8c09ac4dc04/transformed/viewpager2-1.0.0/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.fragment:fragment:1.3.6] /Users/shriyakapil/.gradle/caches/8.8/transforms/29eaa1a824e9b41e147bfed1eaebf074/transformed/fragment-1.3.6/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.fragment:fragment:1.3.6] /Users/shriyakapil/.gradle/caches/8.8/transforms/29eaa1a824e9b41e147bfed1eaebf074/transformed/fragment-1.3.6/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.activity:activity:1.6.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/9bb2e25be72713c91c8347807ae106b7/transformed/activity-1.6.0/AndroidManifest.xml:20:5-44
-MERGED from [androidx.activity:activity:1.6.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/9bb2e25be72713c91c8347807ae106b7/transformed/activity-1.6.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.fragment:fragment:1.6.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/017477d908d989755e8e3df011ae8316/transformed/fragment-1.6.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.fragment:fragment:1.6.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/017477d908d989755e8e3df011ae8316/transformed/fragment-1.6.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.fragment:fragment-ktx:1.6.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/4865e3636bcd0d44b25a362c1ed38e20/transformed/fragment-ktx-1.6.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.fragment:fragment-ktx:1.6.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/4865e3636bcd0d44b25a362c1ed38e20/transformed/fragment-ktx-1.6.1/AndroidManifest.xml:20:5-44
+MERGED from [com.facebook.fresco:imagepipeline-okhttp3:3.2.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/72ac5808a6400f157cb379946e429392/transformed/imagepipeline-okhttp3-3.2.0/AndroidManifest.xml:5:5-44
+MERGED from [com.facebook.fresco:imagepipeline-okhttp3:3.2.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/72ac5808a6400f157cb379946e429392/transformed/imagepipeline-okhttp3-3.2.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.2.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/20525f9ec808a562b5b269d0f9d39459/transformed/coordinatorlayout-1.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.2.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/20525f9ec808a562b5b269d0f9d39459/transformed/coordinatorlayout-1.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.1.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/a7cf60cdef1838eeea19ad48f54cf1ed/transformed/swiperefreshlayout-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.1.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/a7cf60cdef1838eeea19ad48f54cf1ed/transformed/swiperefreshlayout-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.autofill:autofill:1.1.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/b20f85a5bedfd79f75ac9fa21a2aa1bc/transformed/autofill-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.autofill:autofill:1.1.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/b20f85a5bedfd79f75ac9fa21a2aa1bc/transformed/autofill-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.emoji2:emoji2-views-helper:1.2.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/ce53550f85d8c0450cd7a06f3ccd0486/transformed/emoji2-views-helper-1.2.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.emoji2:emoji2-views-helper:1.2.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/ce53550f85d8c0450cd7a06f3ccd0486/transformed/emoji2-views-helper-1.2.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.emoji2:emoji2:1.2.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/af9fe4497f627430e2e6a9c9a98f7289/transformed/emoji2-1.2.0/AndroidManifest.xml:21:5-44
+MERGED from [androidx.emoji2:emoji2:1.2.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/af9fe4497f627430e2e6a9c9a98f7289/transformed/emoji2-1.2.0/AndroidManifest.xml:21:5-44
+MERGED from [androidx.drawerlayout:drawerlayout:1.1.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/1fbb6fe11568371168ace0c2ea38d5ac/transformed/drawerlayout-1.1.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.drawerlayout:drawerlayout:1.1.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/1fbb6fe11568371168ace0c2ea38d5ac/transformed/drawerlayout-1.1.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.transition:transition:1.2.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/9941258bddbd56d3c131735546c19a27/transformed/transition-1.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.transition:transition:1.2.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/9941258bddbd56d3c131735546c19a27/transformed/transition-1.2.0/AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.dynamicanimation:dynamicanimation:1.0.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/3e128d57c4aeddfe83bcceb0d98593e8/transformed/dynamicanimation-1.0.0/AndroidManifest.xml:20:5-44
 MERGED from [androidx.dynamicanimation:dynamicanimation:1.0.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/3e128d57c4aeddfe83bcceb0d98593e8/transformed/dynamicanimation-1.0.0/AndroidManifest.xml:20:5-44
-MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/9a0f19d3b069148bf49ef3fd2eabb93e/transformed/legacy-support-core-utils-1.0.0/AndroidManifest.xml:20:5-44
-MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/9a0f19d3b069148bf49ef3fd2eabb93e/transformed/legacy-support-core-utils-1.0.0/AndroidManifest.xml:20:5-44
-MERGED from [androidx.loader:loader:1.0.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/eec922bfddc640762e59405d4b8789e4/transformed/loader-1.0.0/AndroidManifest.xml:20:5-44
-MERGED from [androidx.loader:loader:1.0.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/eec922bfddc640762e59405d4b8789e4/transformed/loader-1.0.0/AndroidManifest.xml:20:5-44
-MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.5.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/7a92540ab31e55d47e93ad49b7f9375e/transformed/lifecycle-viewmodel-savedstate-2.5.1/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.5.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/7a92540ab31e55d47e93ad49b7f9375e/transformed/lifecycle-viewmodel-savedstate-2.5.1/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.5.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/1b2e1c9b355e48ce2fa1db22d704e1e4/transformed/lifecycle-viewmodel-2.5.1/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.5.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/1b2e1c9b355e48ce2fa1db22d704e1e4/transformed/lifecycle-viewmodel-2.5.1/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.savedstate:savedstate:1.2.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/8ff08c8c86fade29bf3101d5a8df8273/transformed/savedstate-1.2.0/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.savedstate:savedstate:1.2.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/8ff08c8c86fade29bf3101d5a8df8273/transformed/savedstate-1.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/88ca1bb2d444794eb247eb7588695d29/transformed/vectordrawable-animated-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/88ca1bb2d444794eb247eb7588695d29/transformed/vectordrawable-animated-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/61d11274fb1fe008948a6aef7bfc013f/transformed/vectordrawable-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/61d11274fb1fe008948a6aef7bfc013f/transformed/vectordrawable-1.1.0/AndroidManifest.xml:20:5-22:41
 MERGED from [com.facebook.fresco:fresco:3.2.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/8c8e80e416594952fa52856bf2371989/transformed/fresco-3.2.0/AndroidManifest.xml:5:5-44
 MERGED from [com.facebook.fresco:fresco:3.2.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/8c8e80e416594952fa52856bf2371989/transformed/fresco-3.2.0/AndroidManifest.xml:5:5-44
 MERGED from [com.facebook.fresco:drawee:3.2.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/eeee95d55e1eac35c75f70bb980e72e7/transformed/drawee-3.2.0/AndroidManifest.xml:5:5-44
@@ -267,60 +281,66 @@ MERGED from [com.facebook.fresco:soloader:3.2.0] /Users/shriyakapil/.gradle/cach
 MERGED from [com.facebook.fresco:soloader:3.2.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/83687ad8bbc30e19e5ca400851ab7201/transformed/soloader-3.2.0/AndroidManifest.xml:5:5-44
 MERGED from [com.facebook.fresco:fbcore:3.2.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/f8449455395c86dd5ae495f151fa7808/transformed/fbcore-3.2.0/AndroidManifest.xml:5:5-44
 MERGED from [com.facebook.fresco:fbcore:3.2.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/f8449455395c86dd5ae495f151fa7808/transformed/fbcore-3.2.0/AndroidManifest.xml:5:5-44
-MERGED from [com.facebook.react:hermes-android:0.75.4] /Users/shriyakapil/.gradle/caches/8.8/transforms/515a483ddc10df7764635ab8f497d657/transformed/hermes-android-0.75.4-debug/AndroidManifest.xml:5:5-44
-MERGED from [com.facebook.react:hermes-android:0.75.4] /Users/shriyakapil/.gradle/caches/8.8/transforms/515a483ddc10df7764635ab8f497d657/transformed/hermes-android-0.75.4-debug/AndroidManifest.xml:5:5-44
-MERGED from [com.github.Dimezis:BlurView:version-2.0.4] /Users/shriyakapil/.gradle/caches/8.8/transforms/9bea1ad44c761268a2dda9451cd0499d/transformed/BlurView-version-2.0.4/AndroidManifest.xml:5:5-7:41
-MERGED from [com.github.Dimezis:BlurView:version-2.0.4] /Users/shriyakapil/.gradle/caches/8.8/transforms/9bea1ad44c761268a2dda9451cd0499d/transformed/BlurView-version-2.0.4/AndroidManifest.xml:5:5-7:41
-MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.2.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/20525f9ec808a562b5b269d0f9d39459/transformed/coordinatorlayout-1.2.0/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.2.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/20525f9ec808a562b5b269d0f9d39459/transformed/coordinatorlayout-1.2.0/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.1.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/a7cf60cdef1838eeea19ad48f54cf1ed/transformed/swiperefreshlayout-1.1.0/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.1.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/a7cf60cdef1838eeea19ad48f54cf1ed/transformed/swiperefreshlayout-1.1.0/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.emoji2:emoji2-views-helper:1.2.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/ce53550f85d8c0450cd7a06f3ccd0486/transformed/emoji2-views-helper-1.2.0/AndroidManifest.xml:5:5-44
-MERGED from [androidx.emoji2:emoji2-views-helper:1.2.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/ce53550f85d8c0450cd7a06f3ccd0486/transformed/emoji2-views-helper-1.2.0/AndroidManifest.xml:5:5-44
-MERGED from [androidx.emoji2:emoji2:1.2.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/af9fe4497f627430e2e6a9c9a98f7289/transformed/emoji2-1.2.0/AndroidManifest.xml:21:5-44
-MERGED from [androidx.emoji2:emoji2:1.2.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/af9fe4497f627430e2e6a9c9a98f7289/transformed/emoji2-1.2.0/AndroidManifest.xml:21:5-44
-MERGED from [androidx.lifecycle:lifecycle-process:2.4.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/99832869b82d74fc3c7c90e84b9d01a6/transformed/lifecycle-process-2.4.1/AndroidManifest.xml:21:5-23:41
-MERGED from [androidx.lifecycle:lifecycle-process:2.4.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/99832869b82d74fc3c7c90e84b9d01a6/transformed/lifecycle-process-2.4.1/AndroidManifest.xml:21:5-23:41
-MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/40b9aee51cb930aaf33ac3d5722c71f9/transformed/startup-runtime-1.1.1/AndroidManifest.xml:21:5-23:41
-MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/40b9aee51cb930aaf33ac3d5722c71f9/transformed/startup-runtime-1.1.1/AndroidManifest.xml:21:5-23:41
-MERGED from [androidx.tracing:tracing:1.1.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/8ab69d2103236ebf16d5b3a081a48b1d/transformed/tracing-1.1.0/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.tracing:tracing:1.1.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/8ab69d2103236ebf16d5b3a081a48b1d/transformed/tracing-1.1.0/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.transition:transition:1.2.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/9941258bddbd56d3c131735546c19a27/transformed/transition-1.2.0/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.transition:transition:1.2.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/9941258bddbd56d3c131735546c19a27/transformed/transition-1.2.0/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/88ca1bb2d444794eb247eb7588695d29/transformed/vectordrawable-animated-1.1.0/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/88ca1bb2d444794eb247eb7588695d29/transformed/vectordrawable-animated-1.1.0/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/61d11274fb1fe008948a6aef7bfc013f/transformed/vectordrawable-1.1.0/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/61d11274fb1fe008948a6aef7bfc013f/transformed/vectordrawable-1.1.0/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.autofill:autofill:1.1.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/b20f85a5bedfd79f75ac9fa21a2aa1bc/transformed/autofill-1.1.0/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.autofill:autofill:1.1.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/b20f85a5bedfd79f75ac9fa21a2aa1bc/transformed/autofill-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.activity:activity-ktx:1.7.2] /Users/shriyakapil/.gradle/caches/8.8/transforms/e5194f6fc05fc929187500841078374e/transformed/activity-ktx-1.7.2/AndroidManifest.xml:20:5-44
+MERGED from [androidx.activity:activity-ktx:1.7.2] /Users/shriyakapil/.gradle/caches/8.8/transforms/e5194f6fc05fc929187500841078374e/transformed/activity-ktx-1.7.2/AndroidManifest.xml:20:5-44
+MERGED from [androidx.activity:activity:1.7.2] /Users/shriyakapil/.gradle/caches/8.8/transforms/fc430bc998806196a1c835eaa7f38415/transformed/activity-1.7.2/AndroidManifest.xml:20:5-44
+MERGED from [androidx.activity:activity:1.7.2] /Users/shriyakapil/.gradle/caches/8.8/transforms/fc430bc998806196a1c835eaa7f38415/transformed/activity-1.7.2/AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate-ktx:1.2.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/78fa4966e1948ddc5cbf995ada8087fc/transformed/savedstate-ktx-1.2.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate-ktx:1.2.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/78fa4966e1948ddc5cbf995ada8087fc/transformed/savedstate-ktx-1.2.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate:1.2.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/b38ed92de39b404080eed48075b02998/transformed/savedstate-1.2.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate:1.2.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/b38ed92de39b404080eed48075b02998/transformed/savedstate-1.2.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/9a0f19d3b069148bf49ef3fd2eabb93e/transformed/legacy-support-core-utils-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/9a0f19d3b069148bf49ef3fd2eabb93e/transformed/legacy-support-core-utils-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.loader:loader:1.0.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/eec922bfddc640762e59405d4b8789e4/transformed/loader-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.loader:loader:1.0.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/eec922bfddc640762e59405d4b8789e4/transformed/loader-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-ktx:2.6.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/f1505636e2ae5df1abf11775238ccf79/transformed/lifecycle-runtime-ktx-2.6.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-ktx:2.6.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/f1505636e2ae5df1abf11775238ccf79/transformed/lifecycle-runtime-ktx-2.6.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.6.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/12233a17b9f4c8be87e9f5ef8a8a4dab/transformed/lifecycle-livedata-2.6.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.6.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/12233a17b9f4c8be87e9f5ef8a8a4dab/transformed/lifecycle-livedata-2.6.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-process:2.6.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/e4d0ed70bedc373e07c2f51225f3db82/transformed/lifecycle-process-2.6.1/AndroidManifest.xml:21:5-44
+MERGED from [androidx.lifecycle:lifecycle-process:2.6.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/e4d0ed70bedc373e07c2f51225f3db82/transformed/lifecycle-process-2.6.1/AndroidManifest.xml:21:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.6.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/9e95e94ecf2817425836e84dcd24c6d4/transformed/lifecycle-livedata-core-2.6.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.6.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/9e95e94ecf2817425836e84dcd24c6d4/transformed/lifecycle-livedata-core-2.6.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.6.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/845a50950f964062f22d0d0691afb601/transformed/lifecycle-viewmodel-2.6.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.6.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/845a50950f964062f22d0d0691afb601/transformed/lifecycle-viewmodel-2.6.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.6.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/a52ae465f31c8fcf638303e271e63bde/transformed/lifecycle-viewmodel-savedstate-2.6.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.6.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/a52ae465f31c8fcf638303e271e63bde/transformed/lifecycle-viewmodel-savedstate-2.6.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.core:core-ktx:1.9.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/62e8bcd94f4e846533250bcea4f00e84/transformed/core-ktx-1.9.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.core:core-ktx:1.9.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/62e8bcd94f4e846533250bcea4f00e84/transformed/core-ktx-1.9.0/AndroidManifest.xml:5:5-44
 MERGED from [androidx.viewpager:viewpager:1.0.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/79174a675b195cf06cb9abbf43126fdf/transformed/viewpager-1.0.0/AndroidManifest.xml:20:5-44
 MERGED from [androidx.viewpager:viewpager:1.0.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/79174a675b195cf06cb9abbf43126fdf/transformed/viewpager-1.0.0/AndroidManifest.xml:20:5-44
-MERGED from [androidx.drawerlayout:drawerlayout:1.1.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/1fbb6fe11568371168ace0c2ea38d5ac/transformed/drawerlayout-1.1.1/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.drawerlayout:drawerlayout:1.1.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/1fbb6fe11568371168ace0c2ea38d5ac/transformed/drawerlayout-1.1.1/AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.recyclerview:recyclerview:1.1.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/43c2677ae5f642d9ff67be41bb6d847d/transformed/recyclerview-1.1.0/AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.recyclerview:recyclerview:1.1.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/43c2677ae5f642d9ff67be41bb6d847d/transformed/recyclerview-1.1.0/AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.customview:customview:1.1.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/42ac0c35c70f99ac9a7aed7809f0809c/transformed/customview-1.1.0/AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.customview:customview:1.1.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/42ac0c35c70f99ac9a7aed7809f0809c/transformed/customview-1.1.0/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.core:core-ktx:1.9.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/62e8bcd94f4e846533250bcea4f00e84/transformed/core-ktx-1.9.0/AndroidManifest.xml:5:5-44
-MERGED from [androidx.core:core-ktx:1.9.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/62e8bcd94f4e846533250bcea4f00e84/transformed/core-ktx-1.9.0/AndroidManifest.xml:5:5-44
 MERGED from [androidx.core:core:1.9.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/19a3848eea211a03727cbbbdeefda2de/transformed/core-1.9.0/AndroidManifest.xml:20:5-44
 MERGED from [androidx.core:core:1.9.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/19a3848eea211a03727cbbbdeefda2de/transformed/core-1.9.0/AndroidManifest.xml:20:5-44
-MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/00494c329c58a95a683a704fcfd148e9/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/00494c329c58a95a683a704fcfd148e9/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.6.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/cb8bb056cd427c0313a23f9a0dd579c4/transformed/lifecycle-runtime-2.6.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.6.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/cb8bb056cd427c0313a23f9a0dd579c4/transformed/lifecycle-runtime-2.6.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/c93218f91ddd48417d4084c41a198099/transformed/lifecycle-viewmodel-ktx-2.6.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/c93218f91ddd48417d4084c41a198099/transformed/lifecycle-viewmodel-ktx-2.6.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core-ktx:2.6.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/be0531961b2716e4f77b71057fe97d4a/transformed/lifecycle-livedata-core-ktx-2.6.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core-ktx:2.6.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/be0531961b2716e4f77b71057fe97d4a/transformed/lifecycle-livedata-core-ktx-2.6.1/AndroidManifest.xml:20:5-44
+MERGED from [com.facebook.react:hermes-android:0.75.4] /Users/shriyakapil/.gradle/caches/8.8/transforms/515a483ddc10df7764635ab8f497d657/transformed/hermes-android-0.75.4-debug/AndroidManifest.xml:5:5-44
+MERGED from [com.facebook.react:hermes-android:0.75.4] /Users/shriyakapil/.gradle/caches/8.8/transforms/515a483ddc10df7764635ab8f497d657/transformed/hermes-android-0.75.4-debug/AndroidManifest.xml:5:5-44
+MERGED from [com.github.Dimezis:BlurView:version-2.0.4] /Users/shriyakapil/.gradle/caches/8.8/transforms/9bea1ad44c761268a2dda9451cd0499d/transformed/BlurView-version-2.0.4/AndroidManifest.xml:5:5-7:41
+MERGED from [com.github.Dimezis:BlurView:version-2.0.4] /Users/shriyakapil/.gradle/caches/8.8/transforms/9bea1ad44c761268a2dda9451cd0499d/transformed/BlurView-version-2.0.4/AndroidManifest.xml:5:5-7:41
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/82260e9f2a74b54ae1ccd7fbecf63c13/transformed/profileinstaller-1.3.0/AndroidManifest.xml:21:5-44
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/82260e9f2a74b54ae1ccd7fbecf63c13/transformed/profileinstaller-1.3.0/AndroidManifest.xml:21:5-44
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/40b9aee51cb930aaf33ac3d5722c71f9/transformed/startup-runtime-1.1.1/AndroidManifest.xml:21:5-23:41
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/40b9aee51cb930aaf33ac3d5722c71f9/transformed/startup-runtime-1.1.1/AndroidManifest.xml:21:5-23:41
+MERGED from [androidx.tracing:tracing:1.1.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/8ab69d2103236ebf16d5b3a081a48b1d/transformed/tracing-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.tracing:tracing:1.1.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/8ab69d2103236ebf16d5b3a081a48b1d/transformed/tracing-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/14da540ef44295d88f81de90827b40e7/transformed/cursoradapter-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/14da540ef44295d88f81de90827b40e7/transformed/cursoradapter-1.0.0/AndroidManifest.xml:20:5-44
 MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/e16c9ddfe2b66124738be53506130188/transformed/interpolator-1.0.0/AndroidManifest.xml:20:5-44
 MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/e16c9ddfe2b66124738be53506130188/transformed/interpolator-1.0.0/AndroidManifest.xml:20:5-44
 MERGED from [androidx.cardview:cardview:1.0.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/25c0cad3ddd2c6d73244abbaf6b56a43/transformed/cardview-1.0.0/AndroidManifest.xml:20:5-44
 MERGED from [androidx.cardview:cardview:1.0.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/25c0cad3ddd2c6d73244abbaf6b56a43/transformed/cardview-1.0.0/AndroidManifest.xml:20:5-44
-MERGED from [androidx.lifecycle:lifecycle-runtime:2.5.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/6b597b44f436961babf0dd812dedb4b3/transformed/lifecycle-runtime-2.5.1/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.lifecycle:lifecycle-runtime:2.5.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/6b597b44f436961babf0dd812dedb4b3/transformed/lifecycle-runtime-2.5.1/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/14da540ef44295d88f81de90827b40e7/transformed/cursoradapter-1.0.0/AndroidManifest.xml:20:5-44
-MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/14da540ef44295d88f81de90827b40e7/transformed/cursoradapter-1.0.0/AndroidManifest.xml:20:5-44
-MERGED from [androidx.lifecycle:lifecycle-livedata:2.0.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/039d46b3f8e69d81b201e386d3d3d6e7/transformed/lifecycle-livedata-2.0.0/AndroidManifest.xml:20:5-44
-MERGED from [androidx.lifecycle:lifecycle-livedata:2.0.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/039d46b3f8e69d81b201e386d3d3d6e7/transformed/lifecycle-livedata-2.0.0/AndroidManifest.xml:20:5-44
-MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.5.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/88cb31a59b61ab6cb403744cb4da6e7d/transformed/lifecycle-livedata-core-2.5.1/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.5.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/88cb31a59b61ab6cb403744cb4da6e7d/transformed/lifecycle-livedata-core-2.5.1/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.arch.core:core-runtime:2.1.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/26684ce32e219bd0e087801fd8096ade/transformed/core-runtime-2.1.0/AndroidManifest.xml:20:5-22:41
-MERGED from [androidx.arch.core:core-runtime:2.1.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/26684ce32e219bd0e087801fd8096ade/transformed/core-runtime-2.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/00494c329c58a95a683a704fcfd148e9/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/00494c329c58a95a683a704fcfd148e9/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.arch.core:core-runtime:2.2.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/b8fda26e27fbf5cbe1e82f7a07b649c0/transformed/core-runtime-2.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.arch.core:core-runtime:2.2.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/b8fda26e27fbf5cbe1e82f7a07b649c0/transformed/core-runtime-2.2.0/AndroidManifest.xml:20:5-44
 MERGED from [androidx.documentfile:documentfile:1.0.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/abc0f2a1ffea7105724748f19416e851/transformed/documentfile-1.0.0/AndroidManifest.xml:20:5-44
 MERGED from [androidx.documentfile:documentfile:1.0.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/abc0f2a1ffea7105724748f19416e851/transformed/documentfile-1.0.0/AndroidManifest.xml:20:5-44
 MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/3202facd73f33eb39ebc2f43972b630c/transformed/localbroadcastmanager-1.0.0/AndroidManifest.xml:20:5-44
@@ -349,8 +369,10 @@ ADDED from [com.facebook.react:react-android:0.75.4] /Users/shriyakapil/.gradle/
 		ADDED from [com.facebook.react:react-android:0.75.4] /Users/shriyakapil/.gradle/caches/8.8/transforms/1f00369f60fb558f4c67464032b9f89f/transformed/react-android-0.75.4-debug/AndroidManifest.xml:20:13-77
 provider#androidx.startup.InitializationProvider
 ADDED from [androidx.emoji2:emoji2:1.2.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/af9fe4497f627430e2e6a9c9a98f7289/transformed/emoji2-1.2.0/AndroidManifest.xml:24:9-32:20
-MERGED from [androidx.lifecycle:lifecycle-process:2.4.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/99832869b82d74fc3c7c90e84b9d01a6/transformed/lifecycle-process-2.4.1/AndroidManifest.xml:26:9-34:20
-MERGED from [androidx.lifecycle:lifecycle-process:2.4.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/99832869b82d74fc3c7c90e84b9d01a6/transformed/lifecycle-process-2.4.1/AndroidManifest.xml:26:9-34:20
+MERGED from [androidx.lifecycle:lifecycle-process:2.6.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/e4d0ed70bedc373e07c2f51225f3db82/transformed/lifecycle-process-2.6.1/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.lifecycle:lifecycle-process:2.6.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/e4d0ed70bedc373e07c2f51225f3db82/transformed/lifecycle-process-2.6.1/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/82260e9f2a74b54ae1ccd7fbecf63c13/transformed/profileinstaller-1.3.0/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/82260e9f2a74b54ae1ccd7fbecf63c13/transformed/profileinstaller-1.3.0/AndroidManifest.xml:24:9-32:20
 MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/40b9aee51cb930aaf33ac3d5722c71f9/transformed/startup-runtime-1.1.1/AndroidManifest.xml:26:9-30:34
 MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/40b9aee51cb930aaf33ac3d5722c71f9/transformed/startup-runtime-1.1.1/AndroidManifest.xml:26:9-30:34
 	tools:node
@@ -368,11 +390,11 @@ ADDED from [androidx.emoji2:emoji2:1.2.0] /Users/shriyakapil/.gradle/caches/8.8/
 	android:name
 		ADDED from [androidx.emoji2:emoji2:1.2.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/af9fe4497f627430e2e6a9c9a98f7289/transformed/emoji2-1.2.0/AndroidManifest.xml:30:17-75
 meta-data#androidx.lifecycle.ProcessLifecycleInitializer
-ADDED from [androidx.lifecycle:lifecycle-process:2.4.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/99832869b82d74fc3c7c90e84b9d01a6/transformed/lifecycle-process-2.4.1/AndroidManifest.xml:31:13-33:52
+ADDED from [androidx.lifecycle:lifecycle-process:2.6.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/e4d0ed70bedc373e07c2f51225f3db82/transformed/lifecycle-process-2.6.1/AndroidManifest.xml:29:13-31:52
 	android:value
-		ADDED from [androidx.lifecycle:lifecycle-process:2.4.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/99832869b82d74fc3c7c90e84b9d01a6/transformed/lifecycle-process-2.4.1/AndroidManifest.xml:33:17-49
+		ADDED from [androidx.lifecycle:lifecycle-process:2.6.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/e4d0ed70bedc373e07c2f51225f3db82/transformed/lifecycle-process-2.6.1/AndroidManifest.xml:31:17-49
 	android:name
-		ADDED from [androidx.lifecycle:lifecycle-process:2.4.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/99832869b82d74fc3c7c90e84b9d01a6/transformed/lifecycle-process-2.4.1/AndroidManifest.xml:32:17-78
+		ADDED from [androidx.lifecycle:lifecycle-process:2.6.1] /Users/shriyakapil/.gradle/caches/8.8/transforms/e4d0ed70bedc373e07c2f51225f3db82/transformed/lifecycle-process-2.6.1/AndroidManifest.xml:30:17-78
 permission#${applicationId}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
 ADDED from [androidx.core:core:1.9.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/19a3848eea211a03727cbbbdeefda2de/transformed/core-1.9.0/AndroidManifest.xml:22:5-24:47
 	android:protectionLevel
@@ -393,6 +415,48 @@ uses-permission#com.eliteaidefrontend.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
 ADDED from [androidx.core:core:1.9.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/19a3848eea211a03727cbbbdeefda2de/transformed/core-1.9.0/AndroidManifest.xml:26:5-97
 	android:name
 		ADDED from [androidx.core:core:1.9.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/19a3848eea211a03727cbbbdeefda2de/transformed/core-1.9.0/AndroidManifest.xml:26:22-94
+meta-data#androidx.profileinstaller.ProfileInstallerInitializer
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/82260e9f2a74b54ae1ccd7fbecf63c13/transformed/profileinstaller-1.3.0/AndroidManifest.xml:29:13-31:52
+	android:value
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/82260e9f2a74b54ae1ccd7fbecf63c13/transformed/profileinstaller-1.3.0/AndroidManifest.xml:31:17-49
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/82260e9f2a74b54ae1ccd7fbecf63c13/transformed/profileinstaller-1.3.0/AndroidManifest.xml:30:17-85
+receiver#androidx.profileinstaller.ProfileInstallReceiver
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/82260e9f2a74b54ae1ccd7fbecf63c13/transformed/profileinstaller-1.3.0/AndroidManifest.xml:34:9-52:20
+	android:enabled
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/82260e9f2a74b54ae1ccd7fbecf63c13/transformed/profileinstaller-1.3.0/AndroidManifest.xml:37:13-35
+	android:exported
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/82260e9f2a74b54ae1ccd7fbecf63c13/transformed/profileinstaller-1.3.0/AndroidManifest.xml:38:13-36
+	android:permission
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/82260e9f2a74b54ae1ccd7fbecf63c13/transformed/profileinstaller-1.3.0/AndroidManifest.xml:39:13-57
+	android:directBootAware
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/82260e9f2a74b54ae1ccd7fbecf63c13/transformed/profileinstaller-1.3.0/AndroidManifest.xml:36:13-44
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/82260e9f2a74b54ae1ccd7fbecf63c13/transformed/profileinstaller-1.3.0/AndroidManifest.xml:35:13-76
+intent-filter#action:name:androidx.profileinstaller.action.INSTALL_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/82260e9f2a74b54ae1ccd7fbecf63c13/transformed/profileinstaller-1.3.0/AndroidManifest.xml:40:13-42:29
+action#androidx.profileinstaller.action.INSTALL_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/82260e9f2a74b54ae1ccd7fbecf63c13/transformed/profileinstaller-1.3.0/AndroidManifest.xml:41:17-91
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/82260e9f2a74b54ae1ccd7fbecf63c13/transformed/profileinstaller-1.3.0/AndroidManifest.xml:41:25-88
+intent-filter#action:name:androidx.profileinstaller.action.SKIP_FILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/82260e9f2a74b54ae1ccd7fbecf63c13/transformed/profileinstaller-1.3.0/AndroidManifest.xml:43:13-45:29
+action#androidx.profileinstaller.action.SKIP_FILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/82260e9f2a74b54ae1ccd7fbecf63c13/transformed/profileinstaller-1.3.0/AndroidManifest.xml:44:17-85
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/82260e9f2a74b54ae1ccd7fbecf63c13/transformed/profileinstaller-1.3.0/AndroidManifest.xml:44:25-82
+intent-filter#action:name:androidx.profileinstaller.action.SAVE_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/82260e9f2a74b54ae1ccd7fbecf63c13/transformed/profileinstaller-1.3.0/AndroidManifest.xml:46:13-48:29
+action#androidx.profileinstaller.action.SAVE_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/82260e9f2a74b54ae1ccd7fbecf63c13/transformed/profileinstaller-1.3.0/AndroidManifest.xml:47:17-88
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/82260e9f2a74b54ae1ccd7fbecf63c13/transformed/profileinstaller-1.3.0/AndroidManifest.xml:47:25-85
+intent-filter#action:name:androidx.profileinstaller.action.BENCHMARK_OPERATION
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/82260e9f2a74b54ae1ccd7fbecf63c13/transformed/profileinstaller-1.3.0/AndroidManifest.xml:49:13-51:29
+action#androidx.profileinstaller.action.BENCHMARK_OPERATION
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/82260e9f2a74b54ae1ccd7fbecf63c13/transformed/profileinstaller-1.3.0/AndroidManifest.xml:50:17-95
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/82260e9f2a74b54ae1ccd7fbecf63c13/transformed/profileinstaller-1.3.0/AndroidManifest.xml:50:25-92
 meta-data#com.facebook.soloader.enabled
 ADDED from [com.facebook.soloader:soloader:0.11.0] /Users/shriyakapil/.gradle/caches/8.8/transforms/c2cb9650391557699fbe9770d9cc8fda/transformed/soloader-0.11.0/AndroidManifest.xml:12:9-14:37
 	android:value

@@ -122,13 +122,6 @@ const CalendarScreen = () => {
           </View>
         </TouchableOpacity>
       </Modal>
-
-      <CreateTaskModal
-        isVisible={isCreateTaskVisible}
-        setIsVisible={setIsCreateTaskVisible}
-        selectedDate={selectedDate}
-        onSave={addTask} // Pass addTask to save new tasks
-      />
     </SafeAreaView>
   );
 };
