@@ -18,52 +18,128 @@ interface Task {
   time: string;
   backgroundColor: string;
   iconName: string;
+  priority: number;
+  status: string;
+  type: string;
 }
 
-const sampleTasks: Task[] = [
-  { id: 1, title: 'Team Meeting', description: 'Group discussion for the new product', time: '10 AM', backgroundColor: '#4956C7', iconName: 'people' },
-  { id: 2, title: 'Design Review', description: 'Review of the new design prototype', time: '2 PM', backgroundColor: '#3C8FA9', iconName: 'chatbubble' },
-  { id: 3, title: 'Code Review', description: 'Review of the recent code changes', time: '4 PM', backgroundColor: '#3D83AA', iconName: 'notifications' },
-];
+interface TaskResponse {
+  message: {
+    message: string;
+    task_details: {
+      total_pages: number;
+      total_items: number;
+      current_page: string;
+      page_size: string;
+      data: Array<{
+        id: number;
+        title: string;
+        description: string;
+        priority: number;
+        status: string;
+        due_date: string;
+        type: string;
+        created_at: string;
+        updated_at: string;
+        creator: number;
+      }>;
+    };
+  };
+}
 
-// Add this type for navigation
+const getBackgroundColor = (type: string): string => {
+  switch (type) {
+    case 'Work/Professional Tasks':
+      return '#4956C7';
+    case 'Errands':
+      return '#3C8FA9';
+    default:
+      return '#3D83AA';
+  }
+};
+
+const getIconName = (type: string): string => {
+  switch (type) {
+    case 'Work/Professional Tasks':
+      return 'briefcase';
+    case 'Errands':
+      return 'list';
+    default:
+      return 'notifications';
+  }
+};
+
 type RootStackParamList = {
   MyTaskScreen: undefined;
-  // ... other screens
+  Login: undefined;
 };
 
 type NavigationProp = StackNavigationProp<RootStackParamList>;
 
 const UpcomingTasksComponent: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
-  const [tasks, setTasks] = useState<Task[]>(sampleTasks);
+  const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(false);
 
   const fetchTasks = async () => {
     setLoading(true);
     try {
-      const token = await AsyncStorage.getItem('access_token');
-      const response = await axios.get(`${BASE_URL}v1/tasks/user-tasks/`, {
-        headers: { Authorization: `Bearer ${token}` },
-        params: { page: 1, items_per_page: 3 },
+      console.log('[HomeScreen] Fetching upcoming tasks...');
+      const token = await AsyncStorage.getItem('accessToken');
+      if (!token) {
+        navigation.navigate('Login');
+        return;
+      }
+      console.log('[HomeScreen] Token retrieved, making API call...');
+
+      // Get today's date and next 7 days date for upcoming tasks
+      const today = new Date();
+      const nextWeek = new Date(today);
+      nextWeek.setDate(nextWeek.getDate() + 7);
+      
+      const startDate = today.toISOString().split('T')[0];
+      const endDate = nextWeek.toISOString().split('T')[0];
+      
+      console.log('[HomeScreen] Fetching tasks between:', { startDate, endDate });
+      
+      const response = await axios.get<TaskResponse>(`${BASE_URL}v1/tasks/range`, {
+        headers: { 
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        params: {
+          start_date: startDate,
+          end_date: endDate
+        }
       });
 
-      if (response.data && response.data.length > 0) {
-        const fetchedTasks = response.data.map((task: any, index: number) => ({
+      console.log('[HomeScreen] API Response received:', response.status);
+
+      if (response.data?.message?.task_details?.data?.length > 0) {
+        console.log('[HomeScreen] Processing', response.data.message.task_details.data.length, 'tasks');
+        const fetchedTasks = response.data.message.task_details.data.map((task) => ({
           id: task.id,
-          title: task.title || `Task ${index + 1}`,
-          description: task.description || 'No description provided',
+          title: task.title,
+          description: task.description,
           time: new Date(task.due_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-          backgroundColor: sampleTasks[index]?.backgroundColor || '#3C8FA9',
-          iconName: sampleTasks[index]?.iconName || 'list',
+          backgroundColor: getBackgroundColor(task.type),
+          iconName: getIconName(task.type),
+          priority: task.priority,
+          status: task.status,
+          type: task.type
         }));
-        setTasks(fetchedTasks);
+        // Only take first 3 tasks for display
+        setTasks(fetchedTasks.slice(0, 3));
+        console.log('[HomeScreen] Tasks processed and state updated');
+      } else {
+        console.log('[HomeScreen] No tasks received from API');
       }
     } catch (error) {
+      console.error('[HomeScreen] Error fetching tasks:', error);
       Alert.alert('Error', 'Unable to fetch tasks');
-      console.error('Error fetching tasks:', error);
     } finally {
       setLoading(false);
+      console.log('[HomeScreen] Fetch tasks operation completed');
     }
   };
 
