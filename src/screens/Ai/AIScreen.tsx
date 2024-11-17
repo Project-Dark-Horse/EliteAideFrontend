@@ -87,7 +87,7 @@ const ChatScreen = () => {
   const [messages, setMessages] = useState<Message[]>([
     { 
       id: '1', 
-      text: 'Hey, how is your productivity treating you? Tell me how can I help you!',
+      text: 'Hey, how is your productivity treating you! Tell me how can I help you!',
       sender: 'bot',
       showQuickReplies: true 
     },
@@ -96,6 +96,7 @@ const ChatScreen = () => {
   const [input, setInput] = useState('');
   const [showInput, setShowInput] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [pendingTask, setPendingTask] = useState<string | null>(null);
 
   const handleResponse = (response: ApiResponse) => {
     if (response.error) {
@@ -125,6 +126,11 @@ const ChatScreen = () => {
       setInput('');
       setIsLoading(true);
 
+      // If there's a pending task, combine it with the new input (assumed to be the date)
+      const finalPrompt = pendingTask 
+        ? `${pendingTask} ${userInput}`
+        : userInput;
+
       const userMessage: Message = {
         id: Math.random().toString(),
         text: userInput,
@@ -139,11 +145,11 @@ const ChatScreen = () => {
           return;
         }
 
-        console.log('Sending request with payload:', { prompt: userInput });
+        console.log('Sending request with payload:', { prompt: finalPrompt });
 
         const response = await axios.post<SuccessResponse>(
           `${BASE_URL}v1/tasks/prompts/`,
-          { prompt: userInput },
+          { prompt: finalPrompt },
           {
             headers: {
               'Authorization': `Bearer ${token}`,
@@ -151,6 +157,9 @@ const ChatScreen = () => {
             }
           }
         );
+
+        // Clear pending task after successful request
+        setPendingTask(null);
 
         console.log('API Response:', response.data);
 
@@ -180,37 +189,80 @@ const ChatScreen = () => {
         setQuickReplies(['Create another task', 'Show my day']);
 
       } catch (error) {
-        let errorMessage = "Sorry, something went wrong. Please try again.";
-        
         if (axios.isAxiosError(error)) {
           console.error('Error details:', {
             status: error.response?.status,
             data: error.response?.data,
-            headers: error.response?.headers,
           });
 
           if (error.response?.status === 401) {
             navigation.navigate('Login');
-            errorMessage = "Your session has expired. Please login again.";
+            setMessages(prevMessages => [
+              { 
+                id: Math.random().toString(), 
+                text: `❌ Your session has expired. Please login again.`, 
+                sender: 'bot',
+                showQuickReplies: true
+              },
+              ...prevMessages
+            ]);
           } else if (error.response?.status === 400) {
-            errorMessage = error.response?.data?.error || 
-                          error.response?.data?.message || 
-                          "Invalid task description. Please provide more details.";
-          } else if (error.response?.status === 429) {
-            errorMessage = "You've made too many requests. Please wait a moment and try again.";
+            // Handle missing information as normal conversation flow
+            if (error.response?.data?.type?.[0]?.includes("Missing")) {
+              setPendingTask(userInput);
+              setMessages(prevMessages => [
+                { 
+                  id: Math.random().toString(), 
+                  text: "Please provide what task you'd like me to remind you about. For example: 'call John' or 'submit report'", 
+                  sender: 'bot',
+                  showQuickReplies: false
+                },
+                ...prevMessages
+              ]);
+            } else if (error.response?.data?.error?.includes("valid completion date")) {
+              setPendingTask(userInput);
+              setMessages(prevMessages => [
+                { 
+                  id: Math.random().toString(), 
+                  text: "Please provide when this task needs to be completed. For example: 'tomorrow at 3pm' or 'next monday at 2pm'", 
+                  sender: 'bot',
+                  showQuickReplies: false
+                },
+                ...prevMessages
+              ]);
+            } else {
+              // Show error symbol for other 400 errors
+              setMessages(prevMessages => [
+                { 
+                  id: Math.random().toString(), 
+                  text: `Missing Task Description. Could you please provide some task decription?`, 
+                  sender: 'bot',
+                  showQuickReplies: true
+                },
+                ...prevMessages
+              ]);
+              setQuickReplies(['Create task', 'Show my day']);
+            }
+          } else {
+            // Show error symbol for other errors
+            setMessages(prevMessages => [
+              { 
+                id: Math.random().toString(), 
+                text: `❌ I'm having trouble processing that. Let's try again!`, 
+                sender: 'bot',
+                showQuickReplies: true
+              },
+              ...prevMessages
+            ]);
+            setQuickReplies(['Create task', 'Show my day']);
           }
         }
 
-        setMessages(prevMessages => [
-          { 
-            id: Math.random().toString(), 
-            text: `❌ ${errorMessage}`, 
-            sender: 'bot' 
-          },
-          ...prevMessages
-        ]);
-
-        console.error('Full error object:', error);
+        console.error('Error:', {
+          message: (error as Error).message || 'Unknown error',
+          status: axios.isAxiosError(error) ? error.response?.status : 'unknown',
+          type: (error as any).response?.data?.type?.[0] || 'unknown'
+        });
       } finally {
         setIsLoading(false);
       }
@@ -231,7 +283,7 @@ const ChatScreen = () => {
       setMessages(prevMessages => [
         {
           id: Math.random().toString(),
-          text: "Please describe the task you'd like to create",
+          text: "Please describe the task you'd like to create!",
           sender: 'bot',
           action: 'create_task'
         },
