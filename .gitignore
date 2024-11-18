@@ -1,6 +1,7 @@
 # OSX
 #
 .DS_Store
+.env
 
 # Xcode
 #
@@ -35,13 +36,13 @@ local.properties
 !debug.keystore
 
 # node.js
-#
+###
 node_modules/
 npm-debug.log
 yarn-error.log
 
 # fastlane
-#
+###
 # It is recommended to not store the screenshots in the git repo. Instead, use fastlane to re-generate the
 # screenshots whenever they are needed.
 # For more information about the recommended setup visit:
@@ -53,7 +54,7 @@ yarn-error.log
 **/fastlane/test_output
 
 # Bundle artifact
-*.jsbundle
+*.jsbundlec
 
 # Ruby / CocoaPods
 **/Pods/
@@ -73,4 +74,17 @@ yarn-error.log
 !.yarn/sdks
 !.yarn/versions
 
+
 package-lock.json
+
+android/app/build/outputs/apk/debug/app-debug.apk
+android/app/build/outputs/apk/release/app-release.apk
+android/app/build/outputs/mapping/release/mapping.txt
+android/app/build/outputs/mapping/release/proguard.txt
+
+
+
+android/app/build/outputs/apk/debug/app-debug.apk
+node_modules
+yarn.lock
+
