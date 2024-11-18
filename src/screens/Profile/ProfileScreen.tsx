@@ -29,10 +29,10 @@ const ProfileScreen = () => {
             email: data.message.user_data.email,
           });
         } else {
-          console.error('Failed to fetch profile data:', data);
+          //console.error('Failed to fetch profile data:', data);
         }
       } catch (error) {
-        console.error('Error fetching profile data:', error);
+       // console.error('Error fetching profile data:', error);
       }
     };
 
@@ -51,7 +51,7 @@ const ProfileScreen = () => {
       if (response.didCancel) {
         console.log('User cancelled image picker');
       } else if (response.errorCode) {
-        console.error('ImagePicker Error: ', response.errorMessage);
+        //or('ImagePicker Error: ', response.errorMessage);
       } else if (response.assets && response.assets.length > 0) {
         const uri = response.assets[0].uri;
         // Handle the selected image (e.g., upload to server or update state)
@@ -68,7 +68,7 @@ const ProfileScreen = () => {
         routes: [{ name: 'Login' as never }],
       });
     } catch (error) {
-      console.error('Logout error:', error);
+     // console.error('Logout error:', error);
     }
   };
 
@@ -144,17 +144,17 @@ const ProfileScreen = () => {
         <View style={styles.taskStats}>
           <View style={styles.statItem}>
             <Ionicons name="flash" size={24} color="#3B82F6" />
-            <Text style={styles.statNumber}>125</Text>
+            <Text style={styles.statNumber}>5</Text>
             <Text style={styles.statLabel}>total</Text>
           </View>
           <View style={styles.statItem}>
             <Ionicons name="time" size={24} color="#3B82F6" />
-            <Text style={styles.statNumber}>25</Text>
+            <Text style={styles.statNumber}>5</Text>
             <Text style={styles.statLabel}>pending</Text>
           </View>
           <View style={styles.statItem}>
             <Ionicons name="checkmark-circle" size={24} color="#3B82F6" />
-            <Text style={styles.statNumber}>100</Text>
+            <Text style={styles.statNumber}>0</Text>
             <Text style={styles.statLabel}>done</Text>
           </View>
         </View>

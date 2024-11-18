@@ -82,7 +82,7 @@ const EditProfile: React.FC = () => {
         setFormData(userData);
       }
     } catch (error) {
-      console.error('Error fetching profile:', error);
+      //console.error('Error fetching profile:', error);
     }
   };
 
@@ -109,7 +109,7 @@ const EditProfile: React.FC = () => {
         Alert.alert('Error', errorData.message || 'Failed to update profile');
       }
     } catch (error) {
-      console.error('Error updating profile:', error);
+      //or('Error updating profile:', error);
       Alert.alert('Error', 'Failed to update profile');
     } finally {
       setIsLoading(false);
