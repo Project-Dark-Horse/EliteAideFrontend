@@ -1,18 +1,22 @@
+// src/components/UpperNavBar/NotificationsComponent.tsx
 import React from 'react';
-import { View } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { TouchableOpacity } from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import { useNavigation } from '@react-navigation/native';
 import tw from 'twrnc';
 
 const NotificationsComponent: React.FC = () => {
+  const navigation = useNavigation();
+
+  const handlePress = () => {
+    console.log('Navigating to Notification');
+    navigation.navigate('Notification'); // Make sure 'Notification' exists in the navigation stack
+  };
+
   return (
-    <View style={tw`flex-row justify-end items-center`}>
-      <View style={tw`w-6 h-6 justify-center items-center mx-0`}>
-        <Icon name="search" size={24} color="#646464" />
-      </View>
-      <View style={tw`w-6 h-6 justify-center items-center mx-5`}>
-        <Icon name="notifications" size={24} color="#646464" />
-      </View>
-    </View>
+    <TouchableOpacity onPress={handlePress} style={tw`mr-3`}>
+      <Ionicons name="notifications" size={24} color="#65779E" />
+    </TouchableOpacity>
   );
 };
 
