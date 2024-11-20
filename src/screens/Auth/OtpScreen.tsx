@@ -114,7 +114,9 @@ const Otp: React.FC<Props> = ({ route, navigation }) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
       });
-
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
       const data = await response.json();
       console.log('OTP Resend Response:', data);
       setLoading(false);

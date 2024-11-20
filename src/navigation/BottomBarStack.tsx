@@ -1,13 +1,14 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import Home from '../screens/Home/HomeScreen';
-import Calendar from '../screens/Calendar/Calendar';
+import Calendar from '../screens/Calendar/CalendarScreen';
 import ChatScreen from '../screens/Ai/AIScreen';
 import ProfileScreen from '../screens/Profile/ProfileScreen';
 import ManualTaskCreate from '../screens/Ai/ManualTaskCreate';
 import { RootStackParamList } from '../types/navigation';
 import NotificationScreen from '../screens/Notification/Notification';
 import MyTaskScreen from '../screens/Tasks/MyTaskScreen';
+import MyActivityScreen from '../screens/Profile/MyActivity';
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -34,6 +35,9 @@ const BottomBarStack: React.FC = () => {
       <Stack.Screen name="Notification" component={NotificationScreen} options={{ headerShown: true }} />
       <Stack.Screen name="ManualTaskCreate" component={ManualTaskCreate} options={{ headerShown: true }} />
       <Stack.Screen name="MyTaskScreen" component={MyTaskScreen} />
+      <Stack.Screen name="ProfileScreen" component={ProfileScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="ManualTaskCreate" component={ManualTaskCreate} options={{ headerShown: false }} />
+      <Stack.Screen name="MyActivity" component={MyActivityScreen} options={{ headerShown: false }} />
     </Stack.Navigator>
   );
 };

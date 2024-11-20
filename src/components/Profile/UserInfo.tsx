@@ -3,7 +3,7 @@ import { View, Text, Image, ActivityIndicator } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import tw from 'twrnc';
 
-const avatarr = require('../../assets/ManAvatar.png');
+const avatarr = require('../../assets/user.jpg');
 
 interface UserInfoProps {
     userInfo: {

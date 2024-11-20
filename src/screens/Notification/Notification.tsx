@@ -44,7 +44,25 @@ interface ApiResponse {
 
 const NotificationScreen: React.FC = () => {
   const navigation = useNavigation();
-  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [notifications, setNotifications] = useState<Notification[]>([
+    // Default notifications
+    {
+      id: 0,
+      task: undefined,
+      notification_type: 'info',
+      notification_status: 'read',
+      notification_message: 'Welcome to the notification center!',
+      created_at: new Date().toISOString(),
+    },
+    {
+      id: 1,
+      task: undefined,
+      notification_type: 'success',
+      notification_status: 'read',
+      notification_message: 'Your profile has been updated successfully.',
+      created_at: new Date().toISOString(),
+    },
+  ]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -74,7 +92,7 @@ const NotificationScreen: React.FC = () => {
       });
       
       log('API Response:', response.data);
-      setNotifications(response.data.data || []);
+      setNotifications(response.data.data.length > 0 ? response.data.data : notifications);
     } catch (err) {
       if (axios.isAxiosError(err)) {
         log('API Error:', {
@@ -92,8 +110,8 @@ const NotificationScreen: React.FC = () => {
         }
       } else {
         log('Non-API Error:', err);
-        setError('An unexpected error occurred');
-        Alert.alert('Error', 'An unexpected error occurred');
+        //setError('An unexpected error occurred');
+        //Alert.alert('Error', 'An unexpected error occurred');
       }
     } finally {
       setLoading(false);

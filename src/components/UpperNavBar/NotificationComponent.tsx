@@ -2,11 +2,14 @@
 import React from 'react';
 import { TouchableOpacity } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import tw from 'twrnc';
+import { RootStackParamList } from '../../types/navigation';
+
 
 const NotificationsComponent: React.FC = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   const handlePress = () => {
     console.log('Navigating to Notification');

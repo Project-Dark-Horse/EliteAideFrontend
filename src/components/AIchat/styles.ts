@@ -12,4 +12,9 @@ export default StyleSheet.create({
   quickReplyText: {
     color: '#fff',
   },
+  messageWrapper: {
+    padding: 10,
+    borderRadius: 8,
+    backgroundColor: '#f0f0f0',
+  },
 }); 

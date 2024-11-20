@@ -3,7 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, Image, KeyboardTypeOptions, Al
 import RadialGradient from 'react-native-radial-gradient';
 import { BlurView } from '@react-native-community/blur';
 import tw from 'twrnc';
-import profilePic from '../../assets/ManAvatar.png';
+import profilePic from '../../assets/user.jpg';
 import { useNavigation } from '@react-navigation/native';
 import { BASE_URL } from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -149,7 +149,7 @@ const EditProfile: React.FC = () => {
         <View style={tw`items-center mt-6 mb-8`}>
           <View style={tw`flex-row space-x-4`}>
             <Image 
-              source={require('../../assets/ManAvatar.png')} 
+              source={require('../../assets/user.jpg')} 
               style={tw`w-16 h-16 rounded-full`}
             />
             <View style={tw`w-16 h-16 rounded-full bg-[#333333]`} />

@@ -123,7 +123,7 @@ const ProfileScreen = () => {
         <View style={styles.profileInfo}>
           <View style={styles.avatarContainer}>
             <Image
-              source={require('../../assets/ManAvatar.png')}
+              source={require('../../assets/user.jpg')}
               style={styles.avatar}
             />
             <TouchableOpacity style={styles.editButton} onPress={handleEditProfilePic}>
