@@ -6,7 +6,6 @@ import tw from 'twrnc';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
 import { Button } from 'react-native-paper';
-import { useNavigation } from '@react-navigation/native';
 import * as Yup from 'yup';
 import Toast from 'react-native-toast-message';
 import { BASE_URL } from '@env';
@@ -23,11 +22,21 @@ const emailValidationSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email address').required('Email is required'),
 });
 
+// ... existing imports ...
+import { StackNavigationProp } from '@react-navigation/stack';
+import { useNavigation } from '@react-navigation/native';
+
+// Define your navigation stack type
+type AuthStackParamList = {
+  Otp: { email: string }; // Add other routes as needed
+  Login: undefined;
+};
+
 const EnterEmail: React.FC = () => {
   const [email, setEmail] = useState<string>('');
   const [emailError, setEmailError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const navigation = useNavigation<EmailScreenNavigationProp>();
+  const navigation = useNavigation<StackNavigationProp<AuthStackParamList>>();
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   const pressAnim = useRef(new Animated.Value(1)).current;
 
@@ -50,8 +59,10 @@ const EnterEmail: React.FC = () => {
     try {
       const response = await fetch(`${BASE_URL}v1/users/exists/?email=${email}`);
       const data = await response.json();
+      console.log('Check Email Exists Response:', data);
       return data.exists;
     } catch (error) {
+      console.error('Error checking email:', error);
       Toast.show({
         type: 'error',
         text1: 'Error',
@@ -71,6 +82,13 @@ const EnterEmail: React.FC = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
       });
+      const data = await response.json();
+      console.log('Send OTP Response:', data);
+
+      if (data.otp) {
+        console.log('Received OTP:', data.otp);
+      }
+
       if (!response.ok) {
         Toast.show({
           type: 'error',
@@ -81,6 +99,7 @@ const EnterEmail: React.FC = () => {
       }
       return true;
     } catch (error) {
+      console.error('Error sending OTP:', error);
       Toast.show({
         type: 'error',
         text1: 'Error',
@@ -113,15 +132,14 @@ const EnterEmail: React.FC = () => {
             text1: 'OTP Sent',
             text2: 'A verification code has been sent to your email.',
           });
-          handleOtpNavigation();
+          navigation.navigate('Otp', { email }); // Navigate to OTP screen
         }
       } else {
         Toast.show({
           type: 'info',
           text1: 'Email Exists',
-          text2: 'The email ID already exists. Please log in.',
+          text2: 'The email ID already exists. Please try another email or log in.',
         });
-        navigation.navigate('Login'); // Navigate to the login screen if email exists
       }
     } catch (error) {
       Toast.show({

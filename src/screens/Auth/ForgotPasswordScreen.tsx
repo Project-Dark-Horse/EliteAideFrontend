@@ -8,100 +8,88 @@ import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../types/navigation';
 import { BASE_URL } from '@env';
+import { toast } from 'react-hot-toast';
 
 type ForgotPasswordScreenProps = {
   route: RouteProp<RootStackParamList, 'ForgotPassword'>;
   navigation: StackNavigationProp<RootStackParamList, 'ForgotPassword'>;
 };
 
+const OTP_LENGTH = 4;
+const RESEND_TIMER = 30;
+const INITIAL_OTP = Array(OTP_LENGTH).fill('');
+
 const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({ route, navigation }) => {
-  const email = route.params?.email || '';
-  if (!route.params?.email) {
-    navigation.goBack();
+  const email = route.params?.email;
+  
+  if (!email) {
+    useEffect(() => { navigation.goBack(); }, []);
     return null;
   }
-  const [otp, setOtp] = useState<string[]>(['', '', '', '']);
-  const [timer, setTimer] = useState(30);
+
+  const [otp, setOtp] = useState<string[]>(INITIAL_OTP);
+  const [timer, setTimer] = useState(RESEND_TIMER);
   const [isResendDisabled, setIsResendDisabled] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const inputRefs = useRef<Array<TextInput | null>>([]);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (timer > 0) {
-        setTimer((prev) => prev - 1);
-      } else {
-        setIsResendDisabled(false);
-        clearInterval(interval);
-      }
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [timer]);
-
-  const handleOtpChange = (value: string, index: number) => {
-    if (/^\d*$/.test(value)) {
-      const newOtp = [...otp];
-      newOtp[index] = value;
-      setOtp(newOtp);
-
-      if (value && index < 3) {
-        inputRefs.current[index + 1]?.focus();
-      }
+  const makeApiCall = async (endpoint: string, payload: object) => {
+    try {
+      const response = await fetch(`${BASE_URL}v1/auth/${endpoint}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const data = await response.json();
+      return { success: response.ok, data };
+    } catch (error) {
+      toast.error('Something went wrong. Please try again.');
+      return { success: false, error };
     }
   };
 
-  const handleKeyPress = (e: any, index: number) => {
-    if (e.nativeEvent.key === 'Backspace' && !otp[index] && index > 0) {
-      inputRefs.current[index - 1]?.focus();
+  const handleOtpChange = (value: string, index: number) => {
+    if (!/^\d*$/.test(value)) return;
+    
+    setOtp(prev => {
+      const newOtp = [...prev];
+      newOtp[index] = value;
+      return newOtp;
+    });
+
+    if (value && index < OTP_LENGTH - 1) {
+      inputRefs.current[index + 1]?.focus();
     }
   };
 
   const handleResendCode = async () => {
-    setIsResendDisabled(true);
-    setTimer(30);
-    setOtp(['', '', '', '']);
     setIsLoading(true);
+    setIsResendDisabled(true);
+    setTimer(RESEND_TIMER);
+    setOtp(INITIAL_OTP);
 
-    try {
-      const response = await fetch(`${BASE_URL}v1/auth/resend-otp`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
-      });
-
-      const data = await response.json();
-      if (response.ok) {
-        // Handle success
-      }
-    } catch (error) {
-      console.error('Error resending OTP:', error);
-    } finally {
-      setIsLoading(false);
+    const { success } = await makeApiCall('resend-otp', { email });
+    if (success) {
+        toast.success('OTP Resent');
     }
+    setIsLoading(false);
   };
 
   const handleContinue = async () => {
     const otpString = otp.join('');
-    if (otpString.length === 4) {
-      setIsLoading(true);
-      try {
-        const response = await fetch(`${BASE_URL}v1/auth/verify-otp`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, otp: otpString }),
-        });
+    if (otpString.length !== OTP_LENGTH) return;
 
-        const data = await response.json();
-        if (response.ok) {
-          navigation.navigate('ResetPassword', { email, otp: otpString });
-        }
-      } catch (error) {
-        console.error('Error verifying OTP:', error);
-      } finally {
-        setIsLoading(false);
-      }
+    setIsLoading(true);
+    const { success } = await makeApiCall('verify-otp', { email, otp: otpString });
+    
+    if (success) {
+      navigation.navigate('ResetPassword', { email, otp: otpString });
     }
+    setIsLoading(false);
+  };
+
+  const handleKeyPress = (e: any, index: number) => {
+    // Handle key press logic here if needed
   };
 
   return (
