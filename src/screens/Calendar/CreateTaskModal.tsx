@@ -1,6 +1,6 @@
 import { BASE_URL } from '@env';
 import React, { useState } from 'react';
-import { Modal, View, StyleSheet, Text, TextInput, Button, Switch, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { Modal, View, StyleSheet, Text, TextInput, Button, Switch, ActivityIndicator, TouchableOpacity, Task } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
@@ -8,10 +8,15 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import LinearGradient from 'react-native-linear-gradient';
 
 // Props interface for the modal
+
 interface CreateTaskModalProps {
   isVisible: boolean;
-  onClose: () => void;
+  setIsVisible: (visible: boolean) => void; // Add this line
+  selectedDate: Date;
+  onSave: (newTask: Omit<Task, 'id'>) => void;
+  onClose: () => void; // Add this line
 }
+
 
 const CreateTaskModal: React.FC<CreateTaskModalProps> = ({ isVisible, onClose }) => {
   const [title, setTitle] = useState('');
