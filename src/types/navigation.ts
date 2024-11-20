@@ -20,6 +20,7 @@ export type RootStackParamList = {
   Login: undefined; // N
   ForgotPassword: {
     email?: string;
+    Notification: undefined;
   };
   ProfileScreen: undefined;
   MyActivityScreen: undefined;

@@ -1,6 +1,6 @@
 // CustomButton.tsx
-import React from 'react';
-import { View, TouchableOpacity, Image } from 'react-native';
+import React, { useRef } from 'react';
+import { View, TouchableOpacity, Image, Animated } from 'react-native';
 import tw from 'twrnc';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -13,19 +13,34 @@ type CustomButtonProps = {
 };
 
 const CustomButton: React.FC<CustomButtonProps> = ({ onPress }) => {
-  const navigation = useNavigation<BottomTabNavigationProp<RootStackParamList>>();
+  const scaleAnim = useRef(new Animated.Value(1)).current; // Create an animated value
+
+  const handlePressIn = () => {
+    Animated.spring(scaleAnim, {
+      toValue: 0.9, // Scale down
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const handlePressOut = () => {
+    Animated.spring(scaleAnim, {
+      toValue: 1, // Scale back to original
+      useNativeDriver: true,
+    }).start();
+  };
 
   const handlePress = () => {
     if (onPress) {
       onPress();
     } else {
-      navigation.navigate('ManualTaskCreate');
     }
   };
 
   return (
     <View style={tw`absolute bottom-10 left-0 right-0 items-center`}>
       <TouchableOpacity
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
         onPress={handlePress}
         style={[
           tw`w-16 h-10 rounded-full justify-center items-center`,
@@ -39,11 +54,11 @@ const CustomButton: React.FC<CustomButtonProps> = ({ onPress }) => {
         ]}
         accessibilityRole="button"
         accessibilityLabel="Create new task"
-        accessibilityHint="Navigates to the manual create task screen"
+        accessibilityHint="Triggers an animation instead of navigating"
       >
-        <Image
-          source={require('../../assets/plustabbar.png')}
-          style={tw`w-45px h-45px`}
+        <Animated.Image
+          source={require('../../assets/bot.png')}
+          style={[tw`w-45px h-45px`, { transform: [{ scale: scaleAnim }] }]} // Apply scale animation
           resizeMode="contain"
         />
       </TouchableOpacity>

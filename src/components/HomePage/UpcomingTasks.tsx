@@ -78,7 +78,9 @@ type NavigationProp = StackNavigationProp<RootStackParamList>;
 
 const UpcomingTasksComponent: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const [tasks, setTasks] = useState<Task[]>([
+    // Default tasks removed
+  ]);
   const [loading, setLoading] = useState(false);
 
   const fetchTasks = async () => {

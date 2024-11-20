@@ -27,48 +27,30 @@ const CalendarScreen = () => {
     { 
       id: 1, 
       time: '8 AM', 
-      summary: 'Team Meeting', 
-      detail: 'Group discussion for the new product', 
+      summary: 'Water Plants',
+      detail: 'Remind me to water the Plants',
       date: new Date(), 
       color: '#1D1E23',
       completed: true
     },
     { 
       id: 2, 
-      time: '9 AM', 
+      time: '',
       summary: 'Team Meeting', 
-      detail: 'Group discussion for the new product', 
+      detail: 'Work', 
       date: new Date(), 
       color: '#2196F3',
       completed: true
     },
     { 
       id: 3, 
-      time: '9 AM', 
-      summary: 'Team Meeting', 
-      detail: 'Group discussion for the new product', 
+      time: '12 PM', 
+      summary: 'Elite Aide Launch', 
+      detail: 'Launch of Elite Aide', 
       date: new Date(), 
       color: '#36AAB9',
       completed: false
     },
-    { 
-      id: 4, 
-      time: '11 AM', 
-      summary: 'Team Meeting', 
-      detail: 'Group discussion for the new product', 
-      date: new Date(), 
-      color: '#5560C4',
-      completed: false
-    },
-    { 
-      id: 5, 
-      time: '1 PM', 
-      summary: 'Team Meeting', 
-      detail: 'Group discussion for the new product', 
-      date: new Date(), 
-      color: '#B29361',
-      completed: false
-    }
   ]);
 
   // Function to add a new task

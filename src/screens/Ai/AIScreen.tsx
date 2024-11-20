@@ -13,7 +13,7 @@ import {
 import tw from 'twrnc';
 import bot from '../../assets/bot.png';
 import Icon from 'react-native-vector-icons/Ionicons';
-import user from '../../assets/ManAvatar.jpg';
+import user from '../../assets/user.jpg';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
@@ -183,11 +183,11 @@ const ChatScreen = () => {
         let errorMessage = "Sorry, something went wrong. Please try again.";
         
         if (axios.isAxiosError(error)) {
-          console.error('Error details:', {
-            status: error.response?.status,
-            data: error.response?.data,
-            headers: error.response?.headers,
-          });
+//           console.error('Error details:', {
+//             status: error.response?.status,
+//             data: error.response?.data,
+//             headers: error.response?.headers,
+//           });
 
           if (error.response?.status === 401) {
             navigation.navigate('Login');
@@ -210,7 +210,7 @@ const ChatScreen = () => {
           ...prevMessages
         ]);
 
-        console.error('Full error object:', error);
+       // console.error('Full error object:', error);
       } finally {
         setIsLoading(false);
       }
@@ -468,22 +468,17 @@ const ChatScreen = () => {
         keyboardVerticalOffset={80}
         style={tw`flex-1 pb-9`}
       >
-        <ScrollView 
-          style={tw`flex-1`}
+        <FlatList
+          data={messages}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+          inverted
           contentContainerStyle={tw`px-4 pt-4`}
+          ListFooterComponent={<View style={tw`h-4`} />}
+          ListHeaderComponent={<View style={tw`h-4`} />}
           showsVerticalScrollIndicator={false}
           bounces={false}
-        >
-          <FlatList
-            data={messages}
-            renderItem={renderItem}
-            keyExtractor={(item) => item.id}
-            inverted
-            scrollEnabled={false}
-            ListFooterComponent={<View style={tw`h-4`} />}
-            ListHeaderComponent={<View style={tw`h-4`} />}
-          />
-        </ScrollView>
+        />
 
         {showInput && (
           <View style={tw`flex-row items-center p-4 bg-[#111111] mb-20`}>
