@@ -7,7 +7,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import tw from 'twrnc';
 import CheckBox from '@react-native-community/checkbox';
-import { SignUpScreenNavigationProp } from '../types/navigation';
+import { SignUpScreenNavigationProp } from '../../types/navigation';
 import { BASE_URL } from '@env';
 import * as Yup from 'yup';
 import Toast from 'react-native-toast-message';
@@ -29,6 +29,28 @@ interface Errors {
   confirmPassword?: string;
   terms?: string;
 }
+
+const emailValidationSchema = Yup.object().shape({
+  email: Yup.string().email('Invalid email').required('Email is required'),
+});
+
+const checkEmailExists = async (email: string): Promise<boolean> => {
+  const response = await fetch(`${BASE_URL}v1/users/check-email/`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email }),
+  });
+  return response.ok;
+};
+
+const sendOtp = async (email: string): Promise<boolean> => {
+  const response = await fetch(`${BASE_URL}v1/users/send-otp/`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email }),
+  });
+  return response.ok;
+};
 
 const SignUpScreen = () => {
   const navigation = useNavigation<SignUpScreenNavigationProp>();
@@ -99,37 +121,40 @@ const SignUpScreen = () => {
   const handleSubmit = async () => {
     try {
       await emailValidationSchema.validate({ email });
-  
+
       // Step 1: Check if the email already exists
-      const emailExists = await emailExists(email);
-  
+      const emailExists = await checkEmailExists(email);
       if (emailExists) {
-        // If the email exists, prompt the user to log in and navigate to the Login screen
         Toast.show({
-          type: 'info',
-          text1: 'Email Exists',
-          text2: 'This email is already registered. Please log in.',
+          type: 'error',
+          text1: 'Email already exists',
+          text2: 'Please use a different email address'
         });
-        navigation.navigate('Login'); // Navigate to the login screen if email exists
+        return;
+      }
+
+      // Step 2: Send OTP
+      const otpSent = await sendOtp(email);
+      if (otpSent) {
+        navigation.navigate('Otp', { email });
       } else {
-        // Step 2: Send OTP only if the email does not exist
-        const otpSent = await sendOtp(email);
-        if (otpSent) {
-          Toast.show({
-            type: 'success',
-            text1: 'OTP Sent',
-            text2: 'A verification code has been sent to your email.',
-          });
-          handleOtpNavigation();
-        }
+        Toast.show({
+          type: 'error',
+          text1: 'Failed to send OTP',
+          text2: 'Please try again'
+        });
       }
     } catch (error) {
       Toast.show({
         type: 'error',
-        text1: 'Validation Error',
-        text2: error instanceof Yup.ValidationError ? error.message : 'An unknown error occurred',
+        text1: 'Invalid Email',
+        text2: error instanceof Error ? error.message : 'Please enter a valid email'
       });
     }
+  };
+
+  const handleOtpNavigation = () => {
+    navigation.navigate('Otp', { email });
   };
 
   return (
@@ -222,7 +247,7 @@ const SignUpScreen = () => {
 
         <Button
           mode="contained"
-          onPress={handleSignUp}
+          onPress={signUpUser}
           style={[tw`rounded-lg mt-6`, { backgroundColor: '#1D1E23'  }]}
           contentStyle={tw`py-2`}
           labelStyle={[tw`text-lg`, { color: '#FFFFFF' }]}

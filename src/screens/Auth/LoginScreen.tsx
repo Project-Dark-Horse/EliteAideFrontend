@@ -8,10 +8,22 @@ import LinearGradient from 'react-native-linear-gradient';
 import { BlurView } from '@react-native-community/blur';
 import RadialGradient from 'react-native-radial-gradient';
 import { BASE_URL } from '@env';
+import { useNavigation } from '@react-navigation/native';
 
 import LogoImage from '../../assets/vector.png';
 
-const LoginScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
+import { StackNavigationProp } from '@react-navigation/stack';
+
+// Define your navigation stack type
+type AuthStackParamList = {
+  BottomTabNavigator: undefined; // Add other routes as needed
+  ForgotPassword: undefined;
+  EnterEmail: undefined;
+};
+
+// Update the component to use the typed navigation prop
+const LoginScreen: React.FC = () => {
+  const navigation = useNavigation<StackNavigationProp<AuthStackParamList>>();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -124,7 +136,10 @@ const LoginScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
+        <TouchableOpacity onPress={() => {
+          console.log('Navigating to ForgotPassword');
+          navigation.navigate('ForgotPassword');
+        }}>
           <Text style={styles.forgotPassword}>Forgot Password?</Text>
         </TouchableOpacity>
 
@@ -145,7 +160,7 @@ const LoginScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
         ) : null}
 
         <View style={styles.createAccountContainer}>
-          <Text style={styles.createAccountText}>Don’t have an account? </Text>
+          <Text style={styles.createAccountText}>Don't have an account? </Text>
           <TouchableOpacity onPress={() => navigation.navigate('EnterEmail')}>
             <Text style={styles.createAccountLink}>Create One</Text>
           </TouchableOpacity>
