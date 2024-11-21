@@ -177,7 +177,7 @@ const ChatScreen = () => {
           ...prevMessages
         ]);
 
-        setQuickReplies(['Create another task', 'Show my day']);
+        setQuickReplies(['Create another task', 'Show my Tasks']);
 
       } catch (error) {
         let errorMessage = "Sorry, something went wrong. Please try again.";
@@ -219,7 +219,7 @@ const ChatScreen = () => {
 
   const [quickReplies, setQuickReplies] = useState<string[]>([
     'Create task', 
-    'Show my day'
+    'Show My Tasks'
   ]);
 
   const handleQuickReply = async (reply: string) => {
@@ -237,7 +237,7 @@ const ChatScreen = () => {
         },
         ...prevMessages
       ]);
-    } else if (reply === 'Show my day') {
+    } else if (reply === 'Show My Tasks') {
       console.log('Handling show my day action');
       setShowInput(false);
       
@@ -462,11 +462,11 @@ const ChatScreen = () => {
   );
 
   return (
-    <View style={tw`flex-1 bg-[#111111]`}>
+    <View style={tw`flex-1 bg-[#111111] pb-12`}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'android' ? 'padding' : 'height'}
         keyboardVerticalOffset={80}
-        style={tw`flex-1 pb-9`}
+        style={tw`flex-1 pb-12`}
       >
         <FlatList
           data={messages}

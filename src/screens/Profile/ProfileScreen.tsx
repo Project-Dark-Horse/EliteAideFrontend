@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet, Alert, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
@@ -28,11 +28,9 @@ const ProfileScreen = () => {
             username: data.message.user_data.username,
             email: data.message.user_data.email,
           });
-        } else {
-          //console.error('Failed to fetch profile data:', data);
         }
       } catch (error) {
-       // console.error('Error fetching profile data:', error);
+        console.error('Error fetching profile data:', error);
       }
     };
 
@@ -51,10 +49,9 @@ const ProfileScreen = () => {
       if (response.didCancel) {
         console.log('User cancelled image picker');
       } else if (response.errorCode) {
-        //or('ImagePicker Error: ', response.errorMessage);
+        console.error('ImagePicker Error: ', response.errorMessage);
       } else if (response.assets && response.assets.length > 0) {
         const uri = response.assets[0].uri;
-        // Handle the selected image (e.g., upload to server or update state)
         console.log(uri);
       }
     });
@@ -68,7 +65,7 @@ const ProfileScreen = () => {
         routes: [{ name: 'Login' as never }],
       });
     } catch (error) {
-     // console.error('Logout error:', error);
+      console.error('Logout error:', error);
     }
   };
 
@@ -86,7 +83,6 @@ const ProfileScreen = () => {
           onPress: async () => {
             try {
               await AsyncStorage.removeItem('accessToken');
-              // Add API call to invalidate all tokens
               navigation.reset({
                 index: 0,
                 routes: [{ name: 'Login' as never }],
@@ -102,106 +98,96 @@ const ProfileScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="chevron-back" size={24} color="#fff" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Profile</Text>
-        <View style={styles.headerRight}>
-          <TouchableOpacity style={styles.iconButton}>
-            <Ionicons name="search" size={24} color="#6B7280" />
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Ionicons name="chevron-back" size={20} color="#fff" />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.iconButton}>
-            <Ionicons name="notifications" size={24} color="#6B7280" />
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      {/* Profile Card */}
-      <View style={styles.profileCard}>
-        <View style={styles.profileInfo}>
-          <View style={styles.avatarContainer}>
-            <Image
-              source={require('../../assets/user.jpg')}
-              style={styles.avatar}
-            />
-            <TouchableOpacity style={styles.editButton} onPress={handleEditProfilePic}>
-              <Ionicons name="pencil" size={16} color="#fff" />
+          <Text style={styles.headerTitle}>Profile</Text>
+          <View style={styles.headerRight}>
+            <TouchableOpacity style={styles.iconButton}>
+              <Ionicons name="search" size={20} color="#6B7280" />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.iconButton}>
+              <Ionicons name="notifications" size={20} color="#6B7280" />
             </TouchableOpacity>
           </View>
-          <View style={styles.userInfo}>
-            <Text style={styles.userName}>{userData.username || 'Username'}</Text>
-            <Text style={styles.userEmail}>{userData.email || 'Email'}</Text>
-            <Text style={styles.userRole}>Software Developer</Text>
+        </View>
+
+        <View style={styles.profileCard}>
+          <View style={styles.profileInfo}>
+            <View style={styles.avatarContainer}>
+              <Image
+                source={require('../../assets/user.jpg')}
+                style={styles.avatar}
+              />
+              <TouchableOpacity style={styles.editButton} onPress={handleEditProfilePic}>
+                <Ionicons name="pencil" size={14} color="#fff" />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.userInfo}>
+              <Text style={styles.userName}>{userData.username || 'Username'}</Text>
+              <Text style={styles.userEmail}>{userData.email || 'Email'}</Text>
+              <Text style={styles.userRole}>Software Developer</Text>
+            </View>
           </View>
         </View>
-      </View>
 
-      {/* Tasks Summary */}
-      <TouchableOpacity style={styles.taskCard}>
-        <Text style={styles.taskTitle}>Your tasks</Text>
-        <View style={styles.taskStats}>
-          <View style={styles.statItem}>
-            <Ionicons name="flash" size={24} color="#3B82F6" />
-            <Text style={styles.statNumber}>5</Text>
-            <Text style={styles.statLabel}>total</Text>
+        <TouchableOpacity style={styles.taskCard}>
+          <Text style={styles.taskTitle}>Your tasks</Text>
+          <View style={styles.taskStats}>
+            <View style={styles.statItem}>
+              <Ionicons name="flash" size={20} color="#3B82F6" />
+              <Text style={styles.statNumber}>5</Text>
+              <Text style={styles.statLabel}>total</Text>
+            </View>
+            <View style={styles.statItem}>
+              <Ionicons name="time" size={20} color="#3B82F6" />
+              <Text style={styles.statNumber}>5</Text>
+              <Text style={styles.statLabel}>pending</Text>
+            </View>
+            <View style={styles.statItem}>
+              <Ionicons name="checkmark-circle" size={20} color="#3B82F6" />
+              <Text style={styles.statNumber}>0</Text>
+              <Text style={styles.statLabel}>done</Text>
+            </View>
           </View>
-          <View style={styles.statItem}>
-            <Ionicons name="time" size={24} color="#3B82F6" />
-            <Text style={styles.statNumber}>5</Text>
-            <Text style={styles.statLabel}>pending</Text>
-          </View>
-          <View style={styles.statItem}>
-            <Ionicons name="checkmark-circle" size={24} color="#3B82F6" />
-            <Text style={styles.statNumber}>0</Text>
-            <Text style={styles.statLabel}>done</Text>
-          </View>
+        </TouchableOpacity>
+
+        <View style={styles.menuContainer}>
+          <TouchableOpacity 
+            style={styles.menuItem}
+            onPress={() => navigation.navigate('SettingsScreen' as never)}
+          >
+            <Ionicons name="settings" size={20} color="#6B7280" />
+            <Text style={styles.menuText}>Settings</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            style={styles.menuItem}
+            onPress={() => navigation.navigate('About' as never)}
+          >
+            <Ionicons name="information-circle" size={20} color="#6B7280" />
+            <Text style={styles.menuText}>About Elite Aid</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            style={styles.menuItem}
+            onPress={handleLogout}
+          >
+            <Ionicons name="log-out" size={20} color="#6B7280" />
+            <Text style={styles.menuText}>Logout</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            style={styles.menuItem}
+            onPress={handleLogoutAll}
+          >
+            <Ionicons name="log-out" size={20} color="#6B7280" />
+            <Text style={styles.menuText}>Logout from all devices</Text>
+          </TouchableOpacity>
         </View>
-      </TouchableOpacity>
-
-      {/* Menu Items */}
-      <View style={styles.menuContainer}>
-        <TouchableOpacity 
-          style={styles.menuItem}
-          onPress={() => navigation.navigate('MyActivity' as never)}
-        >
-          <Ionicons name="time" size={24} color="#6B7280" />
-          <Text style={styles.menuText}>My Activity</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={styles.menuItem}
-          onPress={() => navigation.navigate('SettingsScreen' as never)}
-        >
-          <Ionicons name="settings" size={24} color="#6B7280" />
-          <Text style={styles.menuText}>Settings</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={styles.menuItem}
-          onPress={() => navigation.navigate('About' as never)}
-        >
-          <Ionicons name="information-circle" size={24} color="#6B7280" />
-          <Text style={styles.menuText}>About Elite Aid</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={styles.menuItem}
-          onPress={handleLogout}
-        >
-          <Ionicons name="log-out" size={24} color="#6B7280" />
-          <Text style={styles.menuText}>Logout</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={styles.menuItem}
-          onPress={handleLogoutAll}
-        >
-          <Ionicons name="log-out" size={24} color="#6B7280" />
-          <Text style={styles.menuText}>Logout from all devices</Text>
-        </TouchableOpacity>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -317,6 +303,9 @@ const styles = StyleSheet.create({
   menuText: {
     fontSize: 16,
     color: '#fff',
+  },
+  scrollContainer: {
+    paddingBottom: 20,
   },
 });
 

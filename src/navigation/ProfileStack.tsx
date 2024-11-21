@@ -17,8 +17,8 @@ const Stack = createStackNavigator();
 const ProfileStack = () => {
   return (
     <Stack.Navigator screenOptions={{ headerShown: true, headerStyle: { backgroundColor: '#111111' }, headerTintColor: '#fff' }}>
-      <Stack.Screen name="ProfileScreen" component={ProfileScreen} options={{ headerShown: false }} />
-      <Stack.Screen name="EditProfile" component={EditProfile} options={{ title: 'Edit Profile' }} />
+      <Stack.Screen name="ProfileScreen" component={ProfileScreen} options={{ headerShown: false } } />
+      <Stack.Screen name="EditProfile" component={EditProfile} options={{ title: 'Edit Profile', headerShown: false }} />
       <Stack.Screen name="PrivacySecurity" component={PrivacySecurity} options={{ headerShown: false }} />
       <Stack.Screen name="Notifications" component={Notification} options={{ headerShown: false }}/>
       <Stack.Screen name="SettingsScreen" component={SettingsScreen} options={{ headerShown: false }} />

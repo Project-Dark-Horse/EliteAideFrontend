@@ -1,186 +1,297 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image, KeyboardTypeOptions, Alert, ScrollView } from 'react-native';
-import RadialGradient from 'react-native-radial-gradient';
-import { BlurView } from '@react-native-community/blur';
-import tw from 'twrnc';
-import profilePic from '../../assets/user.jpg';
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  TouchableOpacity,
+  TextInput,
+  Image,
+  Alert,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { BASE_URL } from '@env';
+import Icon from 'react-native-vector-icons/Ionicons';
+import * as ImagePicker from 'react-native-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Icon } from 'react-native-paper';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import axios from 'axios';
 
-interface TextInputFieldProps {
-  label: string;
-  value: string;
-  onChangeText: (text: string) => void;
-  keyboardType?: KeyboardTypeOptions;
-}
-
-const TextInputField: React.FC<TextInputFieldProps> = ({ label, value, onChangeText, keyboardType }) => {
-  return (
-    <View style={{ 
-      flexDirection: 'column',
-      justifyContent: 'center',
-      alignItems: 'flex-start',
-      paddingVertical: 12,
-      paddingHorizontal: 16,
-      width: 343,
-      height: 72,
-      backgroundColor: '#111111',
-      borderColor: '#979797',
-      borderWidth: 0.2,
-      borderRadius: 16,
-      marginBottom: 16,
-    }}>
-      <Text style={{ color: '#888888', fontSize: 12, marginBottom: 4 }}>{label}</Text>
-      <TextInput
-        style={{
-          color: '#FFFFFF',
-          fontSize: 16,
-          width: '100%',
-          padding: 0,
-        }}
-        value={value}
-        onChangeText={onChangeText}
-        keyboardType={keyboardType}
-        placeholderTextColor="#888888"
-      />
-    </View>
-  );
-};
-
-const EditProfile: React.FC = () => {
+const EditProfile = () => {
   const navigation = useNavigation();
-  const [isLoading, setIsLoading] = useState(false);
-  const [formData, setFormData] = useState({
+  const [profileData, setProfileData] = useState({
     first_name: '',
     last_name: '',
     username: '',
     email: '',
     mobile_number: '',
-    occupation: '',
   });
+  const [profileImage, setProfileImage] = useState(require('../../assets/user.jpg'));
 
   useEffect(() => {
+    const fetchProfileData = async () => {
+      try {
+        let token = await AsyncStorage.getItem('access_token');
+        console.log('Access Token:', token);
+
+        if (!token) {
+          Alert.alert('Session Expired', 'Please log in again.');
+          navigation.navigate('Login');
+          return;
+        }
+
+        const response = await fetch('https://api.eliteaide.tech/v1/users/profile/', {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+
+        console.log('Response Status:', response.status);
+        console.log('Response Headers:', response.headers);
+
+        if (!response.ok) {
+          const errorResponse = await response.text();
+          console.log('Error Response:', errorResponse);
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('Profile Data:', data);
+        setProfileData(data.message.user_data);
+      } catch (error) {
+        console.error('Error fetching profile data:', error);
+        Alert.alert('Error', 'Failed to fetch profile data');
+      }
+    };
+
     fetchProfileData();
   }, []);
 
-  const fetchProfileData = async () => {
+  const handleInputChange = (field: string, value: string) => {
+    setProfileData(prev => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  const handleImagePick = async () => {
     try {
-      const token = await AsyncStorage.getItem('userToken');
-      const response = await fetch(`${BASE_URL}v1/users/profile/`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
+      const result = await ImagePicker.launchImageLibrary({
+        mediaType: 'photo',
+        includeBase64: false,
+        selectionLimit: 1,
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        const userData = data.message.user_data;
-        setFormData(userData);
+      if (!result.didCancel && result.assets?.[0]?.uri) {
+        setProfileImage({ uri: result.assets[0].uri });
       }
     } catch (error) {
-      //console.error('Error fetching profile:', error);
+      Alert.alert('Error', 'Failed to pick image');
     }
   };
 
-  const handleUpdateProfile = async () => {
-    setIsLoading(true);
+  const handleSave = async () => {
     try {
-      const token = await AsyncStorage.getItem('userToken');
-      const response = await fetch(`${BASE_URL}v1/users/profile/update/`, {
-        method: 'PUT',
+      const token = await AsyncStorage.getItem('access_token');
+      if (!token) {
+        Alert.alert('Session Expired', 'Please log in again.');
+        navigation.navigate('Login');
+        return;
+      }
+
+      const response = await fetch('https://api.eliteaide.tech/v1/user/profile/update/', {
+        method: 'PATCH',
         headers: {
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          user_data: formData
+          first_name: profileData.first_name,
+          last_name: profileData.last_name,
+          username: profileData.username,
+          email: profileData.email,
+          mobile_number: profileData.mobile_number,
         }),
       });
 
-      if (response.ok) {
-        Alert.alert('Success', 'Profile updated successfully');
-        navigation.goBack();
-      } else {
-        const errorData = await response.json();
-        Alert.alert('Error', errorData.message || 'Failed to update profile');
+      if (!response.ok) {
+        const errorResponse = await response.text();
+        console.log('Error Response:', errorResponse);
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
+
+      const data = await response.json();
+      console.log('Profile Update Response:', data);
+      Alert.alert('Success', 'Profile updated successfully!', [
+        { text: 'OK', onPress: () => navigation.goBack() },
+      ]);
     } catch (error) {
-      //or('Error updating profile:', error);
+      console.error('Error updating profile:', error);
       Alert.alert('Error', 'Failed to update profile');
-    } finally {
-      setIsLoading(false);
     }
   };
 
-  const renderInputField = (label: string, value: string, field: keyof typeof formData) => {
-    return (
-      <View style={tw`mb-6`}>
-        <Text style={tw`text-[#666666] text-base mb-2`}>{label}</Text>
-        <View style={tw`bg-[#111111] rounded-2xl p-4 border border-[#333333]`}>
-          <TextInput
-            style={tw`text-white text-lg`}
-            value={value}
-            onChangeText={(text) => setFormData(prev => ({ ...prev, [field]: text }))}
-            keyboardType={field === 'email' ? 'email-address' : field === 'mobile_number' ? 'phone-pad' : 'default'}
-            placeholderTextColor="#666666"
+  return (
+    <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Icon name="chevron-back" size={24} color="#fff" />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Edit Profile</Text>
+        <TouchableOpacity onPress={handleSave}>
+          <Text style={styles.saveButton}>Save</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.avatarContainer}>
+        <View style={styles.avatarWrapper}>
+          <Image 
+            source={profileImage} 
+            style={styles.avatar}
+          />
+          <TouchableOpacity 
+            style={styles.editIconContainer}
+            onPress={handleImagePick}
+          >
+            <Icon name="pencil" size={14} color="#fff" />
+          </TouchableOpacity>
+        </View>
+        <Text style={styles.avatarText}>Edit picture or avatar</Text>
+      </View>
+
+      <View style={styles.formContainer}>
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>First Name</Text>
+          <TextInput 
+            style={styles.input}
+            value={profileData.first_name}
+            onChangeText={(value) => handleInputChange('first_name', value)}
+            placeholderTextColor="#6B7280"
+          />
+        </View>
+
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Last Name</Text>
+          <TextInput 
+            style={styles.input}
+            value={profileData.last_name}
+            onChangeText={(value) => handleInputChange('last_name', value)}
+            placeholderTextColor="#6B7280"
+          />
+        </View>
+
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Username</Text>
+          <TextInput 
+            style={styles.input}
+            value={profileData.username}
+            onChangeText={(value) => handleInputChange('username', value)}
+            placeholderTextColor="#6B7280"
+          />
+        </View>
+
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Email</Text>
+          <TextInput 
+            style={styles.input}
+            value={profileData.email}
+            onChangeText={(value) => handleInputChange('email', value)}
+            keyboardType="email-address"
+            placeholderTextColor="#6B7280"
+          />
+        </View>
+
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Mobile Number</Text>
+          <TextInput 
+            style={styles.input}
+            value={profileData.mobile_number}
+            onChangeText={(value) => handleInputChange('mobile_number', value)}
+            keyboardType="phone-pad"
+            placeholderTextColor="#6B7280"
           />
         </View>
       </View>
-    );
-  };
-
-  return (
-    <View style={tw`flex-1 bg-black`}>
-      {/* Header */}
-      <View style={tw`flex-row items-center justify-between px-4 pt-12 pb-4`}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="chevron-back" size={24} color="#fff" />
-        </TouchableOpacity>
-        <Text style={tw`text-white text-xl font-semibold`}>Edit Profile</Text>
-        <View style={tw`w-8`} /> {/* Placeholder for alignment */}
-      </View>
-
-      <ScrollView style={tw`flex-1 px-4`}>
-        {/* Profile Picture Section */}
-        <View style={tw`items-center mt-6 mb-8`}>
-          <View style={tw`flex-row space-x-4`}>
-            <Image 
-              source={require('../../assets/user.jpg')} 
-              style={tw`w-16 h-16 rounded-full`}
-            />
-            <View style={tw`w-16 h-16 rounded-full bg-[#333333]`} />
-          </View>
-          <TouchableOpacity style={tw`mt-3`}>
-            <Text style={tw`text-[#4956C7] text-base`}>Edit picture or avatar</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Form Fields */}
-        {renderInputField('Name', formData.first_name, 'first_name')}
-        {renderInputField('Username', formData.username, 'username')}
-        {renderInputField('Occupation', formData.occupation || '', 'occupation')}
-        {renderInputField('Email id', formData.email, 'email')}
-        {renderInputField('Phone Number', formData.mobile_number, 'mobile_number')}
-      </ScrollView>
-
-      {/* Save Button - Fixed at bottom */}
-      <View style={tw`px-4 pb-8 pt-4`}>
-        <TouchableOpacity 
-          style={tw`bg-[#4956C7] p-4 rounded-2xl`}
-          onPress={handleUpdateProfile}
-          disabled={isLoading}
-        >
-          <Text style={tw`text-white text-center text-lg font-semibold`}>
-            {isLoading ? 'Saving...' : 'Save Changes'}
-          </Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+    </SafeAreaView>
   );
 };
+
+const additionalStyles = {
+  saveButton: {
+    color: '#3B82F6',
+    fontSize: 16,
+    fontWeight: '600' as '600',
+  },
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#111111',
+    padding: 10,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#fff',
+  },
+  avatarContainer: {
+    alignItems: 'center',
+    marginTop: 20,
+    marginBottom: 30,
+  },
+  avatarWrapper: {
+    position: 'relative',
+    marginBottom: 10,
+  },
+  avatar: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+  },
+  editIconContainer: {
+    position: 'absolute',
+    right: 0,
+    bottom: 0,
+    backgroundColor: '#3B82F6', // Blue color
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: '#111111',
+  },
+  avatarText: {
+    color: '#6B7280',
+    fontSize: 16,
+  },
+  formContainer: {
+    paddingHorizontal: 10,
+  },
+  inputContainer: {
+    marginBottom: 10,
+  },
+  label: {
+    color: '#6B7280',
+    fontSize: 14,
+    marginBottom: 8,
+  },
+  input: {
+    backgroundColor: '#1F1F1F',
+    borderRadius: 10,
+    padding: 10,
+    color: '#fff',
+    fontSize: 14,
+  },
+  ...additionalStyles,
+});
 
 export default EditProfile;
