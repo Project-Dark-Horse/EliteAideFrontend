@@ -9,7 +9,7 @@
       "platforms": {
         "ios": {
           "podspecPath": "/Users/shriyakapil/EliteAideFrontend/node_modules/@react-native-async-storage/async-storage/RNCAsyncStorage.podspec",
-          "version": "2.0.0",
+          "version": "2.1.0",
           "configurations": [],
           "scriptPhases": []
         },
@@ -134,6 +134,30 @@
         }
       }
     },
+    "@react-native-voice/voice": {
+      "root": "/Users/shriyakapil/EliteAideFrontend/node_modules/@react-native-voice/voice",
+      "name": "@react-native-voice/voice",
+      "platforms": {
+        "ios": {
+          "podspecPath": "/Users/shriyakapil/EliteAideFrontend/node_modules/@react-native-voice/voice/react-native-voice.podspec",
+          "version": "3.2.4",
+          "configurations": [],
+          "scriptPhases": []
+        },
+        "android": {
+          "sourceDir": "/Users/shriyakapil/EliteAideFrontend/node_modules/@react-native-voice/voice/android",
+          "packageImportPath": "import com.wenkesj.voice.VoicePackage;",
+          "packageInstance": "new VoicePackage()",
+          "buildTypes": [],
+          "componentDescriptors": [],
+          "cmakeListsPath": "/Users/shriyakapil/EliteAideFrontend/node_modules/@react-native-voice/voice/android/build/generated/source/codegen/jni/CMakeLists.txt",
+          "cxxModuleCMakeListsModuleName": null,
+          "cxxModuleCMakeListsPath": null,
+          "cxxModuleHeaderName": null,
+          "isPureCxxDependency": false
+        }
+      }
+    },
     "react-native-curved-bottom-bar": {
       "root": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-curved-bottom-bar",
       "name": "react-native-curved-bottom-bar",
@@ -160,7 +184,7 @@
       "platforms": {
         "ios": {
           "podspecPath": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-gesture-handler/RNGestureHandler.podspec",
-          "version": "2.20.2",
+          "version": "2.21.2",
           "configurations": [],
           "scriptPhases": []
         },
@@ -256,7 +280,7 @@
       "platforms": {
         "ios": {
           "podspecPath": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-reanimated/RNReanimated.podspec",
-          "version": "3.16.1",
+          "version": "3.16.2",
           "configurations": [],
           "scriptPhases": []
         },
@@ -309,7 +333,7 @@
       "platforms": {
         "ios": {
           "podspecPath": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-screens/RNScreens.podspec",
-          "version": "4.1.0",
+          "version": "4.2.0",
           "configurations": [],
           "scriptPhases": []
         },

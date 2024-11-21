@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -18,6 +18,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import Voice from '@react-native-voice/voice';
 
 interface Message {
   id: string;
@@ -94,8 +95,9 @@ const ChatScreen = () => {
   ]);
 
   const [input, setInput] = useState('');
-  const [showInput, setShowInput] = useState(false);
+  const [isListening, setIsListening] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [showInput, setShowInput] = useState(true);
 
   const handleResponse = (response: ApiResponse) => {
     if (response.error) {
@@ -134,6 +136,7 @@ const ChatScreen = () => {
 
       try {
         const token = await AsyncStorage.getItem('accessToken');
+        console.log('Retrieved Access Token:', token);
         if (!token) {
           navigation.navigate('Login');
           return;
@@ -461,6 +464,42 @@ const ChatScreen = () => {
     </View>
   );
 
+  const startListening = async () => {
+    try {
+      setIsListening(true);
+      await Voice.start('en-US');
+    } catch (error) {
+      console.error('Voice recognition error:', error);
+      setIsListening(false);
+    }
+  };
+
+  const onSpeechResults = (event: any) => {
+    const spokenText = event.value[0];
+    setInput(spokenText);
+    setIsListening(false);
+  };
+
+  const onSpeechError = () => {
+    setIsListening(false);
+  };
+
+  useEffect(() => {
+    Voice.onSpeechResults = onSpeechResults;
+    Voice.onSpeechError = onSpeechError;
+
+    return () => {
+      Voice.destroy().then(Voice.removeAllListeners);
+    };
+  }, []);
+
+  const handleInputChange = (text: string) => {
+    setInput(text);
+    if (isListening && text.length > 0) {
+      setIsListening(false);
+    }
+  };
+
   return (
     <View style={tw`flex-1 bg-[#111111] pb-12`}>
       <KeyboardAvoidingView
@@ -480,36 +519,42 @@ const ChatScreen = () => {
           bounces={false}
         />
 
-        {showInput && (
-          <View style={tw`flex-row items-center p-4 bg-[#111111] mb-20`}>
-            <TextInput
-              style={[
-                tw`flex-1 px-4 py-2 rounded-full bg-[#1D1E23] text-white`,
-                { fontSize: 14 }
-              ]}
-              value={input}
-              onChangeText={setInput}
-              placeholder="Type a message..."
-              placeholderTextColor="#4B4B4B"
-              multiline
-              numberOfLines={2}
-              maxLength={1000}
+        <View style={tw`flex-row items-center p-4 bg-[#111111] mb-20`}>
+          <TextInput
+            style={[
+              tw`flex-1 px-4 py-2 rounded-full bg-[#1D1E23] text-white`,
+              { fontSize: 14 }
+            ]}
+            value={input}
+            onChangeText={handleInputChange}
+            placeholder="Type a message..."
+            placeholderTextColor="#4B4B4B"
+            multiline
+            numberOfLines={2}
+            maxLength={1000}
+          />
+          
+          <TouchableOpacity
+            activeOpacity={0.7}
+            style={tw`bg-[#3272A0] p-2 rounded-full ml-2`}
+            onPress={input.trim() ? sendMessage : startListening}
+            disabled={isLoading}
+          >
+            <Icon 
+              name={
+                isLoading 
+                  ? "timer-outline" 
+                  : input.trim() 
+                    ? "send" 
+                    : isListening 
+                      ? "stop" 
+                      : "mic"
+              } 
+              size={20} 
+              color="#fff" 
             />
-
-            <TouchableOpacity
-              activeOpacity={0.7}
-              style={tw`bg-[#3272A0] p-2 rounded-full ml-2`}
-              onPress={input.trim() && !isLoading ? sendMessage : undefined}
-              disabled={isLoading}
-            >
-              <Icon 
-                name={isLoading ? "timer-outline" : input.trim() ? "send" : "mic"} 
-                size={20} 
-                color="#fff" 
-              />
-            </TouchableOpacity>
-          </View>
-        )}
+          </TouchableOpacity>
+        </View>
       </KeyboardAvoidingView>
     </View>
   );
