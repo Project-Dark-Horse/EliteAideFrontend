@@ -20,13 +20,15 @@ interface DayScheduleProps {
 
 const DaySchedule: React.FC<DayScheduleProps> = ({ selectedDate, tasks }) => {
   const timeSlots = useMemo(() => 
-    Array.from({ length: 11 }, (_, i) => {
-      const hour = i + 8;
-      return hour < 12 ? 
-        `${hour} AM` : 
-        hour === 12 ? 
-          '12 PM' : 
-          `${hour - 12} PM`;
+    Array.from({ length: 24 }, (_, i) => {
+      const hour = i;
+      return hour === 0 ? 
+        '12 AM' : 
+        hour < 12 ? 
+          `${hour} AM` : 
+          hour === 12 ? 
+            '12 PM' : 
+            `${hour - 12} PM`;
     }), 
   []);
 

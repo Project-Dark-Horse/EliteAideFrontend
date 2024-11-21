@@ -31,7 +31,10 @@ const LoginScreen: React.FC = () => {
   const [debugMessage, setDebugMessage] = useState('');
 
   const handleLogin = async () => {
-    setIsLoading(true);
+    if (!email || !password) {
+      Alert.alert('Error', 'Email/Username and Password cannot be blank.');
+      return; // Prevent login attempt if fields are empty
+    }
 
     try {
       console.log(`Requesting login at: ${BASE_URL}v1/users/login/`);
@@ -54,13 +57,20 @@ const LoginScreen: React.FC = () => {
       if (response.ok && data.message?.access) {
         const { access, refresh } = data.message;
 
-        await AsyncStorage.setItem('accessToken', access);
-        await AsyncStorage.setItem('refreshToken', refresh);
+        // Store tokens in AsyncStorage
+        try {
+          await AsyncStorage.setItem('access_token', access);
+          await AsyncStorage.setItem('refresh_token', refresh);
+          console.log('Tokens stored successfully');
 
-        console.log('Login successful, tokens stored.');
-        
-        
-        navigation.navigate('BottomTabNavigator');
+          // Verify stored token
+          const storedToken = await AsyncStorage.getItem('access_token');
+          console.log('Stored Access Token:', storedToken);
+
+          navigation.navigate('BottomTabNavigator');
+        } catch (error) {
+          console.error('Error storing tokens:', error);
+        }
       } else {
         const errorMessage = data.message || 'An error occurred';
         console.error('Login failed:', errorMessage);

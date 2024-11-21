@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Modal, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
+import { View, Modal, TouchableOpacity, ActivityIndicator, Alert, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import tw from 'twrnc';
 import Header from './Header';
@@ -61,7 +61,7 @@ const CalendarScreen = () => {
 
   return (
     <SafeAreaView style={tw`flex-1 bg-[#111111]`}>
-      <View style={tw`flex-1 p-4`}>
+      <ScrollView contentContainerStyle={tw`flex-1 p-4`}>
         <Header 
           onCalendarPress={() => setIsCalendarVisible(true)} 
           onCreateTaskPress={() => setIsCreateTaskVisible(true)} 
@@ -74,7 +74,7 @@ const CalendarScreen = () => {
             <DaySchedule selectedDate={selectedDate} tasks={tasks} />
           </>
         )}
-      </View>
+      </ScrollView>
 
       <Modal
         visible={isCalendarVisible}
