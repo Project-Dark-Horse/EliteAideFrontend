@@ -9,11 +9,8 @@ const CustomMessageComponent: React.FC = () => {
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        const token = await AsyncStorage.getItem('accessToken');
-        if (!token) {
-          console.error('No access token found');
-          return;
-        }
+        const token = await AsyncStorage.getItem('access_token');
+        console.log('Retrieved Access Token:', token);
 
         const url = 'https://api.eliteaide.tech/v1/users/profile/';
         console.log('Fetching user profile from:', url);
@@ -21,7 +18,7 @@ const CustomMessageComponent: React.FC = () => {
         const response = await fetch(url, {
           method: 'GET',
           headers: {
-            'Authorization': `Bearer ${token}`,
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
           },
         });
 
