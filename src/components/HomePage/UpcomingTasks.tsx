@@ -87,7 +87,7 @@ const UpcomingTasksComponent: React.FC = () => {
     setLoading(true);
     try {
       console.log('[HomeScreen] Fetching upcoming tasks...');
-      const token = await AsyncStorage.getItem('accessToken');
+      const token = await AsyncStorage.getItem('access_token');
       if (!token) {
         navigation.navigate('Login');
         return;

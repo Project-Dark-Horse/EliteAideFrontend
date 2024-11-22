@@ -83,7 +83,7 @@ const PinnedTasks: React.FC = () => {
   const fetchTasks = async () => {
     setLoading(true);
     try {
-      const token = await AsyncStorage.getItem('accessToken');
+      const token = await AsyncStorage.getItem('access_token');
       if (!token) {
         navigation.navigate('Login');
         return;

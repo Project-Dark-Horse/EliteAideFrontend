@@ -34,7 +34,7 @@ const MyTaskScreen: React.FC<Props> = ({ navigation }) => {
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        const token = await AsyncStorage.getItem('accessToken');
+        const token = await AsyncStorage.getItem('access_token');
         const response = await axios.get(`${BASE_URL}v1/tasks`, {
           headers: {
             'Authorization': `Bearer ${token}`,

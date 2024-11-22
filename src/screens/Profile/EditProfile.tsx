@@ -15,9 +15,18 @@ import * as ImagePicker from 'react-native-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
+// Define a type for profile data
+type ProfileData = {
+  first_name: string;
+  last_name: string;
+  username: string;
+  email: string;
+  mobile_number: string;
+};
+
 const EditProfile = () => {
   const navigation = useNavigation();
-  const [profileData, setProfileData] = useState({
+  const [profileData, setProfileData] = useState<ProfileData>({
     first_name: '',
     last_name: '',
     username: '',
@@ -29,14 +38,8 @@ const EditProfile = () => {
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
-        let token = await AsyncStorage.getItem('access_token');
-        console.log('Access Token:', token);
-
-        if (!token) {
-          Alert.alert('Session Expired', 'Please log in again.');
-          navigation.navigate('Login');
-          return;
-        }
+        // const token = await AsyncStorage.getItem('access_token');
+        const token = await AsyncStorage.getItem('access_token');
 
         const response = await fetch('https://api.eliteaide.tech/v1/users/profile/', {
           method: 'GET',
@@ -67,7 +70,7 @@ const EditProfile = () => {
     fetchProfileData();
   }, []);
 
-  const handleInputChange = (field: string, value: string) => {
+  const handleInputChange = (field: keyof ProfileData, value: string) => {
     setProfileData(prev => ({
       ...prev,
       [field]: value,
@@ -92,12 +95,17 @@ const EditProfile = () => {
 
   const handleSave = async () => {
     try {
+      // const token = await AsyncStorage.getItem('access_token');
       const token = await AsyncStorage.getItem('access_token');
-      if (!token) {
-        Alert.alert('Session Expired', 'Please log in again.');
-        navigation.navigate('Login');
-        return;
-      }
+
+      const updatedFields: Partial<ProfileData> = {};
+      Object.keys(profileData).forEach(key => {
+        if (profileData[key as keyof ProfileData]) {
+          updatedFields[key as keyof ProfileData] = profileData[key as keyof ProfileData];
+        }
+      });
+
+      console.log('Updated Fields:', updatedFields);
 
       const response = await fetch('https://api.eliteaide.tech/v1/user/profile/update/', {
         method: 'PATCH',
@@ -105,18 +113,15 @@ const EditProfile = () => {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          first_name: profileData.first_name,
-          last_name: profileData.last_name,
-          username: profileData.username,
-          email: profileData.email,
-          mobile_number: profileData.mobile_number,
-        }),
+        body: JSON.stringify(updatedFields),
       });
 
+      console.log('Response Status:', response.status);
+
       if (!response.ok) {
-        const errorResponse = await response.text();
-        console.log('Error Response:', errorResponse);
+        const errorResponse = await response.json();
+        console.log('Error Response Body:', errorResponse);
+        console.log('Response Status:', response.status);
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 

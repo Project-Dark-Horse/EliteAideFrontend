@@ -57,25 +57,15 @@ const LoginScreen: React.FC = () => {
       if (response.ok && data.message?.access) {
         const { access, refresh } = data.message;
 
-        // Store tokens in AsyncStorage
-        try {
-          await AsyncStorage.setItem('access_token', access);
-          await AsyncStorage.setItem('refresh_token', refresh);
-          console.log('Tokens stored successfully');
+        await AsyncStorage.setItem('access_token', access);
+        console.log('Access token stored:', access);
 
-          // Verify stored token
-          const storedToken = await AsyncStorage.getItem('access_token');
-          console.log('Stored Access Token:', storedToken);
+        await AsyncStorage.setItem('refresh_token', refresh);
+        console.log('Refresh token stored:', refresh);
 
-          navigation.navigate('BottomTabNavigator');
-        } catch (error) {
-          console.error('Error storing tokens:', error);
-        }
+        navigation.reset({ index: 0, routes: [{ name: 'BottomTabNavigator' }] });
       } else {
-        const errorMessage = data.message || 'An error occurred';
-        console.error('Login failed:', errorMessage);
-        setDebugMessage(`Login failed: ${errorMessage}`);
-        Alert.alert('Login failed', errorMessage);
+        console.error('Login failed:', data.message || 'Unknown error');
       }
     } catch (error) {
       if (error instanceof Error) {
