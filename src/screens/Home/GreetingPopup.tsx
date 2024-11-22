@@ -1,22 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, Modal, TouchableOpacity, Image, StyleSheet, FlatList, ListRenderItemInfo, Switch } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import completepng from '../../assets/complete.png';
 import deletepng from '../../assets/deletearrow.png';
 import Icon from 'react-native-vector-icons/Ionicons';
+import UpcomingTasksCard from '../../components/HomePage/UpcomingTasksCard';
 
 interface Task {
   id: string;
   title: string;
   description: string;
   time: string;
+  backgroundColor: string;
+  iconName: string;
 }
-
-const tasks: Task[] = [
-  { id: '1', title: 'Team Meeting', description: 'Group discussion for the new product', time: '8-9 AM' },
-  { id: '2', title: 'Client Call', description: 'Monthly check-in with the client', time: '10-11 AM' },
-];
 
 interface GreetingPopupProps {
   visible: boolean;
@@ -24,82 +22,42 @@ interface GreetingPopupProps {
 }
 
 const GreetingPopup: React.FC<GreetingPopupProps> = ({ visible, onClose }) => {
+  const [tasks, setTasks] = useState<Task[]>([
+    // Example tasks or fetched tasks
+    { id: '1', title: 'Task 1', description: 'Description 1', time: '10:00 AM', backgroundColor: '#4956C7', iconName: 'briefcase' },
+    { id: '2', title: 'Task 2', description: 'Description 2', time: '11:00 AM', backgroundColor: '#3C8FA9', iconName: 'list' },
+  ]);
+
+  console.log('GreetingPopup visible:', visible);
+  console.log('Tasks:', tasks);
+
   return (
     <Modal visible={visible} transparent animationType="fade">
       <View style={styles.modalOverlay}>
         <View style={styles.modalContainer}>
           <Text style={styles.modalTitle}>
-            While you were gone this tasks were marked as autocompete
+            While you were gone these tasks were marked as autocomplete
           </Text>
           
           {/* Completed Tasks List */}
-          <View style={styles.completedTasks}>
-            {[1, 2].map((_, index) => (
-              <View key={index} style={styles.taskItem}>
-                <View style={styles.leftContent}>
-                  <View style={styles.iconContainer}>
-                    <Icon name="briefcase" size={20} color="#3272A0" />
-                    <View style={styles.redDot} />
-                  </View>
-                  <View style={styles.textContent}>
-                    <Text style={styles.taskTitle}>Team Meeting</Text>
-                    <Text style={styles.taskDescription}>Group discussion for the n...</Text>
-                  </View>
-                </View>
-                <View style={styles.rightContent}>
-                  <Text style={styles.timeText}>8-9 AM</Text>
-                  <Icon name="checkmark-circle" size={20} color="#3DCCBB" />
-                </View>
-              </View>
-            ))}
-          </View>
+          <FlatList
+            data={tasks}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => (
+              <UpcomingTasksCard
+                id={item.id}
+                title={item.title}
+                description={item.description}
+                time={item.time}
+                backgroundColor={item.backgroundColor}
+                iconName={item.iconName}
+              />
+            )}
+            contentContainerStyle={styles.completedTasks}
+            showsVerticalScrollIndicator={false}
+          />
 
           <Text style={styles.checkTasksText}>Check your tasks</Text>
-
-          {/* Main Task Card */}
-          <View style={styles.mainCard}>
-            <View style={styles.mainCardHeader}>
-              <Icon name="people" size={24} color="#FFFFFF" />
-              <View style={styles.redDot} />
-            </View>
-            <Text style={styles.mainCardTitle}>Team Meeting</Text>
-            <Text style={styles.mainCardDescription}>
-              Group discussion for{'\n'}the new product
-            </Text>
-            <Text style={styles.mainCardTime}>10 AM</Text>
-            <View style={styles.notificationToggle}>
-              <Icon name="notifications" size={16} color="#FFFFFF" />
-              <Switch
-                value={true}
-                onValueChange={() => {}}
-                trackColor={{ false: '#767577', true: '#3DCCBB' }}
-                thumbColor="#FFFFFF"
-              />
-            </View>
-          </View>
-
-          {/* Action Section with Arrows */}
-          <View style={styles.actionSection}>
-            <View style={styles.actionItem}>
-              <Ionicons name="close-circle" size={24} color="#C23333" style={styles.actionRow} />
-              <Text style={styles.deleteText}>Delete</Text>
-            </View>
-            <View style={styles.paginationDots}>
-              {[0, 1, 2].map((_, index) => (
-                <View
-                  key={index}
-                  style={[
-                    styles.dot,
-                    index === 1 ? styles.activeDot : styles.inactiveDot
-                  ]}
-                />
-              ))}
-            </View>
-            <View style={styles.actionItem}>
-              <Ionicons name="checkmark-circle" size={24} color="#3DCCBB" style={styles.actionRow} />
-              <Text style={styles.completeText}>Complete</Text>
-            </View>
-          </View>
 
           {/* Continue Button */}
           <TouchableOpacity style={styles.continueButton} onPress={onClose}>

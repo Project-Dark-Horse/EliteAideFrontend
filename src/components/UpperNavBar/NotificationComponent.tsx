@@ -11,8 +11,10 @@ type RootStackParamList = {
   NotificationScreen: undefined; // Add other routes here if needed
 };
 
+type NavigationProp = StackNavigationProp<RootStackParamList>;
+
 const NotificationsComponent: React.FC = () => {
-  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+  const navigation = useNavigation<NavigationProp>();
 
   const handlePress = () => {
     navigation.navigate('NotificationScreen');
