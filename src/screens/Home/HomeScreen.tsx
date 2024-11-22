@@ -8,7 +8,7 @@ import { HomeScreenNavigationProp } from '../../types/navigation';
 import UpcomingTasksComponent from '../../components/HomePage/UpcomingTasks';
 import PinnedTasks from '../../components/HomePage/PinnedTasks';
 import TopNavBar from '../../components/UpperNavBar/TopNavBar';
-import GreetingPopup from './GreetingPopup';
+// import GreetingPopup from './GreetingPopup';
 import tw from 'twrnc';
 
 import TodoImage from '../../assets/todo.png';
@@ -168,7 +168,8 @@ const Home: React.FC = () => {
         </TouchableOpacity>
       </Modal>
 
-      <GreetingPopup visible={isGreetingVisible} onClose={handleCloseGreeting} />
+      {/* Remove GreetingPopup component */}
+      {/* <GreetingPopup visible={isGreetingVisible} onClose={handleCloseGreeting} /> */}
     </View>
   );
 };
