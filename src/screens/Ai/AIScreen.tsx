@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -9,9 +9,6 @@ import {
   Platform,
   Image,
   ScrollView,
-  EmitterSubscription,
-  ActivityIndicator
-  
 } from 'react-native';
 import tw from 'twrnc';
 import bot from '../../assets/bot.png';
@@ -21,8 +18,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import Voice, { SpeechResultsEvent, SpeechErrorEvent, SpeechStartEvent, SpeechEndEvent } from '@react-native-voice/voice';
-import ReactNativeHapticFeedback from "react-native-haptic-feedback";
 
 interface Message {
   id: string;
@@ -30,8 +25,6 @@ interface Message {
   sender: 'bot' | 'user';
   showQuickReplies?: boolean;
   action?: 'create_task' | 'show_day' | null;
-  isTaskList?: boolean;
-  tasks?: Array<any>;
 }
 
 interface TaskDetails {
@@ -89,12 +82,6 @@ type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 const BASE_URL = 'https://api.eliteaide.tech/';
 
-// Configure haptic options
-const hapticOptions = {
-  enableVibrateFallback: true,
-  ignoreAndroidSystemSettings: false
-};
-
 const ChatScreen = () => {
   const navigation = useNavigation<NavigationProp>();
   const [messages, setMessages] = useState<Message[]>([
@@ -107,26 +94,8 @@ const ChatScreen = () => {
   ]);
 
   const [input, setInput] = useState('');
-  const [isListening, setIsListening] = useState(false);
+  const [showInput, setShowInput] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [showInput, setShowInput] = useState(true);
-  const [voiceListeners, setVoiceListeners] = useState<EmitterSubscription[]>([]);
-  const [isTyping, setIsTyping] = useState(false);
-
-  const startListening = async () => {
-    try {
-      await Voice.start('en-US');
-      setIsListening(true);
-      triggerHaptic('impactMedium');
-    } catch (error) {
-      console.error(error);
-      triggerHaptic('notificationError');
-    }
-  };
-
-  const triggerHaptic = (type: 'impactLight' | 'impactMedium' | 'notificationError') => {
-    ReactNativeHapticFeedback.trigger(type, hapticOptions);
-  };
 
   const handleResponse = (response: ApiResponse) => {
     if (response.error) {
@@ -152,8 +121,6 @@ const ChatScreen = () => {
   
   const sendMessage = async () => {
     if (input.trim() && !isLoading) {
-      triggerHaptic('impactMedium');
-      setIsTyping(true);
       const userInput = input.trim();
       setInput('');
       setIsLoading(true);
@@ -166,8 +133,7 @@ const ChatScreen = () => {
       setMessages(prevMessages => [userMessage, ...prevMessages]);
 
       try {
-        const token = await AsyncStorage.getItem('access_token');
-        console.log('Retrieved Access Token:', token);
+        const token = await AsyncStorage.getItem('accessToken');
         if (!token) {
           navigation.navigate('Login');
           return;
@@ -189,19 +155,12 @@ const ChatScreen = () => {
         console.log('API Response:', response.data);
 
         const taskDetails = response.data.message.task_details;
-        const formattedMessage = `🎯 Task Created Successfully!\n\n` +
-          `📝 ${taskDetails.title}\n` +
-          `${taskDetails.description}\n\n` +
-          `📅 Due: ${new Date(taskDetails.due_date).toLocaleString('en-US', {
-            weekday: 'short',
-            month: 'short',
-            day: 'numeric',
-            hour: 'numeric',
-            minute: '2-digit',
-            hour12: true
-          })}\n` +
-          `${getPriorityEmoji(Number(taskDetails.priority))} Priority: ${getPriorityText(Number(taskDetails.priority))}\n` +
-          `🏷️ Type: ${taskDetails.type}`;
+        const formattedMessage = `✅ ${response.data.message.message}\n\n` +
+          `Title: ${taskDetails.title}\n` +
+          `Description: ${taskDetails.description}\n` +
+          `Due Date: ${new Date(taskDetails.due_date).toLocaleDateString()}\n` +
+          `Priority: ${taskDetails.priority}\n` +
+          `Type: ${taskDetails.type}`;
 
         setMessages(prevMessages => [
           {
@@ -218,18 +177,17 @@ const ChatScreen = () => {
           ...prevMessages
         ]);
 
-        setQuickReplies(['Create another task', 'Show my Tasks']);
+        setQuickReplies(['Create another task', 'Show my day']);
 
       } catch (error) {
-        triggerHaptic('notificationError');
         let errorMessage = "Sorry, something went wrong. Please try again.";
         
         if (axios.isAxiosError(error)) {
-//           console.error('Error details:', {
-//             status: error.response?.status,
-//             data: error.response?.data,
-//             headers: error.response?.headers,
-//           });
+          console.error('Error details:', {
+            status: error.response?.status,
+            data: error.response?.data,
+            headers: error.response?.headers,
+          });
 
           if (error.response?.status === 401) {
             navigation.navigate('Login');
@@ -251,8 +209,9 @@ const ChatScreen = () => {
           },
           ...prevMessages
         ]);
+
+        console.error('Full error object:', error);
       } finally {
-        setIsTyping(false);
         setIsLoading(false);
       }
     }
@@ -260,7 +219,7 @@ const ChatScreen = () => {
 
   const [quickReplies, setQuickReplies] = useState<string[]>([
     'Create task', 
-    'Show My Tasks'
+    'Show my day'
   ]);
 
   const handleQuickReply = async (reply: string) => {
@@ -278,10 +237,11 @@ const ChatScreen = () => {
         },
         ...prevMessages
       ]);
-    } else if (reply === 'Show My Tasks') {
+    } else if (reply === 'Show my day') {
       console.log('Handling show my day action');
       setShowInput(false);
       
+      // Get today's date and tomorrow's date
       const today = new Date();
       const tomorrow = new Date(today);
       tomorrow.setDate(tomorrow.getDate() + 1);
@@ -292,7 +252,12 @@ const ChatScreen = () => {
       console.log('Fetching tasks between:', { startDate, endDate });
 
       try {
-        const token = await AsyncStorage.getItem('access_token');
+        const token = await AsyncStorage.getItem('accessToken');
+        if (!token) {
+          console.log('No token found, redirecting to login');
+          navigation.navigate('Login');
+          return;
+        }
 
         console.log('Making API request to fetch tasks');
         const response = await axios.get<TaskResponse>(`${BASE_URL}v1/tasks/range`, {
@@ -340,8 +305,6 @@ const ChatScreen = () => {
             id: Math.random().toString(),
             text: messageText,
             sender: 'bot',
-            isTaskList: true,
-            tasks: response.data.message.task_details.data,
             showQuickReplies: true
           },
           ...prevMessages
@@ -380,9 +343,7 @@ const ChatScreen = () => {
 
   const renderItem = ({ item }: { item: Message }) => (
     <View>
-      <TouchableOpacity
-        activeOpacity={0.8}
-        onPress={() => triggerHaptic('impactLight')}
+      <View
         style={tw`mb-3 flex ${item.sender === 'user' ? 'flex-row-reverse' : 'flex-row'} items-start`}
       >
         {item.sender === 'bot' && (
@@ -402,25 +363,13 @@ const ChatScreen = () => {
             tw`relative p-3 rounded-lg max-w-3/4`,
             {
               backgroundColor: item.sender === 'user' ? '#1D1E23' : '#1D1E23',
-              borderRadius: 12,
+              borderRadius: 7,
               borderWidth: 1,
               borderColor: item.sender === 'user' ? '#666' : '#3272A0',
-              shadowColor: item.sender === 'user' ? '#666' : '#3272A0',
-              shadowOffset: { width: 0, height: 2 },
-              shadowOpacity: 0.25,
-              shadowRadius: 3.84,
-              elevation: 5,
             },
           ]}
         >
-          {isTyping && item.sender === 'bot' && item === messages[0] ? (
-            <View style={tw`flex-row items-center p-2`}>
-              <ActivityIndicator color="#3272A0" size="small" />
-              <Text style={tw`text-gray-400 ml-2`}>Typing...</Text>
-            </View>
-          ) : (
-            <Text style={tw`text-white`}>{item.text}</Text>
-          )}
+          <Text style={tw`text-white`}>{item.text}</Text>
 
           {/* Bot tail */}
           {item.sender === 'bot' && (
@@ -494,187 +443,78 @@ const ChatScreen = () => {
             </>
           )}
         </View>
-      </TouchableOpacity>
+      </View>
       
       {item.showQuickReplies && (
-        <ScrollView 
-          horizontal 
-          showsHorizontalScrollIndicator={false} 
-          style={tw`mb-8`}
-        >
+        <View style={tw`flex-row flex-wrap mb-8`}>
           {quickReplies.map((reply) => (
             <TouchableOpacity
               key={reply}
-              style={[
-                tw`bg-[#1D1E23] rounded-lg px-4 py-2 mr-2 border border-[#3272A0]`,
-                { transform: [{ scale: 1 }] }
-              ]}
-              onPress={() => {
-                triggerHaptic('impactMedium');
-                handleQuickReply(reply);
-              }}
-              activeOpacity={0.7}
+              style={tw`bg-[#1D1E23] rounded-lg px-4 py-2 mr-2 mb-2`}
+              onPress={() => handleQuickReply(reply)}
             >
-              <Text style={tw`text-white font-medium`}>{reply}</Text>
+              <Text style={tw`text-white`}>{reply}</Text>
             </TouchableOpacity>
           ))}
-        </ScrollView>
+        </View>
       )}
     </View>
   );
 
-  useEffect(() => {
-    Voice.onSpeechStart = (e: SpeechStartEvent) => {
-      console.log('onSpeechStart: ', e);
-    };
-
-    Voice.onSpeechEnd = (e: SpeechEndEvent) => {
-      console.log('onSpeechEnd: ', e);
-    };
-
-    Voice.onSpeechResults = (e: SpeechResultsEvent) => {
-      if (e.value && e.value[0]) {
-        setInput(e.value[0]);
-      }
-      setIsListening(false);
-    };
-
-    Voice.onSpeechError = (e: SpeechErrorEvent) => {
-      console.error(e);
-      setIsListening(false);
-    };
-
-    return () => {
-      Voice.destroy().then(Voice.removeAllListeners);
-    };
-  }, []);
-
-  const handleInputChange = (text: string) => {
-    setInput(text);
-    if (isListening && text.length > 0) {
-      setIsListening(false);
-    }
-  };
-
-  const getPriorityEmoji = (priority: number) => {
-    switch (priority) {
-      case 3:
-        return '🔴';
-      case 2:
-        return '🟡';
-      case 1:
-        return '🟢';
-      default:
-        return '⚪';
-    }
-  };
-
-  const getPriorityText = (priority: number) => {
-    switch (priority) {
-      case 3:
-        return 'High';
-      case 2:
-        return 'Medium';
-      case 1:
-        return 'Low';
-      default:
-        return 'Unknown';
-    }
-  };
-
-  const handleTaskPress = (task: any) => {
-    setMessages(prevMessages => [
-      {
-        id: Math.random().toString(),
-        text: `Task Details:\n📝 ${task.title}\n${task.description}\n📅 Due: ${formatDate(task.due_date)}\n${getPriorityEmoji(task.priority)} Priority: ${getPriorityText(task.priority)}`,
-        sender: 'bot',
-        showQuickReplies: true
-      },
-      ...prevMessages
-    ]);
-    setQuickReplies(['Mark Complete', 'Edit Task', 'Delete Task']);
-  };
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true
-    });
-  };
-
   return (
-    <View style={tw`flex-1 bg-[#111111] pb-2`}>
+    <View style={tw`flex-1 bg-[#111111]`}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'android' ? 'padding' : 'height'}
         keyboardVerticalOffset={80}
-        style={tw`flex-1 pb-12`}
+        style={tw`flex-1 pb-9`}
       >
-        <FlatList
-          data={messages}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id}
-          inverted
+        <ScrollView 
+          style={tw`flex-1`}
           contentContainerStyle={tw`px-4 pt-4`}
-          ListFooterComponent={<View style={tw`h-4`} />}
-          ListHeaderComponent={<View style={tw`h-4`} />}
           showsVerticalScrollIndicator={false}
           bounces={false}
-        />
-
-        <View style={tw`flex-row items-center p-4 bg-[#111111] mb-20`}>
-          <TextInput
-            style={[
-              tw`flex-1 px-4 py-2 rounded-full bg-[#1D1E23] text-white`,
-              {
-                fontSize: 14,
-                shadowColor: '#000',
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.25,
-                shadowRadius: 3.84,
-                elevation: 5,
-              }
-            ]}
-            value={input}
-            onChangeText={handleInputChange}
-            placeholder="Type a message..."
-            placeholderTextColor="#4B4B4B"
-            multiline
-            numberOfLines={2}
-            maxLength={1000}
+        >
+          <FlatList
+            data={messages}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.id}
+            inverted
+            scrollEnabled={false}
+            ListFooterComponent={<View style={tw`h-4`} />}
+            ListHeaderComponent={<View style={tw`h-4`} />}
           />
-          
-          <TouchableOpacity
-            activeOpacity={0.7}
-            style={[
-              tw`bg-[#3272A0] p-2 rounded-full ml-2`,
-              {
-                shadowColor: '#3272A0',
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.25,
-                shadowRadius: 3.84,
-                elevation: 5,
-              }
-            ]}
-            onPress={() => {
-              triggerHaptic('impactMedium');
-              input.trim() ? sendMessage() : startListening();
-            }}
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <ActivityIndicator color="#fff" size="small" />
-            ) : (
+        </ScrollView>
+
+        {showInput && (
+          <View style={tw`flex-row items-center p-4 bg-[#111111] mb-20`}>
+            <TextInput
+              style={[
+                tw`flex-1 px-4 py-2 rounded-full bg-[#1D1E23] text-white`,
+                { fontSize: 14 }
+              ]}
+              value={input}
+              onChangeText={setInput}
+              placeholder="Type a message..."
+              placeholderTextColor="#4B4B4B"
+              multiline
+              numberOfLines={2}
+              maxLength={1000}
+            />
+
+            <TouchableOpacity
+              activeOpacity={0.7}
+              style={tw`bg-[#3272A0] p-2 rounded-full ml-2`}
+              onPress={input.trim() && !isLoading ? sendMessage : undefined}
+              disabled={isLoading}
+            >
               <Icon 
-                name={input.trim() ? "send" : isListening ? "stop" : "mic"} 
+                name={isLoading ? "timer-outline" : input.trim() ? "send" : "mic"} 
                 size={20} 
                 color="#fff" 
               />
-            )}
-          </TouchableOpacity>
-        </View>
+            </TouchableOpacity>
+          </View>
+        )}
       </KeyboardAvoidingView>
     </View>
   );

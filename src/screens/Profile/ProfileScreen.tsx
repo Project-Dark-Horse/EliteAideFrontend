@@ -177,7 +177,7 @@ const ProfileScreen = () => {
           
           <TouchableOpacity 
             style={styles.menuItem}
-            onPress={() => navigation.navigate('About' as never)}
+            onPress={() => navigation.navigate('AboutEA' as never)}
           >
             <Ionicons name="information-circle" size={20} color="#6B7280" />
             <Text style={styles.menuText}>About Elite Aid</Text>
