@@ -74,7 +74,7 @@ const NotificationScreen: React.FC = () => {
       setLoading(true);
       setError(null);
 
-      const token = await AsyncStorage.getItem('accessToken');
+      const token = await AsyncStorage.getItem('access_token');
       if (!token) {
         log('No access token found');
         navigation.navigate('Login' as never);
@@ -134,7 +134,7 @@ const NotificationScreen: React.FC = () => {
           style: 'destructive',
           onPress: async () => {
             try {
-              const token = await AsyncStorage.getItem('accessToken');
+              const token = await AsyncStorage.getItem('access_token');
               if (!token) {
                 log('No access token found');
                 navigation.navigate('Login' as never);
@@ -171,7 +171,7 @@ const NotificationScreen: React.FC = () => {
   const markAsRead = async (notificationId: number) => {
     log('Marking notification as read:', notificationId);
     try {
-      const token = await AsyncStorage.getItem('accessToken');
+      const token = await AsyncStorage.getItem('access_token');
       if (!token) {
         log('No access token found');
         navigation.navigate('Login' as never);

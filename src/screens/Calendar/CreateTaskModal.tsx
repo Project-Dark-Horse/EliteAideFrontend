@@ -38,7 +38,7 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({ isVisible, onClose })
     }
 
     setLoading(true);
-    const accessToken = await AsyncStorage.getItem('accessToken');
+    const access_token = await AsyncStorage.getItem('access_token');
 
     const formattedDueDate = formatDate(dueDate);
 
@@ -58,7 +58,7 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({ isVisible, onClose })
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${accessToken}`,
+          'Authorization': `Bearer ${access_token}`,
         },
         body: JSON.stringify(taskData),
       });

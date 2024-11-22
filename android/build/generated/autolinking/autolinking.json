@@ -206,6 +206,31 @@
         }
       }
     },
+    "react-native-haptic-feedback": {
+      "root": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-haptic-feedback",
+      "name": "react-native-haptic-feedback",
+      "platforms": {
+        "ios": {
+          "podspecPath": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-haptic-feedback/RNReactNativeHapticFeedback.podspec",
+          "version": "2.3.3",
+          "configurations": [],
+          "scriptPhases": []
+        },
+        "android": {
+          "sourceDir": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-haptic-feedback/android",
+          "packageImportPath": "import com.mkuczera.RNReactNativeHapticFeedbackPackage;",
+          "packageInstance": "new RNReactNativeHapticFeedbackPackage()",
+          "buildTypes": [],
+          "libraryName": "RNHapticFeedbackSpec",
+          "componentDescriptors": [],
+          "cmakeListsPath": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-haptic-feedback/android/build/generated/source/codegen/jni/CMakeLists.txt",
+          "cxxModuleCMakeListsModuleName": null,
+          "cxxModuleCMakeListsPath": null,
+          "cxxModuleHeaderName": null,
+          "isPureCxxDependency": false
+        }
+      }
+    },
     "react-native-image-picker": {
       "root": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-image-picker",
       "name": "react-native-image-picker",

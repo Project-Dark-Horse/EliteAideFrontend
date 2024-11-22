@@ -5,6 +5,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { launchImageLibrary } from 'react-native-image-picker';
+import { BASE_URL } from '@env';
 
 const ProfileScreen = () => {
   const navigation = useNavigation();
@@ -13,7 +14,7 @@ const ProfileScreen = () => {
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
-        const token = await AsyncStorage.getItem('accessToken');
+        const token = await AsyncStorage.getItem('access_token');
         const response = await fetch('https://api.eliteaide.tech/v1/users/profile/', {
           method: 'GET',
           headers: {
@@ -59,11 +60,25 @@ const ProfileScreen = () => {
 
   const handleLogout = async () => {
     try {
-      await AsyncStorage.removeItem('accessToken');
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'Login' as never }],
+      const refreshToken = await AsyncStorage.getItem('refresh_token');
+      const response = await fetch(`${BASE_URL}v1/users/logout/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ refresh_token: refreshToken }),
       });
+
+      if (response.ok) {
+        await AsyncStorage.removeItem('access_token');
+        await AsyncStorage.removeItem('refresh_token');
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Login' as never }],
+        });
+      } else {
+        console.error('Logout failed');
+      }
     } catch (error) {
       console.error('Logout error:', error);
     }
@@ -82,11 +97,8 @@ const ProfileScreen = () => {
           text: 'Logout',
           onPress: async () => {
             try {
-              await AsyncStorage.removeItem('accessToken');
-              navigation.reset({
-                index: 0,
-                routes: [{ name: 'Login' as never }],
-              });
+              // Implement the logout-all functionality when the endpoint is ready
+              console.log('Logout from all devices in progress');
             } catch (error) {
               console.error('Logout error:', error);
             }

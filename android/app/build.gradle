@@ -116,6 +116,8 @@ dependencies {
     } else {
         implementation jscFlavor
     }
+
+    implementation project(':react-native-haptic-feedback')
 }
 
 // Move this block outside of the `dependencies` block
