@@ -3,12 +3,12 @@ import { StackNavigationProp } from '@react-navigation/stack';
 
 export type RootStackParamList = {
   BottomBarStack: { screen: string };
+  NotificationScreen: undefined;
   Home: undefined;
   ToDo: undefined;
   Progress: undefined;
   Done: undefined;
   ChatScreen: undefined;
-  Notification: undefined;
   BottomTabNavigator: undefined;
   MyProfile: undefined;
   Calendar: undefined;
@@ -26,7 +26,6 @@ export type RootStackParamList = {
   MyActivityScreen: undefined;
   SettingsScreen: undefined;
   ProfileStack: undefined;
-   : undefined;
   DeleteTaskPopup: {
     taskId: string;
   };

@@ -122,7 +122,7 @@ dependencies {
 
 // Move this block outside of the `dependencies` block
 project.ext.vectoricons = [
-    iconFontNames: [ 'Ionicons.ttf', 'FontAwesome.ttf' ] // Add more fonts if you're using other icon sets
+    iconFontNames: [ 'Ionicons.ttf', 'FontAwesome.ttf', 'MaterialIcons.ttf' ] // Add more fonts if you're using other icon sets
 ]
 // Apply the fonts.gradle script to ensure vector icons are bundled correctly
 apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
