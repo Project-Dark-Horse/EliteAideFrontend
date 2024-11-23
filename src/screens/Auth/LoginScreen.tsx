@@ -9,10 +9,9 @@ import { BlurView } from '@react-native-community/blur';
 import RadialGradient from 'react-native-radial-gradient';
 import { BASE_URL } from '@env';
 import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 
 import LogoImage from '../../assets/vector.png';
-
-import { StackNavigationProp } from '@react-navigation/stack';
 
 // Define your navigation stack type
 type AuthStackParamList = {
@@ -162,7 +161,7 @@ const LoginScreen: React.FC = () => {
         <View style={styles.createAccountContainer}>
           <Text style={styles.createAccountText}>Don't have an account? </Text>
           <TouchableOpacity onPress={() => navigation.navigate('EnterEmail')}>
-            <Text style={styles.createAccountLink}>Create One</Text>
+          <Text style={tw`text-[#65779E] font-semibold`}>Create One</Text>
           </TouchableOpacity>
         </View>
       </View>
