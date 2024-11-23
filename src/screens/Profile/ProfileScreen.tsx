@@ -8,9 +8,24 @@ import { launchImageLibrary } from 'react-native-image-picker';
 import { BASE_URL } from '@env';
 import CommonHeader from '../../components/CommonHeader';
 
+interface TaskStatistics {
+  total: number;
+  pending: number;
+  completed: number;
+}
+
+interface Task {
+  status: string;
+}
+
 const ProfileScreen = () => {
   const navigation = useNavigation();
   const [userData, setUserData] = useState({ username: '', email: '' });
+  const [taskStats, setTaskStats] = useState<TaskStatistics>({
+    total: 0,
+    pending: 0,
+    completed: 0,
+  });
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -37,6 +52,36 @@ const ProfileScreen = () => {
     };
 
     fetchProfileData();
+  }, []);
+
+  useEffect(() => {
+    const fetchTaskStats = async () => {
+      try {
+        const token = await AsyncStorage.getItem('access_token');
+        const response = await fetch('https://api.eliteaide.tech/v1/tasks/user-tasks?page=1&items_per_page=200', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data.message?.task_details?.data) {
+            const tasks = data.message.task_details.data;
+            const stats = {
+              total: tasks.length,
+              pending: tasks.filter((task: Task) => task.status === 'Pending').length,
+              completed: tasks.filter((task: Task) => task.status === 'Completed').length,
+            };
+            setTaskStats(stats);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching task statistics:', error);
+      }
+    };
+
+    fetchTaskStats();
   }, []);
 
   const handleEditProfilePic = () => {
@@ -151,17 +196,17 @@ const ProfileScreen = () => {
           <View style={styles.taskStats}>
             <View style={styles.statItem}>
               <Ionicons name="flash" size={20} color="#3B82F6" />
-              <Text style={styles.statNumber}>5</Text>
+              <Text style={styles.statNumber}>{taskStats.total}</Text>
               <Text style={styles.statLabel}>total</Text>
             </View>
             <View style={styles.statItem}>
               <Ionicons name="time" size={20} color="#3B82F6" />
-              <Text style={styles.statNumber}>5</Text>
+              <Text style={styles.statNumber}>{taskStats.pending}</Text>
               <Text style={styles.statLabel}>pending</Text>
             </View>
             <View style={styles.statItem}>
               <Ionicons name="checkmark-circle" size={20} color="#3B82F6" />
-              <Text style={styles.statNumber}>0</Text>
+              <Text style={styles.statNumber}>{taskStats.completed}</Text>
               <Text style={styles.statLabel}>done</Text>
             </View>
           </View>

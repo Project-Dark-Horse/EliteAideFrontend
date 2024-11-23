@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, TouchableOpacity, Modal, Text, Image } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
 import CustomMessageComponent from '../../components/HomePage/message';
@@ -10,20 +10,66 @@ import PinnedTasks from '../../components/HomePage/PinnedTasks';
 import TopNavBar from '../../components/UpperNavBar/TopNavBar';
 // import GreetingPopup from './GreetingPopup';
 import tw from 'twrnc';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import TodoImage from '../../assets/todo.png';
 import ProgressImage from '../../assets/progress.png';
 import DoneImage from '../../assets/done.png';
 import BotImage from '../../assets/bot.png';
 
+interface TaskStatistics {
+  total: number;
+  pending: number;
+  completed: number;
+}
+
+interface Task {
+  status: string;
+}
+
 const Home: React.FC = () => {
   const navigation = useNavigation<HomeScreenNavigationProp>();
   const [isGreetingVisible, setIsGreetingVisible] = useState(false); // Control overlay visibility
   const [showProgressOverlay, setShowProgressOverlay] = useState(false);
-  const completedTasks = 1; // Example value, replace with actual data
-  const totalTasks = 10; // Example value, replace with actual data
+  const [taskStats, setTaskStats] = useState<TaskStatistics>({
+    total: 0,
+    pending: 0,
+    completed: 0,
+  });
 
-  const progress = Math.round((completedTasks / totalTasks) * 100) || 0;
+  useEffect(() => {
+    const fetchTaskStats = async () => {
+      try {
+        const token = await AsyncStorage.getItem('access_token');
+        const response = await fetch('https://api.eliteaide.tech/v1/tasks/user-tasks?page=1&items_per_page=100', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data.message?.task_details?.data) {
+            const tasks = data.message.task_details.data;
+            const stats = {
+              total: tasks.length,
+              pending: tasks.filter((task: Task) => task.status === 'Pending').length,
+              completed: tasks.filter((task: Task) => task.status === 'Completed').length,
+            };
+            setTaskStats(stats);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching task statistics:', error);
+      }
+    };
+
+    fetchTaskStats();
+  }, []);
+
+  const progress = taskStats.total > 0 
+    ? Math.round((taskStats.completed / taskStats.total) * 100) 
+    : 0;
 
   const handleShowGreeting = () => {
     setIsGreetingVisible(true);
@@ -155,6 +201,21 @@ const Home: React.FC = () => {
               <Text style={tw`text-[#979797] text-lg mt-2`}>
                 Total Progress
               </Text>
+              
+              <View style={tw`flex-row justify-between w-full mt-4`}>
+                <View style={tw`items-center`}>
+                  <Text style={tw`text-[#979797]`}>Total</Text>
+                  <Text style={tw`text-white text-lg`}>{taskStats.total}</Text>
+                </View>
+                <View style={tw`items-center`}>
+                  <Text style={tw`text-[#979797]`}>Pending</Text>
+                  <Text style={tw`text-white text-lg`}>{taskStats.pending}</Text>
+                </View>
+                <View style={tw`items-center`}>
+                  <Text style={tw`text-[#979797]`}>Completed</Text>
+                  <Text style={tw`text-white text-lg`}>{taskStats.completed}</Text>
+                </View>
+              </View>
             </View>
 
             <View style={tw`mt-6 border-t border-[#384766] pt-4`}>
