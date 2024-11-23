@@ -35,6 +35,7 @@ const BottomBarStack: React.FC = () => {
       <Stack.Screen name="MyTaskScreen" component={MyTaskScreen} />
       <Stack.Screen name="ProfileScreen" component={ProfileScreen} options={{ headerShown: false }} />
       <Stack.Screen name="MyActivity" component={MyActivityScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="NotificationScreen" component={NotificationScreen} options={{ headerShown: false }} />
     </Stack.Navigator>
   );
 };

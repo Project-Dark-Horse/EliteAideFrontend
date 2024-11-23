@@ -17,7 +17,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { format } from 'date-fns';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-
+import BottomTabNavigator from '../../navigation/BottomTabNavigator';
+import BottomBarStack from '../../navigation/BottomBarStack';
 // Add logging utility
 const log = (message: string, data?: any) => {
   console.log(`[NotificationScreen] ${message}`, data || '');

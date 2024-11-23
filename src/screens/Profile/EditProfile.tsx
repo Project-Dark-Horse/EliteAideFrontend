@@ -25,6 +25,7 @@ type ProfileData = {
 };
 
 const EditProfile = () => {
+  console.log('EditProfile component re-rendered');
   const navigation = useNavigation();
   const [profileData, setProfileData] = useState<ProfileData>({
     first_name: '',
@@ -107,7 +108,7 @@ const EditProfile = () => {
 
       console.log('Updated Fields:', updatedFields);
 
-      const response = await fetch('https://api.eliteaide.tech/v1/user/profile/update/', {
+      const response = await fetch('https://api.eliteaide.tech/v1/users/profile/update/', {
         method: 'PATCH',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -119,14 +120,18 @@ const EditProfile = () => {
       console.log('Response Status:', response.status);
 
       if (!response.ok) {
-        const errorResponse = await response.json();
-        console.log('Error Response Body:', errorResponse);
-        console.log('Response Status:', response.status);
+        const errorResponseText = await response.text();
+        console.log('Error Response Text:', errorResponseText);
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
       const data = await response.json();
       console.log('Profile Update Response:', data);
+
+      // Update the state with the new profile data
+      setProfileData(data.message.data);
+      console.log('Updated Profile Data:', data.message.data);
+
       Alert.alert('Success', 'Profile updated successfully!', [
         { text: 'OK', onPress: () => navigation.goBack() },
       ]);

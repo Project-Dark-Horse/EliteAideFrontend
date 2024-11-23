@@ -19,7 +19,7 @@ const HomeStack = () => {
       <Stack.Screen name="ToDo" component={ToDo} />
       <Stack.Screen name="Progress" component={Progress} />
       <Stack.Screen name="Done" component={Done} />
-      <Stack.Screen name="NotificationScreen" component={NotificationScreen} options={{ headerShown: false }}/>
+      
       <Stack.Screen name="TaskAnalysis" component={TaskAnalysis} options={{ title: 'Progress Overview' }} />
       {/* <Stack.Screen name="ManualTaskCreate" component={ManualTaskCreate} options={{ headerShown: false }} /> */}
       <Stack.Screen name="MyActivity" component={MyActivity} options={{ headerShown: false }} />
@@ -27,6 +27,8 @@ const HomeStack = () => {
         name="MyTaskScreen"  // This name must match exactly with what you use in navigation.navigate()
         component={MyTaskScreen} 
       />
+      <Stack.Screen name="NotificationScreen" component={NotificationScreen} />
+
     </Stack.Navigator>
   );
 };
