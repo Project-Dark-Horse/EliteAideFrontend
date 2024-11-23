@@ -6,8 +6,7 @@ import axios from 'axios';
 import { BASE_URL } from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CommonHeader from '../../components/CommonHeader';
-import { format } from 'date-fns';
-import { useNavigation } from '@react-navigation/native';
+import { format, isToday, isThisWeek } from 'date-fns';
 import { View, ScrollView, StyleSheet, Alert } from 'react-native';
 
 interface Task {
@@ -91,17 +90,25 @@ const MyTaskScreen: React.FC = () => {
     );
   };
 
+  const todayTasks = tasks.filter(task => isToday(new Date(task.time)));
+  const thisWeekTasks = tasks.filter(task => isThisWeek(new Date(task.time), { weekStartsOn: 1 }));
+  const afterThisWeekTasks = tasks.filter(task => !isToday(new Date(task.time)) && !isThisWeek(new Date(task.time), { weekStartsOn: 1 }));
+
   return (
     <SafeAreaView style={styles.container}>
       <CommonHeader title="My Tasks" showTitle={true} showNotificationIcon={true} />
       <ScrollView style={styles.scrollView}>
         <Text style={styles.sectionHeader}>Today</Text>
         <View style={styles.taskList}>
-          {tasks.map(renderTask)}
+          {todayTasks.map(renderTask)}
         </View>
         <Text style={styles.sectionHeader}>This Week</Text>
         <View style={styles.taskList}>
-          {tasks.map(renderTask)}
+          {thisWeekTasks.map(renderTask)}
+        </View>
+        <Text style={styles.sectionHeader}>After This Week</Text>
+        <View style={styles.taskList}>
+          {afterThisWeekTasks.map(renderTask)}
         </View>
       </ScrollView>
     </SafeAreaView>

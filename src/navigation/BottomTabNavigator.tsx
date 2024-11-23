@@ -68,7 +68,7 @@ const BottomTabNavigator: React.FC = () => {
         position="LEFT"
         component={CalendarScreen}
         options={{
-          header: () => <Header title="Calendar" showTitle={false} />,
+          headerShown: false,
         }}
       />
       <CurvedBottomBar.Screen
@@ -76,7 +76,7 @@ const BottomTabNavigator: React.FC = () => {
         position="RIGHT"
         component={Ai}
         options={{
-          header: () => <Header title="Let's get things done!" showTitle={false} />,
+          headerShown: false,
         }}
       />
       <CurvedBottomBar.Screen

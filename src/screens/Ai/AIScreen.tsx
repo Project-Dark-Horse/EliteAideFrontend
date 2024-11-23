@@ -9,9 +9,6 @@ import {
   Platform,
   Image,
   ScrollView,
-  EmitterSubscription,
-  ActivityIndicator
-  
 } from 'react-native';
 import tw from 'twrnc';
 import bot from '../../assets/bot.png';
@@ -21,8 +18,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import Voice, { SpeechResultsEvent, SpeechErrorEvent, SpeechStartEvent, SpeechEndEvent } from '@react-native-voice/voice';
-import ReactNativeHapticFeedback from "react-native-haptic-feedback";
+import Voice from '@react-native-voice/voice';
 
 interface Message {
   id: string;
@@ -30,8 +26,8 @@ interface Message {
   sender: 'bot' | 'user';
   showQuickReplies?: boolean;
   action?: 'create_task' | 'show_day' | null;
-  isTaskList?: boolean;
-  tasks?: Array<any>;
+  backgroundColor?: string;
+  timestamp?: string;
 }
 
 interface TaskDetails {
@@ -40,6 +36,7 @@ interface TaskDetails {
   due_date: string;
   priority: string;
   type: string;
+  created_at: string;
 }
 
 interface SuccessResponse {
@@ -89,12 +86,6 @@ type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 const BASE_URL = 'https://api.eliteaide.tech/';
 
-// Configure haptic options
-const hapticOptions = {
-  enableVibrateFallback: true,
-  ignoreAndroidSystemSettings: false
-};
-
 const ChatScreen = () => {
   const navigation = useNavigation<NavigationProp>();
   const [messages, setMessages] = useState<Message[]>([
@@ -110,23 +101,6 @@ const ChatScreen = () => {
   const [isListening, setIsListening] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showInput, setShowInput] = useState(true);
-  const [voiceListeners, setVoiceListeners] = useState<EmitterSubscription[]>([]);
-  const [isTyping, setIsTyping] = useState(false);
-
-  const startListening = async () => {
-    try {
-      await Voice.start('en-US');
-      setIsListening(true);
-      triggerHaptic('impactMedium');
-    } catch (error) {
-      console.error(error);
-      triggerHaptic('notificationError');
-    }
-  };
-
-  const triggerHaptic = (type: 'impactLight' | 'impactMedium' | 'notificationError') => {
-    ReactNativeHapticFeedback.trigger(type, hapticOptions);
-  };
 
   const handleResponse = (response: ApiResponse) => {
     if (response.error) {
@@ -152,11 +126,18 @@ const ChatScreen = () => {
   
   const sendMessage = async () => {
     if (input.trim() && !isLoading) {
-      triggerHaptic('impactMedium');
-      setIsTyping(true);
       const userInput = input.trim();
       setInput('');
       setIsLoading(true);
+
+      // Check if the input is "SHOW MY TASKS" and handle it separately
+      if (userInput.toLowerCase() === 'SHOW MY TASKS') {
+        // Handle "SHOW MY TASKS" action here
+        console.log('Handling "SHOW MY TASKS" action');
+        // Add specific logic for "SHOW MY TASKS" here
+        setIsLoading(false);
+        return; // Exit early to prevent API call
+      }
 
       const userMessage: Message = {
         id: Math.random().toString(),
@@ -189,48 +170,69 @@ const ChatScreen = () => {
         console.log('API Response:', response.data);
 
         const taskDetails = response.data.message.task_details;
-        const formattedMessage = `🎯 Task Created Successfully!\n\n` +
-          `📝 ${taskDetails.title}\n` +
-          `${taskDetails.description}\n\n` +
-          `📅 Due: ${new Date(taskDetails.due_date).toLocaleString('en-US', {
-            weekday: 'short',
+        const priorityMap = {
+          1: '🟢 Low',
+          2: '🟡 Medium',
+          3: '🔴 High'
+        };
+        const priorityKey = Number(taskDetails.priority) as keyof typeof priorityMap;
+        const priority = priorityMap[priorityKey] || `Priority ${taskDetails.priority}`;
+
+        const formattedMessage = `✅ Task created successfully!\n\n` +
+          `Title: ${taskDetails.title}\n` +
+          `Description: ${taskDetails.description}\n` +
+          `Due Date: ${new Date(taskDetails.due_date).toLocaleString('en-US', {
             month: 'short',
             day: 'numeric',
             hour: 'numeric',
             minute: '2-digit',
             hour12: true
           })}\n` +
-          `${getPriorityEmoji(Number(taskDetails.priority))} Priority: ${getPriorityText(Number(taskDetails.priority))}\n` +
-          `🏷️ Type: ${taskDetails.type}`;
+          `Priority: ${priority}\n` +
+          `Type: ${taskDetails.type}\n` +
+          `Created At: ${new Date(taskDetails.created_at).toLocaleString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true
+          })}`;
 
         setMessages(prevMessages => [
           {
             id: Math.random().toString(),
             text: formattedMessage,
-            sender: 'bot'
+            sender: 'bot',
+            timestamp: new Date().toLocaleString('en-US', {
+              month: 'short',
+              day: 'numeric',
+              hour: 'numeric',
+              minute: '2-digit',
+              hour12: true
+            })
           },
           {
             id: Math.random().toString(),
             text: "What would you like to do next?",
             sender: 'bot',
-            showQuickReplies: true
+            showQuickReplies: true,
+            timestamp: new Date().toLocaleString('en-US', {
+              month: 'short',
+              day: 'numeric',
+              hour: 'numeric',
+              minute: '2-digit',
+              hour12: true
+            })
           },
           ...prevMessages
         ]);
 
-        setQuickReplies(['Create another task', 'Show my Tasks']);
+        setQuickReplies(['CREATE ANOTHER TASK', 'SHOW MY TASKS']);
 
       } catch (error) {
-        triggerHaptic('notificationError');
         let errorMessage = "Sorry, something went wrong. Please try again.";
         
         if (axios.isAxiosError(error)) {
-//           console.error('Error details:', {
-//             status: error.response?.status,
-//             data: error.response?.data,
-//             headers: error.response?.headers,
-//           });
-
           if (error.response?.status === 401) {
             navigation.navigate('Login');
             errorMessage = "Your session has expired. Please login again.";
@@ -251,23 +253,23 @@ const ChatScreen = () => {
           },
           ...prevMessages
         ]);
+
       } finally {
-        setIsTyping(false);
         setIsLoading(false);
       }
     }
   };
 
   const [quickReplies, setQuickReplies] = useState<string[]>([
-    'Create task', 
-    'Show My Tasks'
+    'CREATE TASK', 
+    'SHOW MY TASKS'
   ]);
 
   const handleQuickReply = async (reply: string) => {
     console.log('Quick reply selected:', reply);
 
-    if (reply === 'Create task' || reply === 'Create another task') {
-      console.log('Handling create task action');
+    if (reply === 'CREATE TASK' || reply === 'CREATE ANOTHER TASK') {
+      console.log('Handling CREATE TASK action');
       setShowInput(true);
       setMessages(prevMessages => [
         {
@@ -278,10 +280,11 @@ const ChatScreen = () => {
         },
         ...prevMessages
       ]);
-    } else if (reply === 'Show My Tasks') {
-      console.log('Handling show my day action');
+    } else if (reply === 'SHOW MY TASKS') {
+      console.log('Handling SHOW MY TASKS action');
       setShowInput(false);
       
+      // Get today's date and tomorrow's date
       const today = new Date();
       const tomorrow = new Date(today);
       tomorrow.setDate(tomorrow.getDate() + 1);
@@ -293,6 +296,11 @@ const ChatScreen = () => {
 
       try {
         const token = await AsyncStorage.getItem('access_token');
+        if (!token) {
+          console.log('No token found, redirecting to login');
+          navigation.navigate('Login');
+          return;
+        }
 
         console.log('Making API request to fetch tasks');
         const response = await axios.get<TaskResponse>(`${BASE_URL}v1/tasks/range`, {
@@ -340,14 +348,12 @@ const ChatScreen = () => {
             id: Math.random().toString(),
             text: messageText,
             sender: 'bot',
-            isTaskList: true,
-            tasks: response.data.message.task_details.data,
             showQuickReplies: true
           },
           ...prevMessages
         ]);
       } catch (error) {
-        console.error('Error in show my day:', {
+        console.error('Error in SHOW MY TASKS:', {
           error,
           status: axios.isAxiosError(error) ? error.response?.status : 'unknown',
           data: axios.isAxiosError(error) ? error.response?.data : 'unknown'
@@ -380,9 +386,7 @@ const ChatScreen = () => {
 
   const renderItem = ({ item }: { item: Message }) => (
     <View>
-      <TouchableOpacity
-        activeOpacity={0.8}
-        onPress={() => triggerHaptic('impactLight')}
+      <View
         style={tw`mb-3 flex ${item.sender === 'user' ? 'flex-row-reverse' : 'flex-row'} items-start`}
       >
         {item.sender === 'bot' && (
@@ -401,26 +405,15 @@ const ChatScreen = () => {
           style={[
             tw`relative p-3 rounded-lg max-w-3/4`,
             {
-              backgroundColor: item.sender === 'user' ? '#1D1E23' : '#1D1E23',
-              borderRadius: 12,
+              backgroundColor: item.backgroundColor || (item.sender === 'user' ? '#1D1E23' : '#1D1E23'),
+              borderRadius: 7,
               borderWidth: 1,
               borderColor: item.sender === 'user' ? '#666' : '#3272A0',
-              shadowColor: item.sender === 'user' ? '#666' : '#3272A0',
-              shadowOffset: { width: 0, height: 2 },
-              shadowOpacity: 0.25,
-              shadowRadius: 3.84,
-              elevation: 5,
             },
           ]}
         >
-          {isTyping && item.sender === 'bot' && item === messages[0] ? (
-            <View style={tw`flex-row items-center p-2`}>
-              <ActivityIndicator color="#3272A0" size="small" />
-              <Text style={tw`text-gray-400 ml-2`}>Typing...</Text>
-            </View>
-          ) : (
-            <Text style={tw`text-white`}>{item.text}</Text>
-          )}
+          <Text style={[tw`text-gray-200`, { fontWeight: '100' }]}>{item.text}</Text>
+          <Text style={tw`text-gray-400 text-xs mt-1`}>{item.timestamp}</Text>
 
           {/* Bot tail */}
           {item.sender === 'bot' && (
@@ -494,55 +487,51 @@ const ChatScreen = () => {
             </>
           )}
         </View>
-      </TouchableOpacity>
+      </View>
       
       {item.showQuickReplies && (
-        <ScrollView 
-          horizontal 
-          showsHorizontalScrollIndicator={false} 
-          style={tw`mb-8`}
-        >
-          {quickReplies.map((reply) => (
-            <TouchableOpacity
-              key={reply}
-              style={[
-                tw`bg-[#1D1E23] rounded-lg px-4 py-2 mr-2 border border-[#3272A0]`,
-                { transform: [{ scale: 1 }] }
-              ]}
-              onPress={() => {
-                triggerHaptic('impactMedium');
-                handleQuickReply(reply);
-              }}
-              activeOpacity={0.7}
-            >
-              <Text style={tw`text-white font-medium`}>{reply}</Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
+        <View style={tw`flex ${item.sender === 'user' ? 'flex-row-reverse' : 'flex-row'} mb-3 ml-13`}>
+          <View style={tw`flex-row flex-wrap`}>
+            {quickReplies.map((reply) => (
+              <TouchableOpacity
+                key={reply}
+                style={tw`bg-[#1D1E23] rounded-lg px-4 py-2 mr-2 mb-2 border-[#555555] border-2`}
+                onPress={() => handleQuickReply(reply)}
+              >
+                <Text style={[tw`text-white`, { fontFamily: 'Times New Roman', fontSize: 10, color: '#65779E', fontWeight: '700' }]}>
+                  {reply}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
       )}
     </View>
   );
 
+  const startListening = async () => {
+    try {
+      setIsListening(true);
+      await Voice.start('en-US');
+    } catch (error) {
+      console.error('Voice recognition error:', error);
+      setIsListening(false);
+    }
+  };
+
+  const onSpeechResults = (event: any) => {
+    const spokenText = event.value[0];
+    setInput(spokenText);
+    setIsListening(false);
+  };
+
+  const onSpeechError = () => {
+    setIsListening(false);
+  };
+
   useEffect(() => {
-    Voice.onSpeechStart = (e: SpeechStartEvent) => {
-      console.log('onSpeechStart: ', e);
-    };
-
-    Voice.onSpeechEnd = (e: SpeechEndEvent) => {
-      console.log('onSpeechEnd: ', e);
-    };
-
-    Voice.onSpeechResults = (e: SpeechResultsEvent) => {
-      if (e.value && e.value[0]) {
-        setInput(e.value[0]);
-      }
-      setIsListening(false);
-    };
-
-    Voice.onSpeechError = (e: SpeechErrorEvent) => {
-      console.error(e);
-      setIsListening(false);
-    };
+    Voice.onSpeechResults = onSpeechResults;
+    Voice.onSpeechError = onSpeechError;
 
     return () => {
       Voice.destroy().then(Voice.removeAllListeners);
@@ -556,57 +545,8 @@ const ChatScreen = () => {
     }
   };
 
-  const getPriorityEmoji = (priority: number) => {
-    switch (priority) {
-      case 3:
-        return '🔴';
-      case 2:
-        return '🟡';
-      case 1:
-        return '🟢';
-      default:
-        return '⚪';
-    }
-  };
-
-  const getPriorityText = (priority: number) => {
-    switch (priority) {
-      case 3:
-        return 'High';
-      case 2:
-        return 'Medium';
-      case 1:
-        return 'Low';
-      default:
-        return 'Unknown';
-    }
-  };
-
-  const handleTaskPress = (task: any) => {
-    setMessages(prevMessages => [
-      {
-        id: Math.random().toString(),
-        text: `Task Details:\n📝 ${task.title}\n${task.description}\n📅 Due: ${formatDate(task.due_date)}\n${getPriorityEmoji(task.priority)} Priority: ${getPriorityText(task.priority)}`,
-        sender: 'bot',
-        showQuickReplies: true
-      },
-      ...prevMessages
-    ]);
-    setQuickReplies(['Mark Complete', 'Edit Task', 'Delete Task']);
-  };
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true
-    });
-  };
-
   return (
-    <View style={tw`flex-1 bg-[#111111] pb-2`}>
+    <View style={tw`flex-1 bg-[#111111] pb-7`}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'android' ? 'padding' : 'height'}
         keyboardVerticalOffset={80}
@@ -624,18 +564,11 @@ const ChatScreen = () => {
           bounces={false}
         />
 
-        <View style={tw`flex-row items-center p-4 bg-[#111111] mb-20`}>
+        <View style={tw`flex-row items-center p-4 bg-[#111111] mb-12`}>
           <TextInput
             style={[
               tw`flex-1 px-4 py-2 rounded-full bg-[#1D1E23] text-white`,
-              {
-                fontSize: 14,
-                shadowColor: '#000',
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.25,
-                shadowRadius: 3.84,
-                elevation: 5,
-              }
+              { fontSize: 13 }
             ]}
             value={input}
             onChangeText={handleInputChange}
@@ -648,31 +581,23 @@ const ChatScreen = () => {
           
           <TouchableOpacity
             activeOpacity={0.7}
-            style={[
-              tw`bg-[#3272A0] p-2 rounded-full ml-2`,
-              {
-                shadowColor: '#3272A0',
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.25,
-                shadowRadius: 3.84,
-                elevation: 5,
-              }
-            ]}
-            onPress={() => {
-              triggerHaptic('impactMedium');
-              input.trim() ? sendMessage() : startListening();
-            }}
+            style={tw`bg-[#3272A0] p-2 rounded-full ml-2`}
+            onPress={input.trim() ? sendMessage : startListening}
             disabled={isLoading}
           >
-            {isLoading ? (
-              <ActivityIndicator color="#fff" size="small" />
-            ) : (
-              <Icon 
-                name={input.trim() ? "send" : isListening ? "stop" : "mic"} 
-                size={20} 
-                color="#fff" 
-              />
-            )}
+            <Icon 
+              name={
+                isLoading 
+                  ? "timer-outline" 
+                  : input.trim() 
+                    ? "send" 
+                    : isListening 
+                      ? "stop" 
+                      : "mic"
+              } 
+              size={20} 
+              color="#fff" 
+            />
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>

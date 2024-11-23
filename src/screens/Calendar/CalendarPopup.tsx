@@ -1,5 +1,5 @@
 // Assuming your CalendarPopup.tsx is in the src/components folder
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Calendar, DateData } from 'react-native-calendars';
 import formatDate from '../../utils/formatDate'; // Adjust the relative path as necessary

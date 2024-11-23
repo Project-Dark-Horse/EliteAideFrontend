@@ -6,6 +6,7 @@ import tw from 'twrnc';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack'; // Corrected import
 import { RootStackParamList } from '../../types/navigation';
+import CommonHeader from '../../components/CommonHeader';
 
 type SettingsScreenNavigationProp = StackNavigationProp<RootStackParamList, 'SettingsScreen'>;
 
