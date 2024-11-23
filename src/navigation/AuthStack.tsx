@@ -6,6 +6,7 @@ import LoginScreen from '../screens/Auth/LoginScreen';
 import SignUpScreen from '../screens/Auth/SignUpScreen';
 import OtpScreen from '../screens/Auth/OtpScreen';
 import ForgotPasswordScreen from '../screens/Auth/ForgotPasswordScreen';
+import EnterEmailScreen from '../screens/Auth/EnterEmailScreen';
 
 // Add type definition for stack params
 type AuthStackParamList = {
@@ -13,7 +14,8 @@ type AuthStackParamList = {
   Login: undefined;
   SignUp: undefined;
   Otp: { email: string };
-  ForgetPassword: undefined;
+  ForgotPassword: undefined;
+  EnterEmail: undefined;
 };
 
 const Stack = createStackNavigator<AuthStackParamList>();
@@ -26,6 +28,7 @@ const AuthStack = () => {
       <Stack.Screen name="SignUp" component={SignUpScreen} />
       <Stack.Screen name="Otp" component={OtpScreen} />
       <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
+      <Stack.Screen name="EnterEmail" component={EnterEmailScreen} />
     </Stack.Navigator>
   );
 };
