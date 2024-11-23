@@ -6,6 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { launchImageLibrary } from 'react-native-image-picker';
 import { BASE_URL } from '@env';
+import CommonHeader from '../../components/CommonHeader';
 
 const ProfileScreen = () => {
   const navigation = useNavigation();

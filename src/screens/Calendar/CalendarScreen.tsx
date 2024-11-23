@@ -8,6 +8,9 @@ import DaySchedule from './DayScheduleScreen.tsx';
 import CalendarPopup from './CalendarPopup';
 import CreateTaskModal from './CreateTaskModal';
 import { styles } from './styles';
+import { BASE_URL } from '@env';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface Task {
   id: number;
@@ -26,15 +29,42 @@ const CalendarScreen = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const fetchTasks = async (startDate: string, endDate: string) => {
+  const fetchTasks = async (startDate: string, endDate: string, page = 1, itemsPerPage = 10) => {
     setLoading(true);
     try {
-      const response = await fetch(`v1/tasks/range?start_date=${startDate}&end_date=${endDate}&page=1&item_per_page=10&range_type=day`);
-      if (!response.ok) {
+      const token = await AsyncStorage.getItem('access_token');
+      if (!token) {
+        throw new Error('User not authenticated');
+      }
+
+      const response = await axios.get(`${BASE_URL}/v1/tasks/range`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        params: {
+          start_date: startDate,
+          end_date: endDate,
+          page,
+          item_per_page: itemsPerPage,
+          range_type: 'day',
+        },
+      });
+
+      if (response.status !== 200) {
         throw new Error('Failed to fetch tasks');
       }
-      const data = await response.json();
-      setTasks(data.tasks); // Adjust based on your API response structure
+
+      const fetchedTasks = response.data.message.task_details.data.map((task: any) => ({
+        id: task.id,
+        time: task.due_date,
+        summary: task.title,
+        detail: task.description,
+        date: new Date(task.due_date),
+        color: '#1D1E23',
+        completed: task.status === 'Completed',
+      }));
+      setTasks(fetchedTasks);
     } catch (error: unknown) {
       if (error instanceof Error) {
         Alert.alert('Error', error.message);
@@ -47,8 +77,8 @@ const CalendarScreen = () => {
   };
 
   useEffect(() => {
-    const startDate = selectedDate.toISOString().split('T')[0]; // YYYY-MM-DD
-    const endDate = selectedDate.toISOString().split('T')[0]; // YYYY-MM-DD
+    const startDate = selectedDate.toISOString().split('T')[0];
+    const endDate = selectedDate.toISOString().split('T')[0];
     fetchTasks(startDate, endDate);
   }, [selectedDate]);
 
