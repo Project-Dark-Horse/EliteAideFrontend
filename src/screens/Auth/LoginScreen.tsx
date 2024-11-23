@@ -1,8 +1,15 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Alert, Image, StyleSheet } from 'react-native';
-import { Button } from 'react-native-paper';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Alert,
+  Image,
+  StyleSheet,
+  ActivityIndicator,
+} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import tw from 'twrnc';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LinearGradient from 'react-native-linear-gradient';
 import { BlurView } from '@react-native-community/blur';
@@ -10,31 +17,30 @@ import RadialGradient from 'react-native-radial-gradient';
 import { BASE_URL } from '@env';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-
+import tw from 'twrnc';
 import LogoImage from '../../assets/vector.png';
 
 // Define your navigation stack type
 type AuthStackParamList = {
-  BottomTabNavigator: undefined; // Add other routes as needed
+  BottomTabNavigator: undefined;
   ForgotPassword: undefined;
   EnterEmail: undefined;
 };
 
-// Update the component to use the typed navigation prop
 const LoginScreen: React.FC = () => {
   const navigation = useNavigation<StackNavigationProp<AuthStackParamList>>();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [debugMessage, setDebugMessage] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
     if (!email || !password) {
-      Alert.alert('Error', 'Email/Username and Password cannot be blank.');
-      return; // Prevent login attempt if fields are empty
+      Alert.alert('Error', 'Email and Password cannot be blank.');
+      return;
     }
 
+    setLoading(true);
     try {
       console.log(`Requesting login at: ${BASE_URL}v1/users/login/`);
 
@@ -46,37 +52,24 @@ const LoginScreen: React.FC = () => {
         body: JSON.stringify({ email_or_username: email, password }),
       });
 
-      console.log(`Response status: ${response.status}`);
-      
-
       const data = await response.json();
       console.log('Response data:', data);
-      
 
       if (response.ok && data.message?.access) {
         const { access, refresh } = data.message;
 
         await AsyncStorage.setItem('access_token', access);
-        console.log('Access token stored:', access);
-
         await AsyncStorage.setItem('refresh_token', refresh);
-        console.log('Refresh token stored:', refresh);
 
         navigation.reset({ index: 0, routes: [{ name: 'BottomTabNavigator' }] });
       } else {
-        console.error('Login failed:', data.message || 'Unknown error');
+        Alert.alert('Login Failed', data.message || 'Unknown error');
       }
     } catch (error) {
-      if (error instanceof Error) {
-        console.error('Login error:', error);
-        setDebugMessage(`Login error: ${error.message}`);
-      } else {
-        console.error('Login error:', error);
-        setDebugMessage('Login error: An unknown error occurred');
-      }
-      Alert.alert('Login failed', 'An error occurred');
+      console.error('Login error:', error);
+      Alert.alert('Error', 'An error occurred while logging in.');
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
@@ -134,42 +127,31 @@ const LoginScreen: React.FC = () => {
             <Ionicons name={showPassword ? 'eye-off' : 'eye'} size={22} color="#979797" />
           </TouchableOpacity>
         </View>
+         <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')} style={tw`mt-2`}>
+        <Text style={tw`text-blue-300 text-left`}>Forgot Password?</Text>
+      </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => {
-          console.log('Navigating to ForgotPassword');
-          navigation.navigate('ForgotPassword');
-        }}>
-          <Text style={styles.forgotPassword}>Forgot Password?</Text>
+        <TouchableOpacity onPress={handleLogin} style={styles.loginButton}>
+          <LinearGradient
+            colors={['#1D1E23', '#1D1E23']}
+            style={[styles.buttonContent, styles.button3DEffect]}
+          >
+            {loading ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text style={styles.buttonLabel}>Login</Text>
+            )}
+          </LinearGradient>
         </TouchableOpacity>
 
-        <Button
-          mode="elevated"
-          onPress={handleLogin}
-          loading={isLoading}
-          style={styles.loginButton}
-          contentStyle={styles.buttonContent}
-          labelStyle={styles.buttonLabel}
-          buttonColor="#1D1E23"
-        >
-          {isLoading ? "Logging in..." : "Login"}
-        </Button>
+        
 
-        {debugMessage ? (
-          <Text style={styles.debugMessage}>Debug: {debugMessage}</Text>
-        ) : null}
-
-        <View style={styles.createAccountContainer}>
-          <Text style={styles.createAccountText}>Don't have an account? </Text>
-          <TouchableOpacity onPress={() => navigation.navigate('EnterEmail')}>
-          <Text style={tw`text-[#65779E] font-semibold`}>Create One</Text>
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity onPress={() => navigation.navigate('EnterEmail')} style={styles.linkContainer}>
+        <Text style={tw`text-[#979797] mt-0`}>
+            Don't have an account? <Text style={tw`text-[#65779E] font-semibold `}>Create One</Text>
+          </Text>
+        </TouchableOpacity>
       </View>
-
-      <LinearGradient
-        style={styles.bottomGradient}
-        colors={['rgba(17,17,17,0.2)', 'rgba(73,86,189,0.2)']}
-      />
     </View>
   );
 };
@@ -212,37 +194,25 @@ const styles = StyleSheet.create({
   eyeIcon: {
     ...tw`absolute right-4 top-4`,
   },
-  forgotPassword: {
-    ...tw`text-[#1D79BC] text-sm mt-3`,
-  },
   loginButton: {
-    ...tw`rounded-2xl top-20`,
-    shadowColor: 'grey',
-    shadowOffset: { width: 0, height: 0.5 },
-    shadowOpacity: 0.15,
-    shadowRadius: 0.5,
-    elevation: 2,
+    ...tw`rounded-xl mt-6`,
   },
   buttonContent: {
-    ...tw`py-1`,
+    ...tw`py-4 items-center`,
+    borderRadius: 10,
+  },
+  button3DEffect: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#323232',
   },
   buttonLabel: {
-    ...tw`text-sm text-white`,
+    ...tw`text-sm text-white font-semibold`,
   },
-  debugMessage: {
-    ...tw`text-red-500 text-xs mt-4`,
+  linkContainer: {
+    ...tw`mt-0 items-center`,
   },
-  createAccountContainer: {
-    ...tw`flex-row justify-center top-25`,
-  },
-  createAccountText: {
-    ...tw`text-white`,
-  },
-  createAccountLink: {
-    ...tw`text-[#65779E] font-semibold`,
-  },
-  bottomGradient: {
-    ...tw`absolute bottom-0 left-0 right-0 h-[10%]`,
+  linkText: {
+    ...tw`text-blue-500 text-left`,
   },
 });
 

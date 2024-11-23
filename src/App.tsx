@@ -11,7 +11,7 @@ import { RootStackParamList } from './types/navigation';
 import SignUpScreen from './screens/Auth/SignUpScreen';
 import LoginScreen from './screens/Auth/LoginScreen';
 import OtpScreen from './screens/Auth/OtpScreen';
-import ForgotPasswordScreen from './screens/Auth/ForgotPasswordScreen';
+import ForgotPasswordScreen from './screens/Auth/ForgotPassword';
 import EnterEmailScreen from './screens/Auth/EnterEmailScreen';
 import WelcomeScreen from './screens/WelcomeScreen';
 import MyActivityScreen from './screens/Profile/MyActivity';

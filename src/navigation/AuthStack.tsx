@@ -5,8 +5,8 @@ import WelcomeScreen from '../screens/WelcomeScreen';
 import LoginScreen from '../screens/Auth/LoginScreen';
 import SignUpScreen from '../screens/Auth/SignUpScreen';
 import OtpScreen from '../screens/Auth/OtpScreen';
-import ForgotPasswordScreen from '../screens/Auth/ForgotPasswordScreen';
 import EnterEmailScreen from '../screens/Auth/EnterEmailScreen';
+import ForgotPasswordScreen from '../screens/Auth/ForgotPassword';
 
 // Add type definition for stack params
 type AuthStackParamList = {
