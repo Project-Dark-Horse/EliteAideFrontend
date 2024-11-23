@@ -150,7 +150,10 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({ isVisible, onClose })
               {['Personal', 'Work', 'Finance', 'Travel', 'Health', 'Shopping'].map((cat, index) => (
                 <TouchableOpacity
                   key={cat}
-                  style={[styles.categoryButton, category === cat && styles.selectedCategory]}
+                  style={[
+                    styles.categoryButton,
+                    category === cat && styles.selectedCategory
+                  ]}
                   onPress={() => setCategory(cat)}
                 >
                   <Icon 
@@ -309,7 +312,7 @@ const styles = StyleSheet.create({
     padding: 8,
     marginBottom: 10,
     color: '#FFFFFF',
-    fontSize: 16,
+    fontSize: 15,
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -339,25 +342,29 @@ const styles = StyleSheet.create({
   categoryContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     marginBottom: 10,
   },
   categoryButton: {
-    padding: 8,
-    borderRadius: 20,
-    backgroundColor: '#1E1E1E',
-    margin: 3,
-    borderWidth: 1,
-    borderColor: '#3272A0',
     flexDirection: 'row',
     alignItems: 'center',
+    paddingVertical: 5,
+    paddingHorizontal: 6,
+    borderRadius: 10,
+    backgroundColor: '#1E1E1E',
+    margin: 2,
+    borderWidth: 1,
+    borderColor: '#3272A0',
+    textAlign: 'center',
+    width: '30%',
+    
   },
   selectedCategory: {
     backgroundColor: '#3272A0',
   },
   categoryText: {
     color: '#FFFFFF',
-    marginLeft: 5,
+    marginLeft: 8,
   },
   priorityContainer: {
     marginBottom: 10,
@@ -501,6 +508,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 1,
     borderColor: '#3272A0',
+    
+  },
+  categoryText: {
+    color: '#FFFFFF',
+    marginLeft: 8,
+    fontSize: 10,
   },
 });
 
