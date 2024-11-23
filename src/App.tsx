@@ -16,6 +16,7 @@ import EnterEmailScreen from './screens/Auth/EnterEmailScreen';
 import WelcomeScreen from './screens/WelcomeScreen';
 import MyActivityScreen from './screens/Profile/MyActivity';
 import ProfileScreen from './screens/Profile/ProfileScreen';
+import NotificationScreen from './screens/Notification/NotificationScreen';
 
 
 
@@ -66,6 +67,7 @@ const App = () => {
           <Stack.Screen name="BottomTabNavigator" component={BottomTabNavigator} />
           <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
           <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
+          <Stack.Screen name="NotificationScreen" component={NotificationScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>

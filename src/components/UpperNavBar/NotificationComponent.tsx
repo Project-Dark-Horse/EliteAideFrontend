@@ -2,13 +2,12 @@
 import React from 'react';
 import { View, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useNavigation } from '@react-navigation/native';
 import { HomeScreenNavigationProp } from '../../types/navigation';
 
-interface NotificationsComponentProps {
-  navigation: HomeScreenNavigationProp;
-}
+const NotificationsComponent: React.FC = () => {
+  const navigation = useNavigation<HomeScreenNavigationProp>();
 
-const NotificationsComponent: React.FC<NotificationsComponentProps> = ({ navigation }) => {
   const handleNotificationPress = () => {
     navigation.navigate('NotificationScreen');
   };

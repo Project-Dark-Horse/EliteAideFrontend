@@ -79,6 +79,7 @@ interface ApiResponse {
 
 type RootStackParamList = {
   Login: undefined;
+  NotificationScreen: undefined;
   // Add other screens as needed
 };
 
@@ -547,6 +548,21 @@ const ChatScreen = () => {
 
   return (
     <View style={tw`flex-1 bg-[#111111] pb-7`}>
+      <View style={tw`flex-row items-center justify-between p-4 bg-[#111111]`}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={tw`p-2`}>
+          <Icon name="chevron-back" size={24} color="#FFFFFF" />
+        </TouchableOpacity>
+        <Text style={tw`text-white text-lg font-bold`}>AI Chat</Text>
+        <View style={tw`flex-row`}>
+          <TouchableOpacity onPress={() => console.log('Search pressed')} style={tw`p-2`}>
+            <Icon name="search" size={24} color="#FFFFFF" />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('NotificationScreen')} style={tw`p-2`}>
+            <Icon name="notifications" size={24} color="#FFFFFF" />
+          </TouchableOpacity>
+        </View>
+      </View>
+
       <KeyboardAvoidingView
         behavior={Platform.OS === 'android' ? 'padding' : 'height'}
         keyboardVerticalOffset={80}

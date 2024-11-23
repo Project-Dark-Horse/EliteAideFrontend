@@ -26,6 +26,7 @@ type RootStackParamList = {
   Ai: undefined;
   Profile: undefined;
   BottomBarStack: undefined;
+  NotificationScreen: undefined;
   // ... other screens
 };
 

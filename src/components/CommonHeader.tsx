@@ -5,8 +5,6 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import { HomeScreenNavigationProp } from '../types/navigation';
-import NotificationsComponent from '../components/UpperNavBar/NotificationComponent';
-
 
 interface HeaderProps {
   title?: string;
@@ -37,8 +35,12 @@ const CommonHeader: React.FC<HeaderProps> = ({ title = "Profile", showTitle = tr
           <Icon name="search-outline" size={24} color="#65779E" />
         </TouchableOpacity>
 
-       {/* Notifications Icon with navigation prop */}
-       <NotificationsComponent navigation={navigation} />
+        {/* Notifications Icon with navigation to NotificationScreen */}
+        {showNotificationIcon && (
+          <TouchableOpacity onPress={() => navigation.navigate('NotificationScreen')} style={styles.iconButton}>
+            <Icon name="notifications" size={24} color="#65779E" />
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );
