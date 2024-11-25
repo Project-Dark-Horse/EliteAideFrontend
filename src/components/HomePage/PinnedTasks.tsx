@@ -11,15 +11,18 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useTaskRefresh } from '../../context/TaskRefreshContext';
 import { useFocusEffect } from '@react-navigation/native';
+import { FormattedTask } from '../../types/task';
+import { getIconName, getBackgroundColor } from '../../utils/taskUtils';
 
-interface Task {
-  id: number;
-  title: string;
-  description: string;
-  time: string;
-  day: string;
-  backgroundColor: string;
-  iconName: string;
+type RootStackParamList = {
+  MyTaskScreen: undefined;
+  Login: undefined;
+};
+
+type NavigationProp = StackNavigationProp<RootStackParamList>;
+
+interface PinnedTasksProps {
+  tasks: FormattedTask[];
 }
 
 interface TaskResponse {
@@ -46,40 +49,8 @@ interface TaskResponse {
   };
 }
 
-const getBackgroundColor = (type: string): string => {
-  // Always return the dark background color as per design
-  return '#1E1E1E';
-};
-
-const getIconName = (type: string): string => {
-  switch (type) {
-    case 'Work/Professional Tasks':
-      return 'people';
-    case 'Meeting':
-      return 'people';
-    case 'Discussion':
-      return 'chatbubble';
-    case 'Review':
-      return 'document-text';
-    case 'Personal Tasks':
-      return 'person';
-    case 'Errands':
-      return 'list';
-    default:
-      return 'notifications';
-  }
-};
-
-type RootStackParamList = {
-  MyTaskScreen: undefined;
-  Login: undefined;
-};
-
-type NavigationProp = StackNavigationProp<RootStackParamList>;
-
-const PinnedTasks: React.FC = () => {
+const PinnedTasks: React.FC<PinnedTasksProps> = ({ tasks }) => {
   const navigation = useNavigation<NavigationProp>();
-  const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(false);
   const { shouldRefresh, setShouldRefresh } = useTaskRefresh();
 
@@ -112,12 +83,16 @@ const PinnedTasks: React.FC = () => {
       });
 
       if (response.data?.message?.task_details?.data?.length > 0) {
-        const fetchedTasks = response.data.message.task_details.data.map((task) => {
+        const fetchedTasks = response.data.message.task_details.data.map((task: TaskResponse['message']['task_details']['data'][0]) => {
           const dueDate = new Date(task.due_date);
           return {
             id: task.id,
             title: task.title,
             description: task.description,
+            status: task.status,
+            due_date: task.due_date,
+            type: task.type,
+            priority: task.priority,
             time: dueDate.toLocaleTimeString([], { 
               hour: 'numeric', 
               minute: '2-digit',
@@ -125,12 +100,12 @@ const PinnedTasks: React.FC = () => {
             }).toUpperCase(),
             day: dueDate.toLocaleDateString('en-US', { 
               weekday: 'long' 
-            }),
+            }) || 'Today',
             backgroundColor: '#1E1E1E',
             iconName: getIconName(task.type),
           };
         });
-        setTasks(fetchedTasks);
+        tasks = fetchedTasks;
       }
     } catch (error) {
       console.error('Error fetching pinned tasks:', error);

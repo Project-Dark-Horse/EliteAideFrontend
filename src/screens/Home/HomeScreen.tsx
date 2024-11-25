@@ -18,6 +18,8 @@ import DoneImage from '../../assets/done.png';
 import BotImage from '../../assets/bot.png';
 import SearchBar from '../../components/SearchBar';
 import { searchItems } from '../../utils/searchUtils';
+import { BaseTask, FormattedTask } from '../../types/task';
+import { getIconName, getBackgroundColor } from '../../utils/taskUtils';
 
 interface TaskStatistics {
   total: number;
@@ -25,20 +27,23 @@ interface TaskStatistics {
   completed: number;
 }
 
-interface Task {
+interface Task extends BaseTask {
   status: string;
+  due_date: string;
+  type: string;
 }
 
 const Home: React.FC = () => {
   const navigation = useNavigation<HomeScreenNavigationProp>();
-  const [isGreetingVisible, setIsGreetingVisible] = useState(false); // Control overlay visibility
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [isGreetingVisible, setIsGreetingVisible] = useState(false);
   const [showProgressOverlay, setShowProgressOverlay] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const [taskStats, setTaskStats] = useState<TaskStatistics>({
     total: 0,
     pending: 0,
     completed: 0,
   });
-  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const fetchTaskStats = async () => {
@@ -53,11 +58,12 @@ const Home: React.FC = () => {
         if (response.ok) {
           const data = await response.json();
           if (data.message?.task_details?.data) {
-            const tasks = data.message.task_details.data;
+            const fetchedTasks = data.message.task_details.data;
+            setTasks(fetchedTasks);
             const stats = {
-              total: tasks.length,
-              pending: tasks.filter((task: Task) => task.status === 'Pending').length,
-              completed: tasks.filter((task: Task) => task.status === 'Completed').length,
+              total: fetchedTasks.length,
+              pending: fetchedTasks.filter((task: Task) => task.status === 'Pending').length,
+              completed: fetchedTasks.filter((task: Task) => task.status === 'Completed').length,
             };
             setTaskStats(stats);
           }
@@ -126,9 +132,28 @@ const Home: React.FC = () => {
     );
   };
 
+  const formatTasks = (tasks: Task[]): FormattedTask[] => {
+    return tasks.map(task => {
+      const dueDate = new Date(task.due_date);
+      return {
+        ...task,
+        time: dueDate.toLocaleTimeString([], { 
+          hour: 'numeric', 
+          minute: '2-digit',
+          hour12: true 
+        }),
+        day: dueDate.toLocaleDateString('en-US', { 
+          weekday: 'long' 
+        }),
+        backgroundColor: '#1E1E1E',
+        iconName: getIconName(task.type),
+      };
+    });
+  };
+
   const filteredTasks = searchQuery
-    ? searchItems(tasks, searchQuery)
-    : tasks;
+    ? formatTasks(searchItems(tasks, searchQuery))
+    : formatTasks(tasks);
 
   const handleClearSearch = () => {
     setSearchQuery('');

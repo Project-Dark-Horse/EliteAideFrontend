@@ -12,64 +12,8 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useTaskRefresh } from '../../context/TaskRefreshContext';
 import { useFocusEffect } from '@react-navigation/native';
-
-interface Task {
-  id: number;
-  title: string;
-  description: string;
-  time: string;
-  backgroundColor: string;
-  iconName: string;
-  priority: number;
-  status: string;
-  type: string;
-}
-
-interface TaskResponse {
-  message: {
-    message: string;
-    task_details: {
-      total_pages: number;
-      total_items: number;
-      current_page: string;
-      page_size: string;
-      data: Array<{
-        id: number;
-        title: string;
-        description: string;
-        priority: number;
-        status: string;
-        due_date: string;
-        type: string;
-        created_at: string;
-        updated_at: string;
-        creator: number;
-      }>;
-    };
-  };
-}
-
-const getBackgroundColor = (type: string): string => {
-  switch (type) {
-    case 'Work/Professional Tasks':
-      return '#4956C7';
-    case 'Errands':
-      return '#3C8FA9';
-    default:
-      return '#3D83AA';
-  }
-};
-
-const getIconName = (type: string): string => {
-  switch (type) {
-    case 'Work/Professional Tasks':
-      return 'briefcase';
-    case 'Errands':
-      return 'list';
-    default:
-      return 'notifications';
-  }
-};
+import { FormattedTask } from '../../types/task';
+import { getIconName, getBackgroundColor } from '../../utils/taskUtils';
 
 type RootStackParamList = {
   MyTaskScreen: undefined;
@@ -78,11 +22,12 @@ type RootStackParamList = {
 
 type NavigationProp = StackNavigationProp<RootStackParamList>;
 
-const UpcomingTasksComponent: React.FC = () => {
+interface UpcomingTasksComponentProps {
+  tasks: FormattedTask[];
+}
+
+const UpcomingTasksComponent: React.FC<UpcomingTasksComponentProps> = ({ tasks }) => {
   const navigation = useNavigation<NavigationProp>();
-  const [tasks, setTasks] = useState<Task[]>([
-    // Default tasks removed
-  ]);
   const [loading, setLoading] = useState(false);
   const { shouldRefresh, setShouldRefresh } = useTaskRefresh();
 
