@@ -1,22 +1,19 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import BottomTabNavigator from './navigation/BottomTabNavigator';
-import AuthStack from './navigation/AuthStack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoadingScreen from './components/common/LoadingScreen';
-import WelcomeStack from './screens/WelcomeScreen';
 import { RootStackParamList } from './types/navigation';
 import SignUpScreen from './screens/Auth/SignUpScreen';
 import LoginScreen from './screens/Auth/LoginScreen';
 import OtpScreen from './screens/Auth/OtpScreen';
-import ForgotPasswordScreen from './screens/Auth/ForgotPassword';
 import EnterEmailScreen from './screens/Auth/EnterEmailScreen';
 import WelcomeScreen from './screens/WelcomeScreen';
-import MyActivityScreen from './screens/Profile/MyActivity';
 import ProfileScreen from './screens/Profile/ProfileScreen';
 import NotificationScreen from './screens/Notification/NotificationScreen';
+import ForgotPassword from './screens/Auth/FPEnterEmail';
 
 
 
@@ -65,7 +62,7 @@ const App = () => {
           <Stack.Screen name="Otp" component={OtpScreen} />
           <Stack.Screen name="SignUp" component={SignUpScreen} />
           <Stack.Screen name="BottomTabNavigator" component={BottomTabNavigator} />
-          <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
+          <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
           <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
           <Stack.Screen name="NotificationScreen" component={NotificationScreen} />
         </Stack.Navigator>
