@@ -127,9 +127,15 @@ const LoginScreen: React.FC = () => {
             <Ionicons name={showPassword ? 'eye-off' : 'eye'} size={22} color="#979797" />
           </TouchableOpacity>
         </View>
-         <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')} style={tw`mt-2`}>
-        <Text style={tw`text-blue-300 text-left`}>Forgot Password?</Text>
-      </TouchableOpacity>
+        <TouchableOpacity
+    onPress={() => {
+      console.log('Navigating to ForgotPassword');
+      navigation.navigate('ForgotPassword');
+    }}
+    style={tw`mt-2`}
+  >
+    <Text style={tw`text-blue-300 text-left`}>Forgot Password?</Text>
+  </TouchableOpacity>
 
         <TouchableOpacity onPress={handleLogin} style={styles.loginButton}>
           <LinearGradient
