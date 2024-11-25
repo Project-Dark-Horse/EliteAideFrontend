@@ -10,7 +10,7 @@ interface PinnedTasksCardProps {
   id:number;
   title: string;
   description: string;
-  day: string; 
+  day?: string;
   time: string;
   iconName: string;
   backgroundColor: string;
