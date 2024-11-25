@@ -126,7 +126,13 @@ const SignUpScreen = () => {
 
       if (response.ok) {
         Alert.alert('Success', 'Account created successfully!', [
-          { text: 'OK', onPress: () => navigation.navigate('Login') },
+          { 
+            text: 'OK', 
+            onPress: () => navigation.reset({
+              index: 0,
+              routes: [{ name: 'Login' }],
+            })
+          },
         ]);
       } else {
         Alert.alert('Error', result.message || 'Something went wrong. Please try again.');
