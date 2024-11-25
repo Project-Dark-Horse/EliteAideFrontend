@@ -202,7 +202,10 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({ isVisible, onClose })
                 onPress={showDatePicker}
               >
                 <Icon name="calendar" size={20} color="#FFB946" />
-                <Text style={styles.dateTimeText}>
+                <Text style={[
+                  styles.dateTimeText,
+                  !dueDate && styles.placeholderText
+                ]}>
                   {dueDate || 'Select Date'}
                 </Text>
               </TouchableOpacity>
@@ -212,7 +215,10 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({ isVisible, onClose })
                 onPress={showTimePickerModal}
               >
                 <Icon name="clock-o" size={20} color="#6BCB77" />
-                <Text style={styles.dateTimeText}>
+                <Text style={[
+                  styles.dateTimeText,
+                  !time && styles.placeholderText
+                ]}>
                   {time || 'Select Time'}
                 </Text>
               </TouchableOpacity>
@@ -325,7 +331,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: '#FFFFFF',
-    marginBottom: 3,
+    marginBottom: 8,
+    marginTop: 4,
+    fontFamily: 'System',
   },
   taskDetails: {
     marginTop: 20,
@@ -365,6 +373,7 @@ const styles = StyleSheet.create({
   categoryText: {
     color: '#FFFFFF',
     marginLeft: 8,
+    fontSize: 10,
   },
   priorityContainer: {
     marginBottom: 10,
@@ -460,6 +469,7 @@ const styles = StyleSheet.create({
   },
   dateTimeRow: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
     gap: 10,
     marginBottom: 15,
@@ -468,17 +478,22 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#2A2A2A',
+    backgroundColor: '#1D1E23',
     borderRadius: 8,
     padding: 12,
-    gap: 8,
     borderWidth: 1,
     borderColor: '#3272A0',
+    height: 48,
   },
   dateTimeText: {
     color: '#FFFFFF',
     fontSize: 14,
+    marginLeft: 10,
+    fontFamily: 'System',
     flex: 1,
+  },
+  placeholderText: {
+    color: '#6F6F6F',
   },
   buttonWrapper: {
     borderRadius: 25,
@@ -509,11 +524,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#3272A0',
     
-  },
-  categoryText: {
-    color: '#FFFFFF',
-    marginLeft: 8,
-    fontSize: 10,
   },
 });
 
