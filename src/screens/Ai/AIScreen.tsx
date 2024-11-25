@@ -20,6 +20,7 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import Voice from '@react-native-voice/voice';
 import { useTaskRefresh } from '../../context/TaskRefreshContext';
+import SearchBar from '../../components/SearchBar';
 
 interface Message {
   id: string;
@@ -104,6 +105,13 @@ const ChatScreen = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showInput, setShowInput] = useState(true);
   const { setShouldRefresh } = useTaskRefresh();
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const filteredMessages = searchQuery
+    ? messages.filter(msg => 
+        msg.text.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : messages;
 
   const handleResponse = (response: ApiResponse) => {
     if (response.error) {
@@ -549,6 +557,10 @@ const ChatScreen = () => {
     }
   };
 
+  const handleClearSearch = () => {
+    setSearchQuery('');
+  };
+
   return (
     <View style={tw`flex-1 bg-[#111111] pb-7`}>
       <View style={tw`flex-row items-center justify-between p-4 bg-[#111111]`}>
@@ -566,13 +578,20 @@ const ChatScreen = () => {
         </View>
       </View>
 
+      <SearchBar
+        value={searchQuery}
+        onChangeText={setSearchQuery}
+        onClear={handleClearSearch}
+        placeholder="Search conversations..."
+      />
+
       <KeyboardAvoidingView
         behavior={Platform.OS === 'android' ? 'padding' : 'height'}
         keyboardVerticalOffset={80}
         style={tw`flex-1 pb-12`}
       >
         <FlatList
-          data={messages}
+          data={filteredMessages}
           renderItem={renderItem}
           keyExtractor={(item) => item.id}
           inverted

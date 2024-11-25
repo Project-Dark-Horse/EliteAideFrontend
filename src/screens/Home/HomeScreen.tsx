@@ -16,6 +16,8 @@ import TodoImage from '../../assets/todo.png';
 import ProgressImage from '../../assets/progress.png';
 import DoneImage from '../../assets/done.png';
 import BotImage from '../../assets/bot.png';
+import SearchBar from '../../components/SearchBar';
+import { searchItems } from '../../utils/searchUtils';
 
 interface TaskStatistics {
   total: number;
@@ -36,6 +38,7 @@ const Home: React.FC = () => {
     pending: 0,
     completed: 0,
   });
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const fetchTaskStats = async () => {
@@ -123,11 +126,25 @@ const Home: React.FC = () => {
     );
   };
 
+  const filteredTasks = searchQuery
+    ? searchItems(tasks, searchQuery)
+    : tasks;
+
+  const handleClearSearch = () => {
+    setSearchQuery('');
+  };
+
   return (
     <View style={tw`flex-1 bg-[#111111] p-4 px-2`}>
       <TopNavBar navigation={undefined} />
       <ProgressClock />
       <CustomMessageComponent />
+
+      <SearchBar
+        value={searchQuery}
+        onChangeText={setSearchQuery}
+        onClear={handleClearSearch}
+      />
 
       {/* Task category tiles */}
       <View style={tw`flex-row justify-between mt-2`}>
@@ -153,10 +170,10 @@ const Home: React.FC = () => {
 
       {/* Wrap UpcomingTasksComponent in TouchableOpacity */}
       <TouchableOpacity onPress={handleShowGreeting}>
-        <UpcomingTasksComponent />
+        <UpcomingTasksComponent tasks={filteredTasks} />
       </TouchableOpacity>
       
-      <PinnedTasks />
+      <PinnedTasks tasks={filteredTasks} />
 
       {/* Progress Overlay */}
       <Modal
