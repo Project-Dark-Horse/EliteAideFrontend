@@ -9,6 +9,8 @@ import axios from 'axios';
 import { BASE_URL } from '@env';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { useTaskRefresh } from '../../context/TaskRefreshContext';
+import { useFocusEffect } from '@react-navigation/native';
 
 interface Task {
   id: number;
@@ -79,6 +81,7 @@ const PinnedTasks: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(false);
+  const { shouldRefresh, setShouldRefresh } = useTaskRefresh();
 
   const fetchTasks = async () => {
     setLoading(true);
@@ -140,6 +143,15 @@ const PinnedTasks: React.FC = () => {
   useEffect(() => {
     fetchTasks();
   }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      if (shouldRefresh) {
+        fetchTasks();
+        setShouldRefresh(false);
+      }
+    }, [shouldRefresh])
+  );
 
   return (
     <Surface style={tw`p-4 bg-[#111111] flex-1`}>

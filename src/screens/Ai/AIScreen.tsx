@@ -19,6 +19,7 @@ import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import Voice from '@react-native-voice/voice';
+import { useTaskRefresh } from '../../context/TaskRefreshContext';
 
 interface Message {
   id: string;
@@ -102,6 +103,7 @@ const ChatScreen = () => {
   const [isListening, setIsListening] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [showInput, setShowInput] = useState(true);
+  const { setShouldRefresh } = useTaskRefresh();
 
   const handleResponse = (response: ApiResponse) => {
     if (response.error) {
@@ -229,6 +231,7 @@ const ChatScreen = () => {
         ]);
 
         setQuickReplies(['CREATE ANOTHER TASK', 'SHOW MY TASKS']);
+        setShouldRefresh(true);
 
       } catch (error) {
         let errorMessage = "Sorry, something went wrong. Please try again.";
