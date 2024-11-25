@@ -10,6 +10,8 @@ import axios from 'axios';
 import { BASE_URL } from '@env';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { useTaskRefresh } from '../../context/TaskRefreshContext';
+import { useFocusEffect } from '@react-navigation/native';
 
 interface Task {
   id: number;
@@ -82,6 +84,7 @@ const UpcomingTasksComponent: React.FC = () => {
     // Default tasks removed
   ]);
   const [loading, setLoading] = useState(false);
+  const { shouldRefresh, setShouldRefresh } = useTaskRefresh();
 
   const fetchTasks = async () => {
     setLoading(true);
@@ -148,6 +151,15 @@ const UpcomingTasksComponent: React.FC = () => {
   useEffect(() => {
     fetchTasks();
   }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      if (shouldRefresh) {
+        fetchTasks();
+        setShouldRefresh(false);
+      }
+    }, [shouldRefresh])
+  );
 
   return (
     <Surface style={tw`p-4 bg-[#111111]`}>
