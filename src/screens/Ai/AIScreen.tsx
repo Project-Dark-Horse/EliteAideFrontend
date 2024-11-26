@@ -562,84 +562,91 @@ const ChatScreen = () => {
   };
 
   return (
-    <View style={tw`flex-1 bg-[#111111] pb-7`}>
-      <View style={tw`flex-row items-center justify-between p-4 bg-[#111111]`}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={tw`p-2`}>
-          <Icon name="chevron-back" size={24} color="#FFFFFF" />
-        </TouchableOpacity>
-        <Text style={tw`text-white text-lg font-bold`}>AI Chat</Text>
-        <View style={tw`flex-row`}>
-          <TouchableOpacity onPress={() => console.log('Search pressed')} style={tw`p-2`}>
-            <Icon name="search" size={24} color="#FFFFFF" />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate('NotificationScreen')} style={tw`p-2`}>
-            <Icon name="notifications" size={24} color="#FFFFFF" />
-          </TouchableOpacity>
-        </View>
-      </View>
+<View style={tw`flex-1 bg-[#111111] pb-7`}>
+  {/* Navigation Header */}
+  <View style={tw`flex-row items-center justify-between p-4 bg-[#111111]`}>
+    {/* Back Button */}
+    <TouchableOpacity onPress={() => navigation.goBack()} style={tw`p-2`}>
+      <Icon name="chevron-back" size={24} color="#FFFFFF" />
+    </TouchableOpacity>
 
-      <SearchBar
+    {/* Search Bar */}
+    <View style={tw`flex-1 mx-2`}>
+      <TextInput
+        style={[
+          tw`px-4 py-2 rounded-full bg-[#1D1E23] text-white`,
+          { fontSize: 13 }
+        ]}
         value={searchQuery}
         onChangeText={setSearchQuery}
-        onClear={handleClearSearch}
         placeholder="Search conversations..."
+        placeholderTextColor="#4B4B4B"
       />
-
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'android' ? 'padding' : 'height'}
-        keyboardVerticalOffset={80}
-        style={tw`flex-1 pb-12`}
-      >
-        <FlatList
-          data={filteredMessages}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id}
-          inverted
-          contentContainerStyle={tw`px-4 pt-4`}
-          ListFooterComponent={<View style={tw`h-4`} />}
-          ListHeaderComponent={<View style={tw`h-4`} />}
-          showsVerticalScrollIndicator={false}
-          bounces={false}
-        />
-
-        <View style={tw`flex-row items-center p-4 bg-[#111111] mb-12`}>
-          <TextInput
-            style={[
-              tw`flex-1 px-4 py-2 rounded-full bg-[#1D1E23] text-white`,
-              { fontSize: 13 }
-            ]}
-            value={input}
-            onChangeText={handleInputChange}
-            placeholder="Type a message..."
-            placeholderTextColor="#4B4B4B"
-            multiline
-            numberOfLines={2}
-            maxLength={1000}
-          />
-          
-          <TouchableOpacity
-            activeOpacity={0.7}
-            style={tw`bg-[#3272A0] p-2 rounded-full ml-2`}
-            onPress={input.trim() ? sendMessage : startListening}
-            disabled={isLoading}
-          >
-            <Icon 
-              name={
-                isLoading 
-                  ? "timer-outline" 
-                  : input.trim() 
-                    ? "send" 
-                    : isListening 
-                      ? "stop" 
-                      : "mic"
-              } 
-              size={20} 
-              color="#fff" 
-            />
-          </TouchableOpacity>
-        </View>
-      </KeyboardAvoidingView>
     </View>
+
+    {/* Notification Icon */}
+    <TouchableOpacity onPress={() => navigation.navigate('NotificationScreen')} style={tw`p-2`}>
+      <Icon name="notifications" size={24} color="#FFFFFF" />
+    </TouchableOpacity>
+  </View>
+
+  {/* Main Content */}
+  <KeyboardAvoidingView
+    behavior={Platform.OS === 'android' ? 'padding' : 'height'}
+    keyboardVerticalOffset={80}
+    style={tw`flex-1 pb-12`}
+  >
+    <FlatList
+      data={filteredMessages}
+      renderItem={renderItem}
+      keyExtractor={(item) => item.id}
+      inverted
+      contentContainerStyle={tw`px-4 pt-4`}
+      ListFooterComponent={<View style={tw`h-4`} />}
+      ListHeaderComponent={<View style={tw`h-4`} />}
+      showsVerticalScrollIndicator={false}
+      bounces={false}
+    />
+
+    {/* Message Input */}
+    <View style={tw`flex-row items-center p-4 bg-[#111111] mb-12`}>
+      <TextInput
+        style={[
+          tw`flex-1 px-4 py-2 rounded-full bg-[#1D1E23] text-white`,
+          { fontSize: 13 }
+        ]}
+        value={input}
+        onChangeText={handleInputChange}
+        placeholder="Type a message..."
+        placeholderTextColor="#4B4B4B"
+        multiline
+        numberOfLines={2}
+        maxLength={1000}
+      />
+      
+      <TouchableOpacity
+        activeOpacity={0.7}
+        style={tw`bg-[#3272A0] p-2 rounded-full ml-2`}
+        onPress={input.trim() ? sendMessage : startListening}
+        disabled={isLoading}
+      >
+        <Icon 
+          name={
+            isLoading 
+              ? "timer-outline" 
+              : input.trim() 
+                ? "send" 
+                : isListening 
+                  ? "stop" 
+                  : "mic"
+          } 
+          size={20} 
+          color="#fff" 
+        />
+      </TouchableOpacity>
+    </View>
+  </KeyboardAvoidingView>
+</View>
   );
 };
 
