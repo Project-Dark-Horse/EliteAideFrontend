@@ -16,10 +16,8 @@ import TodoImage from '../../assets/todo.png';
 import ProgressImage from '../../assets/progress.png';
 import DoneImage from '../../assets/done.png';
 import BotImage from '../../assets/bot.png';
-import SearchBar from '../../components/SearchBar';
-import { searchItems } from '../../utils/searchUtils';
 import { BaseTask, FormattedTask } from '../../types/task';
-import { getIconName, getBackgroundColor } from '../../utils/taskUtils';
+import { getIconName } from '../../utils/taskUtils';
 
 interface TaskStatistics {
   total: number;
@@ -38,7 +36,6 @@ const Home: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [isGreetingVisible, setIsGreetingVisible] = useState(false);
   const [showProgressOverlay, setShowProgressOverlay] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
   const [taskStats, setTaskStats] = useState<TaskStatistics>({
     total: 0,
     pending: 0,
@@ -51,7 +48,7 @@ const Home: React.FC = () => {
         const token = await AsyncStorage.getItem('access_token');
         const response = await fetch('https://api.eliteaide.tech/v1/tasks/user-tasks?page=1&items_per_page=100', {
           headers: {
-            'Authorization': `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
           },
         });
 
@@ -76,8 +73,8 @@ const Home: React.FC = () => {
     fetchTaskStats();
   }, []);
 
-  const progress = taskStats.total > 0 
-    ? Math.round((taskStats.completed / taskStats.total) * 100) 
+  const progress = taskStats.total > 0
+    ? Math.round((taskStats.completed / taskStats.total) * 100)
     : 0;
 
   const handleShowGreeting = () => {
@@ -97,8 +94,8 @@ const Home: React.FC = () => {
     const strokeDashoffset = circumference - (progress / 100) * circumference;
 
     return (
-      <View style={tw`absolute right-4 top-25`}>
-        <TouchableOpacity 
+      <View style={tw`absolute right-4 top-20`}>
+        <TouchableOpacity
           onPress={() => setShowProgressOverlay(true)}
           style={tw`relative`}
         >
@@ -133,17 +130,17 @@ const Home: React.FC = () => {
   };
 
   const formatTasks = (tasks: Task[]): FormattedTask[] => {
-    return tasks.map(task => {
+    return tasks.map((task) => {
       const dueDate = new Date(task.due_date);
       return {
         ...task,
-        time: dueDate.toLocaleTimeString([], { 
-          hour: 'numeric', 
+        time: dueDate.toLocaleTimeString([], {
+          hour: 'numeric',
           minute: '2-digit',
-          hour12: true 
+          hour12: true,
         }),
-        day: dueDate.toLocaleDateString('en-US', { 
-          weekday: 'long' 
+        day: dueDate.toLocaleDateString('en-US', {
+          weekday: 'long',
         }),
         backgroundColor: '#1E1E1E',
         iconName: getIconName(task.type),
@@ -151,53 +148,40 @@ const Home: React.FC = () => {
     });
   };
 
-  const filteredTasks = searchQuery
-    ? formatTasks(searchItems(tasks, searchQuery))
-    : formatTasks(tasks);
-
-  const handleClearSearch = () => {
-    setSearchQuery('');
-  };
+  const filteredTasks = formatTasks(tasks);
 
   return (
-    <View style={tw`flex-1 bg-[#111111] p-4 px-2`}>
+    <View style={tw`flex-1 bg-[#111111] p-4 px-2 pb-15`}>
       <TopNavBar navigation={undefined} />
       <ProgressClock />
       <CustomMessageComponent />
 
-      <SearchBar
-        value={searchQuery}
-        onChangeText={setSearchQuery}
-        onClear={handleClearSearch}
-      />
-
       {/* Task category tiles */}
       <View style={tw`flex-row justify-between mt-2`}>
-        <Tile 
+        <Tile
           title="To-do"
           onPress={() => navigation.navigate('ToDo')}
-          image={TodoImage} 
+          image={TodoImage}
           backgroundColor=""
         />
-        <Tile 
+        <Tile
           title="Progress"
           onPress={() => navigation.navigate('Progress')}
-          image={ProgressImage} 
+          image={ProgressImage}
           backgroundColor=""
         />
-        <Tile 
+        <Tile
           title="Done"
           onPress={() => navigation.navigate('Done')}
-          image={DoneImage} 
+          image={DoneImage}
           backgroundColor=""
         />
       </View>
 
-      {/* Wrap UpcomingTasksComponent in TouchableOpacity */}
       <TouchableOpacity onPress={handleShowGreeting}>
         <UpcomingTasksComponent tasks={filteredTasks} />
       </TouchableOpacity>
-      
+
       <PinnedTasks tasks={filteredTasks} />
 
       {/* Progress Overlay */}
@@ -207,7 +191,7 @@ const Home: React.FC = () => {
         animationType="fade"
         onRequestClose={() => setShowProgressOverlay(false)}
       >
-        <TouchableOpacity 
+        <TouchableOpacity
           style={tw`flex-1 bg-black/50 justify-center items-center`}
           activeOpacity={1}
           onPress={() => setShowProgressOverlay(false)}
@@ -236,14 +220,14 @@ const Home: React.FC = () => {
                   transform="rotate(-90 60 60)"
                 />
               </Svg>
-              
+
               <Text style={tw`text-white text-3xl font-bold mt-4`}>
                 {progress}%
               </Text>
               <Text style={tw`text-[#979797] text-lg mt-2`}>
                 Total Progress
               </Text>
-              
+
               <View style={tw`flex-row justify-between w-full mt-4`}>
                 <View style={tw`items-center`}>
                   <Text style={tw`text-[#979797]`}>Total</Text>
@@ -262,17 +246,16 @@ const Home: React.FC = () => {
 
             <View style={tw`mt-6 border-t border-[#384766] pt-4`}>
               <Text style={tw`text-[#F8F8F8] text-sm text-center`}>
-                {progress < 30 ? 'Just getting started! Keep going!' :
-                 progress < 70 ? 'Great progress! You\'re on track!' :
-                 'Almost there! Finish strong!'}
+                {progress < 30
+                  ? 'Just getting started! Keep going!'
+                  : progress < 70
+                  ? "Great progress! You're on track!"
+                  : 'Almost there! Finish strong!'}
               </Text>
             </View>
           </View>
         </TouchableOpacity>
       </Modal>
-
-      {/* Remove GreetingPopup component */}
-      {/* <GreetingPopup visible={isGreetingVisible} onClose={handleCloseGreeting} /> */}
     </View>
   );
 };
