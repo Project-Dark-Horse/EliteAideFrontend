@@ -61,4 +61,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CompletedTaskScreen;
+export default React.memo(CompletedTaskScreen);

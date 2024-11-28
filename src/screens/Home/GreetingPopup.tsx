@@ -45,7 +45,7 @@ const GreetingPopup: React.FC<GreetingPopupProps> = ({ visible, onClose }) => {
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
               <UpcomingTasksCard
-                id={item.id}
+                id={Number(item.id)}
                 title={item.title}
                 description={item.description}
                 time={item.time}
@@ -378,4 +378,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default GreetingPopup;
+export default React.memo(GreetingPopup);

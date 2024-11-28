@@ -650,4 +650,4 @@ const ChatScreen = () => {
   );
 };
 
-export default ChatScreen;
+export default React.memo(ChatScreen);

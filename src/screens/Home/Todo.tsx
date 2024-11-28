@@ -61,4 +61,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ToDoScreen;
+export default React.memo(ToDoScreen);

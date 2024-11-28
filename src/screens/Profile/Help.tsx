@@ -67,4 +67,4 @@ const HelpScreen: React.FC = () => {
   );
 };
 
-export default HelpScreen;
+export default React.memo(HelpScreen);

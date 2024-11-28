@@ -136,4 +136,4 @@ const FPNewPassword: React.FC = () => {
   );
 };
 
-export default FPNewPassword;
+export default React.memo(FPNewPassword);

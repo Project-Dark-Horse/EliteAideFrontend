@@ -392,4 +392,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ProfileScreen;
+export default React.memo(ProfileScreen);

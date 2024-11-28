@@ -93,4 +93,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PrivacyAndSecurityScreen;
+export default React.memo(PrivacyAndSecurityScreen);
