@@ -147,7 +147,7 @@ const FPEnterEmail: React.FC = () => {
 
         {/* Continue button */}
         <LinearGradient
-          colors={['#33232', '#1D1E23']}
+          colors={['#4956C7', '#1D1E23']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 0 }}
           style={tw`rounded-xl overflow-hidden mb-6`}

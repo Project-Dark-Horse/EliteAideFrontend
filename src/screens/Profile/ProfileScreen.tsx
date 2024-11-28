@@ -109,13 +109,14 @@ const ProfileScreen = () => {
     try {
       const refreshToken = await AsyncStorage.getItem('refresh_token');
       const accessToken = await AsyncStorage.getItem('access_token');
-
+  
       if (!refreshToken || !accessToken) {
         console.error('No refresh or access token found');
         return;
       }
-
-      const response = await axios.post(`${BASE_URL}v1/users/logout/`, 
+  
+      const response = await axios.post(
+        `${BASE_URL}v1/users/logout/`,
         { refresh_token: refreshToken },
         {
           headers: {
@@ -124,10 +125,7 @@ const ProfileScreen = () => {
           },
         }
       );
-
-      console.log('Logout Response Status:', response.status);
-      console.log('Logout Response Data:', response.data);
-
+  
       if (response.status === 200) {
         await AsyncStorage.removeItem('access_token');
         await AsyncStorage.removeItem('refresh_token');
@@ -140,7 +138,17 @@ const ProfileScreen = () => {
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        console.error('Logout error:', error.response?.data || error.message);
+        if (error.response?.data?.error === 'Token is blacklisted') {
+          console.warn('Token is blacklisted. Clearing local tokens.');
+          await AsyncStorage.removeItem('access_token');
+          await AsyncStorage.removeItem('refresh_token');
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'Login' as never }],
+          });
+        } else {
+          console.error('Logout error:', error.response?.data || error.message);
+        }
       } else {
         console.error('Unexpected error:', error);
       }

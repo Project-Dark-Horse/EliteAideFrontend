@@ -13,7 +13,7 @@ import EnterEmailScreen from './screens/Auth/EnterEmailScreen';
 import WelcomeScreen from './screens/WelcomeScreen';
 import ProfileScreen from './screens/Profile/ProfileScreen';
 import NotificationScreen from './screens/Notification/NotificationScreen';
-import ForgotPassword from './screens/Auth/FPEnterEmail';
+import FPEnterEmail from './screens/Auth/FPEnterEmail';
 
 
 
@@ -62,7 +62,7 @@ const App = () => {
           <Stack.Screen name="Otp" component={OtpScreen} />
           <Stack.Screen name="SignUp" component={SignUpScreen} />
           <Stack.Screen name="BottomTabNavigator" component={BottomTabNavigator} />
-          <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
+          <Stack.Screen name="FPEnterEmail" component={FPEnterEmail} />
           <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
           <Stack.Screen name="NotificationScreen" component={NotificationScreen} />
         </Stack.Navigator>

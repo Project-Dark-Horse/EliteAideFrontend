@@ -23,8 +23,9 @@ import LogoImage from '../../assets/vector.png';
 // Define your navigation stack type
 type AuthStackParamList = {
   BottomTabNavigator: undefined;
-  ForgotPassword: undefined;
+  FPEnterEmail: undefined;
   EnterEmail: undefined;
+  LoginScreen: undefined;
 };
 
 const LoginScreen: React.FC = () => {
@@ -39,11 +40,11 @@ const LoginScreen: React.FC = () => {
       Alert.alert('Error', 'Email and Password cannot be blank.');
       return;
     }
-
+  
     setLoading(true);
     try {
       console.log(`Requesting login at: ${BASE_URL}v1/users/login/`);
-
+  
       const response = await fetch(`${BASE_URL}v1/users/login/`, {
         method: 'POST',
         headers: {
@@ -51,17 +52,23 @@ const LoginScreen: React.FC = () => {
         },
         body: JSON.stringify({ email_or_username: email, password }),
       });
-
+  
       const data = await response.json();
       console.log('Response data:', data);
-
+  
       if (response.ok && data.message?.access) {
         const { access, refresh } = data.message;
-
+  
         await AsyncStorage.setItem('access_token', access);
         await AsyncStorage.setItem('refresh_token', refresh);
-
+  
         navigation.reset({ index: 0, routes: [{ name: 'BottomTabNavigator' }] });
+      } else if (data.message === 'Token is blacklisted') {
+        console.warn('Token is blacklisted. Clearing local tokens.');
+        await AsyncStorage.removeItem('access_token');
+        await AsyncStorage.removeItem('refresh_token');
+        Alert.alert('Session Expired', 'Please log in again.');
+        navigation.reset({ index: 0, routes: [{ name: 'LoginScreen' }] });
       } else {
         Alert.alert('Login Failed', data.message || 'Unknown error');
       }
@@ -130,7 +137,7 @@ const LoginScreen: React.FC = () => {
         <TouchableOpacity
     onPress={() => {
       console.log('Navigating to ForgotPassword');
-      navigation.navigate('ForgotPassword');
+      navigation.navigate('FPEnterEmail');
     }}
     style={tw`mt-2`}
   >
