@@ -527,4 +527,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CreateTaskModal;
+export default React.memo(CreateTaskModal);

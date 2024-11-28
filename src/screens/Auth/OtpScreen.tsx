@@ -266,4 +266,4 @@ const Otp: React.FC<Props> = ({ route, navigation }) => {
   );
 };
 
-export default Otp;
+export default React.memo(Otp);

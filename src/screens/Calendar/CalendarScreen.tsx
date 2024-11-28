@@ -156,4 +156,4 @@ const CalendarScreen = () => {
   );
 };
 
-export default CalendarScreen;
+export default React.memo(CalendarScreen);

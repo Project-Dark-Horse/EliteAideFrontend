@@ -11,10 +11,15 @@ const NotificationScreen: React.FC = () => {
   return (
     <View style={tw`flex-1`}>
       <RadialGradient
-        style={tw`absolute inset-0`}
-        colors={['#4956C7', '#111111', '#111111']}
-        center={[330, 99]}
-        radius={350}
+        colorList={[
+          { offset: '0%', color: '#4956C7', opacity: '1' },
+          { offset: '50%', color: '#111111', opacity: '1' },
+          { offset: '100%', color: '#111111', opacity: '1' },
+        ]}
+        x="50%"
+        y="50%"
+        rx="50%"
+        ry="50%"
       />
       <View style={tw`absolute inset-1 bg-[#000000] opacity-70`} />
 
@@ -30,4 +35,4 @@ const NotificationScreen: React.FC = () => {
   );
 };
 
-export default NotificationScreen;
+export default React.memo(NotificationScreen);

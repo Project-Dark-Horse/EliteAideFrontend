@@ -304,4 +304,4 @@ const styles = StyleSheet.create({
   ...additionalStyles,
 });
 
-export default EditProfile;
+export default React.memo(EditProfile);

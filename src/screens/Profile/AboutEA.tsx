@@ -154,4 +154,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AboutEliteAide;
+export default React.memo(AboutEliteAide);

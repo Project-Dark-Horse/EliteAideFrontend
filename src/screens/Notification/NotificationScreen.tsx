@@ -376,4 +376,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default NotificationScreen;
+export default React.memo(NotificationScreen);

@@ -109,4 +109,4 @@ const TaskSettingsScreen: React.FC = () => {
   );
 };
 
-export default TaskSettingsScreen;
+export default React.memo(TaskSettingsScreen);

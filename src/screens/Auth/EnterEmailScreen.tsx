@@ -299,4 +299,4 @@ const EnterEmail: React.FC = () => {
   );
 };
 
-export default EnterEmail;
+export default React.memo(EnterEmail);

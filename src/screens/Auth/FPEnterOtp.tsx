@@ -218,4 +218,4 @@ const FPEnterOtp: React.FC = () => {
   );
 };
 
-export default FPEnterOtp;
+export default React.memo(FPEnterOtp);

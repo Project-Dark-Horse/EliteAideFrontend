@@ -77,4 +77,4 @@ const SettingsScreen: React.FC = () => {
   );
 };
 
-export default SettingsScreen;
+export default React.memo(SettingsScreen);

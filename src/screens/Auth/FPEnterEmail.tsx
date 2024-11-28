@@ -193,4 +193,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default FPEnterEmail;
+export default React.memo(FPEnterEmail);

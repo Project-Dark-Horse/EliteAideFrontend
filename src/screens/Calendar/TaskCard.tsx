@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, FlatList } from 'react-native';
 import tw from 'twrnc';
+import TaskCard from '../../components/Profile/TaskCard';
 
 interface Task {
   id: number;
@@ -39,7 +40,14 @@ const DayScheduleScreen: React.FC = () => {
     fetchTasks();
   }, []);
 
-  const renderTask = ({ item }: { item: Task }) => <TaskCard task={item} />;
+  const renderTask = ({ item }: { item: Task }) => (
+    <TaskCard
+      task={item}
+      total={tasks.length}
+      pending={tasks.filter(task => task.status === 'pending').length}
+      done={tasks.filter(task => task.status === 'done').length}
+    />
+  );
 
   return (
     <View style={tw`flex-1`}>
@@ -52,4 +60,4 @@ const DayScheduleScreen: React.FC = () => {
   );
 };
 
-export default DayScheduleScreen;
+export default React.memo(DayScheduleScreen);

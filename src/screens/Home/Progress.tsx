@@ -528,4 +528,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TaskAnalysis;
+export default React.memo(TaskAnalysis);

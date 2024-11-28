@@ -1,71 +1,39 @@
-import React, { useState, useEffect } from 'react';
+import React, { Suspense, lazy } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import BottomTabNavigator from './navigation/BottomTabNavigator';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoadingScreen from './components/common/LoadingScreen';
-import { RootStackParamList } from './types/navigation';
-import SignUpScreen from './screens/Auth/SignUpScreen';
-import LoginScreen from './screens/Auth/LoginScreen';
-import OtpScreen from './screens/Auth/OtpScreen';
-import EnterEmailScreen from './screens/Auth/EnterEmailScreen';
-import WelcomeScreen from './screens/WelcomeScreen';
-import ProfileScreen from './screens/Profile/ProfileScreen';
-import NotificationScreen from './screens/Notification/NotificationScreen';
-import FPEnterEmail from './screens/Auth/FPEnterEmail';
 
+// Lazy load screens
+const BottomTabNavigator = lazy(() => import('./navigation/BottomTabNavigator'));
+const SignUpScreen = lazy(() => import('./screens/Auth/SignUpScreen'));
+const LoginScreen = lazy(() => import('./screens/Auth/LoginScreen'));
+const OtpScreen = lazy(() => import('./screens/Auth/OtpScreen'));
+const EnterEmailScreen = lazy(() => import('./screens/Auth/EnterEmailScreen'));
+const WelcomeScreen = lazy(() => import('./screens/WelcomeScreen'));
+const ProfileScreen = lazy(() => import('./screens/Profile/ProfileScreen'));
+const NotificationScreen = lazy(() => import('./screens/Notification/NotificationScreen'));
+const FPEnterEmail = lazy(() => import('./screens/Auth/FPEnterEmail'));
 
-
-const Stack = createStackNavigator<RootStackParamList>();
+const Stack = createStackNavigator();
 
 const App = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isFirstLaunch, setIsFirstLaunch] = useState(true);
-
-  const checkAuthStatus = async () => {
-    try {
-      const hasLaunched = await AsyncStorage.getItem('hasLaunched');
-      const token = await AsyncStorage.getItem('accessToken');
-      
-      // Important: Set these states in the correct order
-      setIsFirstLaunch(hasLaunched === null); // Will be true if hasLaunched is null
-      setIsAuthenticated(!!token);
-
-      // Don't set hasLaunched here - move it to WelcomeScreen completion
-    } catch (error) {
-      console.error('Auth check failed:', error);
-    } finally {
-      // Introduce a delay before setting isLoading to false
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 1000); // 2000 milliseconds = 2 seconds
-    }
-  };
-
-  useEffect(() => {
-    checkAuthStatus();
-  }, []);
-
-  if (isLoading) {
-    return <LoadingScreen />;
-  }
-
   return (
     <SafeAreaProvider>
       <NavigationContainer>
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />
-          <Stack.Screen name="Login" component={LoginScreen} />
-          <Stack.Screen name="EnterEmail" component={EnterEmailScreen} />
-          <Stack.Screen name="Otp" component={OtpScreen} />
-          <Stack.Screen name="SignUp" component={SignUpScreen} />
-          <Stack.Screen name="BottomTabNavigator" component={BottomTabNavigator} />
-          <Stack.Screen name="FPEnterEmail" component={FPEnterEmail} />
-          <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
-          <Stack.Screen name="NotificationScreen" component={NotificationScreen} />
-        </Stack.Navigator>
+        <Suspense fallback={<LoadingScreen />}>
+          <Stack.Navigator screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />
+            <Stack.Screen name="Login" component={LoginScreen} />
+            <Stack.Screen name="EnterEmail" component={EnterEmailScreen} />
+            <Stack.Screen name="Otp" component={OtpScreen} />
+            <Stack.Screen name="SignUp" component={SignUpScreen} />
+            <Stack.Screen name="BottomTabNavigator" component={BottomTabNavigator} />
+            <Stack.Screen name="FPEnterEmail" component={FPEnterEmail} />
+            <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
+            <Stack.Screen name="NotificationScreen" component={NotificationScreen} />
+          </Stack.Navigator>
+        </Suspense>
       </NavigationContainer>
     </SafeAreaProvider>
   );

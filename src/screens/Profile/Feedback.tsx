@@ -104,4 +104,4 @@ const FeedBackScreen: React.FC = () => {
 };
 
 
-export default FeedBackScreen;
+export default React.memo(FeedBackScreen);
