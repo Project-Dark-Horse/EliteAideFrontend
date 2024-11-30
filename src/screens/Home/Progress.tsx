@@ -1,10 +1,19 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import Svg, { G, Path, Circle } from 'react-native-svg';
+import Svg, { G, Path, Circle, Defs, Line } from 'react-native-svg';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Animated, { 
+  useAnimatedProps, 
+  withTiming, 
+  useSharedValue, 
+  withDelay 
+} from 'react-native-reanimated';
+import { BlurView } from '@react-native-community/blur';
+import { Text as SVGText } from 'react-native-svg';
+import { LinearGradient as SVGLinearGradient, Stop } from 'react-native-svg';
 
 interface Task {
   id: number;
@@ -27,6 +36,8 @@ interface TaskCardProps {
 }
 
 type NavigationProp = NativeStackNavigationProp<any>;
+
+const AnimatedPath = Animated.createAnimatedComponent(Path);
 
 const TaskAnalysis = () => {
   const navigation = useNavigation<NavigationProp>();
@@ -127,17 +138,20 @@ const TaskAnalysis = () => {
   const pieData = [
     { 
       value: tasks.filter((task) => task.status === 'Pending').length, 
-      color: '#4e54c8', 
+      color: '#FF6B6B',
+      gradient: ['#FF8B8B', '#FF4949'],
       key: 'pending' 
     },
     { 
       value: tasks.filter((task) => task.status === 'In Progress').length, 
-      color: '#48dbfb', 
+      color: '#4834D4',
+      gradient: ['#786CE9', '#3A24C2'],
       key: 'in progress' 
     },
     { 
       value: tasks.filter((task) => task.status === 'Completed').length, 
-      color: '#0abde3', 
+      color: '#20BF6B',
+      gradient: ['#3DFF98', '#2ECC71'],
       key: 'completed' 
     },
   ];
@@ -145,25 +159,147 @@ const TaskAnalysis = () => {
   const total = pieData.reduce((sum, data) => sum + data.value, 0);
 
   const CustomPieChart = () => {
-    let startAngle = 0;
+    const animation = useSharedValue(0);
+    let cumulativeAngle = 0;
+
+    React.useEffect(() => {
+      animation.value = withDelay(300, withTiming(1, { duration: 1500 }));
+    }, []);
+
+    const createPieSegment = (startAngle: number, sweepAngle: number) => {
+      'worklet';
+      const radius = 85;
+      const x = radius * Math.cos((startAngle * Math.PI) / 180);
+      const y = radius * Math.sin((startAngle * Math.PI) / 180);
+      const x2 = radius * Math.cos(((startAngle + sweepAngle) * Math.PI) / 180);
+      const y2 = radius * Math.sin(((startAngle + sweepAngle) * Math.PI) / 180);
+      const largeArcFlag = sweepAngle > 180 ? 1 : 0;
+
+      return `M 0 0 L ${x} ${y} A ${radius} ${radius} 0 ${largeArcFlag} 1 ${x2} ${y2} Z`;
+    };
+
     return (
-      <Svg height="150" width="150" viewBox="0 0 180 180">
-        <G transform="translate(90 90)">
-          {pieData.map((item, index) => {
-            const angle = total > 0 ? (item.value / total) * 360 : 0;
-            const largeArcFlag = angle > 180 ? 1 : 0;
-            const endAngle = startAngle + angle;
-            const x1 = Math.cos((startAngle * Math.PI) / 180) * 80;
-            const y1 = Math.sin((startAngle * Math.PI) / 180) * 80;
-            const x2 = Math.cos((endAngle * Math.PI) / 180) * 80;
-            const y2 = Math.sin((endAngle * Math.PI) / 180) * 80;
-            const path = `M ${x1} ${y1} A 80 80 0 ${largeArcFlag} 1 ${x2} ${y2} L 0 0`;
-            startAngle += angle;
-            return <Path key={index} d={path} fill={item.color} />;
-          })}
-          <Circle r="60" fill="#1e1e1e" />
-        </G>
-      </Svg>
+      <View style={styles.container}>
+        <View style={styles.chartContainerWrapper}>
+          <SVGLinearGradient
+            id="linear-gradient"
+            x1="0%"
+            y1="0%"
+            x2="100%"
+            y2="100%"
+          >
+            <Stop offset="0%" stopColor="#16213C" />
+            <Stop offset="53.57%" stopColor="#3272A0" />
+            <Stop offset="107.14%" stopColor="#1E4E8D" />
+          </SVGLinearGradient>
+          <View style={styles.chartContainerInner}>
+            <BlurView
+              style={styles.chartGlow}
+              blurType="dark"
+              blurAmount={10}
+            />
+            <Svg height={250} width={250}>
+              <Defs>
+                {pieData.map((item, index) => (
+                  <SVGLinearGradient
+                    key={`gradient-${index}`}
+                    id={`gradient-${index}`}
+                    x1="0%"
+                    y1="0%"
+                    x2="100%"
+                    y2="100%"
+                  >
+                    <Stop offset="0%" stopColor={item.gradient[0]} />
+                    <Stop offset="100%" stopColor={item.gradient[1]} />
+                  </SVGLinearGradient>
+                ))}
+              </Defs>
+              <G transform="translate(125, 125)">
+                {/* Outer glow circle */}
+                <Circle r="90" fill="#ffffff10" />
+                
+                {/* Background circle */}
+                <Circle r="85" fill="#000000" opacity={0.5} />
+                
+                {pieData.map((item, index) => {
+                  const sweepAngle = (item.value / total) * 360;
+                  const startAngle = cumulativeAngle - 90;
+                  cumulativeAngle += sweepAngle;
+
+                  const animatedProps = useAnimatedProps(() => ({
+                    d: createPieSegment(startAngle, sweepAngle * animation.value),
+                    fillOpacity: animation.value
+                  }));
+
+                  return (
+                    <React.Fragment key={index}>
+                      {/* Shadow layer */}
+                      <AnimatedPath
+                        animatedProps={animatedProps}
+                        fill="#00000060"
+                        transform="translate(2, 2)"
+                      />
+                      {/* Main segment */}
+                      <AnimatedPath
+                        animatedProps={animatedProps}
+                        fill={`url(#gradient-${index})`}
+                        stroke="#ffffff15"
+                        strokeWidth={1}
+                      />
+                    </React.Fragment>
+                  );
+                })}
+                
+                {/* Inner circles */}
+                <Circle r="60" fill="#000000" />
+                <Circle r="58" fill="#ffffff05" />
+                
+                {/* Center content */}
+                <SVGText
+                  x="0"
+                  y="0"
+                  fill="#ffffff"
+                  fontSize="24"
+                  textAnchor="middle"
+                  dy="10"
+                >
+                  {total}
+                </SVGText>
+                <SVGText
+                  x="0"
+                  y="25"
+                  fill="#ffffff80"
+                  fontSize="12"
+                  textAnchor="middle"
+                >
+                  Total Tasks
+                </SVGText>
+              </G>
+            </Svg>
+          </View>
+        </View>
+        
+        {/* Updated legend style */}
+        <View style={styles.legend}>
+          {pieData.map((item, index) => (
+            <View key={index} style={styles.legendItem}>
+              <SVGLinearGradient
+                id={`gradient-${index}`}
+                x1="0%"
+                y1="0%"
+                x2="100%"
+                y2="100%"
+              >
+                <Stop offset="0%" stopColor={item.gradient[0]} />
+                <Stop offset="100%" stopColor={item.gradient[1]} />
+              </SVGLinearGradient>
+              <Text style={styles.legendText}>
+                {item.key} ({item.value})
+              </Text>
+            </View>
+          ))}
+        </View>
+      </View>
     );
   };
 
@@ -293,19 +429,6 @@ const TaskAnalysis = () => {
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.chartContainer}>
           <CustomPieChart />
-          <View style={styles.chartCenter}>
-            <Text style={styles.chartCenterText}>{`${pieData[2].value}/${total}`}</Text>
-            <Text style={styles.chartCenterSubtext}>tasks completed</Text>
-          </View>
-        </View>
-
-        <View style={styles.legend}>
-          {pieData.map((item) => (
-            <View key={item.key} style={styles.legendItem}>
-              <View style={[styles.legendColor, { backgroundColor: item.color }]} />
-              <Text style={styles.legendText}>{`${item.key.charAt(0).toUpperCase() + item.key.slice(1)} ${item.value}`}</Text>
-            </View>
-          ))}
         </View>
 
         {renderStatistics()}
@@ -317,7 +440,7 @@ const TaskAnalysis = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#111111', // Dark background for modern aesthetic
+    backgroundColor: '#000000', // Pure black background
   },
   content: {
     paddingBottom: 90,
@@ -326,7 +449,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 16,
-    backgroundColor: '#111111', // Subtle dark header background
+    backgroundColor: '#000000', // Match container background
     elevation: 5,
     shadowColor: '#000',
     shadowOpacity: 0.3,
@@ -351,42 +474,72 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginVertical: 30,
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   },
   chartCenter: {
     position: 'absolute',
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: '#1a1a1a',
+    borderRadius: 60,
+    width: 120,
+    height: 120,
+    elevation: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+  },
+  chartCenterPercentage: {
+    color: '#3DFF98',
+    fontSize: 32,
+    fontWeight: 'bold',
+    marginBottom: 4,
   },
   chartCenterText: {
     color: '#ffffff',
-    fontSize: 28,
-    fontWeight: 'bold',
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 2,
   },
   chartCenterSubtext: {
-    color: '#b0b0b0', // Subtle text color for subtext
-    fontSize: 14,
-    marginTop: 4,
+    color: '#999999',
+    fontSize: 12,
   },
   legend: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginBottom: 24,
-    paddingHorizontal: 16,
+    justifyContent: 'center',
+    flexWrap: 'wrap',
+    marginTop: 20,
+    gap: 10,
   },
   legendItem: {
     flexDirection: 'row',
     alignItems: 'center',
+    backgroundColor: '#ffffff10',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 20,
+    marginHorizontal: 4,
+    marginVertical: 4,
+    borderWidth: 1,
+    borderColor: '#ffffff15',
   },
   legendColor: {
-    width: 16,
-    height: 16,
-    borderRadius: 8,
+    width: 12,
+    height: 12,
+    borderRadius: 6,
     marginRight: 8,
   },
   legendText: {
     color: '#ffffff',
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '500',
+    textTransform: 'capitalize',
   },
   taskCard: {
     padding: 16,
@@ -445,7 +598,7 @@ const styles = StyleSheet.create({
   },
   statisticsContainer: {
     padding: 16,
-    backgroundColor: '#2a2a2a',
+    backgroundColor: '#1a1a1a', // Slightly lighter than black for contrast
     borderRadius: 12,
     margin: 16,
   },
@@ -463,7 +616,7 @@ const styles = StyleSheet.create({
   },
   statItem: {
     width: '48%',
-    backgroundColor: '#363636',
+    backgroundColor: '#111111', // Very dark gray for cards
     padding: 16,
     borderRadius: 8,
     marginBottom: 12,
@@ -508,7 +661,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   overdueBox: {
-    backgroundColor: '#363636',
+    backgroundColor: '#111111', // Very dark gray for consistency
     padding: 16,
     borderRadius: 8,
     alignItems: 'center',
@@ -525,6 +678,36 @@ const styles = StyleSheet.create({
   },
   overdueContainer: {
     marginTop: 16,
+  },
+  chartWrapper: {
+    position: 'relative',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: 30,
+    padding: 20,
+  },
+  chartGlow: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    borderRadius: 15,
+  },
+  chartContainerWrapper: {
+    borderWidth: 1,
+    borderColor: '#3272A0',
+    borderRadius: 16,
+    padding: 15,
+    backgroundColor: '#000000',
+    shadowColor: '#3272A0',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+    elevation: 5,
+  },
+  chartContainerInner: {
+    borderRadius: 15,
+    overflow: 'hidden',
+    backgroundColor: '#00000090',
   },
 });
 

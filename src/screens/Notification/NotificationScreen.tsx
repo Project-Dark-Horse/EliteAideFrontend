@@ -19,6 +19,8 @@ import { format } from 'date-fns';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import BottomTabNavigator from '../../navigation/BottomTabNavigator';
 import BottomBarStack from '../../navigation/BottomBarStack';
+import { Swipeable } from 'react-native-gesture-handler';
+import { groupBy } from 'lodash';
 // Add logging utility
 const log = (message: string, data?: any) => {
   console.log(`[NotificationScreen] ${message}`, data || '');
@@ -32,6 +34,7 @@ interface Notification {
   notification_status: 'pending' | 'read' | 'deleted';
   notification_message: string;
   created_at: string;
+  isUnread?: boolean;
 }
 
 interface ApiError {
@@ -51,6 +54,14 @@ const formatDate = (dateString: string) => {
   const formattedDate = format(date, "do MMM yyyy 'at' h a");
   console.log('Formatted date:', formattedDate);
   return formattedDate;
+};
+
+// Add new helper function
+const groupNotificationsByDate = (notifications: Notification[]) => {
+  return groupBy(notifications, (notification) => {
+    const date = new Date(notification.created_at);
+    return format(date, 'yyyy-MM-dd');
+  });
 };
 
 const NotificationScreen: React.FC = () => {
@@ -262,33 +273,53 @@ const NotificationScreen: React.FC = () => {
     }
   };
 
-  const renderNotification = ({ item }: { item: Notification }) => (
-    <TouchableOpacity onPress={() => markAsRead(item.id)}>
-      <Card style={styles.card}>
-        <Card.Content style={styles.cardContent}>
-          <Icon 
-            name={getNotificationIcon(item.notification_type)} 
-            size={24} 
-            color={getNotificationColor(item.notification_type)} 
-            style={styles.icon}
-          />
-          <View style={styles.textContainer}>
-            <Text style={styles.title}>
-              {item.notification_message}
-            </Text>
-            <Text style={styles.date}>
-              {formatDate(item.created_at)}
-            </Text>
-          </View>
-        </Card.Content>
-      </Card>
-    </TouchableOpacity>
-  );
+  // Add new renderSwipeableNotification function
+  const renderSwipeableNotification = ({ item }: { item: Notification }) => {
+    const renderRightActions = () => (
+      <TouchableOpacity
+        style={styles.deleteAction}
+        onPress={() => handleDelete(item.id)}
+      >
+        <Icon name="delete" size={24} color="#fff" />
+      </TouchableOpacity>
+    );
 
+    return (
+      <Swipeable renderRightActions={renderRightActions}>
+        <TouchableOpacity onPress={() => markAsRead(item.id)}>
+          <Card style={[styles.card, item.isUnread && styles.unreadCard]}>
+            <Card.Content style={styles.cardContent}>
+              <View style={styles.iconContainer}>
+                <Icon 
+                  name={getNotificationIcon(item.notification_type)} 
+                  size={24} 
+                  color={getNotificationColor(item.notification_type)} 
+                />
+                {item.isUnread && <View style={styles.unreadDot} />}
+              </View>
+              <View style={styles.textContainer}>
+                <Text style={[styles.title, item.isUnread && styles.unreadText]}>
+                  {item.notification_message}
+                </Text>
+                <Text style={styles.date}>
+                  {formatDate(item.created_at)}
+                </Text>
+              </View>
+            </Card.Content>
+          </Card>
+        </TouchableOpacity>
+      </Swipeable>
+    );
+  };
+
+  // Replace existing renderEmpty with enhanced version
   const renderEmpty = () => (
     <View style={styles.emptyContainer}>
-      <Icon name="notifications-off-outline" size={48} color="#3272A0" />
-      <Text style={styles.emptyText}>No notifications</Text>
+      <Icon name="notifications-off" size={80} color="#3272A0" />
+      <Text style={styles.emptyTitle}>No Notifications Yet</Text>
+      <Text style={styles.emptySubtitle}>
+        We'll notify you when something important happens
+      </Text>
     </View>
   );
 
@@ -300,15 +331,25 @@ const NotificationScreen: React.FC = () => {
         showNotificationIcon={false} 
       />
       {loading && !refreshing ? (
-        <ActivityIndicator style={styles.loader} color="#3272A0" />
+        <View style={styles.skeletonContainer}>
+          {[1, 2, 3].map((key) => (
+            <View key={key} style={styles.skeletonCard}>
+              <View style={styles.skeletonIcon} />
+              <View style={styles.skeletonContent}>
+                <View style={styles.skeletonTitle} />
+                <View style={styles.skeletonDate} />
+              </View>
+            </View>
+          ))}
+        </View>
       ) : (
         <FlatList
           data={notifications}
-          renderItem={renderNotification}
+          renderItem={renderSwipeableNotification}
           keyExtractor={item => item.id.toString()}
           style={styles.list}
           contentContainerStyle={
-            notifications.length === 0 ? styles.emptyList : undefined
+            notifications.length === 0 ? styles.emptyList : styles.listContent
           }
           refreshing={refreshing}
           onRefresh={handleRefresh}
@@ -373,6 +414,81 @@ const styles = StyleSheet.create({
     color: '#AAAAAA',
     fontSize: 14,
     marginTop: 4,
+  },
+  unreadCard: {
+    borderLeftWidth: 3,
+    borderLeftColor: '#3272A0',
+  },
+  unreadText: {
+    fontWeight: '600',
+  },
+  unreadDot: {
+    position: 'absolute',
+    top: -2,
+    right: -2,
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#3272A0',
+  },
+  iconContainer: {
+    position: 'relative',
+    marginRight: 12,
+  },
+  deleteAction: {
+    backgroundColor: '#FF3B30',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 80,
+    height: '100%',
+  },
+  emptyTitle: {
+    color: '#FFFFFF',
+    fontSize: 20,
+    fontWeight: '600',
+    marginTop: 16,
+  },
+  emptySubtitle: {
+    color: '#666666',
+    fontSize: 16,
+    textAlign: 'center',
+    marginTop: 8,
+    paddingHorizontal: 32,
+  },
+  skeletonContainer: {
+    padding: 16,
+  },
+  skeletonCard: {
+    flexDirection: 'row',
+    backgroundColor: '#1C1C1E',
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 8,
+  },
+  skeletonIcon: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: '#333333',
+    marginRight: 12,
+  },
+  skeletonContent: {
+    flex: 1,
+  },
+  skeletonTitle: {
+    height: 16,
+    backgroundColor: '#333333',
+    borderRadius: 8,
+    marginBottom: 8,
+  },
+  skeletonDate: {
+    height: 12,
+    backgroundColor: '#333333',
+    borderRadius: 6,
+    width: '40%',
+  },
+  listContent: {
+    paddingBottom: 16,
   },
 });
 

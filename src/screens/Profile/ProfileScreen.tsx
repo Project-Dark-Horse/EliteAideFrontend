@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, Alert, ScrollView } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet, Alert, ScrollView, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
@@ -27,6 +27,8 @@ const ProfileScreen = () => {
     pending: 0,
     completed: 0,
   });
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isSearchVisible, setIsSearchVisible] = useState(false);
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -179,6 +181,14 @@ const ProfileScreen = () => {
     );
   };
 
+  const toggleSearchBar = () => {
+    setIsSearchVisible(!isSearchVisible);
+  };
+
+  const handleNotifications = () => {
+    navigation.navigate('NotificationScreen' as never);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -188,14 +198,26 @@ const ProfileScreen = () => {
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Profile</Text>
           <View style={styles.headerRight}>
-            <TouchableOpacity style={styles.iconButton}>
+            <TouchableOpacity style={styles.iconButton} onPress={toggleSearchBar}>
               <Ionicons name="search" size={20} color="#6B7280" />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.iconButton}>
+            <TouchableOpacity style={styles.iconButton} onPress={handleNotifications}>
               <Ionicons name="notifications" size={20} color="#6B7280" />
             </TouchableOpacity>
           </View>
         </View>
+
+        {isSearchVisible && (
+          <View style={styles.searchContainer}>
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Search..."
+              placeholderTextColor="#6B7280"
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+            />
+          </View>
+        )}
 
         <View style={styles.profileCard}>
           <View style={styles.profileInfo}>
@@ -298,6 +320,16 @@ const styles = StyleSheet.create({
   },
   iconButton: {
     padding: 4,
+  },
+  searchContainer: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+  searchInput: {
+    backgroundColor: '#1D1E23',
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    color: '#fff',
   },
   profileCard: {
     backgroundColor: '#1D1E23',

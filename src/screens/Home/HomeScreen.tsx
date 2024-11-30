@@ -16,7 +16,7 @@ import TodoImage from '../../assets/todo.png';
 import ProgressImage from '../../assets/progress.png';
 import DoneImage from '../../assets/done.png';
 import BotImage from '../../assets/bot.png';
-import { BaseTask, FormattedTask } from '../../types/task';
+import { BaseTask, FormattedTask } from '../../types/Task';
 import { getIconName } from '../../utils/taskUtils';
 
 interface TaskStatistics {

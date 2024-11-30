@@ -29,20 +29,18 @@ const PinnedTasksCard: React.FC<PinnedTasksCardProps> = ({
   
 }) => {
   return (
-    <Card style={[tw`rounded-xl border border-[#1D1E23] flex-row items-center mb-3`, { backgroundColor, width: width * 0.87, height: 60 }]}>
-      <View style={tw`flex-row justify-between items-center p-3 w-full`}>
-        <View style={tw`flex-row items-start`}>
-          <View style={tw`relative w-7 h-7 mr-2`}>
-            <Ionicons name={iconName} size={24} color="#7CC2E8" />
-            <View style={tw`absolute top-0 right-0 w-2 h-2 bg-[#C02B2B] rounded-full`} />
-          </View>
-          <View>
-            <Text style={tw`text-white text-sm font-bold mb-1`}>{title}</Text>
-            <Text style={tw`text-[#979797] text-xs font-normal`}>{description}</Text>
-          </View>
+    <Card style={[tw`rounded-xl border border-[#1D1E23]`, { backgroundColor, width: width * 0.87, height: 60 }]}>
+      <View style={tw`flex-row items-center p-3 w-full h-full`}>
+        <View style={tw`relative w-7 h-7 mr-3 flex-shrink-0`}>
+          <Ionicons name={iconName} size={24} color="#7CC2E8" />
+          <View style={tw`absolute top-0 right-0 w-2 h-2 bg-[#C02B2B] rounded-full`} />
         </View>
-        <View style={tw`flex-1 flex-col items-end`}>
-          {day && <Text style={tw`text-white text-sm font-semibold mb-1`}>{day}</Text>}
+        <View style={tw`flex-1 mr-3`}>
+          <Text numberOfLines={1} style={tw`text-white text-sm font-bold`}>{title}</Text>
+          <Text numberOfLines={1} style={tw`text-[#979797] text-xs font-normal`}>{description}</Text>
+        </View>
+        <View style={tw`flex-shrink-0 items-end`}>
+          {day && <Text style={tw`text-white text-xs font-semibold mb-1`}>{day}</Text>}
           <Text style={tw`text-white text-xs font-semibold`}>{time}</Text>
         </View>
       </View>
