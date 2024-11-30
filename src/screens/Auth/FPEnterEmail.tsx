@@ -21,24 +21,33 @@ type AuthStackParamList = {
 };
 
 const emailValidationSchema = Yup.object().shape({
-  email: Yup.string().email('Invalid email address').required('Email is required'),
+  email: Yup.string()
+    .email('Please enter a valid email address')
+    .required('Email is required')
+    .trim(),
 });
 
 const FPEnterEmail: React.FC = () => {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const navigation = useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
+  const [error, setError] = useState('');
+  const [isFocused, setIsFocused] = useState(false);
 
   const handleSubmit = async () => {
     try {
-      await emailValidationSchema.validate({ email });
+      setError('');
       setLoading(true);
+      await emailValidationSchema.validate({ email });
 
-      // First check if email exists
-      const checkResponse = await fetch(`${BASE_URL}v1/users/exists/?email=${email}`);
+      const checkResponse = await fetch(
+        `${BASE_URL}v1/users/exists/?email=${encodeURIComponent(email)}`
+      );
+      
       const checkData = await checkResponse.json();
+      console.log('Email check response:', checkData);
 
-      if (!checkData.exists) {
+      if (!checkData.message.exists) {
         Toast.show({
           type: 'error',
           text1: 'Account Not Found',
@@ -47,11 +56,16 @@ const FPEnterEmail: React.FC = () => {
         return;
       }
 
-      // If email exists, send OTP
       const otpResponse = await fetch(`${BASE_URL}v1/users/otp/send/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
+      });
+
+      const otpData = await otpResponse.json();
+      console.log('OTP response:', {
+        status: otpResponse.status,
+        data: otpData
       });
 
       if (otpResponse.ok) {
@@ -65,15 +79,12 @@ const FPEnterEmail: React.FC = () => {
         Toast.show({
           type: 'error',
           text1: 'Error',
-          text2: 'Failed to send verification code. Please try again.',
+          text2: otpData.message || 'Failed to send verification code.',
         });
       }
     } catch (error) {
-      Toast.show({
-        type: 'error',
-        text1: 'Error',
-        text2: error instanceof Yup.ValidationError ? error.message : 'An unexpected error occurred',
-      });
+      console.error('Error in handleSubmit:', error);
+      setError(error instanceof Error ? error.message : 'An unexpected error occurred');
     } finally {
       setLoading(false);
     }
@@ -128,7 +139,9 @@ const FPEnterEmail: React.FC = () => {
                 shadowOpacity: 0.1,
                 shadowRadius: 3,
                 elevation: 3
-              }
+              },
+              isFocused && styles.inputFocus,
+              error && styles.inputError
             ]}
             placeholder="Enter your email address"
             placeholderTextColor="#6F6F6F"
@@ -137,6 +150,8 @@ const FPEnterEmail: React.FC = () => {
             keyboardType="email-address"
             autoCapitalize="none"
             autoComplete="email"
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
           />
           {email && !emailValidationSchema.isValidSync({ email }) && (
             <Text style={tw`text-red-500 text-sm mt-2 ml-2`}>
@@ -187,6 +202,14 @@ const styles = StyleSheet.create({
     borderColor: '#4956C7',
     borderWidth: 1,
     shadowColor: '#4956C7',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+  },
+  inputError: {
+    borderColor: '#FF0000',
+    borderWidth: 1,
+    shadowColor: '#FF0000',
     shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.2,
     shadowRadius: 5,

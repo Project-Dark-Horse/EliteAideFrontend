@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
 import { Button } from 'react-native-paper';
 import tw from 'twrnc';
@@ -20,11 +20,12 @@ type AuthStackParamList = {
 };
 
 const FPEnterOtp: React.FC = () => {
-  const [otp, setOtp] = useState<string[]>(['', '', '', '', '', '']);
+  const [otp, setOtp] = useState<string[]>(['', '', '', '']);
   const [loading, setLoading] = useState(false);
   const navigation = useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
   const route = useRoute();
   const { email } = route.params as RouteParams;
+  const inputRefs = useRef<Array<TextInput | null>>([null, null, null, null]);
 
   const handleOtpChange = (value: string, index: number) => {
     const newOtp = [...otp];
@@ -32,19 +33,22 @@ const FPEnterOtp: React.FC = () => {
     setOtp(newOtp);
 
     // Auto-focus next input
-    if (value && index < 5) {
-      const nextInput = document.querySelector(`input[name=otp-${index + 1}]`);
-      if (nextInput) (nextInput as HTMLElement).focus();
+    if (value && index < 3) {
+      inputRefs.current[index + 1]?.focus();
+    }
+    // Optional: Go to previous input when deleting
+    else if (!value && index > 0) {
+      inputRefs.current[index - 1]?.focus();
     }
   };
 
   const validateOtp = async () => {
     const otpString = otp.join('');
-    if (otpString.length !== 6) {
+    if (otpString.length !== 4) {
       Toast.show({
         type: 'error',
         text1: 'Invalid OTP',
-        text2: 'Please enter the complete 6-digit OTP',
+        text2: 'Please enter the complete 4-digit OTP',
       });
       return;
     }
@@ -59,6 +63,7 @@ const FPEnterOtp: React.FC = () => {
         body: JSON.stringify({
           email,
           otp: otpString,
+          type: 'FORGOT_PASSWORD'
         }),
       });
 
@@ -135,6 +140,7 @@ const FPEnterOtp: React.FC = () => {
       <View style={tw`flex-1 px-6`}>
         {/* Back button */}
         <TouchableOpacity 
+          onPress={() => navigation.goBack()}
           style={tw`mt-12 w-12 h-12 bg-[#1A1A1A] rounded-full justify-center items-center`}
         >
           <Ionicons name="chevron-back" size={24} color="#FFFFFF" />
@@ -143,7 +149,7 @@ const FPEnterOtp: React.FC = () => {
         {/* Logo */}
         <Image
           source={require('../../assets/vector.png')}
-          style={tw`w-20 h-20 mt-12 mb-16`}
+          style={tw`w-32 h-32 mt-8 mb-8`}
           resizeMode="contain"
         />
 
@@ -161,8 +167,9 @@ const FPEnterOtp: React.FC = () => {
             {otp.map((digit, index) => (
               <TextInput
                 key={index}
+                ref={ref => inputRefs.current[index] = ref}
                 style={[
-                  tw`w-[50px] h-[50px] bg-[#111111] rounded-2xl text-center text-white text-2xl`,
+                  tw`w-[60px] h-[60px] bg-[#111111] rounded-2xl text-center text-white text-2xl`,
                   {
                     borderWidth: 1,
                     borderColor: digit ? '#3272A0' : '#333333'

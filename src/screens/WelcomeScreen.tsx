@@ -51,4 +51,4 @@ const WelcomeScreen = ({ navigation }: { navigation: any }) => {
   );
 };
 
-export default React.memo(WelcomeScreen);
+export default WelcomeScreen;
