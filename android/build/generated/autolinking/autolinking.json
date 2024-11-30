@@ -305,7 +305,7 @@
       "platforms": {
         "ios": {
           "podspecPath": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-reanimated/RNReanimated.podspec",
-          "version": "3.16.2",
+          "version": "3.16.3",
           "configurations": [],
           "scriptPhases": []
         },

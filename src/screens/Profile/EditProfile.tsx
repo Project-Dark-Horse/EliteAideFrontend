@@ -39,8 +39,12 @@ const EditProfile = () => {
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
-        // const token = await AsyncStorage.getItem('access_token');
         const token = await AsyncStorage.getItem('access_token');
+        if (!token) {
+          throw new Error('No access token found');
+        }
+
+        console.log('Access Token:', token);
 
         const response = await fetch('https://api.eliteaide.tech/v1/users/profile/', {
           method: 'GET',

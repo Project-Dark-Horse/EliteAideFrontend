@@ -12,7 +12,7 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useTaskRefresh } from '../../context/TaskRefreshContext';
 import { useFocusEffect } from '@react-navigation/native';
-import { FormattedTask } from '../../types/task';
+import { FormattedTask } from '../../types/Task';
 import { getIconName, getBackgroundColor } from '../../utils/taskUtils';
 
 type RootStackParamList = {
@@ -26,9 +26,26 @@ interface UpcomingTasksComponentProps {
   tasks: FormattedTask[];
 }
 
+interface TaskResponse {
+  message: {
+    task_details: {
+      data: {
+        id: number;
+        title: string;
+        description: string;
+        due_date: string;
+        type: string;
+        priority: string;
+        status: string;
+      }[];
+    };
+  };
+}
+
 const UpcomingTasksComponent: React.FC<UpcomingTasksComponentProps> = ({ tasks }) => {
   const navigation = useNavigation<NavigationProp>();
   const [loading, setLoading] = useState(false);
+  const [localTasks, setLocalTasks] = useState<FormattedTask[]>(tasks);
   const { shouldRefresh, setShouldRefresh } = useTaskRefresh();
 
   const fetchTasks = async () => {
@@ -74,12 +91,12 @@ const UpcomingTasksComponent: React.FC<UpcomingTasksComponentProps> = ({ tasks }
           time: new Date(task.due_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
           backgroundColor: getBackgroundColor(task.type),
           iconName: getIconName(task.type),
-          priority: task.priority,
+          priority: Number(task.priority),
           status: task.status,
-          type: task.type
+          type: task.type,
+          due_date: task.due_date
         }));
-        // Only take first 3 tasks for display
-        setTasks(fetchedTasks.slice(0, 3));
+        setLocalTasks(fetchedTasks.slice(0, 3));
         console.log('[HomeScreen] Tasks processed and state updated');
       } else {
         console.log('[HomeScreen] No tasks received from API');
@@ -117,7 +134,7 @@ const UpcomingTasksComponent: React.FC<UpcomingTasksComponentProps> = ({ tasks }
       ) : (
         <FlatList
           horizontal
-          data={tasks}
+          data={localTasks}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
             <UpcomingTasksCard

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, View, ScrollView, StyleSheet, Alert, TouchableOpacity } from 'react-native';
 import { Text } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
@@ -7,7 +7,7 @@ import { BASE_URL } from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CommonHeader from '../../components/CommonHeader';
 import { format, isToday, isThisWeek } from 'date-fns';
-import { View, ScrollView, StyleSheet, Alert } from 'react-native';
+import DeleteTaskPopup from './DeleteTaskPopup';
 
 interface Task {
   id: number;
@@ -23,6 +23,8 @@ const MyTaskScreen: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [page, setPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null);
+  const [isDeletePopupVisible, setIsDeletePopupVisible] = useState(false);
 
   useEffect(() => {
     fetchTasks();
@@ -63,6 +65,31 @@ const MyTaskScreen: React.FC = () => {
     }
   };
 
+  const handleDeleteTask = async () => {
+    if (selectedTaskId === null) return;
+
+    try {
+      const token = await AsyncStorage.getItem('access_token');
+      if (!token) {
+        Alert.alert('Error', 'User not authenticated');
+        return;
+      }
+
+      await axios.delete(`${BASE_URL}v1/tasks/${selectedTaskId}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      setTasks(prevTasks => prevTasks.filter(task => task.id !== selectedTaskId));
+      setIsDeletePopupVisible(false);
+      Alert.alert('Success', 'Task deleted successfully');
+    } catch (error) {
+      console.error('Error deleting task:', error);
+      Alert.alert('Error', 'Unable to delete task');
+    }
+  };
+
   const renderTask = (task: Task) => {
     const formattedTime = format(new Date(task.time), 'PPpp');
 
@@ -79,12 +106,12 @@ const MyTaskScreen: React.FC = () => {
           <Text style={styles.time}>{formattedTime}</Text>
         </View>
         <View style={styles.rightContainer}>
-          <Icon
-            name={task.status === 'completed' ? 'checkmark-circle' : 'time-outline'}
-            size={24}
-            color={task.status === 'completed' ? '#4CAF50' : '#65779E'}
-            style={styles.checkIcon}
-          />
+          <TouchableOpacity onPress={() => {
+            setSelectedTaskId(task.id);
+            setIsDeletePopupVisible(true);
+          }}>
+            <Icon name="trash" size={24} color="#FF3B30" style={styles.deleteIcon} />
+          </TouchableOpacity>
         </View>
       </View>
     );
@@ -111,6 +138,11 @@ const MyTaskScreen: React.FC = () => {
           {afterThisWeekTasks.map(renderTask)}
         </View>
       </ScrollView>
+      <DeleteTaskPopup
+        visible={isDeletePopupVisible}
+        onClose={() => setIsDeletePopupVisible(false)}
+        onDelete={handleDeleteTask}
+      />
     </SafeAreaView>
   );
 };
@@ -133,9 +165,6 @@ const styles = StyleSheet.create({
   },
   taskList: {
     marginBottom: 16,
-  },
-  scrollViewContent: {
-    paddingBottom: 80, // Add padding to prevent hiding behind the bottom bar
   },
   taskCard: {
     flexDirection: 'row',
@@ -176,7 +205,7 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     marginTop: 4,
   },
-  checkIcon: {
+  deleteIcon: {
     marginTop: 4,
   },
 });

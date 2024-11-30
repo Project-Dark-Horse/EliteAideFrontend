@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, Modal, TouchableOpacity, StyleSheet } from 'react-native';
+import React from 'react';
+import { View, Text, Modal, TouchableOpacity, StyleSheet, Animated } from 'react-native';
 import tw from 'twrnc';
 
 interface DeleteTaskPopupProps {
@@ -9,20 +9,37 @@ interface DeleteTaskPopupProps {
 }
 
 const DeleteTaskPopup: React.FC<DeleteTaskPopupProps> = ({ visible, onClose, onDelete }) => {
+  const scaleValue = React.useRef(new Animated.Value(0)).current;
+
+  React.useEffect(() => {
+    if (visible) {
+      Animated.spring(scaleValue, {
+        toValue: 1,
+        useNativeDriver: true,
+      }).start();
+    } else {
+      Animated.timing(scaleValue, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [visible]);
+
   return (
     <Modal visible={visible} transparent animationType="fade">
       <View style={styles.modalOverlay}>
-        <View style={[styles.modalContainer, tw`bg-[rgba(255,255,255,0.08)]`]}>
-          <Text style={[styles.modalTitle, tw`text-white`]}>Delete this task?</Text>
+        <Animated.View style={[styles.modalContainer, { transform: [{ scale: scaleValue }] }]}>
+          <Text style={styles.modalTitle}>Delete this task?</Text>
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={[styles.cancelButton, tw`border border-blue-500`]} onPress={onClose}>
-              <Text style={[styles.cancelText, tw`text-white`]}>Cancel</Text>
+            <TouchableOpacity style={styles.cancelButton} onPress={onClose}>
+              <Text style={styles.cancelText}>Cancel</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.yesButton, tw`bg-[#1D1E23]`]} onPress={onDelete}>
-              <Text style={[styles.yesText, tw`text-white`]}>Yes</Text>
+            <TouchableOpacity style={styles.yesButton} onPress={onDelete}>
+              <Text style={styles.yesText}>Yes</Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </Animated.View>
       </View>
     </Modal>
   );
@@ -36,17 +53,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalContainer: {
-    width: 326,
-    height: 124,
+    width: '80%',
+    maxWidth: 400,
     borderRadius: 10,
     padding: 24,
+    backgroundColor: '#1D1E23',
     justifyContent: 'center',
     alignItems: 'center',
   },
   modalTitle: {
-    fontSize: 14,
-    fontFamily: 'Nunito',
-    fontWeight: '400',
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#fff',
     marginBottom: 20,
   },
   buttonContainer: {
@@ -54,33 +72,35 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     width: '100%',
-    paddingHorizontal: 20,
   },
   cancelButton: {
-    width: 125,
+    flex: 1,
+    marginRight: 10,
     height: 48,
-    borderRadius: 16,
+    borderRadius: 24,
     justifyContent: 'center',
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#3B82F6',
   },
   yesButton: {
-    width: 125,
+    flex: 1,
+    marginLeft: 10,
     height: 48,
-    borderRadius: 16,
+    borderRadius: 24,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
+    backgroundColor: '#323232',
   },
   cancelText: {
     fontSize: 16,
     fontWeight: '600',
+    color: '#fff',
   },
   yesText: {
     fontSize: 16,
     fontWeight: '600',
+    color: '#fff',
   },
 });
 

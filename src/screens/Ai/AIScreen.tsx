@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -21,6 +21,8 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import Voice from '@react-native-voice/voice';
 import { useTaskRefresh } from '../../context/TaskRefreshContext';
 import SearchBar from '../../components/SearchBar';
+import { debounce } from 'lodash';
+import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 
 interface Message {
   id: string;
@@ -135,27 +137,31 @@ const ChatScreen = () => {
     }
   };
   
+  const [loadingStates, setLoadingStates] = useState({
+    sendMessage: false,
+    voiceRecognition: false,
+    taskFetch: false
+  });
+
+  const triggerHaptic = () => {
+    if (Platform.OS === 'ios') {
+      ReactNativeHapticFeedback.trigger('impactLight');
+    }
+  };
+
   const sendMessage = async () => {
-    if (input.trim() && !isLoading) {
-      const userInput = input.trim();
-      setInput('');
-      setIsLoading(true);
-
-      // Check if the input is "SHOW MY TASKS" and handle it separately
-      if (userInput.toLowerCase() === 'SHOW MY TASKS') {
-        // Handle "SHOW MY TASKS" action here
-        console.log('Handling "SHOW MY TASKS" action');
-        // Add specific logic for "SHOW MY TASKS" here
-        setIsLoading(false);
-        return; // Exit early to prevent API call
-      }
-
+    if (input.trim() && !loadingStates.sendMessage) {
+      triggerHaptic();
+      setLoadingStates(prev => ({ ...prev, sendMessage: true }));
+      
       const userMessage: Message = {
         id: Math.random().toString(),
-        text: userInput,
-        sender: 'user'
+        text: input.trim(),
+        sender: 'user',
+        timestamp: new Date().toLocaleString()
       };
       setMessages(prevMessages => [userMessage, ...prevMessages]);
+      setInput('');
 
       try {
         const token = await AsyncStorage.getItem('access_token');
@@ -165,11 +171,11 @@ const ChatScreen = () => {
           return;
         }
 
-        console.log('Sending request with payload:', { prompt: userInput });
+        console.log('Sending request with payload:', { prompt: input.trim() });
 
         const response = await axios.post<SuccessResponse>(
           `${BASE_URL}v1/tasks/prompts/`,
-          { prompt: userInput },
+          { prompt: input.trim() },
           {
             headers: {
               'Authorization': `Bearer ${token}`,
@@ -267,7 +273,7 @@ const ChatScreen = () => {
         ]);
 
       } finally {
-        setIsLoading(false);
+        setLoadingStates(prev => ({ ...prev, sendMessage: false }));
       }
     }
   };
@@ -278,6 +284,7 @@ const ChatScreen = () => {
   ]);
 
   const handleQuickReply = async (reply: string) => {
+    triggerHaptic();
     console.log('Quick reply selected:', reply);
 
     if (reply === 'CREATE TASK' || reply === 'CREATE ANOTHER TASK') {
@@ -523,11 +530,22 @@ const ChatScreen = () => {
 
   const startListening = async () => {
     try {
+      triggerHaptic();
+      setLoadingStates(prev => ({ ...prev, voiceRecognition: true }));
       setIsListening(true);
       await Voice.start('en-US');
+      
+      setMessages(prevMessages => [{
+        id: Math.random().toString(),
+        text: "Listening... Speak now",
+        sender: 'bot',
+        backgroundColor: '#2C3E50'
+      }, ...prevMessages]);
+      
     } catch (error) {
       console.error('Voice recognition error:', error);
       setIsListening(false);
+      setLoadingStates(prev => ({ ...prev, voiceRecognition: false }));
     }
   };
 
@@ -552,14 +570,21 @@ const ChatScreen = () => {
 
   const handleInputChange = (text: string) => {
     setInput(text);
-    if (isListening && text.length > 0) {
-      setIsListening(false);
+    if (text.length > 100) {
+      triggerHaptic();
     }
   };
 
   const handleClearSearch = () => {
     setSearchQuery('');
   };
+
+  const debouncedSearch = useCallback(
+    debounce((text: string) => {
+      setSearchQuery(text);
+    }, 300),
+    []
+  );
 
   return (
 <View style={tw`flex-1 bg-[#111111] pb-7`}>
@@ -617,11 +642,12 @@ const ChatScreen = () => {
         ]}
         value={input}
         onChangeText={handleInputChange}
-        placeholder="Type a message..."
+        placeholder={isListening ? "Listening..." : "Type a message..."}
         placeholderTextColor="#4B4B4B"
         multiline
         numberOfLines={2}
         maxLength={1000}
+        onFocus={triggerHaptic}
       />
       
       <TouchableOpacity
