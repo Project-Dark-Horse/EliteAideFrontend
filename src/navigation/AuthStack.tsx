@@ -1,16 +1,14 @@
 // src/navigators/AuthStack.tsx
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import WelcomeScreen from '../screens/WelcomeScreen';
 import LoginScreen from '../screens/Auth/LoginScreen';
 import SignUpScreen from '../screens/Auth/SignUpScreen';
 import OtpScreen from '../screens/Auth/OtpScreen';
 import EnterEmailScreen from '../screens/Auth/EnterEmailScreen';
-import ForgotPasswordScreen from '../screens/Auth/FPEnterEmail';
-import ForgotPassword from '../screens/Auth/FPEnterEmail';
+import FPEnterEmail from '../screens/Auth/FPEnterEmail';
 import FPEnterOtp from '../screens/Auth/FPEnterOtp';
 import FPNewPassword from '../screens/Auth/FPNewPassword';
-import FPEnterEmail from '../screens/Auth/FPEnterEmail';
 
 // Add type definition for stack params
 type AuthStackParamList = {
@@ -20,9 +18,12 @@ type AuthStackParamList = {
   Otp: { email: string };
   ForgotPassword: undefined;
   EnterEmail: undefined;
+  FPEnterEmail: undefined;
+  FPEnterOtp: { email: string };
+  FPNewPassword: undefined;
 };
 
-const Stack = createStackNavigator<AuthStackParamList>();
+const Stack = createNativeStackNavigator<AuthStackParamList>();
 
 const AuthStack = () => {
   return (
