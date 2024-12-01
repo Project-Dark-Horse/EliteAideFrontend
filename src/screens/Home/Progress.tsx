@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Svg, { G, Path, Circle, Defs, Line } from 'react-native-svg';
 import { useNavigation } from '@react-navigation/native';
@@ -101,38 +101,21 @@ const TaskAnalysis = () => {
     fetchTasks();
   }, []);
 
-  React.useEffect(() => {
-    const now = new Date();
-    const stats = tasks.reduce((acc, task) => {
-      // Count by status (matching API values)
-      if (task.status === 'Completed') acc.completed++;
-      else if (task.status === 'In Progress') acc.inProgress++;
-      else if (task.status === 'Pending') acc.todo++;
-
-      // Count by priority (API uses 1-3)
-      if (task.priority === 3) acc.highPriority++;
-      else if (task.priority === 2) acc.mediumPriority++;
-      else if (task.priority === 1) acc.lowPriority++;
-
-      // Check if overdue (only for non-completed tasks)
-      const dueDate = new Date(task.due_date);
-      if (dueDate < now && task.status !== 'Completed') {
-        acc.overdue++;
-      }
-
-      return acc;
-    }, {
+  // Memoize the statistics calculation to avoid unnecessary re-renders
+  const memoizedStatistics = React.useMemo(() => {
+    // Calculate statistics based on tasks
+    const stats = {
       total: tasks.length,
-      completed: 0,
-      inProgress: 0,
-      todo: 0,
-      highPriority: 0,
-      mediumPriority: 0,
-      lowPriority: 0,
-      overdue: 0
-    });
-
+      completed: tasks.filter(task => task.status === 'completed').length,
+      inProgress: tasks.filter(task => task.status === 'in-progress').length,
+      todo: tasks.filter(task => task.status === 'todo').length,
+      highPriority: tasks.filter(task => task.priority === 3).length,
+      mediumPriority: tasks.filter(task => task.priority === 2).length,
+      lowPriority: tasks.filter(task => task.priority === 1).length,
+      overdue: tasks.filter(task => new Date(task.due_date) < new Date()).length,
+    };
     setStatistics(stats);
+    return stats;
   }, [tasks]);
 
   const pieData = [
@@ -410,10 +393,6 @@ const TaskAnalysis = () => {
     </View>
   );
 
-  if (loading) {
-    return <Text style={styles.loadingText}>Loading...</Text>;
-  }
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -427,11 +406,16 @@ const TaskAnalysis = () => {
       </View>
 
       <ScrollView contentContainerStyle={styles.content}>
-        <View style={styles.chartContainer}>
-          <CustomPieChart />
-        </View>
-
-        {renderStatistics()}
+        {loading ? (
+          <ActivityIndicator size="large" color="#ffffff" style={styles.loadingText} />
+        ) : (
+          <>
+            <View style={styles.chartContainer}>
+              <CustomPieChart />
+            </View>
+            {renderStatistics()}
+          </>
+        )}
       </ScrollView>
     </SafeAreaView>
   );
