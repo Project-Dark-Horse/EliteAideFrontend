@@ -9,6 +9,7 @@ import { Button } from 'react-native-paper';
 import Toast from 'react-native-toast-message';
 import { OTPRouteProp, OTPNavigationProp } from '../../types/navigation';
 import { BASE_URL } from '@env';
+import { Vibration } from 'react-native';
 
 // Import the logo image
 import LogoImage from '../../assets/vector.png';
@@ -25,7 +26,9 @@ const Otp: React.FC<Props> = ({ route, navigation }) => {
   const [isResendDisabled, setIsResendDisabled] = useState(true);
   const [timer, setTimer] = useState(30);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
   const otpRefs = useRef<(TextInput | null)[]>([]);
+  const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
 
   // Countdown timer for resend button
   useEffect(() => {
@@ -51,9 +54,11 @@ const Otp: React.FC<Props> = ({ route, navigation }) => {
         otpRefs.current[index - 1]?.focus();
       }
     } else {
+      Vibration.vibrate(100);
       Toast.show({
         type: 'error',
-        text1: 'Please enter a valid digit',
+        text1: 'Invalid Input',
+        text2: 'Please enter a single digit (0-9).',
       });
     }
   };
@@ -76,28 +81,38 @@ const Otp: React.FC<Props> = ({ route, navigation }) => {
         setLoading(false);
 
         if (data.message?.toLowerCase() === 'otp verified') {
+          setError(false); // Clear error state
           Toast.show({ type: 'success', text1: 'OTP verified successfully!' });
           navigation.replace('SignUp', { email, otp: userOtp, key: data.key });
-        } else if (data.message?.toLowerCase() === 'otp expired') {
-          Toast.show({
-            type: 'error',
-            text1: 'OTP Expired',
-            text2: 'Your OTP has expired. Please request a new one.',
-          });
         } else {
+          setError(true); // Set error state
+          Vibration.vibrate(100); // Haptic feedback on error
           Toast.show({ type: 'error', text1: 'Invalid OTP. Please try again.' });
+          setOtp(['', '', '', '']); // Clear OTP input
+
+          // Reset error state after a short duration
+          setTimeout(() => setError(false), 1000); // 1 second duration
         }
       } catch (error) {
         setLoading(false);
         console.error('Error verifying OTP:', error);
+        Vibration.vibrate(100); // Haptic feedback on error
         Toast.show({ type: 'error', text1: 'Network error. Please try again.' });
+
+        // Reset error state after a short duration
+        setTimeout(() => setError(false), 1000); // 1 second duration
       }
     } else {
+      setError(true); // Set error state
+      Vibration.vibrate(100); // Haptic feedback on error
       Toast.show({
         type: 'error',
         text1: 'Incomplete OTP',
         text2: 'Please enter the 4-digit OTP',
       });
+
+      // Reset error state after a short duration
+      setTimeout(() => setError(false), 1000); // 1 second duration
     }
   };
 
@@ -186,31 +201,35 @@ const Otp: React.FC<Props> = ({ route, navigation }) => {
           </Text>
         </TouchableOpacity>
 
-        {/* OTP Input */}
+        {/* OTP Input with enhanced UX */}
         <View style={tw`flex-row justify-between mb-8 mt-10`}>
           {otp.map((digit, index) => (
             <TextInput
               key={index}
               style={[
-                tw`w-16 h-16 bg-[#111111] border border-[#262626] rounded-xl text-center text-white text-xl`,
-                digit && tw`border-[#65779E]`
+                tw`w-16 h-16 bg-[#111111] border rounded-xl text-center text-white text-xl`,
+                focusedIndex === index && tw`border-[#65779E]`, // Highlight current input
+                { borderColor: error ? 'red' : '#262626' } // Error highlighting
               ]}
               value={digit}
               onChangeText={(text) => handleOtpChange(text, index)}
               keyboardType="numeric"
               maxLength={1}
               ref={(el) => (otpRefs.current[index] = el)}
+              onFocus={() => setFocusedIndex(index)} // Set focused index
+              onBlur={() => setFocusedIndex(null)} // Clear focused index
+              accessibilityLabel={`OTP digit ${index + 1}`} // Accessibility label
             />
           ))}
         </View>
 
-        {/* Resend code */}
+        {/* Resend code with smooth transition */}
         <TouchableOpacity 
           onPress={handleResendOtp} 
           disabled={isResendDisabled}
           style={tw`items-center mb-8`}
         >
-          <Text style={tw`text-[#65779E]`}>
+          <Text style={tw`text-[#65779E] transition-opacity duration-300`}>
             {isResendDisabled ? `Resend code in ${timer}s` : 'Resend code'}
           </Text>
         </TouchableOpacity>
