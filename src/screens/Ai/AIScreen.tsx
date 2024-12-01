@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   View,
   Text,
@@ -9,6 +9,8 @@ import {
   Platform,
   Image,
   ScrollView,
+  Animated,
+  RefreshControl,
 } from 'react-native';
 import tw from 'twrnc';
 import bot from '../../assets/bot.png';
@@ -79,6 +81,11 @@ interface ApiResponse {
   message?: string;
   nextPrompt?: string;
   suggestions?: string[];
+  task_details?: {
+    title: string;
+    description: string;
+    due_date: string;
+  };
 }
 
 type RootStackParamList = {
@@ -108,6 +115,11 @@ const ChatScreen = () => {
   const [showInput, setShowInput] = useState(true);
   const { setShouldRefresh } = useTaskRefresh();
   const [searchQuery, setSearchQuery] = useState('');
+  const micAnimation = useRef(new Animated.Value(1)).current;
+  const [refreshing, setRefreshing] = useState(false);
+  const [recordingTime, setRecordingTime] = useState(0);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const waveformAnimations = Array.from({ length: 5 }, () => useRef(new Animated.Value(1)).current);
 
   const filteredMessages = searchQuery
     ? messages.filter(msg => 
@@ -122,9 +134,17 @@ const ChatScreen = () => {
         ...prevMessages,
       ]);
     } else if (response.message || response.nextPrompt) {
+      let botMessageText = response.message || response.nextPrompt || '';
+
+      // Check if the response includes task details
+      if (response.task_details) {
+        const { title, description, due_date } = response.task_details;
+        botMessageText = `You have created a task titled "${title}".\nDescription: ${description}\nDue Date: ${due_date}`;
+      }
+
       const botMessage: Message = {
         id: Math.random().toString(),
-        text: response.message || response.nextPrompt || '',
+        text: botMessageText,
         sender: 'bot' as const,
         showQuickReplies: response.suggestions ? true : false
       };
@@ -530,23 +550,18 @@ const ChatScreen = () => {
 
   const startListening = async () => {
     try {
-      triggerHaptic();
-      setLoadingStates(prev => ({ ...prev, voiceRecognition: true }));
+      ReactNativeHapticFeedback.trigger('impactLight');
       setIsListening(true);
       await Voice.start('en-US');
-      
-      setMessages(prevMessages => [{
-        id: Math.random().toString(),
-        text: "Listening... Speak now",
-        sender: 'bot',
-        backgroundColor: '#2C3E50'
-      }, ...prevMessages]);
-      
     } catch (error) {
       console.error('Voice recognition error:', error);
       setIsListening(false);
-      setLoadingStates(prev => ({ ...prev, voiceRecognition: false }));
     }
+  };
+
+  const stopListening = () => {
+    setIsListening(false);
+    ReactNativeHapticFeedback.trigger('impactLight');
   };
 
   const onSpeechResults = (event: any) => {
@@ -586,8 +601,53 @@ const ChatScreen = () => {
     []
   );
 
+  const onRefresh = async () => {
+    setRefreshing(true);
+    // Add logic to refresh chat messages or fetch new data
+    // For example, you could reset the messages or fetch new ones from an API
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 1000); // Simulate a network request
+  };
+
+  useEffect(() => {
+    if (isListening) {
+      waveformAnimations.forEach((animation) => {
+        Animated.loop(
+          Animated.sequence([
+            Animated.timing(animation, {
+              toValue: Math.random() * 2 + 1,
+              duration: 300,
+              useNativeDriver: true,
+            }),
+            Animated.timing(animation, {
+              toValue: 1,
+              duration: 300,
+              useNativeDriver: true,
+            }),
+          ])
+        ).start();
+      });
+
+      timerRef.current = setInterval(() => {
+        setRecordingTime((prev) => prev + 1);
+      }, 1000);
+    } else {
+      waveformAnimations.forEach((animation) => {
+        animation.stopAnimation();
+        animation.setValue(1);
+      });
+
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+      setRecordingTime(0);
+    }
+  }, [isListening]);
+
   return (
-<View style={tw`flex-1 bg-[#111111] pb-7`}>
+<View style={tw`flex-1 bg-[#111111] pb-0`}>
   {/* Navigation Header */}
   <View style={tw`flex-row items-center justify-between p-4 bg-[#111111]`}>
     {/* Back Button */}
@@ -631,6 +691,9 @@ const ChatScreen = () => {
       ListHeaderComponent={<View style={tw`h-4`} />}
       showsVerticalScrollIndicator={false}
       bounces={false}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
     />
 
     {/* Message Input */}
@@ -638,36 +701,28 @@ const ChatScreen = () => {
       <TextInput
         style={[
           tw`flex-1 px-4 py-2 rounded-full bg-[#1D1E23] text-white`,
-          { fontSize: 13 }
+          { fontSize: 13 },
         ]}
-        value={input}
+        value={isListening ? "Recording..." : input}
         onChangeText={handleInputChange}
-        placeholder={isListening ? "Listening..." : "Type a message..."}
+        placeholder="Type a message..."
         placeholderTextColor="#4B4B4B"
         multiline
         numberOfLines={2}
         maxLength={1000}
         onFocus={triggerHaptic}
+        editable={!isListening}
       />
-      
+
       <TouchableOpacity
         activeOpacity={0.7}
         style={tw`bg-[#3272A0] p-2 rounded-full ml-2`}
-        onPress={input.trim() ? sendMessage : startListening}
-        disabled={isLoading}
+        onPress={input.trim() ? sendMessage : (isListening ? stopListening : startListening)}
       >
-        <Icon 
-          name={
-            isLoading 
-              ? "timer-outline" 
-              : input.trim() 
-                ? "send" 
-                : isListening 
-                  ? "stop" 
-                  : "mic"
-          } 
-          size={20} 
-          color="#fff" 
+        <Icon
+          name={input.trim() ? "send" : (isListening ? "mic-off" : "mic")}
+          size={20}
+          color="#fff"
         />
       </TouchableOpacity>
     </View>

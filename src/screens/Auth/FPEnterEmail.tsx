@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Animated } from 'react-native';
 import { Button } from 'react-native-paper';
 import tw from 'twrnc';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -8,7 +8,6 @@ import * as Yup from 'yup';
 import Toast from 'react-native-toast-message';
 import { BASE_URL } from '@env';
 import { useNavigation } from '@react-navigation/native';
-import Animated from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 // Import the logo image
@@ -33,11 +32,13 @@ const FPEnterEmail: React.FC = () => {
   const navigation = useNavigation<NativeStackNavigationProp<AuthStackParamList>>();
   const [error, setError] = useState('');
   const [isFocused, setIsFocused] = useState(false);
+  const [emailExists, setEmailExists] = useState(true);
 
   const handleSubmit = async () => {
     try {
       setError('');
       setLoading(true);
+      setEmailExists(true);
       await emailValidationSchema.validate({ email });
 
       const checkResponse = await fetch(
@@ -48,11 +49,8 @@ const FPEnterEmail: React.FC = () => {
       console.log('Email check response:', checkData);
 
       if (!checkData.message.exists) {
-        Toast.show({
-          type: 'error',
-          text1: 'Account Not Found',
-          text2: 'No account exists with this email address.',
-        });
+        setEmailExists(false);
+        setError('No account exists with this email address.');
         return;
       }
 
@@ -76,11 +74,7 @@ const FPEnterEmail: React.FC = () => {
         });
         navigation.navigate('FPEnterOtp', { email });
       } else {
-        Toast.show({
-          type: 'error',
-          text1: 'Error',
-          text2: otpData.message || 'Failed to send verification code.',
-        });
+        setError(otpData.message || 'Failed to send verification code.');
       }
     } catch (error) {
       console.error('Error in handleSubmit:', error);
@@ -92,7 +86,6 @@ const FPEnterEmail: React.FC = () => {
 
   return (
     <View style={tw`flex-1 bg-[#000000]`}>
-      {/* Enhanced gradient background */}
       <LinearGradient
         colors={['rgba(73, 86, 199, 0.2)', '#000000']}
         start={{ x: 0.5, y: 0 }}
@@ -108,7 +101,6 @@ const FPEnterEmail: React.FC = () => {
           <Ionicons name="chevron-back" size={24} color="#FFFFFF" />
         </TouchableOpacity>
 
-        {/* Enhanced logo with subtle animation */}
         <Animated.Image
           source={LogoImage}
           style={[
@@ -126,11 +118,10 @@ const FPEnterEmail: React.FC = () => {
           Don't worry! It happens. Please enter your registered email address.
         </Text>
 
-        {/* Enhanced email input with better visual feedback */}
         <View style={tw`mb-8`}>
           <TextInput
             style={[
-              tw`bg-[#111111] text-white px-5 py-4 rounded-2xl border border-[#333333]`,
+              tw`bg-[#111111] text-white px-5 py-4 rounded-2xl border`,
               {
                 fontSize: 16,
                 letterSpacing: 0.5,
@@ -138,7 +129,8 @@ const FPEnterEmail: React.FC = () => {
                 shadowOffset: { width: 0, height: 2 },
                 shadowOpacity: 0.1,
                 shadowRadius: 3,
-                elevation: 3
+                elevation: 3,
+                borderColor: emailExists ? '#333333' : '#FF0000',
               },
               isFocused && styles.inputFocus,
               error && styles.inputError
@@ -153,14 +145,13 @@ const FPEnterEmail: React.FC = () => {
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
           />
-          {email && !emailValidationSchema.isValidSync({ email }) && (
+          {error && (
             <Text style={tw`text-red-500 text-sm mt-2 ml-2`}>
-              Please enter a valid email address
+              {error}
             </Text>
           )}
         </View>
 
-        {/* Continue button */}
         <LinearGradient
           colors={['#4956C7', '#1D1E23']}
           start={{ x: 0, y: 0 }}
@@ -180,7 +171,6 @@ const FPEnterEmail: React.FC = () => {
           </Button>
         </LinearGradient>
 
-        {/* Enhanced login link with better spacing */}
         <TouchableOpacity 
           onPress={() => navigation.navigate('Login')}
           style={tw`flex-row justify-center items-center mt-8`}

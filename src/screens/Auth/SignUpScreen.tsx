@@ -135,7 +135,13 @@ const SignUpScreen = () => {
           },
         ]);
       } else {
-        Alert.alert('Error', result.message || 'Something went wrong. Please try again.');
+        let errorMessage = 'An unexpected error occurred. Please try again.';
+        if (result.message) {
+          errorMessage = result.message;
+        } else if (result.error && result.error.includes('already registered')) {
+          errorMessage = 'User is already registered. Please log in.';
+        }
+        Alert.alert('Error', errorMessage);
       }
     } catch (error) {
       setIsLoading(false);
@@ -152,8 +158,8 @@ const SignUpScreen = () => {
       if (emailExists) {
         Toast.show({
           type: 'error',
-          text1: 'Email already exists',
-          text2: 'Please use a different email address'
+          text1: 'Email is incorrect',
+          text2: 'Please enter a valid email address'
         });
         return;
       }
