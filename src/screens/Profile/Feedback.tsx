@@ -33,13 +33,14 @@ const FeedBackScreen: React.FC = () => {
         await Linking.openURL(mailtoUrl);
         Alert.alert(
           'Thank you!',
-          'Your email client has been opened with the feedback.',
+          'Your feedback has been submitted.',
           [{ text: 'OK', onPress: () => navigation.goBack() }]
         );
       } else {
-        Alert.alert('Error', 'Could not open email client');
+        Alert.alert('Error', 'No email client available');
       }
     } catch (error) {
+      console.error('Error opening email client:', error);
       Alert.alert('Error', 'Failed to open email client');
     } finally {
       setLoading(false);
@@ -102,6 +103,5 @@ const FeedBackScreen: React.FC = () => {
     </View>
   );
 };
-
 
 export default React.memo(FeedBackScreen);
