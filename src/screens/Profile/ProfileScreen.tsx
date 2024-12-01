@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, Alert, ScrollView, TextInput } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet, Alert, ScrollView, TextInput, RefreshControl } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
@@ -29,63 +29,68 @@ const ProfileScreen = () => {
   });
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchVisible, setIsSearchVisible] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
-  useEffect(() => {
-    const fetchProfileData = async () => {
-      try {
-        const token = await AsyncStorage.getItem('access_token');
-        const response = await fetch('https://api.eliteaide.tech/v1/users/profile/', {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
+  const fetchProfileData = async () => {
+    try {
+      const token = await AsyncStorage.getItem('access_token');
+      const response = await fetch('https://api.eliteaide.tech/v1/users/profile/', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        setUserData({
+          username: data.message.user_data.username,
+          email: data.message.user_data.email,
         });
+      }
+    } catch (error) {
+      console.error('Error fetching profile data:', error);
+    }
+  };
 
+  const fetchTaskStats = async () => {
+    try {
+      const token = await AsyncStorage.getItem('access_token');
+      const response = await fetch('https://api.eliteaide.tech/v1/tasks/user-tasks?page=1&items_per_page=200', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
         const data = await response.json();
-        if (response.ok) {
-          setUserData({
-            username: data.message.user_data.username,
-            email: data.message.user_data.email,
-          });
+        if (data.message?.task_details?.data) {
+          const tasks = data.message.task_details.data;
+          const stats = {
+            total: tasks.length,
+            pending: tasks.filter((task: Task) => task.status === 'Pending').length,
+            completed: tasks.filter((task: Task) => task.status === 'Completed').length,
+          };
+          setTaskStats(stats);
         }
-      } catch (error) {
-        console.error('Error fetching profile data:', error);
       }
-    };
-
-    fetchProfileData();
-  }, []);
+    } catch (error) {
+      console.error('Error fetching task statistics:', error);
+    }
+  };
 
   useEffect(() => {
-    const fetchTaskStats = async () => {
-      try {
-        const token = await AsyncStorage.getItem('access_token');
-        const response = await fetch('https://api.eliteaide.tech/v1/tasks/user-tasks?page=1&items_per_page=200', {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          if (data.message?.task_details?.data) {
-            const tasks = data.message.task_details.data;
-            const stats = {
-              total: tasks.length,
-              pending: tasks.filter((task: Task) => task.status === 'Pending').length,
-              completed: tasks.filter((task: Task) => task.status === 'Completed').length,
-            };
-            setTaskStats(stats);
-          }
-        }
-      } catch (error) {
-        console.error('Error fetching task statistics:', error);
-      }
-    };
-
+    fetchProfileData();
     fetchTaskStats();
   }, []);
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchProfileData();
+    await fetchTaskStats();
+    setRefreshing(false);
+  };
 
   const handleEditProfilePic = () => {
     const options = {
@@ -111,12 +116,12 @@ const ProfileScreen = () => {
     try {
       const refreshToken = await AsyncStorage.getItem('refresh_token');
       const accessToken = await AsyncStorage.getItem('access_token');
-  
+
       if (!refreshToken || !accessToken) {
         console.error('No refresh or access token found');
         return;
       }
-  
+
       const response = await axios.post(
         `${BASE_URL}v1/users/logout/`,
         { refresh_token: refreshToken },
@@ -127,7 +132,7 @@ const ProfileScreen = () => {
           },
         }
       );
-  
+
       if (response.status === 200) {
         await AsyncStorage.removeItem('access_token');
         await AsyncStorage.removeItem('refresh_token');
@@ -170,7 +175,6 @@ const ProfileScreen = () => {
           text: 'Logout',
           onPress: async () => {
             try {
-              // Implement the logout-all functionality when the endpoint is ready
               console.log('Logout from all devices in progress');
             } catch (error) {
               console.error('Logout error:', error);
@@ -191,7 +195,10 @@ const ProfileScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <ScrollView
+        contentContainerStyle={styles.scrollContainer}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+      >
         <View style={styles.header}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <Ionicons name="chevron-back" size={20} color="#fff" />
@@ -273,7 +280,7 @@ const ProfileScreen = () => {
             onPress={() => navigation.navigate('AboutEA' as never)}
           >
             <Ionicons name="information-circle" size={20} color="#6B7280" />
-            <Text style={styles.menuText}>About Elite Aid</Text>
+            <Text style={styles.menuText}>About Elite Aide</Text>
           </TouchableOpacity>
           
           <TouchableOpacity 
