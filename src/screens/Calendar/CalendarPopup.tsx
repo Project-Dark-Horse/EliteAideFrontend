@@ -7,9 +7,9 @@ import { MarkedDates } from 'react-native-calendars/src/types';
 
 interface CalendarPopupProps {
   selectedDate: Date;
-  setSelectedDate: React.Dispatch<React.SetStateAction<Date>>;
-  setIsCalendarVisible: React.Dispatch<React.SetStateAction<boolean>>;
-  markedDates: MarkedDates;
+  setSelectedDate: (date: Date) => void;
+  setIsCalendarVisible: (visible: boolean) => void;
+  markedDates: Record<string, any>;
 }
 
 const CalendarPopup: React.FC<CalendarPopupProps> = ({

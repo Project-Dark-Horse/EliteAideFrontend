@@ -30,6 +30,7 @@ const ProfileScreen = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchVisible, setIsSearchVisible] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [logoutFailed, setLogoutFailed] = useState(false);
 
   const fetchProfileData = async () => {
     try {
@@ -119,6 +120,11 @@ const ProfileScreen = () => {
 
       if (!refreshToken || !accessToken) {
         console.error('No refresh or access token found');
+        Alert.alert('Error', 'No valid session found. Please log in again.');
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'Login' as never }],
+        });
         return;
       }
 
@@ -142,6 +148,7 @@ const ProfileScreen = () => {
         });
       } else {
         console.error('Logout failed:', response.data);
+        setLogoutFailed(true);
       }
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -155,9 +162,12 @@ const ProfileScreen = () => {
           });
         } else {
           console.error('Logout error:', error.response?.data || error.message);
+          setLogoutFailed(true);
         }
       } else {
-        console.error('Unexpected error:', error);
+        const errorMessage = (error as Error).message;
+        console.error('Network error:', errorMessage);
+        Alert.alert('Network Error', 'Please check your internet connection and try again.');
       }
     }
   };
@@ -288,7 +298,9 @@ const ProfileScreen = () => {
             onPress={handleLogout}
           >
             <Ionicons name="log-out" size={20} color="#6B7280" />
-            <Text style={styles.menuText}>Logout</Text>
+            <Text style={styles.menuText}>
+              {logoutFailed ? 'Click again to Logout' : 'Logout'}
+            </Text>
           </TouchableOpacity>
           
           <TouchableOpacity 

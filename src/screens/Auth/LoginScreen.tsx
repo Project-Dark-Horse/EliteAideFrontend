@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -35,7 +35,7 @@ const LoginScreen: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = async () => {
+  const handleLogin = useCallback(async () => {
     if (!email || !password) {
       Alert.alert('Error', 'Email and Password cannot be blank.');
       return;
@@ -70,15 +70,15 @@ const LoginScreen: React.FC = () => {
         Alert.alert('Session Expired', 'Please log in again.');
         navigation.reset({ index: 0, routes: [{ name: 'LoginScreen' }] });
       } else {
-        Alert.alert('Login Failed', data.message || 'Unknown error');
+        Alert.alert('Login Failed', data.message || 'Invalid email or password. Please try again.');
       }
     } catch (error) {
       console.error('Login error:', error);
-      Alert.alert('Error', 'An error occurred while logging in.');
+      Alert.alert('Error', 'An error occurred while logging in. Please try again later.');
     } finally {
       setLoading(false);
     }
-  };
+  }, [email, password, navigation]);
 
   return (
     <View style={styles.container}>
