@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { View, Modal, TouchableOpacity, ActivityIndicator, Alert, ScrollView } from 'react-native';
+import { View, Modal, TouchableOpacity, ActivityIndicator, Alert, ScrollView, Text, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import tw from 'twrnc';
 import Header from './Header';
 import WeekView from './WeekViewScreen';
-import DaySchedule from './DayScheduleScreen';
 import CalendarPopup from './CalendarPopup';
 import CreateTaskModal from './CreateTaskModal';
-import { styles } from './styles';
+import { styles as globalStyles } from './styles';
 import { BASE_URL } from '@env';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import LinearGradient from 'react-native-linear-gradient';
 
 interface Task {
   id: number;
@@ -19,18 +20,7 @@ interface Task {
   detail: string;
   date: Date;
   color: string;
-  completed?: boolean;
   status: string;
-}
-
-interface MarkedDates {
-  [date: string]: {
-    marked?: boolean;
-    selected?: boolean;
-    selectedColor?: string;
-    dotColor?: string;
-    dots?: Array<{ key: string; color: string; selectedDotColor: string }>;
-  };
 }
 
 const CalendarScreen = () => {
@@ -39,10 +29,8 @@ const CalendarScreen = () => {
   const [isCreateTaskVisible, setIsCreateTaskVisible] = useState(false);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(false);
-  const [markedDates, setMarkedDates] = useState<MarkedDates>({});
 
-  // Fetch tasks from API
-  const fetchTasks = async (page = 1, itemsPerPage = 10) => {
+  const fetchTasks = async () => {
     setLoading(true);
     try {
       const token = await AsyncStorage.getItem('access_token');
@@ -53,7 +41,7 @@ const CalendarScreen = () => {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
-        params: { page, items_per_page: itemsPerPage },
+        params: { page: 1, items_per_page: 200 },
       });
 
       if (response.status !== 200) throw new Error('Failed to fetch tasks');
@@ -64,25 +52,10 @@ const CalendarScreen = () => {
         summary: task.title,
         detail: task.description,
         date: new Date(task.due_date),
-        color: '#1D1E23',
-        completed: task.status === 'Completed',
+        color: getTaskColor(task.status),
         status: task.status,
       }));
 
-      const newMarkedDates: MarkedDates = {};
-      fetchedTasks.forEach((task: Task) => {
-        const dateStr = task.date.toISOString().split('T')[0];
-        if (!newMarkedDates[dateStr]) {
-          newMarkedDates[dateStr] = { marked: true, dots: [] };
-        }
-        newMarkedDates[dateStr].dots?.push({
-          key: task.id.toString(),
-          color: task.status === 'Pending' ? '#3272A0' : '#4CAF50',
-          selectedDotColor: '#FFFFFF',
-        });
-      });
-
-      setMarkedDates(newMarkedDates);
       setTasks(fetchedTasks);
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -95,9 +68,11 @@ const CalendarScreen = () => {
     }
   };
 
-  // Add task locally
   const addTask = (newTask: Omit<Task, 'id'>) => {
-    setTasks((prevTasks) => [...prevTasks, { ...newTask, id: prevTasks.length + 1 }]);
+    setTasks(prevTasks => [
+      ...prevTasks,
+      { ...newTask, id: prevTasks.length + 1 }
+    ]);
   };
 
   useEffect(() => {
@@ -106,7 +81,7 @@ const CalendarScreen = () => {
 
   return (
     <SafeAreaView style={tw`flex-1 bg-[#111111]`}>
-      <ScrollView contentContainerStyle={tw`flex-1 p-4`}>
+      <View style={tw`flex-1 p-4`}>
         <Header 
           onCalendarPress={() => setIsCalendarVisible(true)} 
           onCreateTaskPress={() => setIsCreateTaskVisible(true)} 
@@ -119,9 +94,8 @@ const CalendarScreen = () => {
             <DaySchedule selectedDate={selectedDate} tasks={tasks} />
           </>
         )}
-      </ScrollView>
+      </View>
 
-      {/* Calendar Modal */}
       <Modal
         visible={isCalendarVisible}
         transparent={true}
@@ -129,31 +103,111 @@ const CalendarScreen = () => {
         onRequestClose={() => setIsCalendarVisible(false)}
       >
         <TouchableOpacity
-          style={styles.modalOverlay}
+          style={globalStyles.modalOverlay}
           activeOpacity={1}
           onPress={() => setIsCalendarVisible(false)}
         >
-          <View style={styles.modalContent}>
+          <View style={globalStyles.modalContent}>
             <CalendarPopup 
               selectedDate={selectedDate} 
               setSelectedDate={setSelectedDate} 
               setIsCalendarVisible={setIsCalendarVisible}
-              markedDates={markedDates}
+              markedDates={{}}
             />
           </View>
         </TouchableOpacity>
       </Modal>
 
-      {/* Create Task Modal */}
       <CreateTaskModal
         isVisible={isCreateTaskVisible}
         setIsVisible={setIsCreateTaskVisible}
         onClose={() => setIsCreateTaskVisible(false)}
         selectedDate={selectedDate}
-        onSave={(newTask) => addTask({ ...newTask, color: '', time: '', date: new Date(), summary: '', detail: '', status: 'Pending' })}
       />
     </SafeAreaView>
   );
+};
+
+interface DayScheduleProps {
+  selectedDate: Date;
+  tasks: Task[];
+}
+
+const DaySchedule: React.FC<DayScheduleProps> = ({ selectedDate, tasks }) => {
+  const filteredTasks = tasks.filter(
+    (task) => task.date.toDateString() === selectedDate.toDateString()
+  );
+
+  const timeSlots = Array.from({ length: 24 }, (_, i) => 
+    i === 0 ? '12 AM' : i < 12 ? `${i} AM` : i === 12 ? '12 PM' : `${i-12} PM`
+  );
+
+  return (
+    <ScrollView style={tw`flex-1 mt-4`}>
+      {timeSlots.map((time, index) => {
+        const tasksAtTime = filteredTasks.filter(task => {
+          const taskHour = new Date(task.time).getHours();
+          return taskHour === index;
+        });
+
+        return (
+          <View key={time} style={tw`flex-row mb-4`}>
+            <Text style={tw`text-gray-400 w-16`}>{time}</Text>
+            <View style={tw`flex-1`}>
+              {tasksAtTime.map(task => (
+                <View key={task.id} style={cardStyles.taskCardContainer}>
+                  <LinearGradient
+                    colors={['#16213C', '#3272A0', '#3272A0', '#1E4E8D']}
+                    locations={[0, 0.4339, 0.4768, 1.0714]}
+                    style={cardStyles.gradientBorder}
+                  >
+                    <View style={[cardStyles.taskCard, { backgroundColor: task.color }]}>
+                      <View style={tw`flex-row items-center justify-between`}>
+                        <View style={tw`flex-row items-center`}>
+                          <Ionicons name="briefcase-outline" size={20} color="#fff" />
+                          <Text style={tw`text-white font-bold ml-2`}>{task.summary}</Text>
+                        </View>
+                        <Text style={tw`text-gray-300`}>
+                          {new Date(task.time).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}
+                        </Text>
+                      </View>
+                      <Text style={tw`text-gray-300 mt-1`}>{task.detail}</Text>
+                    </View>
+                  </LinearGradient>
+                </View>
+              ))}
+            </View>
+          </View>
+        );
+      })}
+    </ScrollView>
+  );
+};
+
+const cardStyles = StyleSheet.create({
+  taskCardContainer: {
+    marginBottom: 8,
+    padding: 2,
+  },
+  gradientBorder: {
+    borderRadius: 10,
+    padding: 2,
+  },
+  taskCard: {
+    borderRadius: 8,
+    padding: 12,
+  }
+});
+
+const getTaskColor = (status: string): string => {
+  switch (status.toLowerCase()) {
+    case 'completed':
+      return '#5560C4';
+    case 'in_progress':
+      return '#2196F3';
+    default:
+      return '#1D1E23';
+  }
 };
 
 export default React.memo(CalendarScreen);

@@ -30,6 +30,7 @@ import { useNavigation } from '@react-navigation/native';
 type AuthStackParamList = {
   Otp: { email: string }; // Add other routes as needed
   Login: undefined;
+  CreateAccount: undefined; // Ensure this is defined
 };
 
 const EnterEmail: React.FC = () => {

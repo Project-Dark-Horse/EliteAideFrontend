@@ -100,8 +100,10 @@ const EditProfile = () => {
 
   const handleSave = async () => {
     try {
-      // const token = await AsyncStorage.getItem('access_token');
       const token = await AsyncStorage.getItem('access_token');
+      if (!token) {
+        throw new Error('No access token found');
+      }
 
       const updatedFields: Partial<ProfileData> = {};
       Object.keys(profileData).forEach(key => {

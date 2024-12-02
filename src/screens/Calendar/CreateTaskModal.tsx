@@ -11,10 +11,9 @@ import LinearGradient from 'react-native-linear-gradient';
 
 interface CreateTaskModalProps {
   isVisible: boolean;
-  setIsVisible: (visible: boolean) => void; // Add this line
+  setIsVisible: (visible: boolean) => void;
+  onClose: () => void;
   selectedDate: Date;
-  onSave: (newTask: Omit<Task, 'id'>) => void;
-  onClose: () => void; // Add this line
 }
 
 
