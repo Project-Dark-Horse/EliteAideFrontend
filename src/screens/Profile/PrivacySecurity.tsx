@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { View, FlatList, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Card, Title, Paragraph } from 'react-native-paper';
-import Icon from 'react-native-vector-icons/Ionicons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import CommonHeader from '../../components/CommonHeader';
 import Modal from 'react-native-modal';
 import LinearGradient from 'react-native-linear-gradient';
@@ -19,6 +19,8 @@ const PrivacyAndSecurityScreen: React.FC = () => {
   const [isModalVisible, setModalVisible] = useState(false);
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isSearchVisible, setIsSearchVisible] = useState(false);
 
   const privacySettings: PrivacySetting[] = [
     { id: 1, icon: 'lock-closed', title: 'Password', description: 'Change your account password' },
@@ -27,6 +29,14 @@ const PrivacyAndSecurityScreen: React.FC = () => {
     { id: 4, icon: 'trash-bin', title: 'Data Deletion', description: 'Request deletion of your data' },
     { id: 5, icon: 'shield-checkmark', title: 'Security Alerts', description: 'Get notified about suspicious activities' },
   ];
+
+  const toggleSearchBar = () => {
+    setIsSearchVisible(!isSearchVisible);
+  };
+
+  const filteredSettings = privacySettings.filter(setting =>
+    setting.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const renderSetting = ({ item }: { item: PrivacySetting }) => (
     <TouchableOpacity
@@ -40,7 +50,7 @@ const PrivacyAndSecurityScreen: React.FC = () => {
     >
       <Card.Content style={styles.cardContent}>
         <View style={styles.iconBackground}>
-          <Icon name={item.icon} size={24} color="#FFFFFF" />
+          <Ionicons name={item.icon} size={24} color="#FFFFFF" />
         </View>
         <View style={styles.textContainer}>
           <Title style={styles.title}>{item.title}</Title>
@@ -63,9 +73,26 @@ const PrivacyAndSecurityScreen: React.FC = () => {
   return (
     <SafeAreaView style={styles.container}>
       <CommonHeader title="Privacy and Security" showTitle={true} showNotificationIcon={false} />
+      <View style={styles.headerRight}>
+        <TouchableOpacity style={styles.iconButton} onPress={toggleSearchBar}>
+          <Ionicons name="search" size={20} color="#6B7280" />
+        </TouchableOpacity>
+      </View>
+
+      {isSearchVisible && (
+        <View style={styles.searchContainer}>
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search..."
+            placeholderTextColor="#6B7280"
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+          />
+        </View>
+      )}
 
       <FlatList
-        data={privacySettings}
+        data={filteredSettings}
         renderItem={renderSetting}
         keyExtractor={item => item.id.toString()}
         contentContainerStyle={styles.list}
@@ -183,6 +210,25 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 1,
     marginBottom: 15,
+  },
+  searchContainer: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+  searchInput: {
+    backgroundColor: '#1D1E23',
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    color: '#fff',
+  },
+  iconButton: {
+    padding: 4,
+  },
+  headerRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    paddingHorizontal: 16,
   },
 });
 

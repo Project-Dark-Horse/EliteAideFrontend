@@ -28,3 +28,8 @@ allprojects {
 
 apply plugin: "com.facebook.react.rootproject"
 
+// Ensure the dependency is correctly declared
+// tasks.named(':app:generateDebugLintReportModel') {
+//     dependsOn ':app:copyReactNativeVectorIconFonts'
+// }
+

@@ -193,7 +193,7 @@
       "platforms": {
         "ios": {
           "podspecPath": "/Users/shriyakapil/EliteAideFrontend/node_modules/@react-native-picker/picker/RNCPicker.podspec",
-          "version": "2.9.0",
+          "version": "2.10.2",
           "configurations": [],
           "scriptPhases": []
         },
@@ -318,7 +318,7 @@
       "platforms": {
         "ios": {
           "podspecPath": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-image-picker/react-native-image-picker.podspec",
-          "version": "7.1.2",
+          "version": "7.2.2",
           "configurations": [],
           "scriptPhases": []
         },
@@ -439,7 +439,7 @@
       "platforms": {
         "ios": {
           "podspecPath": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-screens/RNScreens.podspec",
-          "version": "4.2.0",
+          "version": "4.3.0",
           "configurations": [],
           "scriptPhases": []
         },
@@ -476,7 +476,7 @@
       "platforms": {
         "ios": {
           "podspecPath": "/Users/shriyakapil/EliteAideFrontend/node_modules/react-native-svg/RNSVG.podspec",
-          "version": "15.9.0",
+          "version": "15.10.0",
           "configurations": [],
           "scriptPhases": []
         },
