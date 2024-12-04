@@ -94,3 +94,6 @@ yarn.lock
 local.properties
 *.iml
 /android/
+
+# Android
+android/.gradle/
