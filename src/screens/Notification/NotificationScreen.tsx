@@ -6,7 +6,8 @@ import {
   Text, 
   ActivityIndicator, 
   TouchableOpacity,
-  Alert 
+  Alert,
+  TextInput
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Card } from 'react-native-paper';
@@ -21,6 +22,7 @@ import BottomTabNavigator from '../../navigation/BottomTabNavigator';
 import BottomBarStack from '../../navigation/BottomBarStack';
 import { Swipeable } from 'react-native-gesture-handler';
 import { groupBy } from 'lodash';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 // Add logging utility
 const log = (message: string, data?: any) => {
   console.log(`[NotificationScreen] ${message}`, data || '');
@@ -88,6 +90,8 @@ const NotificationScreen: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isSearchVisible, setIsSearchVisible] = useState(false);
 
   // API calls
   const fetchNotifications = async () => {
@@ -323,6 +327,14 @@ const NotificationScreen: React.FC = () => {
     </View>
   );
 
+  const toggleSearchBar = () => {
+    setIsSearchVisible(!isSearchVisible);
+  };
+
+  const filteredNotifications = notifications.filter(notification =>
+    notification.notification_message.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <SafeAreaView style={styles.container}>
       <CommonHeader 
@@ -330,6 +342,24 @@ const NotificationScreen: React.FC = () => {
         showTitle={true} 
         showNotificationIcon={false} 
       />
+      <View style={styles.headerRight}>
+        <TouchableOpacity style={styles.iconButton} onPress={toggleSearchBar}>
+          <Ionicons name="search" size={20} color="#6B7280" />
+        </TouchableOpacity>
+      </View>
+
+      {isSearchVisible && (
+        <View style={styles.searchContainer}>
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search..."
+            placeholderTextColor="#6B7280"
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+          />
+        </View>
+      )}
+
       {loading && !refreshing ? (
         <View style={styles.skeletonContainer}>
           {[1, 2, 3].map((key) => (
@@ -344,12 +374,12 @@ const NotificationScreen: React.FC = () => {
         </View>
       ) : (
         <FlatList
-          data={notifications}
+          data={filteredNotifications}
           renderItem={renderSwipeableNotification}
           keyExtractor={item => item.id.toString()}
           style={styles.list}
           contentContainerStyle={
-            notifications.length === 0 ? styles.emptyList : styles.listContent
+            filteredNotifications.length === 0 ? styles.emptyList : styles.listContent
           }
           refreshing={refreshing}
           onRefresh={handleRefresh}
@@ -489,6 +519,25 @@ const styles = StyleSheet.create({
   },
   listContent: {
     paddingBottom: 16,
+  },
+  headerRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    paddingHorizontal: 16,
+  },
+  iconButton: {
+    padding: 4,
+  },
+  searchContainer: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+  searchInput: {
+    backgroundColor: '#1D1E23',
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    color: '#fff',
   },
 });
 

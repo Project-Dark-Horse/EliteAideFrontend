@@ -1,7 +1,6 @@
 apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
-apply plugin: 'com.google.gms.google-services'
 
 /**
  * This is the configuration block to customize your React Native Android app.
@@ -110,12 +109,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-
-    // Ensure the task dependency is declared
-    // Commenting out the line below as the task does not exist
-    // tasks.named('generateDebugLintReportModel').configure {
-    //    dependsOn ':app:copyReactNativeVectorIconFonts'
-    // }
 }
 
 dependencies {
@@ -129,9 +122,6 @@ dependencies {
     }
 
     implementation project(':react-native-haptic-feedback')
-    implementation platform('com.google.firebase:firebase-bom:33.6.0')
-    implementation 'com.google.firebase:firebase-messaging'
-    implementation 'com.google.firebase:firebase-analytics'
 }
 
 // Move this block outside of the `dependencies` block

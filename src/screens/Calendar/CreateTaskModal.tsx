@@ -1,29 +1,27 @@
-import { BASE_URL } from '@env';
 import React, { useState } from 'react';
-import { Modal, View, StyleSheet, Text, TextInput, Button, Switch, ActivityIndicator, TouchableOpacity, Task } from 'react-native';
+import { Modal, View, StyleSheet, Text, TextInput, Button, Switch, ActivityIndicator, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
-import { Picker } from '@react-native-picker/picker';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import LinearGradient from 'react-native-linear-gradient';
+import { BASE_URL } from '@env';
+import { Task } from './CalendarScreen'; // Ensure the path is correct
 
 // Props interface for the modal
-
 interface CreateTaskModalProps {
   isVisible: boolean;
   setIsVisible: (visible: boolean) => void;
   onClose: () => void;
   selectedDate: Date;
+  onSaveTask: (newTask: Omit<Task, 'id'>) => void;
 }
 
-
-const CreateTaskModal: React.FC<CreateTaskModalProps> = ({ isVisible, onClose }) => {
+const CreateTaskModal: React.FC<CreateTaskModalProps> = ({ isVisible, onClose, selectedDate, onSaveTask }) => {
   const [title, setTitle] = useState('');
   const [dueDate, setDueDate] = useState('');
   const [time, setTime] = useState('');
   const [description, setDescription] = useState('');
   const [isAutocomplete, setIsAutocomplete] = useState(false);
-  const [taskDetails, setTaskDetails] = useState<any>(null);
   const [priority, setPriority] = useState('medium');
   const [loading, setLoading] = useState(false);
   const [category, setCategory] = useState<string | null>(null);
@@ -50,8 +48,6 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({ isVisible, onClose })
       type: "Errands",
     };
 
-    console.log('Task Data:', taskData);
-
     try {
       const response = await fetch(`${BASE_URL}v1/tasks/`, {
         method: 'POST',
@@ -64,17 +60,21 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({ isVisible, onClose })
 
       if (response.ok) {
         const responseData = await response.json();
-        console.log(responseData.message);
-        setTaskDetails(responseData.task_details);
+        onSaveTask({
+          time: formattedDueDate,
+          summary: title,
+          detail: description,
+          date: new Date(formattedDueDate),
+          color: '#2196F3', // Default color, adjust as needed
+          status: "Pending",
+        });
         onClose();
       } else {
         const errorData = await response.json();
         alert(`Failed to save task: ${errorData.message}`);
-        console.error('Response Status:', response.status);
       }
     } catch (error) {
       alert('An error occurred while saving the task.');
-      console.error('Error:', error);
     } finally {
       setLoading(false);
     }
@@ -266,18 +266,6 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({ isVisible, onClose })
                 </>
               )}
             </View>
-
-            {taskDetails && (
-              <View style={styles.taskDetails}>
-                <Text style={styles.detailsTitle}>Task Created Successfully!</Text>
-                <Text>Title: {taskDetails.title}</Text>
-                <Text>Description: {taskDetails.description}</Text>
-                <Text>Due Date: {taskDetails.due_date}</Text>
-                <Text>Priority: {taskDetails.priority}</Text>
-                <Text>Status: {taskDetails.status}</Text>
-                <Text>Type: {taskDetails.type}</Text>
-              </View>
-            )}
           </View>
         </LinearGradient>
       </View>
@@ -319,32 +307,12 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 15,
   },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 20,
-    paddingHorizontal: 5,
-    gap: 10,
-  },
   label: {
     fontSize: 16,
     fontWeight: '600',
     color: '#FFFFFF',
     marginBottom: 8,
     marginTop: 4,
-    fontFamily: 'System',
-  },
-  taskDetails: {
-    marginTop: 20,
-    padding: 10,
-    backgroundColor: '#2E2E2E',
-    borderRadius: 10,
-  },
-  detailsTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-    marginBottom: 10,
   },
   categoryContainer: {
     flexDirection: 'row',
@@ -364,7 +332,6 @@ const styles = StyleSheet.create({
     borderColor: '#3272A0',
     textAlign: 'center',
     width: '30%',
-    
   },
   selectedCategory: {
     backgroundColor: '#3272A0',
@@ -395,44 +362,32 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     marginRight: 8,
   },
-  dateButton: {
-    backgroundColor: '#65779E',
-    borderBottomWidth: 1,
-    borderBottomColor: '#3272A0',
-    borderRadius: 0,
-    padding: 12,
-    alignItems: 'flex-start',
-    marginBottom: 10,
-  },
-  dateButtonText: {
-    color: '#65779E',
-    fontWeight: 'normal',
-  },
-  saveButton: {
-    backgroundColor: '#1E1E1E',
-    borderRadius: 25,
-    padding: 15,
-    flex: 1,
+  dateTimeRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    marginRight: 5,
+    gap: 10,
+    marginBottom: 15,
+  },
+  dateTimeInput: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#1D1E23',
+    borderRadius: 8,
+    padding: 12,
     borderWidth: 1,
     borderColor: '#3272A0',
+    height: 48,
   },
-  closeButton: {
-    backgroundColor: '#FF6B6B',
-    borderRadius: 25,
-    padding: 15,
-    flex: 1,
-    alignItems: 'center',
-    marginLeft: 5,
-  },
-  buttonText: {
+  dateTimeText: {
     color: '#FFFFFF',
-    fontWeight: 'bold',
-    fontSize: 16,
-    textShadowColor: 'rgba(0, 0, 0, 0.3)',
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 2,
+    fontSize: 14,
+    marginLeft: 10,
+    flex: 1,
+  },
+  placeholderText: {
+    color: '#6F6F6F',
   },
   bottomSection: {
     backgroundColor: '#1E1E1E',
@@ -466,34 +421,6 @@ const styles = StyleSheet.create({
     padding: 8,
     borderRadius: 20,
   },
-  dateTimeRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    gap: 10,
-    marginBottom: 15,
-  },
-  dateTimeInput: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#1D1E23',
-    borderRadius: 8,
-    padding: 12,
-    borderWidth: 1,
-    borderColor: '#3272A0',
-    height: 48,
-  },
-  dateTimeText: {
-    color: '#FFFFFF',
-    fontSize: 14,
-    marginLeft: 10,
-    fontFamily: 'System',
-    flex: 1,
-  },
-  placeholderText: {
-    color: '#6F6F6F',
-  },
   buttonWrapper: {
     borderRadius: 25,
     transform: [{ scale: 1 }],
@@ -522,7 +449,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderWidth: 1,
     borderColor: '#3272A0',
-    
+  },
+  buttonText: {
+    color: '#FFFFFF',
+    fontWeight: 'bold',
+    fontSize: 16,
+    textShadowColor: 'rgba(0, 0, 0, 0.3)',
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 2,
   },
 });
 
