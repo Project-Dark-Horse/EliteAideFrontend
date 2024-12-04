@@ -84,7 +84,13 @@ android/app/build/outputs/mapping/release/proguard.txt
 
 
 
+
 android/app/build/outputs/apk/debug/app-debug.apk
 node_modules
 yarn.lock
 
+.idea
+.gradle
+local.properties
+*.iml
+/android/
