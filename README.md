@@ -183,8 +183,6 @@ This project is licensed under the [MIT License](LICENSE.txt).
 ### Acknowledgements
 - Thanks to all the contributors who’ve helped build EliteAide.
 
-## Getting Help
-- Join our [Slack channel](#) or [Discussion forum](#) for support and to connect with other contributors.
 
 ## Contact
 
