@@ -97,3 +97,7 @@ local.properties
 
 # Android
 android/.gradle/
+
+# Documentation
+README.md
+*.md
