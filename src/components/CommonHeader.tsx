@@ -1,5 +1,5 @@
 // src/components/CommonHeader.tsx
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, TextInput } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -26,6 +26,15 @@ const CommonHeader: React.FC<HeaderProps> = ({
   searchQuery = '',
 }) => {
   const navigation = useNavigation<HomeScreenNavigationProp>();
+  const [query, setQuery] = useState(searchQuery);
+
+  const handleSearchChange = (text: string) => {
+    setQuery(text);
+    if (onSearchQueryChange) {
+      onSearchQueryChange(text);
+    }
+    // Implement search logic here, e.g., filter a list or make an API call
+  };
 
   return (
     <View style={styles.headerContainer}>
@@ -61,8 +70,8 @@ const CommonHeader: React.FC<HeaderProps> = ({
           style={styles.searchInput}
           placeholder="Search..."
           placeholderTextColor="#6B7280"
-          value={searchQuery}
-          onChangeText={onSearchQueryChange}
+          value={query}
+          onChangeText={handleSearchChange}
         />
       )}
     </View>

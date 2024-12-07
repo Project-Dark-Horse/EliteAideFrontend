@@ -31,7 +31,7 @@ const PrivacyAndSecurityScreen: React.FC = () => {
   ];
 
   const toggleSearchBar = () => {
-    setIsSearchVisible(!isSearchVisible);
+    setIsSearchVisible(prev => !prev);
   };
 
   const filteredSettings = privacySettings.filter(setting =>
@@ -72,12 +72,13 @@ const PrivacyAndSecurityScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <CommonHeader title="Privacy and Security" showTitle={true} showNotificationIcon={false} />
-      <View style={styles.headerRight}>
-        <TouchableOpacity style={styles.iconButton} onPress={toggleSearchBar}>
-          <Ionicons name="search" size={20} color="#6B7280" />
-        </TouchableOpacity>
-      </View>
+      <CommonHeader
+        title="Privacy and Security"
+        showTitle={true}
+        showNotificationIcon={false}
+        onSearchToggle={toggleSearchBar}
+        isSearchVisible={isSearchVisible}
+      />
 
       {isSearchVisible && (
         <View style={styles.searchContainer}>
