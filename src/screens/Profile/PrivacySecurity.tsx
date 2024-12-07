@@ -230,6 +230,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'flex-end',
     paddingHorizontal: 16,
+    paddingRight: 10,
   },
 });
 

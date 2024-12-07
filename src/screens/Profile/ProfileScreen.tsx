@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, Alert, ScrollView, TextInput, RefreshControl } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet, Alert, ScrollView, TextInput, RefreshControl, ActivityIndicator, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
@@ -31,6 +31,8 @@ const ProfileScreen = () => {
   const [isSearchVisible, setIsSearchVisible] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [logoutFailed, setLogoutFailed] = useState(false);
+  const [profilePicture, setProfilePicture] = useState<string | null>(null);
+  const [imageLoading, setImageLoading] = useState(true);
 
   const fetchProfileData = async () => {
     try {
@@ -49,6 +51,10 @@ const ProfileScreen = () => {
           username: data.message.user_data.username,
           email: data.message.user_data.email,
         });
+        if (data.message.user_data.profile_picture_url) {
+          console.log('Profile picture URL:', data.message.user_data.profile_picture_url);
+          setProfilePicture(data.message.user_data.profile_picture_url);
+        }
       }
     } catch (error) {
       console.error('Error fetching profile data:', error);
@@ -93,24 +99,57 @@ const ProfileScreen = () => {
     setRefreshing(false);
   };
 
-  const handleEditProfilePic = () => {
-    const options = {
-      mediaType: 'photo' as const,
-      maxWidth: 300,
-      maxHeight: 300,
-      quality: 1.0 as const,
-    };
+  const handleEditProfilePic = async () => {
+    try {
+      const result = await launchImageLibrary({
+        mediaType: 'photo',
+        maxWidth: 800,
+        maxHeight: 800,
+        quality: 1,
+        includeBase64: false,
+      });
 
-    launchImageLibrary(options, (response) => {
-      if (response.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (response.errorCode) {
-        console.error('ImagePicker Error: ', response.errorMessage);
-      } else if (response.assets && response.assets.length > 0) {
-        const uri = response.assets[0].uri;
-        console.log(uri);
+      if (!result.didCancel && result.assets?.[0]?.uri) {
+        const token = await AsyncStorage.getItem('access_token');
+        if (!token) throw new Error('No access token found');
+
+        const formData = new FormData();
+        const imageFile = {
+          uri: Platform.OS === 'ios' ? result.assets[0].uri.replace('file://', '') : result.assets[0].uri,
+          type: result.assets[0].type || 'image/jpeg',
+          name: result.assets[0].fileName || 'photo.jpg',
+        };
+
+        formData.append('profile_picture', imageFile as any);
+
+        const response = await fetch('https://api.eliteaide.tech/v1/users/profile/picture/', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Accept': 'application/json',
+            'Content-Type': 'multipart/form-data',
+          },
+          body: formData,
+        });
+
+        const data = await response.json();
+        console.log('Upload response:', data);
+
+        if (response.ok && data.message?.profile_picture_url) {
+          setProfilePicture(data.message.profile_picture_url);
+          await fetchProfileData();
+          Alert.alert('Success', 'Profile picture updated successfully');
+        } else {
+          throw new Error(data.message || 'Failed to update profile picture');
+        }
       }
-    });
+    } catch (error) {
+      console.error('Error updating profile picture:', error);
+      Alert.alert(
+        'Error',
+        'Failed to update profile picture. Please try again with a different image.'
+      );
+    }
   };
 
   const handleLogout = async () => {
@@ -240,9 +279,28 @@ const ProfileScreen = () => {
           <View style={styles.profileInfo}>
             <View style={styles.avatarContainer}>
               <Image
-                source={require('../../assets/user.jpg')}
+                source={
+                  profilePicture 
+                    ? { 
+                        uri: profilePicture,
+                        cache: 'reload'
+                      }
+                    : require('../../assets/user.jpg')
+                }
                 style={styles.avatar}
+                defaultSource={require('../../assets/user.jpg')}
+                onLoadStart={() => setImageLoading(true)}
+                onLoadEnd={() => setImageLoading(false)}
+                onError={() => {
+                  setImageLoading(false);
+                  setProfilePicture(null);
+                }}
               />
+              {imageLoading && (
+                <View style={styles.imageLoadingOverlay}>
+                  <ActivityIndicator color="#3B82F6" />
+                </View>
+              )}
               <TouchableOpacity style={styles.editButton} onPress={handleEditProfilePic}>
                 <Ionicons name="pencil" size={14} color="#fff" />
               </TouchableOpacity>
@@ -365,9 +423,11 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   avatar: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: '#1D1E23',
+    resizeMode: 'cover',
   },
   editButton: {
     position: 'absolute',
@@ -440,6 +500,17 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     paddingBottom: 20,
+  },
+  imageLoadingOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    borderRadius: 40,
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

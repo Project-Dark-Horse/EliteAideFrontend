@@ -14,6 +14,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import * as ImagePicker from 'react-native-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import { Platform } from 'react-native';
 
 // Define a type for profile data
 type ProfileData = {
@@ -34,17 +35,13 @@ const EditProfile = () => {
     email: '',
     mobile_number: '',
   });
-  const [profileImage, setProfileImage] = useState(require('../../assets/user.jpg'));
+  const [profileImage, setProfileImage] = useState<any>({ uri: null });
 
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
         const token = await AsyncStorage.getItem('access_token');
-        if (!token) {
-          throw new Error('No access token found');
-        }
-
-        console.log('Access Token:', token);
+        if (!token) throw new Error('No access token found');
 
         const response = await fetch('https://api.eliteaide.tech/v1/users/profile/', {
           method: 'GET',
@@ -54,21 +51,17 @@ const EditProfile = () => {
           },
         });
 
-        console.log('Response Status:', response.status);
-        console.log('Response Headers:', response.headers);
-
-        if (!response.ok) {
-          const errorResponse = await response.text();
-          console.log('Error Response:', errorResponse);
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
         const data = await response.json();
-        console.log('Profile Data:', data);
-        setProfileData(data.message.user_data);
+        if (response.ok) {
+          setProfileData(data.message.user_data);
+          // Set profile image if available
+          if (data.message.user_data.profile_picture_url) {
+            console.log('Profile picture URL:', data.message.user_data.profile_picture_url);
+            setProfileImage({ uri: data.message.user_data.profile_picture_url });
+          }
+        }
       } catch (error) {
         console.error('Error fetching profile data:', error);
-        Alert.alert('Error', 'Failed to fetch profile data');
       }
     };
 
@@ -91,10 +84,34 @@ const EditProfile = () => {
       });
 
       if (!result.didCancel && result.assets?.[0]?.uri) {
-        setProfileImage({ uri: result.assets[0].uri });
+        const token = await AsyncStorage.getItem('access_token');
+        if (!token) throw new Error('No access token found');
+
+        const formData = new FormData();
+        formData.append('profile_picture', {
+          uri: result.assets[0].uri,
+          type: result.assets[0].type || 'image/jpeg',
+          name: result.assets[0].fileName || 'profile.jpg',
+        } as any);
+
+        const response = await fetch('https://api.eliteaide.tech/v1/users/profile/picture/', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
+          },
+          body: formData,
+        });
+
+        if (!response.ok) throw new Error('Failed to upload image');
+
+        const data = await response.json();
+        setProfileImage({ uri: data.message.profile_picture_url });
+        Alert.alert('Success', 'Profile picture updated successfully');
       }
     } catch (error) {
-      Alert.alert('Error', 'Failed to pick image');
+      console.error('Error uploading image:', error);
+      Alert.alert('Error', 'Failed to update profile picture');
     }
   };
 
@@ -162,14 +179,21 @@ const EditProfile = () => {
       <View style={styles.avatarContainer}>
         <View style={styles.avatarWrapper}>
           <Image 
-            source={profileImage} 
+            source={
+              profileImage?.uri 
+                ? { uri: profileImage.uri } 
+                : require('../../assets/user.jpg')
+            }
             style={styles.avatar}
+            defaultSource={require('../../assets/user.jpg')} // Fallback image while loading
           />
           <TouchableOpacity 
             style={styles.editIconContainer}
             onPress={handleImagePick}
           >
-            <Icon name="pencil" size={14} color="#fff" />
+            <View style={styles.editIconWrapper}>
+              <Icon name="pencil" size={14} color="#FFFFFF" />
+            </View>
           </TouchableOpacity>
         </View>
         <Text style={styles.avatarText}>Edit picture or avatar</Text>
@@ -306,6 +330,14 @@ const styles = StyleSheet.create({
     padding: 10,
     color: '#fff',
     fontSize: 14,
+  },
+  editIconWrapper: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: '#3B82F6',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   ...additionalStyles,
 });
