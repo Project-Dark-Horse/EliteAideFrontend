@@ -9,17 +9,6 @@ import axios from 'axios';
 import { BASE_URL } from '@env';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-<<<<<<< HEAD
-
-interface Task {
-  id: number;
-  title: string;
-  description: string;
-  time: string;
-  day: string;
-  backgroundColor: string;
-  iconName: string;
-=======
 import { useTaskRefresh } from '../../context/TaskRefreshContext';
 import { useFocusEffect } from '@react-navigation/native';
 import { FormattedTask } from '../../types/task';
@@ -34,7 +23,6 @@ type NavigationProp = StackNavigationProp<RootStackParamList>;
 
 interface PinnedTasksProps {
   tasks: FormattedTask[];
->>>>>>> release/1.0.0
 }
 
 interface TaskResponse {
@@ -61,105 +49,6 @@ interface TaskResponse {
   };
 }
 
-<<<<<<< HEAD
-const getBackgroundColor = (type: string): string => {
-  // Always return the dark background color as per design
-  return '#1E1E1E';
-};
-
-const getIconName = (type: string): string => {
-  switch (type) {
-    case 'Work/Professional Tasks':
-      return 'people';
-    case 'Meeting':
-      return 'people';
-    case 'Discussion':
-      return 'chatbubble';
-    case 'Review':
-      return 'document-text';
-    case 'Personal Tasks':
-      return 'person';
-    case 'Errands':
-      return 'list';
-    default:
-      return 'notifications';
-  }
-};
-
-type RootStackParamList = {
-  MyTaskScreen: undefined;
-  Login: undefined;
-};
-
-type NavigationProp = StackNavigationProp<RootStackParamList>;
-
-const PinnedTasks: React.FC = () => {
-  const navigation = useNavigation<NavigationProp>();
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [loading, setLoading] = useState(false);
-
-  const fetchTasks = async () => {
-    setLoading(true);
-    try {
-      const token = await AsyncStorage.getItem('accessToken');
-      if (!token) {
-        navigation.navigate('Login');
-        return;
-      }
-
-      const today = new Date();
-      const nextWeek = new Date(today);
-      nextWeek.setDate(nextWeek.getDate() + 7);
-      
-      const startDate = today.toISOString().split('T')[0];
-      const endDate = nextWeek.toISOString().split('T')[0];
-      
-      const response = await axios.get<TaskResponse>(`${BASE_URL}v1/tasks/range`, {
-        headers: { 
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        params: {
-          start_date: startDate,
-          end_date: endDate,
-          is_pinned: true
-        }
-      });
-
-      if (response.data?.message?.task_details?.data?.length > 0) {
-        const fetchedTasks = response.data.message.task_details.data.map((task) => {
-          const dueDate = new Date(task.due_date);
-          return {
-            id: task.id,
-            title: task.title,
-            description: task.description,
-            time: dueDate.toLocaleTimeString([], { 
-              hour: 'numeric', 
-              minute: '2-digit',
-              hour12: true 
-            }).toUpperCase(),
-            day: dueDate.toLocaleDateString('en-US', { 
-              weekday: 'long' 
-            }),
-            backgroundColor: '#1E1E1E',
-            iconName: getIconName(task.type),
-          };
-        });
-        setTasks(fetchedTasks);
-      }
-    } catch (error) {
-      console.error('Error fetching pinned tasks:', error);
-      Alert.alert('Error', 'Unable to fetch pinned tasks');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchTasks();
-  }, []);
-
-=======
 const PinnedTasks: React.FC<PinnedTasksProps> = ({ tasks }) => {
   const navigation = useNavigation<NavigationProp>();
   const [loading, setLoading] = useState(false);
@@ -239,7 +128,6 @@ const PinnedTasks: React.FC<PinnedTasksProps> = ({ tasks }) => {
     }, [shouldRefresh])
   );
 
->>>>>>> release/1.0.0
   return (
     <Surface style={tw`p-4 bg-[#111111] flex-1`}>
       <SeeAllCards title="Weekly Tasks" />

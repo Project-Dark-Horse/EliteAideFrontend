@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "com.eliteaidefrontend.app-mergeDebugResources-41:/values-es-rES/values-es-rES.xml",
+            "outputFile": "com.eliteaidefrontend.app-mergeDebugResources-52:/values-es-rES/values-es-rES.xml",
             "map": [
                 {
-                    "source": "/Users/rishabhyadav/.gradle/caches/8.8/transforms/1f00369f60fb558f4c67464032b9f89f/transformed/react-android-0.75.4-debug/res/values-es-rES/values-es-rES.xml",
+                    "source": "/Users/shriyakapil/.gradle/caches/8.8/transforms/da5ebd5f9b85b420a4f7def4e4397bf4/transformed/jetified-react-android-0.75.4-debug/res/values-es-rES/values-es-rES.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
