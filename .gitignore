@@ -113,3 +113,33 @@ android/.gradle/
 # Documentation
 README.md
 *.md
+
+# Android build files
+android/app/build/
+android/build/
+android/.gradle/
+android/local.properties
+android/*.iml
+android/.idea/
+android/captures/
+
+# React Native build files
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+yarn.lock
+
+# Kotlin/Gradle
+app/build/kotlin/
+app/build/intermediates/
+app/build/outputs/
+app/build/source_set_path_map/
+app/build/dex/
+
+# IDE files
+.idea/
+.vscode/
+
+# macOS
+.DS_Store
