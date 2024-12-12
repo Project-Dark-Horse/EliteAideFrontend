@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "com.eliteaidefrontend.app-mergeDebugResources-41:/values-en-rCA/values-en-rCA.xml",
+            "outputFile": "com.eliteaidefrontend.app-mergeDebugResources-52:/values-en-rCA/values-en-rCA.xml",
             "map": [
                 {
-                    "source": "/Users/rishabhyadav/.gradle/caches/8.8/transforms/7e3a2d85f956185beb2f1e38094026bf/transformed/appcompat-1.6.1/res/values-en-rCA/values-en-rCA.xml",
+                    "source": "/Users/shriyakapil/.gradle/caches/8.8/transforms/5b3d612c481b95521bc4949ba2d7e6f6/transformed/appcompat-1.6.1/res/values-en-rCA/values-en-rCA.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
@@ -14,7 +14,7 @@
                     }
                 },
                 {
-                    "source": "/Users/rishabhyadav/.gradle/caches/8.8/transforms/19a3848eea211a03727cbbbdeefda2de/transformed/core-1.9.0/res/values-en-rCA/values-en-rCA.xml",
+                    "source": "/Users/shriyakapil/.gradle/caches/8.8/transforms/221f770a62bdf19ea33812271ca330d6/transformed/core-1.9.0/res/values-en-rCA/values-en-rCA.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",

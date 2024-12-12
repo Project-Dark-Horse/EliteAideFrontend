@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "com.eliteaidefrontend.app-mergeDebugResources-41:/values-v28/values-v28.xml",
+            "outputFile": "com.eliteaidefrontend.app-mergeDebugResources-52:/values-v28/values-v28.xml",
             "map": [
                 {
-                    "source": "/Users/rishabhyadav/.gradle/caches/8.8/transforms/7b318836775473582af6a678efbc7360/transformed/material-1.6.1/res/values-v28/values-v28.xml",
+                    "source": "/Users/shriyakapil/.gradle/caches/8.8/transforms/338a945b5c10e550afbfd3f71880b4d6/transformed/material-1.6.1/res/values-v28/values-v28.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9,10,11,12,13",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4",
@@ -14,7 +14,7 @@
                     }
                 },
                 {
-                    "source": "/Users/rishabhyadav/.gradle/caches/8.8/transforms/7e3a2d85f956185beb2f1e38094026bf/transformed/appcompat-1.6.1/res/values-v28/values-v28.xml",
+                    "source": "/Users/shriyakapil/.gradle/caches/8.8/transforms/5b3d612c481b95521bc4949ba2d7e6f6/transformed/appcompat-1.6.1/res/values-v28/values-v28.xml",
                     "from": {
                         "startLines": "2,3,4,8",
                         "startColumns": "4,4,4,4",
