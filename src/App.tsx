@@ -1,21 +1,23 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import BottomTabNavigator from './navigation/BottomTabNavigator';
-import AuthStack from './navigation/AuthStack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoadingScreen from './components/common/LoadingScreen';
-import WelcomeStack from './screens/WelcomeScreen';
 import { RootStackParamList } from './types/navigation';
 import SignUpScreen from './screens/Auth/SignUpScreen';
 import LoginScreen from './screens/Auth/LoginScreen';
 import OtpScreen from './screens/Auth/OtpScreen';
-import ForgotPasswordScreen from './screens/Auth/ForgotPasswordScreen';
 import EnterEmailScreen from './screens/Auth/EnterEmailScreen';
 import WelcomeScreen from './screens/WelcomeScreen';
-import ManualTaskCreate from './screens/Ai/ManualTaskCreate';
-import MyActivityScreen from './screens/Profile/MyActivity';
+import ProfileScreen from './screens/Profile/ProfileScreen';
+import NotificationScreen from './screens/Notification/NotificationScreen';
+import FPEnterEmail from './screens/Auth/FPEnterEmail';
+import FPEnterOtp from './screens/Auth/FPEnterOtp';
+import FPNewPassword from './screens/Auth/FPNewPassword';
+
+
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -37,7 +39,10 @@ const App = () => {
     } catch (error) {
       console.error('Auth check failed:', error);
     } finally {
-      setIsLoading(false);
+      // Introduce a delay before setting isLoading to false
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 1000); // 2000 milliseconds = 2 seconds
     }
   };
 
@@ -59,9 +64,11 @@ const App = () => {
           <Stack.Screen name="Otp" component={OtpScreen} />
           <Stack.Screen name="SignUp" component={SignUpScreen} />
           <Stack.Screen name="BottomTabNavigator" component={BottomTabNavigator} />
-          <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
-          <Stack.Screen name="ManualTaskCreate" component={ManualTaskCreate} />
-          <Stack.Screen name="MyActivity" component={MyActivityScreen} />
+          <Stack.Screen name="FPEnterEmail" component={FPEnterEmail} />
+          <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
+          <Stack.Screen name="NotificationScreen" component={NotificationScreen} />
+          <Stack.Screen name="FPEnterOtp" component={FPEnterOtp} />
+          <Stack.Screen name="FPNewPassword" component={FPNewPassword} /> 
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>

@@ -1,9 +1,13 @@
-import React from 'react';
-import { View, ScrollView, StyleSheet, ViewStyle } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React, { useEffect, useState } from 'react';
+import { SafeAreaView, View, ScrollView, StyleSheet, Alert, TouchableOpacity } from 'react-native';
 import { Text } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
+import axios from 'axios';
 import { BASE_URL } from '@env';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import CommonHeader from '../../components/CommonHeader';
+import { format, isToday, isThisWeek } from 'date-fns';
+import DeleteTaskPopup from './DeleteTaskPopup';
 
 interface Task {
   id: number;
@@ -12,158 +16,182 @@ interface Task {
   time: string;
   icon: string;
   color: string;
-  cardStyle?: ViewStyle;
-  leftContainerStyle?: ViewStyle;
-  middleContainerStyle?: ViewStyle;
-  rightContainerStyle?: ViewStyle;
+  status: 'pending' | 'completed';
 }
 
 const MyTaskScreen: React.FC = () => {
-  const todayTasks: Task[] = [
-    {
-      id: 1,
-      title: "Team Meeting",
-      description: "Group discussion for the n...",
-      time: "8-9 AM",
-      icon: "briefcase",
-      color: "#1D1E23",
-      cardStyle: { borderLeftWidth: 4, borderLeftColor: "#007AFF" }
-    },
-    {
-      id: 2,
-      title: "Team Meeting",
-      description: "Group discussion for the new product",
-      time: "Fri, 9-10 AM",
-      icon: "briefcase",
-      color: "#1D1E23",
-//       middleContainerStyle: { backgroundColor: 'rgba(0, 122, 255, 0.1)' }
-    },
-    {
-      id: 3,
-      title: "Team Meeting",
-      description: "Group discussion for the new product",
-      time: "Fri, 9-10 AM\nFri, 9-10 AM",
-      icon: "briefcase",
-      color: "#1D1E23",
-//       rightContainerStyle: { backgroundColor: 'rgba(0, 122, 255, 0.2)' }
-    },
-  ];
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [page, setPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null);
+  const [isDeletePopupVisible, setIsDeletePopupVisible] = useState(false);
 
-  const thisWeekTasks: Task[] = [
-    {
-      id: 4,
-      title: "Team Meeting",
-      description: "Group discussion for the new product",
-      time: "Fri, 9-10 AM",
-      icon: "briefcase",
-      color: "#5856D6",
-      cardStyle: { borderRadius: 20 }
-    },
-    {
-      id: 5,
-      title: "Team Meeting",
-      description: "Group discussion for the new product",
-      time: "Fri, 9-10 AM",
-      icon: "briefcase",
-      color: "#34C759",
-      leftContainerStyle: { borderRightWidth: 1, borderRightColor: '#34C759' }
-    },
+  useEffect(() => {
+    fetchTasks();
+  }, [page, itemsPerPage]);
 
-  ];
+  const fetchTasks = async () => {
+    try {
+      const token = await AsyncStorage.getItem('access_token');
+      if (!token) {
+        Alert.alert('Error', 'User not authenticated');
+        return;
+      }
 
-  const renderTask = (task: Task) => (
-      <View key={task.id} style={[styles.taskCard, { backgroundColor: task.color + '20' }, task.cardStyle]}>
-        <View style={[styles.leftContainer, task.leftContainerStyle]}>
-          <View style={[styles.container, { backgroundColor: task.color }]}>
-            <Icon name={task.icon} size={20} color="#FFFFFF" />
+      const response = await axios.get(`${BASE_URL}v1/tasks/user-tasks`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+        params: {
+          page,
+          items_per_page: itemsPerPage,
+        },
+      });
+
+      const fetchedTasks = response.data.message.task_details.data.map((task: any) => ({
+        id: task.id,
+        title: task.title,
+        description: task.description,
+        time: task.due_date,
+        icon: 'briefcase',
+        color: '#1D1E23',
+        status: task.status,
+      }));
+
+      setTasks(fetchedTasks);
+    } catch (error) {
+      console.error('Error fetching tasks:', error);
+      Alert.alert('Error', 'Unable to fetch tasks');
+    }
+  };
+
+  const handleDeleteTask = async () => {
+    if (selectedTaskId === null) return;
+
+    try {
+      const token = await AsyncStorage.getItem('access_token');
+      if (!token) {
+        Alert.alert('Error', 'User not authenticated');
+        return;
+      }
+
+      await axios.delete(`${BASE_URL}v1/tasks/${selectedTaskId}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      setTasks(prevTasks => prevTasks.filter(task => task.id !== selectedTaskId));
+      setIsDeletePopupVisible(false);
+      Alert.alert('Success', 'Task deleted successfully');
+    } catch (error) {
+      console.error('Error deleting task:', error);
+      Alert.alert('Error', 'Unable to delete task');
+    }
+  };
+
+  const renderTask = (task: Task) => {
+    const formattedTime = format(new Date(task.time), 'PPpp');
+
+    return (
+      <View key={task.id} style={[styles.taskCard, { backgroundColor: task.color }]}>
+        <View style={styles.leftContainer}>
+          <View style={[styles.iconContainer, { backgroundColor: '#2D2D2D' }]}>
+            <Icon name={task.icon} size={20} color="#65779E" />
           </View>
         </View>
-        <View style={[styles.middleContainer, task.middleContainerStyle]}>
+        <View style={styles.middleContainer}>
           <Text style={styles.title}>{task.title}</Text>
-          <Text style={styles.description}>{task.description}</Text>
+          <Text style={styles.description} numberOfLines={1}>{task.description}</Text>
+          <Text style={styles.time}>{formattedTime}</Text>
         </View>
-        <View style={[styles.rightContainer, task.rightContainerStyle]}>
-          <Text style={styles.time}>{task.time}</Text>
-          <Icon name="checkmark-circle" size={24} color={task.color} style={styles.checkIcon} />
+        <View style={styles.rightContainer}>
+          <TouchableOpacity onPress={() => {
+            setSelectedTaskId(task.id);
+            setIsDeletePopupVisible(true);
+          }}>
+            <Icon name="trash" size={24} color="#FF3B30" style={styles.deleteIcon} />
+          </TouchableOpacity>
         </View>
       </View>
     );
+  };
+
+  const todayTasks = tasks.filter(task => isToday(new Date(task.time)));
+  const thisWeekTasks = tasks.filter(task => isThisWeek(new Date(task.time), { weekStartsOn: 1 }));
+  const afterThisWeekTasks = tasks.filter(task => !isToday(new Date(task.time)) && !isThisWeek(new Date(task.time), { weekStartsOn: 1 }));
 
   return (
-      <SafeAreaView style={styles.container}>
-        <ScrollView style={styles.scrollView}>
-          <Text style={styles.sectionHeader}>Today</Text>
-          <View style={styles.todayContainer}>
-            {todayTasks.map(renderTask)}
-          </View>
-          <Text style={styles.sectionHeader}>This Week</Text>
-          <View style={styles.thisWeekContainer}>
-            {thisWeekTasks.map(renderTask)}
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    );
-  };
+    <SafeAreaView style={styles.container}>
+      <CommonHeader title="My Tasks" showTitle={true} showNotificationIcon={true} />
+      <ScrollView style={styles.scrollView}>
+        <Text style={styles.sectionHeader}>Today</Text>
+        <View style={styles.taskList}>
+          {todayTasks.map(renderTask)}
+        </View>
+        <Text style={styles.sectionHeader}>This Week</Text>
+        <View style={styles.taskList}>
+          {thisWeekTasks.map(renderTask)}
+        </View>
+        <Text style={styles.sectionHeader}>After This Week</Text>
+        <View style={styles.taskList}>
+          {afterThisWeekTasks.map(renderTask)}
+        </View>
+      </ScrollView>
+      <DeleteTaskPopup
+        visible={isDeletePopupVisible}
+        onClose={() => setIsDeletePopupVisible(false)}
+        onDelete={handleDeleteTask}
+      />
+    </SafeAreaView>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#111111',
     padding: 16,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-    marginLeft: 16,
+    paddingBottom: 70,
   },
   scrollView: {
     flex: 1,
   },
   sectionHeader: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
+    fontSize: 12,
+    fontWeight: 'light',
+    color: '#7A7A7A',
     marginBottom: 12,
   },
-  todayContainer: {
-    backgroundColor: '#1D1E23',
-    borderRadius: 12,
-    padding: 8,
+  taskList: {
     marginBottom: 16,
   },
-  thisWeekContainer: {
-    backgroundColor: '#1D1E23',
-    borderRadius: 12,
-    padding: 8,
-  },
   taskCard: {
-      flexDirection: 'row',
-      borderRadius: 8,
-      marginBottom: 8,
-      overflow: 'hidden',
-    },
-    leftContainer: {
-      padding: 13,
-      justifyContent: 'center',
-    },
-    middleContainer: {
-      flex: 1,
-      justifyContent: 'center',
-      padding: 12,
-    },
-    rightContainer: {
-      justifyContent: 'center',
-      alignItems: 'flex-end',
-      padding: 12,
-    },
+    flexDirection: 'row',
+    borderRadius: 15,
+    marginBottom: 9,
+    padding: 16,
+    backgroundColor: '#1D1E23',
+  },
+  leftContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  iconContainer: {
+    padding: 5,
+    borderRadius: 8,
+  },
+  middleContainer: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  rightContainer: {
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+  },
   title: {
-    fontSize: 16,
+    fontSize: 13,
     fontWeight: 'bold',
     color: '#FFFFFF',
   },
@@ -172,11 +200,12 @@ const styles = StyleSheet.create({
     color: '#7A7A7A',
   },
   time: {
-    fontSize: 12,
-    color: '#7A7A7A',
-    textAlign: 'right',
+    fontSize: 10,
+    color: '#fff',
+    textAlign: 'left',
+    marginTop: 4,
   },
-  checkIcon: {
+  deleteIcon: {
     marginTop: 4,
   },
 });

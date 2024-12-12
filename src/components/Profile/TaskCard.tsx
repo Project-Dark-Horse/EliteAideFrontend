@@ -7,12 +7,13 @@ import tw from 'twrnc';
 const { width } = Dimensions.get('window');
 
 interface TaskCardProps {
+    task: Task;
     total: number;
     pending: number;
     done: number;
 }
 
-const TaskCard: React.FC<TaskCardProps> = ({ total, pending, done }) => {
+const TaskCard: React.FC<TaskCardProps> = ({ task, total, pending, done }) => {
     return (
         <TouchableOpacity style={[tw`bg-[#1e1e1e] rounded-2xl mx-4 my-2`, { width: width * 0.9, height: width * 0.23 }]}>
             <View style={tw`px-4 py-2 flex-row justify-between items-center`}>

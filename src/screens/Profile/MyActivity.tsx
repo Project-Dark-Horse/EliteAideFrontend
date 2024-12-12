@@ -113,4 +113,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MyActivityScreen;
+export default React.memo(MyActivityScreen);

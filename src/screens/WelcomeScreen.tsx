@@ -16,14 +16,14 @@ const WelcomeScreen = ({ navigation }: { navigation: any }) => {
       style={tw`flex-1 w-full h-full justify-center items-center`}
     >
       {/* Login Button */}
-      <View style={{ position: 'absolute', top: 651, left: 24, opacity: 1 }}>
+      <View style={[tw`absolute w-full px-6`, { top: 651 }]}>
         <Button
           mode="elevated"
           onPress={handleLogin}
           style={[
-            tw`rounded-full`,
+            tw`rounded-full self-center`,
             {
-              width: 342,
+              width: 300,
               height: 48,
               shadowColor: 'grey',
               shadowOffset: { width: 0, height: 0.5 },
@@ -41,7 +41,7 @@ const WelcomeScreen = ({ navigation }: { navigation: any }) => {
       </View>
 
       {/* Create Account Link */}
-      <View style={tw`flex-row justify-center top-75`}>
+      <View style={tw`flex-row justify-center top-85`}>
         <Text style={tw`text-white`}>Don't have an account? </Text>
         <TouchableOpacity onPress={() => navigation.navigate('EnterEmail')}>
           <Text style={tw`text-[#65779E] font-semibold`}>Create One</Text>

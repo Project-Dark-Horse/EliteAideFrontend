@@ -1,7 +1,8 @@
 import React, { createContext, useContext } from 'react';
+import FPEnterEmail from '../screens/Auth/FPEnterEmail';
 
 type AuthContextType = {
-  forgotPassword: (otp: string) => Promise<boolean>;
+  FP: (otp: string) => Promise<boolean>;
   // Add other auth-related methods as needed
 };
 
@@ -14,7 +15,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ forgotPassword }}>
+    <AuthContext.Provider value={{ FPEnterEmail }}>
       {children}
     </AuthContext.Provider>
   );

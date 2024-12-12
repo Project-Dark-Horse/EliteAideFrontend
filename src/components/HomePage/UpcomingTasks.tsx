@@ -10,64 +10,10 @@ import axios from 'axios';
 import { BASE_URL } from '@env';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-
-interface Task {
-  id: number;
-  title: string;
-  description: string;
-  time: string;
-  backgroundColor: string;
-  iconName: string;
-  priority: number;
-  status: string;
-  type: string;
-}
-
-interface TaskResponse {
-  message: {
-    message: string;
-    task_details: {
-      total_pages: number;
-      total_items: number;
-      current_page: string;
-      page_size: string;
-      data: Array<{
-        id: number;
-        title: string;
-        description: string;
-        priority: number;
-        status: string;
-        due_date: string;
-        type: string;
-        created_at: string;
-        updated_at: string;
-        creator: number;
-      }>;
-    };
-  };
-}
-
-const getBackgroundColor = (type: string): string => {
-  switch (type) {
-    case 'Work/Professional Tasks':
-      return '#4956C7';
-    case 'Errands':
-      return '#3C8FA9';
-    default:
-      return '#3D83AA';
-  }
-};
-
-const getIconName = (type: string): string => {
-  switch (type) {
-    case 'Work/Professional Tasks':
-      return 'briefcase';
-    case 'Errands':
-      return 'list';
-    default:
-      return 'notifications';
-  }
-};
+import { useTaskRefresh } from '../../context/TaskRefreshContext';
+import { useFocusEffect } from '@react-navigation/native';
+import { FormattedTask } from '../../types/Task';
+import { getIconName, getBackgroundColor } from '../../utils/taskUtils';
 
 type RootStackParamList = {
   MyTaskScreen: undefined;
@@ -76,16 +22,37 @@ type RootStackParamList = {
 
 type NavigationProp = StackNavigationProp<RootStackParamList>;
 
-const UpcomingTasksComponent: React.FC = () => {
+interface UpcomingTasksComponentProps {
+  tasks: FormattedTask[];
+}
+
+interface TaskResponse {
+  message: {
+    task_details: {
+      data: {
+        id: number;
+        title: string;
+        description: string;
+        due_date: string;
+        type: string;
+        priority: string;
+        status: string;
+      }[];
+    };
+  };
+}
+
+const UpcomingTasksComponent: React.FC<UpcomingTasksComponentProps> = ({ tasks }) => {
   const navigation = useNavigation<NavigationProp>();
-  const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(false);
+  const [localTasks, setLocalTasks] = useState<FormattedTask[]>(tasks);
+  const { shouldRefresh, setShouldRefresh } = useTaskRefresh();
 
   const fetchTasks = async () => {
     setLoading(true);
     try {
       console.log('[HomeScreen] Fetching upcoming tasks...');
-      const token = await AsyncStorage.getItem('accessToken');
+      const token = await AsyncStorage.getItem('access_token');
       if (!token) {
         navigation.navigate('Login');
         return;
@@ -124,12 +91,12 @@ const UpcomingTasksComponent: React.FC = () => {
           time: new Date(task.due_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
           backgroundColor: getBackgroundColor(task.type),
           iconName: getIconName(task.type),
-          priority: task.priority,
+          priority: Number(task.priority),
           status: task.status,
-          type: task.type
+          type: task.type,
+          due_date: task.due_date
         }));
-        // Only take first 3 tasks for display
-        setTasks(fetchedTasks.slice(0, 3));
+        setLocalTasks(fetchedTasks.slice(0, 3));
         console.log('[HomeScreen] Tasks processed and state updated');
       } else {
         console.log('[HomeScreen] No tasks received from API');
@@ -147,6 +114,15 @@ const UpcomingTasksComponent: React.FC = () => {
     fetchTasks();
   }, []);
 
+  useFocusEffect(
+    React.useCallback(() => {
+      if (shouldRefresh) {
+        fetchTasks();
+        setShouldRefresh(false);
+      }
+    }, [shouldRefresh])
+  );
+
   return (
     <Surface style={tw`p-4 bg-[#111111]`}>
       <SeeAllCards 
@@ -158,7 +134,7 @@ const UpcomingTasksComponent: React.FC = () => {
       ) : (
         <FlatList
           horizontal
-          data={tasks}
+          data={localTasks}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
             <UpcomingTasksCard

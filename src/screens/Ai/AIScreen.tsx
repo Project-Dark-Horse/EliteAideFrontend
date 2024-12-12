@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   View,
   Text,
@@ -9,15 +9,22 @@ import {
   Platform,
   Image,
   ScrollView,
+  Animated,
+  RefreshControl,
 } from 'react-native';
 import tw from 'twrnc';
 import bot from '../../assets/bot.png';
 import Icon from 'react-native-vector-icons/Ionicons';
-import user from '../../assets/ManAvatar.jpg';
+import user from '../../assets/user.jpg';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import Voice from '@react-native-voice/voice';
+import { useTaskRefresh } from '../../context/TaskRefreshContext';
+import SearchBar from '../../components/SearchBar';
+import { debounce } from 'lodash';
+import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 
 interface Message {
   id: string;
@@ -25,6 +32,8 @@ interface Message {
   sender: 'bot' | 'user';
   showQuickReplies?: boolean;
   action?: 'create_task' | 'show_day' | null;
+  backgroundColor?: string;
+  timestamp?: string;
 }
 
 interface TaskDetails {
@@ -33,6 +42,7 @@ interface TaskDetails {
   due_date: string;
   priority: string;
   type: string;
+  created_at: string;
 }
 
 interface SuccessResponse {
@@ -71,10 +81,16 @@ interface ApiResponse {
   message?: string;
   nextPrompt?: string;
   suggestions?: string[];
+  task_details?: {
+    title: string;
+    description: string;
+    due_date: string;
+  };
 }
 
 type RootStackParamList = {
   Login: undefined;
+  NotificationScreen: undefined;
   // Add other screens as needed
 };
 
@@ -94,9 +110,26 @@ const ChatScreen = () => {
   ]);
 
   const [input, setInput] = useState('');
-  const [showInput, setShowInput] = useState(false);
+  const [isListening, setIsListening] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+<<<<<<< HEAD
   const [pendingTask, setPendingTask] = useState<string | null>(null);
+=======
+  const [showInput, setShowInput] = useState(true);
+  const { setShouldRefresh } = useTaskRefresh();
+  const [searchQuery, setSearchQuery] = useState('');
+  const micAnimation = useRef(new Animated.Value(1)).current;
+  const [refreshing, setRefreshing] = useState(false);
+  const [recordingTime, setRecordingTime] = useState(0);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const waveformAnimations = Array.from({ length: 5 }, () => useRef(new Animated.Value(1)).current);
+
+  const filteredMessages = searchQuery
+    ? messages.filter(msg => 
+        msg.text.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : messages;
+>>>>>>> release/1.0.0
 
   const handleResponse = (response: ApiResponse) => {
     if (response.error) {
@@ -105,9 +138,17 @@ const ChatScreen = () => {
         ...prevMessages,
       ]);
     } else if (response.message || response.nextPrompt) {
+      let botMessageText = response.message || response.nextPrompt || '';
+
+      // Check if the response includes task details
+      if (response.task_details) {
+        const { title, description, due_date } = response.task_details;
+        botMessageText = `You have created a task titled "${title}".\nDescription: ${description}\nDue Date: ${due_date}`;
+      }
+
       const botMessage: Message = {
         id: Math.random().toString(),
-        text: response.message || response.nextPrompt || '',
+        text: botMessageText,
         sender: 'bot' as const,
         showQuickReplies: response.suggestions ? true : false
       };
@@ -120,36 +161,61 @@ const ChatScreen = () => {
     }
   };
   
-  const sendMessage = async () => {
-    if (input.trim() && !isLoading) {
-      const userInput = input.trim();
-      setInput('');
-      setIsLoading(true);
+  const [loadingStates, setLoadingStates] = useState({
+    sendMessage: false,
+    voiceRecognition: false,
+    taskFetch: false
+  });
 
+<<<<<<< HEAD
       // If there's a pending task, combine it with the new input (assumed to be the date)
       const finalPrompt = pendingTask 
         ? `${pendingTask} ${userInput}`
         : userInput;
 
+=======
+  const triggerHaptic = () => {
+    if (Platform.OS === 'ios') {
+      ReactNativeHapticFeedback.trigger('impactLight');
+    }
+  };
+
+  const sendMessage = async () => {
+    if (input.trim() && !loadingStates.sendMessage) {
+      triggerHaptic();
+      setLoadingStates(prev => ({ ...prev, sendMessage: true }));
+      
+>>>>>>> release/1.0.0
       const userMessage: Message = {
         id: Math.random().toString(),
-        text: userInput,
-        sender: 'user'
+        text: input.trim(),
+        sender: 'user',
+        timestamp: new Date().toLocaleString()
       };
       setMessages(prevMessages => [userMessage, ...prevMessages]);
+      setInput('');
 
       try {
-        const token = await AsyncStorage.getItem('accessToken');
+        const token = await AsyncStorage.getItem('access_token');
+        console.log('Retrieved Access Token:', token);
         if (!token) {
           navigation.navigate('Login');
           return;
         }
 
+<<<<<<< HEAD
         console.log('Sending request with payload:', { prompt: finalPrompt });
 
         const response = await axios.post<SuccessResponse>(
           `${BASE_URL}v1/tasks/prompts/`,
           { prompt: finalPrompt },
+=======
+        console.log('Sending request with payload:', { prompt: input.trim() });
+
+        const response = await axios.post<SuccessResponse>(
+          `${BASE_URL}v1/tasks/prompts/`,
+          { prompt: input.trim() },
+>>>>>>> release/1.0.0
           {
             headers: {
               'Authorization': `Bearer ${token}`,
@@ -164,37 +230,76 @@ const ChatScreen = () => {
         console.log('API Response:', response.data);
 
         const taskDetails = response.data.message.task_details;
-        const formattedMessage = `✅ ${response.data.message.message}\n\n` +
+        const priorityMap = {
+          1: '🟢 Low',
+          2: '🟡 Medium',
+          3: '🔴 High'
+        };
+        const priorityKey = Number(taskDetails.priority) as keyof typeof priorityMap;
+        const priority = priorityMap[priorityKey] || `Priority ${taskDetails.priority}`;
+
+        const formattedMessage = `✅ Task created successfully!\n\n` +
           `Title: ${taskDetails.title}\n` +
           `Description: ${taskDetails.description}\n` +
-          `Due Date: ${new Date(taskDetails.due_date).toLocaleDateString()}\n` +
-          `Priority: ${taskDetails.priority}\n` +
-          `Type: ${taskDetails.type}`;
+          `Due Date: ${new Date(taskDetails.due_date).toLocaleString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true
+          })}\n` +
+          `Priority: ${priority}\n` +
+          `Type: ${taskDetails.type}\n` +
+          `Created At: ${new Date(taskDetails.created_at).toLocaleString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true
+          })}`;
 
         setMessages(prevMessages => [
           {
             id: Math.random().toString(),
             text: formattedMessage,
-            sender: 'bot'
+            sender: 'bot',
+            timestamp: new Date().toLocaleString('en-US', {
+              month: 'short',
+              day: 'numeric',
+              hour: 'numeric',
+              minute: '2-digit',
+              hour12: true
+            })
           },
           {
             id: Math.random().toString(),
             text: "What would you like to do next?",
             sender: 'bot',
-            showQuickReplies: true
+            showQuickReplies: true,
+            timestamp: new Date().toLocaleString('en-US', {
+              month: 'short',
+              day: 'numeric',
+              hour: 'numeric',
+              minute: '2-digit',
+              hour12: true
+            })
           },
           ...prevMessages
         ]);
 
-        setQuickReplies(['Create another task', 'Show my day']);
+        setQuickReplies(['CREATE ANOTHER TASK', 'SHOW MY TASKS']);
+        setShouldRefresh(true);
 
       } catch (error) {
         if (axios.isAxiosError(error)) {
+<<<<<<< HEAD
           console.error('Error details:', {
             status: error.response?.status,
             data: error.response?.data,
           });
 
+=======
+>>>>>>> release/1.0.0
           if (error.response?.status === 401) {
             navigation.navigate('Login');
             setMessages(prevMessages => [
@@ -258,27 +363,40 @@ const ChatScreen = () => {
           }
         }
 
+<<<<<<< HEAD
         console.error('Error:', {
           message: (error as Error).message || 'Unknown error',
           status: axios.isAxiosError(error) ? error.response?.status : 'unknown',
           type: (error as any).response?.data?.type?.[0] || 'unknown'
         });
+=======
+        setMessages(prevMessages => [
+          { 
+            id: Math.random().toString(), 
+            text: `❌ ${errorMessage}`, 
+            sender: 'bot' 
+          },
+          ...prevMessages
+        ]);
+
+>>>>>>> release/1.0.0
       } finally {
-        setIsLoading(false);
+        setLoadingStates(prev => ({ ...prev, sendMessage: false }));
       }
     }
   };
 
   const [quickReplies, setQuickReplies] = useState<string[]>([
-    'Create task', 
-    'Show my day'
+    'CREATE TASK', 
+    'SHOW MY TASKS'
   ]);
 
   const handleQuickReply = async (reply: string) => {
+    triggerHaptic();
     console.log('Quick reply selected:', reply);
 
-    if (reply === 'Create task' || reply === 'Create another task') {
-      console.log('Handling create task action');
+    if (reply === 'CREATE TASK' || reply === 'CREATE ANOTHER TASK') {
+      console.log('Handling CREATE TASK action');
       setShowInput(true);
       setMessages(prevMessages => [
         {
@@ -289,8 +407,8 @@ const ChatScreen = () => {
         },
         ...prevMessages
       ]);
-    } else if (reply === 'Show my day') {
-      console.log('Handling show my day action');
+    } else if (reply === 'SHOW MY TASKS') {
+      console.log('Handling SHOW MY TASKS action');
       setShowInput(false);
       
       // Get today's date and tomorrow's date
@@ -304,7 +422,7 @@ const ChatScreen = () => {
       console.log('Fetching tasks between:', { startDate, endDate });
 
       try {
-        const token = await AsyncStorage.getItem('accessToken');
+        const token = await AsyncStorage.getItem('access_token');
         if (!token) {
           console.log('No token found, redirecting to login');
           navigation.navigate('Login');
@@ -362,7 +480,7 @@ const ChatScreen = () => {
           ...prevMessages
         ]);
       } catch (error) {
-        console.error('Error in show my day:', {
+        console.error('Error in SHOW MY TASKS:', {
           error,
           status: axios.isAxiosError(error) ? error.response?.status : 'unknown',
           data: axios.isAxiosError(error) ? error.response?.data : 'unknown'
@@ -414,14 +532,15 @@ const ChatScreen = () => {
           style={[
             tw`relative p-3 rounded-lg max-w-3/4`,
             {
-              backgroundColor: item.sender === 'user' ? '#1D1E23' : '#1D1E23',
+              backgroundColor: item.backgroundColor || (item.sender === 'user' ? '#1D1E23' : '#1D1E23'),
               borderRadius: 7,
               borderWidth: 1,
               borderColor: item.sender === 'user' ? '#666' : '#3272A0',
             },
           ]}
         >
-          <Text style={tw`text-white`}>{item.text}</Text>
+          <Text style={[tw`text-gray-200`, { fontWeight: '100' }]}>{item.text}</Text>
+          <Text style={tw`text-gray-400 text-xs mt-1`}>{item.timestamp}</Text>
 
           {/* Bot tail */}
           {item.sender === 'bot' && (
@@ -498,78 +617,206 @@ const ChatScreen = () => {
       </View>
       
       {item.showQuickReplies && (
-        <View style={tw`flex-row flex-wrap mb-8`}>
-          {quickReplies.map((reply) => (
-            <TouchableOpacity
-              key={reply}
-              style={tw`bg-[#1D1E23] rounded-lg px-4 py-2 mr-2 mb-2`}
-              onPress={() => handleQuickReply(reply)}
-            >
-              <Text style={tw`text-white`}>{reply}</Text>
-            </TouchableOpacity>
-          ))}
+        <View style={tw`flex ${item.sender === 'user' ? 'flex-row-reverse' : 'flex-row'} mb-3 ml-13`}>
+          <View style={tw`flex-row flex-wrap`}>
+            {quickReplies.map((reply) => (
+              <TouchableOpacity
+                key={reply}
+                style={tw`bg-[#1D1E23] rounded-lg px-4 py-2 mr-2 mb-2 border-[#555555] border-2`}
+                onPress={() => handleQuickReply(reply)}
+              >
+                <Text style={[tw`text-white`, { fontFamily: 'Times New Roman', fontSize: 10, color: '#65779E', fontWeight: '700' }]}>
+                  {reply}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
         </View>
       )}
     </View>
   );
 
+  const startListening = async () => {
+    try {
+      ReactNativeHapticFeedback.trigger('impactLight');
+      setIsListening(true);
+      await Voice.start('en-US');
+    } catch (error) {
+      console.error('Voice recognition error:', error);
+      setIsListening(false);
+    }
+  };
+
+  const stopListening = () => {
+    setIsListening(false);
+    ReactNativeHapticFeedback.trigger('impactLight');
+  };
+
+  const onSpeechResults = (event: any) => {
+    const spokenText = event.value[0];
+    setInput(spokenText);
+    setIsListening(false);
+  };
+
+  const onSpeechError = () => {
+    setIsListening(false);
+  };
+
+  useEffect(() => {
+    Voice.onSpeechResults = onSpeechResults;
+    Voice.onSpeechError = onSpeechError;
+
+    return () => {
+      Voice.destroy().then(Voice.removeAllListeners);
+    };
+  }, []);
+
+  const handleInputChange = (text: string) => {
+    setInput(text);
+    if (text.length > 100) {
+      triggerHaptic();
+    }
+  };
+
+  const handleClearSearch = () => {
+    setSearchQuery('');
+  };
+
+  const debouncedSearch = useCallback(
+    debounce((text: string) => {
+      setSearchQuery(text);
+    }, 300),
+    []
+  );
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    // Add logic to refresh chat messages or fetch new data
+    // For example, you could reset the messages or fetch new ones from an API
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 1000); // Simulate a network request
+  };
+
+  useEffect(() => {
+    if (isListening) {
+      waveformAnimations.forEach((animation) => {
+        Animated.loop(
+          Animated.sequence([
+            Animated.timing(animation, {
+              toValue: Math.random() * 2 + 1,
+              duration: 300,
+              useNativeDriver: true,
+            }),
+            Animated.timing(animation, {
+              toValue: 1,
+              duration: 300,
+              useNativeDriver: true,
+            }),
+          ])
+        ).start();
+      });
+
+      timerRef.current = setInterval(() => {
+        setRecordingTime((prev) => prev + 1);
+      }, 1000);
+    } else {
+      waveformAnimations.forEach((animation) => {
+        animation.stopAnimation();
+        animation.setValue(1);
+      });
+
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+      setRecordingTime(0);
+    }
+  }, [isListening]);
+
   return (
-    <View style={tw`flex-1 bg-[#111111]`}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'android' ? 'padding' : 'height'}
-        keyboardVerticalOffset={80}
-        style={tw`flex-1 pb-9`}
-      >
-        <ScrollView 
-          style={tw`flex-1`}
-          contentContainerStyle={tw`px-4 pt-4`}
-          showsVerticalScrollIndicator={false}
-          bounces={false}
-        >
-          <FlatList
-            data={messages}
-            renderItem={renderItem}
-            keyExtractor={(item) => item.id}
-            inverted
-            scrollEnabled={false}
-            ListFooterComponent={<View style={tw`h-4`} />}
-            ListHeaderComponent={<View style={tw`h-4`} />}
-          />
-        </ScrollView>
+<View style={tw`flex-1 bg-[#111111] pb-0`}>
+  {/* Navigation Header */}
+  <View style={tw`flex-row items-center justify-between p-4 bg-[#111111]`}>
+    {/* Back Button */}
+    <TouchableOpacity onPress={() => navigation.goBack()} style={tw`p-2`}>
+      <Icon name="chevron-back" size={24} color="#FFFFFF" />
+    </TouchableOpacity>
 
-        {showInput && (
-          <View style={tw`flex-row items-center p-4 bg-[#111111] mb-20`}>
-            <TextInput
-              style={[
-                tw`flex-1 px-4 py-2 rounded-full bg-[#1D1E23] text-white`,
-                { fontSize: 14 }
-              ]}
-              value={input}
-              onChangeText={setInput}
-              placeholder="Type a message..."
-              placeholderTextColor="#4B4B4B"
-              multiline
-              numberOfLines={2}
-              maxLength={1000}
-            />
-
-            <TouchableOpacity
-              activeOpacity={0.7}
-              style={tw`bg-[#3272A0] p-2 rounded-full ml-2`}
-              onPress={input.trim() && !isLoading ? sendMessage : undefined}
-              disabled={isLoading}
-            >
-              <Icon 
-                name={isLoading ? "timer-outline" : input.trim() ? "send" : "mic"} 
-                size={20} 
-                color="#fff" 
-              />
-            </TouchableOpacity>
-          </View>
-        )}
-      </KeyboardAvoidingView>
+    {/* Search Bar */}
+    <View style={tw`flex-1 mx-2`}>
+      <TextInput
+        style={[
+          tw`px-4 py-2 rounded-full bg-[#1D1E23] text-white`,
+          { fontSize: 13 }
+        ]}
+        value={searchQuery}
+        onChangeText={setSearchQuery}
+        placeholder="Search conversations..."
+        placeholderTextColor="#4B4B4B"
+      />
     </View>
+
+    {/* Notification Icon */}
+    <TouchableOpacity onPress={() => navigation.navigate('NotificationScreen')} style={tw`p-2`}>
+      <Icon name="notifications" size={24} color="#FFFFFF" />
+    </TouchableOpacity>
+  </View>
+
+  {/* Main Content */}
+  <KeyboardAvoidingView
+    behavior={Platform.OS === 'android' ? 'padding' : 'height'}
+    keyboardVerticalOffset={80}
+    style={tw`flex-1 pb-12`}
+  >
+    <FlatList
+      data={filteredMessages}
+      renderItem={renderItem}
+      keyExtractor={(item) => item.id}
+      inverted
+      contentContainerStyle={tw`px-4 pt-4`}
+      ListFooterComponent={<View style={tw`h-4`} />}
+      ListHeaderComponent={<View style={tw`h-4`} />}
+      showsVerticalScrollIndicator={false}
+      bounces={false}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+    />
+
+    {/* Message Input */}
+    <View style={tw`flex-row items-center p-4 bg-[#111111] mb-12`}>
+      <TextInput
+        style={[
+          tw`flex-1 px-4 py-2 rounded-full bg-[#1D1E23] text-white`,
+          { fontSize: 13 },
+        ]}
+        value={isListening ? "Recording..." : input}
+        onChangeText={handleInputChange}
+        placeholder="Type a message..."
+        placeholderTextColor="#4B4B4B"
+        multiline
+        numberOfLines={2}
+        maxLength={1000}
+        onFocus={triggerHaptic}
+        editable={!isListening}
+      />
+
+      <TouchableOpacity
+        activeOpacity={0.7}
+        style={tw`bg-[#3272A0] p-2 rounded-full ml-2`}
+        onPress={input.trim() ? sendMessage : (isListening ? stopListening : startListening)}
+      >
+        <Icon
+          name={input.trim() ? "send" : (isListening ? "mic-off" : "mic")}
+          size={20}
+          color="#fff"
+        />
+      </TouchableOpacity>
+    </View>
+  </KeyboardAvoidingView>
+</View>
   );
 };
 
-export default ChatScreen;
+export default React.memo(ChatScreen);
