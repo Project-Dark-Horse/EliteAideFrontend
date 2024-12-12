@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, Alert, ScrollView, TextInput, RefreshControl, ActivityIndicator, Platform } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Alert, ScrollView, TextInput, RefreshControl, ActivityIndicator, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
@@ -8,7 +8,7 @@ import { launchImageLibrary } from 'react-native-image-picker';
 import { BASE_URL } from '@env';
 import CommonHeader from '../../components/CommonHeader';
 import axios from 'axios';
-
+import FastImage from 'react-native-fast-image';
 interface TaskStatistics {
   total: number;
   pending: number;
@@ -110,7 +110,7 @@ const ProfileScreen = () => {
       });
 
       if (!result.didCancel && result.assets?.[0]?.uri) {
-        const token = await AsyncStorage.getItem('access_token');
+        let token = await AsyncStorage.getItem('access_token');
         if (!token) throw new Error('No access token found');
 
         const formData = new FormData();
@@ -135,10 +135,19 @@ const ProfileScreen = () => {
         const data = await response.json();
         console.log('Upload response:', data);
 
-        if (response.ok && data.message?.profile_picture_url) {
-          setProfilePicture(data.message.profile_picture_url);
-          await fetchProfileData();
+        if (response.ok && data.data?.profile_picture_url) {
+          const newProfilePicUrl = data.data.profile_picture_url.split('?')[0];
+          console.log('Setting new profile picture URL:', newProfilePicUrl);
+          setProfilePicture(newProfilePicUrl);
           Alert.alert('Success', 'Profile picture updated successfully');
+        } else if (data.error === 'Token is blacklisted') {
+          console.warn('Token is blacklisted. Attempting to refresh token.');
+          const newToken = await refreshAccessToken();
+          if (newToken) {
+            await handleEditProfilePic();
+          } else {
+            throw new Error('Failed to refresh token. Please log in again.');
+          }
         } else {
           throw new Error(data.message || 'Failed to update profile picture');
         }
@@ -149,6 +158,35 @@ const ProfileScreen = () => {
         'Error',
         'Failed to update profile picture. Please try again with a different image.'
       );
+    }
+  };
+
+  const refreshAccessToken = async () => {
+    try {
+      const refreshToken = await AsyncStorage.getItem('refresh_token');
+      if (!refreshToken) throw new Error('No refresh token found');
+
+      const response = await axios.post(
+        `${BASE_URL}v1/users/refresh-token/`,
+        { refresh_token: refreshToken },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        const newAccessToken = response.data.access_token;
+        await AsyncStorage.setItem('access_token', newAccessToken);
+        return newAccessToken;
+      } else {
+        console.error('Failed to refresh token:', response.data);
+        return null;
+      }
+    } catch (error) {
+      console.error('Error refreshing token:', error);
+      return null;
     }
   };
 
@@ -278,12 +316,12 @@ const ProfileScreen = () => {
         <View style={styles.profileCard}>
           <View style={styles.profileInfo}>
             <View style={styles.avatarContainer}>
-              <Image
+              <FastImage
                 source={
                   profilePicture 
                     ? { 
                         uri: profilePicture,
-                        cache: 'reload'
+                        priority: FastImage.priority.normal,
                       }
                     : require('../../assets/user.jpg')
                 }
@@ -414,6 +452,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 16,
   },
+  
   profileInfo: {
     flexDirection: 'row',
     alignItems: 'center',
