@@ -1,35 +1,35 @@
 // Assuming your CalendarPopup.tsx is in the src/components folder
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Calendar, DateData } from 'react-native-calendars';
 import formatDate from '../../utils/formatDate'; // Adjust the relative path as necessary
+import { MarkedDates } from 'react-native-calendars/src/types';
 
 interface CalendarPopupProps {
   selectedDate: Date;
-  setSelectedDate: React.Dispatch<React.SetStateAction<Date>>;
-  setIsCalendarVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  setSelectedDate: (date: Date) => void;
+  setIsCalendarVisible: (visible: boolean) => void;
+  markedDates: Record<string, any>;
 }
 
 const CalendarPopup: React.FC<CalendarPopupProps> = ({
   selectedDate,
   setSelectedDate,
   setIsCalendarVisible,
+  markedDates,
 }) => {
   const onDayPress = (day: DateData) => {
     setSelectedDate(new Date(day.timestamp));
     setIsCalendarVisible(false);
   };
 
-  const markedDates = {
-    [formatDate(selectedDate)]: { selected: true, selectedColor: '#3a4d7c' },
-  };
-
   return (
-    <View style={styles.calendarContainer} accessible accessibilityLabel="Calendar Popup">
+    <View style={styles.calendarContainer}>
       <Calendar
         current={formatDate(selectedDate)}
         onDayPress={onDayPress}
         markedDates={markedDates}
+        markingType="dot"
         theme={{
           backgroundColor: '#1c1c1e',
           calendarBackground: '#1c1c1e',
@@ -39,7 +39,7 @@ const CalendarPopup: React.FC<CalendarPopupProps> = ({
           todayTextColor: '#3a4d7c',
           dayTextColor: '#ffffff',
           textDisabledColor: '#4c4c4e',
-          dotColor: '#3a4d7c',
+          dotColor: '#3272A0',
           selectedDotColor: '#ffffff',
           arrowColor: '#3a4d7c',
           monthTextColor: '#ffffff',

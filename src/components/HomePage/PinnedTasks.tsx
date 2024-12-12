@@ -9,6 +9,7 @@ import axios from 'axios';
 import { BASE_URL } from '@env';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+<<<<<<< HEAD
 
 interface Task {
   id: number;
@@ -18,6 +19,22 @@ interface Task {
   day: string;
   backgroundColor: string;
   iconName: string;
+=======
+import { useTaskRefresh } from '../../context/TaskRefreshContext';
+import { useFocusEffect } from '@react-navigation/native';
+import { FormattedTask } from '../../types/task';
+import { getIconName, getBackgroundColor } from '../../utils/taskUtils';
+
+type RootStackParamList = {
+  MyTaskScreen: undefined;
+  Login: undefined;
+};
+
+type NavigationProp = StackNavigationProp<RootStackParamList>;
+
+interface PinnedTasksProps {
+  tasks: FormattedTask[];
+>>>>>>> release/1.0.0
 }
 
 interface TaskResponse {
@@ -44,6 +61,7 @@ interface TaskResponse {
   };
 }
 
+<<<<<<< HEAD
 const getBackgroundColor = (type: string): string => {
   // Always return the dark background color as per design
   return '#1E1E1E';
@@ -141,6 +159,87 @@ const PinnedTasks: React.FC = () => {
     fetchTasks();
   }, []);
 
+=======
+const PinnedTasks: React.FC<PinnedTasksProps> = ({ tasks }) => {
+  const navigation = useNavigation<NavigationProp>();
+  const [loading, setLoading] = useState(false);
+  const { shouldRefresh, setShouldRefresh } = useTaskRefresh();
+
+  const fetchTasks = async () => {
+    setLoading(true);
+    try {
+      const token = await AsyncStorage.getItem('access_token');
+      if (!token) {
+        navigation.navigate('Login');
+        return;
+      }
+
+      const today = new Date();
+      const nextWeek = new Date(today);
+      nextWeek.setDate(nextWeek.getDate() + 7);
+      
+      const startDate = today.toISOString().split('T')[0];
+      const endDate = nextWeek.toISOString().split('T')[0];
+      
+      const response = await axios.get<TaskResponse>(`${BASE_URL}v1/tasks/range`, {
+        headers: { 
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        params: {
+          start_date: startDate,
+          end_date: endDate,
+          is_pinned: true
+        }
+      });
+
+      if (response.data?.message?.task_details?.data?.length > 0) {
+        const fetchedTasks = response.data.message.task_details.data.map((task: TaskResponse['message']['task_details']['data'][0]) => {
+          const dueDate = new Date(task.due_date);
+          return {
+            id: task.id,
+            title: task.title,
+            description: task.description,
+            status: task.status,
+            due_date: task.due_date,
+            type: task.type,
+            priority: task.priority,
+            time: dueDate.toLocaleTimeString([], { 
+              hour: 'numeric', 
+              minute: '2-digit',
+              hour12: true 
+            }).toUpperCase(),
+            day: dueDate.toLocaleDateString('en-US', { 
+              weekday: 'long' 
+            }) || 'Today',
+            backgroundColor: '#1E1E1E',
+            iconName: getIconName(task.type),
+          };
+        });
+        tasks = fetchedTasks;
+      }
+    } catch (error) {
+      console.error('Error fetching pinned tasks:', error);
+      Alert.alert('Error', 'Unable to fetch pinned tasks');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchTasks();
+  }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      if (shouldRefresh) {
+        fetchTasks();
+        setShouldRefresh(false);
+      }
+    }, [shouldRefresh])
+  );
+
+>>>>>>> release/1.0.0
   return (
     <Surface style={tw`p-4 bg-[#111111] flex-1`}>
       <SeeAllCards title="Weekly Tasks" />

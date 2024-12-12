@@ -98,4 +98,4 @@ const ChatSettingsScreen: React.FC = () => {
   );
 };
 
-export default ChatSettingsScreen;
+export default React.memo(ChatSettingsScreen);

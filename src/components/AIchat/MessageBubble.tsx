@@ -1,10 +1,9 @@
 import React from 'react';
 import { View, Text, Image } from 'react-native';
-import GradientBorder from '../../../components/GradientBorder';
-import { styles } from '../../Calendar/styles';
+import GradientBorder from '../../components/GradientBorder';
+import styles  from '../../components/AIChat/styles';
 import BotAvatar from '../../../assets/bot.png';
-import UserAvatar from '../../../assets/ManAvatar.png';
-
+import UserAvatar from '../../../assets/user.jpg';
 interface MessageBubbleProps {
   message: string;
   isAI: boolean;

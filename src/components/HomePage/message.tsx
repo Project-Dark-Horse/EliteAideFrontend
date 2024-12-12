@@ -9,9 +9,9 @@ const CustomMessageComponent: React.FC = () => {
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        const token = await AsyncStorage.getItem('accessToken');
+        const token = await AsyncStorage.getItem('access_token');
         if (!token) {
-          console.error('No access token found');
+          console.error('No access token foundddddd');
           return;
         }
 

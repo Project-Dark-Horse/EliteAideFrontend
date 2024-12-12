@@ -1,7 +1,7 @@
-import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, FlatList } from 'react-native';
 import tw from 'twrnc';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import TaskCard from '../../components/Profile/TaskCard';
 
 interface Task {
   id: number;
@@ -11,39 +11,53 @@ interface Task {
   date: Date;
   color: string;
   completed?: boolean;
+  status: string;
 }
 
-interface TaskCardProps {
-  task: Task;
-}
+const DayScheduleScreen: React.FC = () => {
+  const [tasks, setTasks] = useState<Task[]>([]);
 
-const TaskCard: React.FC<TaskCardProps> = ({ task }) => (
-  <TouchableOpacity 
-    style={[
-      tw`flex-row items-center mb-2 rounded-xl p-3`,
-      { backgroundColor: task.color }
-    ]}
-  >
-    <View style={tw`mr-2`}>
-      <Ionicons name="briefcase-outline" size={20} color="white" />
-    </View>
+  useEffect(() => {
+    const fetchTasks = async () => {
+      try {
+        const response = await fetch('https://api.eliteaide.tech/v1/tasks/user-tasks?page=2&items_per_page=5');
+        const data = await response.json();
+        const fetchedTasks = data.message.task_details.data.map((task: any) => ({
+          id: task.id,
+          time: '08:00', // Adjust as needed
+          summary: task.title,
+          detail: task.description,
+          date: new Date(task.due_date),
+          color: '#4CAF50', // Adjust as needed
+          status: task.status,
+        }));
+        setTasks(fetchedTasks);
+      } catch (error) {
+        console.error('Error fetching tasks:', error);
+      }
+    };
+
+    fetchTasks();
+  }, []);
+
+  const renderTask = ({ item }: { item: Task }) => (
+    <TaskCard
+      task={item}
+      total={tasks.length}
+      pending={tasks.filter(task => task.status === 'pending').length}
+      done={tasks.filter(task => task.status === 'done').length}
+    />
+  );
+
+  return (
     <View style={tw`flex-1`}>
-      <Text style={tw`text-white font-semibold text-base`}>
-        {task.summary}
-      </Text>
-      <Text style={tw`text-white/70 text-sm mt-0.5`}>
-        {task.detail}
-      </Text>
+      <FlatList
+        data={tasks}
+        renderItem={renderTask}
+        keyExtractor={(item) => item.id.toString()}
+      />
     </View>
-    <View style={tw`flex-row items-center`}>
-      <Text style={tw`text-white/70 text-sm mr-2`}>
-        {task.time}
-      </Text>
-      {task.completed && (
-        <Ionicons name="checkmark-circle" size={20} color="#4CAF50" />
-      )}
-    </View>
-  </TouchableOpacity>
-);
+  );
+};
 
-export default React.memo(TaskCard);
+export default React.memo(DayScheduleScreen);

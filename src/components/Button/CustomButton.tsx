@@ -1,31 +1,91 @@
 // CustomButton.tsx
-import React from 'react';
-import { View, TouchableOpacity, Image } from 'react-native';
+import React, { useRef, useState } from 'react';
+import { View, TouchableOpacity, Animated, Text } from 'react-native';
 import tw from 'twrnc';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../../types/navigation';
-import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 
 type CustomButtonProps = {
   onPress?: () => void;
-  navigation?: StackNavigationProp<any>;
 };
 
 const CustomButton: React.FC<CustomButtonProps> = ({ onPress }) => {
-  const navigation = useNavigation<BottomTabNavigationProp<RootStackParamList>>();
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+  const rotateAnim = useRef(new Animated.Value(0)).current;
+  const [showThought, setShowThought] = useState(false);
+  const thoughtAnim = useRef(new Animated.Value(0)).current;
+
+  const productivityThoughts = [
+    "Stay focused!",
+    "Keep pushing forward!",
+    "You're doing great!",
+    "Every step counts!",
+    "Believe in yourself!"
+  ];
+
+  const randomThought = productivityThoughts[Math.floor(Math.random() * productivityThoughts.length)];
+
+  const handlePressIn = () => {
+    Animated.parallel([
+      Animated.spring(scaleAnim, {
+        toValue: 0.9,
+        useNativeDriver: true,
+      }),
+      Animated.timing(rotateAnim, {
+        toValue: 1,
+        duration: 150,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
+
+  const handlePressOut = () => {
+    Animated.parallel([
+      Animated.spring(scaleAnim, {
+        toValue: 1,
+        useNativeDriver: true,
+      }),
+      Animated.timing(rotateAnim, {
+        toValue: 0,
+        duration: 150,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
 
   const handlePress = () => {
     if (onPress) {
       onPress();
-    } else {
-      navigation.navigate('ManualTaskCreate');
     }
+    setShowThought(true);
+    Animated.timing(thoughtAnim, {
+      toValue: 1,
+      duration: 200,
+      useNativeDriver: true,
+    }).start(() => {
+      setTimeout(() => {
+        Animated.timing(thoughtAnim, {
+          toValue: 0,
+          duration: 300,
+          useNativeDriver: true,
+        }).start(() => setShowThought(false));
+      }, 2000);
+    });
   };
+
+  const rotateInterpolate = rotateAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '360deg'], // Rotate 360 degrees
+  });
 
   return (
     <View style={tw`absolute bottom-10 left-0 right-0 items-center`}>
+      {showThought && (
+        <Animated.View style={{ opacity: thoughtAnim, marginBottom: 18 }}>
+          <Text style={tw`text-gray-600 text-center`}>{randomThought}</Text>
+        </Animated.View>
+      )}
       <TouchableOpacity
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
         onPress={handlePress}
         style={[
           tw`w-16 h-10 rounded-full justify-center items-center`,
@@ -39,11 +99,14 @@ const CustomButton: React.FC<CustomButtonProps> = ({ onPress }) => {
         ]}
         accessibilityRole="button"
         accessibilityLabel="Create new task"
-        accessibilityHint="Navigates to the manual create task screen"
+        accessibilityHint="Triggers an animation instead of navigating"
       >
-        <Image
-          source={require('../../assets/plustabbar.png')}
-          style={tw`w-45px h-45px`}
+        <Animated.Image
+          source={require('../../assets/bot.png')}
+          style={[
+            tw`w-45px h-45px`,
+            { transform: [{ scale: scaleAnim }, { rotate: rotateInterpolate }] },
+          ]}
           resizeMode="contain"
         />
       </TouchableOpacity>

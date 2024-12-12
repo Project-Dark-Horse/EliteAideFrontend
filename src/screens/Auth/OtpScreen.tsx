@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ActivityIndicator, Image } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ActivityIndicator, Image, KeyboardAvoidingView, ScrollView, Platform } from 'react-native';
 import RadialGradient from 'react-native-radial-gradient';
 import { BlurView } from '@react-native-community/blur';
 import tw from 'twrnc';
@@ -9,6 +9,7 @@ import { Button } from 'react-native-paper';
 import Toast from 'react-native-toast-message';
 import { OTPRouteProp, OTPNavigationProp } from '../../types/navigation';
 import { BASE_URL } from '@env';
+import { Vibration } from 'react-native';
 
 // Import the logo image
 import LogoImage from '../../assets/vector.png';
@@ -25,7 +26,9 @@ const Otp: React.FC<Props> = ({ route, navigation }) => {
   const [isResendDisabled, setIsResendDisabled] = useState(true);
   const [timer, setTimer] = useState(30);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
   const otpRefs = useRef<(TextInput | null)[]>([]);
+  const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
 
   // Countdown timer for resend button
   useEffect(() => {
@@ -51,9 +54,11 @@ const Otp: React.FC<Props> = ({ route, navigation }) => {
         otpRefs.current[index - 1]?.focus();
       }
     } else {
+      Vibration.vibrate(100);
       Toast.show({
         type: 'error',
-        text1: 'Please enter a valid digit',
+        text1: 'Invalid Input',
+        text2: 'Please enter a single digit (0-9).',
       });
     }
   };
@@ -76,28 +81,38 @@ const Otp: React.FC<Props> = ({ route, navigation }) => {
         setLoading(false);
 
         if (data.message?.toLowerCase() === 'otp verified') {
+          setError(false); // Clear error state
           Toast.show({ type: 'success', text1: 'OTP verified successfully!' });
           navigation.replace('SignUp', { email, otp: userOtp, key: data.key });
-        } else if (data.message?.toLowerCase() === 'otp expired') {
-          Toast.show({
-            type: 'error',
-            text1: 'OTP Expired',
-            text2: 'Your OTP has expired. Please request a new one.',
-          });
         } else {
+          setError(true); // Set error state
+          Vibration.vibrate(100); // Haptic feedback on error
           Toast.show({ type: 'error', text1: 'Invalid OTP. Please try again.' });
+          setOtp(['', '', '', '']); // Clear OTP input
+
+          // Reset error state after a short duration
+          setTimeout(() => setError(false), 1000); // 1 second duration
         }
       } catch (error) {
         setLoading(false);
         console.error('Error verifying OTP:', error);
+        Vibration.vibrate(100); // Haptic feedback on error
         Toast.show({ type: 'error', text1: 'Network error. Please try again.' });
+
+        // Reset error state after a short duration
+        setTimeout(() => setError(false), 1000); // 1 second duration
       }
     } else {
+      setError(true); // Set error state
+      Vibration.vibrate(100); // Haptic feedback on error
       Toast.show({
         type: 'error',
         text1: 'Incomplete OTP',
         text2: 'Please enter the 4-digit OTP',
       });
+
+      // Reset error state after a short duration
+      setTimeout(() => setError(false), 1000); // 1 second duration
     }
   };
 
@@ -114,7 +129,9 @@ const Otp: React.FC<Props> = ({ route, navigation }) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
       });
-
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
       const data = await response.json();
       console.log('OTP Resend Response:', data);
       setLoading(false);
@@ -132,7 +149,10 @@ const Otp: React.FC<Props> = ({ route, navigation }) => {
   };
 
   return (
-    <View style={tw`flex-1`}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'android' ? 'padding' : 'height'}
+      style={tw`flex-1`}
+    >
       <RadialGradient
         style={tw`absolute inset-0`}
         colors={['#4956C7', '#111111', '#111111']}
@@ -146,88 +166,123 @@ const Otp: React.FC<Props> = ({ route, navigation }) => {
         reducedTransparencyFallbackColor="rgba(0,0,0,0.3)"
       />
 
-      {/* Logo Image at specified position */}
-      <Image
-        source={LogoImage}
-        style={{
-          position: 'absolute',
-          top: 201.09, // Position from the top
-          left: 20, // Position from the left
-          width: 119.96, // Width as per design
-          height: 54.53, // Height as per design
-          transform: [{ rotate: '0.81deg' }], // Slight rotation if needed
-        }}
-      />
-
-      <View style={tw`flex-1 justify-center px-6 bg-transparent mt-5`}>
-        <TouchableOpacity
-          style={tw`w-10 h-10 justify-center items-center top--39 bg-[#1D1E23] rounded-2xl`}
+      <ScrollView contentContainerStyle={tw`flex-grow px-6 pt-24`}>
+        {/* Back button */}
+        <TouchableOpacity 
           onPress={() => navigation.goBack()}
-          accessibilityRole="button"
-          accessibilityLabel="Go back button"
-          accessibilityHint="Navigates to the previous screen"
+          style={tw`m-4 w-10 h-10 justify-center items-center bg-[#1D1E23] rounded-full`}
         >
-          <Ionicons name="chevron-back" size={28} color="#fff" />
+          <Ionicons name="chevron-back" size={24} color="#fff" />
         </TouchableOpacity>
 
-        <Text style={tw`text-white text-2xl mt-4`}>Enter the 4-digit code sent to</Text>
-        <Text style={tw`text-white text-lg mt-4`}>{email}</Text>
+        {/* Logo */}
+        <Image
+          source={LogoImage}
+          style={[
+            tw`mb-6`,
+            {
+              width: 120,
+              height: 55,
+              transform: [{ rotate: '0.81deg' }],
+            }
+          ]}
+          resizeMode="contain"
+        />
+
+        {/* Text content */}
+        <Text style={tw`text-white text-2xl font-semibold mb-2`}>
+          Enter the 4-digit code sent to
+        </Text>
+        <Text style={tw`text-[#979797] text-lg mb-1`}>{email}</Text>
 
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Text style={tw`text-[#979797] mt-3`}>Wrong Address? Re-enter</Text>
+          <Text style={tw`text-[#979797]`}>
+            Wrong Address? <Text style={tw`text-[#65779E] font-semibold`}>Re-enter</Text>
+          </Text>
         </TouchableOpacity>
 
-        <View style={tw`flex-row justify-start w-full mb-5 mt-10`}>
+        {/* OTP Input with enhanced UX */}
+        <View style={tw`flex-row justify-between mb-8 mt-10`}>
           {otp.map((digit, index) => (
             <TextInput
               key={index}
-              style={tw`w-17 h-17 border border-blue-400 rounded-md text-center text-white text-xl mx-2`}
+              style={[
+                tw`w-16 h-16 bg-[#111111] border rounded-xl text-center text-white text-xl`,
+                focusedIndex === index && tw`border-[#65779E]`, // Highlight current input
+                { borderColor: error ? 'red' : '#262626' } // Error highlighting
+              ]}
               value={digit}
               onChangeText={(text) => handleOtpChange(text, index)}
               keyboardType="numeric"
               maxLength={1}
               ref={(el) => (otpRefs.current[index] = el)}
-              accessibilityLabel={`OTP digit ${index + 1}`}
+              onFocus={() => setFocusedIndex(index)} // Set focused index
+              onBlur={() => setFocusedIndex(null)} // Clear focused index
+              accessibilityLabel={`OTP digit ${index + 1}`} // Accessibility label
             />
           ))}
         </View>
 
-        <TouchableOpacity onPress={handleResendOtp} disabled={isResendDisabled}>
-          <Text style={tw`text-blue-400 mb-7`}>
+        {/* Resend code with smooth transition */}
+        <TouchableOpacity 
+          onPress={handleResendOtp} 
+          disabled={isResendDisabled}
+          style={tw`items-center mb-8`}
+        >
+          <Text style={tw`text-[#65779E] transition-opacity duration-300`}>
             {isResendDisabled ? `Resend code in ${timer}s` : 'Resend code'}
           </Text>
         </TouchableOpacity>
 
+        {/* Continue Button with 3D effect */}
         <Button
-          mode="elevated"
+          mode="contained"
           onPress={handleVerifyOtp}
           disabled={loading}
-          style={[tw`rounded-2xl top-20`, {
-            shadowColor: 'grey',
-            shadowOffset: { width: 0, height: 0.5 },
-            shadowOpacity: 0.15,
-            shadowRadius: 0.5,
-            elevation: 2,
-          }]}
-          contentStyle={tw`py-1`}
-          labelStyle={tw`text-sm text-white`}
-          buttonColor="#1D1E23"
-          accessibilityRole="button"
-          accessibilityLabel="Verify OTP button"
-          accessibilityHint="Verifies the entered OTP"
+          style={[
+            tw`rounded-xl mb-4`,
+            {
+              backgroundColor: '#1D1E23',
+              transform: [{ translateY: 0 }],
+              shadowColor: '#000',
+              shadowOffset: {
+                width: 0,
+                height: 4,
+              },
+              shadowOpacity: 0.3,
+              shadowRadius: 4.65,
+              elevation: 8,
+              borderWidth: 1,
+              borderColor: 'rgba(255, 255, 255, 0.1)',
+            }
+          ]}
+          contentStyle={[
+            tw`py-2`,
+            {
+              transform: [{ translateY: -1 }],
+            }
+          ]}
+          labelStyle={[
+            tw`text-white font-bold`,
+            {
+              textShadowColor: 'rgba(0, 0, 0, 0.3)',
+              textShadowOffset: { width: 0, height: 1 },
+              textShadowRadius: 2,
+            }
+          ]}
         >
           {loading ? <ActivityIndicator size="small" color="#fff" /> : 'Continue'}
         </Button>
-      </View>
 
-      <LinearGradient
-        style={tw`absolute bottom-0 left-0 right-0 h-[10%]`}
-        colors={['rgba(17,17,17,0.2)', 'rgba(73,86,189,0.2)']}
-      />
-
-      <Toast />
-    </View>
+        {/* Step indicator */}
+        <View style={tw`items-center mb-1`}>
+          <Text style={tw`text-[#979797] text-sm`}>
+            Step <Text style={tw`text-[#65779E] font-semibold`}>2</Text>/3
+          </Text>
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 
-export default Otp;
+export default React.memo(Otp);

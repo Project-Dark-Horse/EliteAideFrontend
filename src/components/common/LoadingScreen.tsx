@@ -1,39 +1,57 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { AnimatedCircularProgress } from 'react-native-circular-progress';
-import Svg, { Defs, LinearGradient, Stop, Circle } from 'react-native-svg';
+import React, { useEffect, useRef } from 'react';
+import { View, Text, StyleSheet, Animated } from 'react-native';
+import Svg, { Circle, Defs, RadialGradient, Stop } from 'react-native-svg';
 
-const LoadingScreen: React.FC = () => {
-  const progress = 70; // This would be dynamic based on actual loading progress
+const LoadingScreen = () => {
+  const spinAnim = useRef(new Animated.Value(0)).current;
+  const slideAnim = useRef(new Animated.Value(-50)).current;
+
+  useEffect(() => {
+    Animated.loop(
+      Animated.timing(spinAnim, {
+        toValue: 1,
+        duration: 4000,
+        useNativeDriver: true,
+      })
+    ).start();
+
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(slideAnim, {
+          toValue: 0,
+          duration: 2000,
+          useNativeDriver: true,
+        }),
+        Animated.timing(slideAnim, {
+          toValue: -50,
+          duration: 2000,
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+  }, [spinAnim, slideAnim]);
+
+  const spin = spinAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '360deg'],
+  });
 
   return (
     <View style={styles.container}>
-      <View style={styles.progressContainer}>
-        <AnimatedCircularProgress
-          size={200}
-          width={15}
-          fill={progress}
-          tintColor="transparent" // Make the circle transparent
-          backgroundColor="transparent" // Transparent background
-          lineCap="round" // Rounded line ends
-        >
-          {() => (
-            <View style={styles.gradientCircleContainer}>
-              <Svg height="200" width="200" viewBox="0 0 200 200">
-                <Defs>
-                  <LinearGradient id="grad" x1="0" y1="0" x2="100%" y2="0">
-                    <Stop offset="0%" stopColor="#00BCD4" stopOpacity="1" />
-                    <Stop offset="100%" stopColor="#8E2DE2" stopOpacity="1" />
-                  </LinearGradient>
-                </Defs>
-                <Circle cx="100" cy="100" r="92.5" stroke="url(#grad)" strokeWidth="15" fill="none" />
-              </Svg>
-              <Text style={styles.progressText}>{`${progress}%`}</Text>
-            </View>
-          )}
-        </AnimatedCircularProgress>
-      </View>
-      <Text style={styles.loadingText}>Loading</Text>
+      <Animated.View style={{ transform: [{ rotate: spin }] }}>
+        <Svg width="100" height="100" viewBox="0 0 100 100" fill="none">
+          <Circle cx="50" cy="50" r="40" fill="url(#grad)" />
+          <Defs>
+            <RadialGradient id="grad" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(50 50) rotate(90) scale(40)">
+              <Stop stopColor="#0079F3" />
+              <Stop offset="1" stopColor="#001D3A" stopOpacity="0" />
+            </RadialGradient>
+          </Defs>
+        </Svg>
+      </Animated.View>
+      <Animated.Text style={[styles.text, { transform: [{ translateY: slideAnim }] }]}>
+        Elite Aide
+      </Animated.Text>
     </View>
   );
 };
@@ -43,28 +61,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#000', // Dark background for better contrast
+    backgroundColor: '#000',
   },
-  progressContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  gradientCircleContainer: {
-    position: 'absolute',
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: 200,
-    height: 200,
-  },
-  progressText: {
-    color: '#FFF',
-    fontSize: 30,
-    fontWeight: 'bold',
-  },
-  loadingText: {
-    color: '#FFF',
+  text: {
+    color: '#fff',
+    marginTop: 20,
     fontSize: 24,
+    fontWeight: 'bold',
   },
 });
 

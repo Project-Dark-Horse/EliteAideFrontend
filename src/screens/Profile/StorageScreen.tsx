@@ -43,4 +43,4 @@ const StorageScreen: React.FC = () => {
   );
 };
 
-export default StorageScreen;
+export default React.memo(StorageScreen);
