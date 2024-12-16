@@ -327,9 +327,16 @@ const ProfileScreen = () => {
                 }
                 style={styles.avatar}
                 defaultSource={require('../../assets/user.jpg')}
-                onLoadStart={() => setImageLoading(true)}
-                onLoadEnd={() => setImageLoading(false)}
+                onLoadStart={() => {
+                  console.log('Loading image:', profilePicture);
+                  setImageLoading(true);
+                }}
+                onLoadEnd={() => {
+                  console.log('Image loaded:', profilePicture);
+                  setImageLoading(false);
+                }}
                 onError={() => {
+                  console.error('Error loading image:', profilePicture);
                   setImageLoading(false);
                   setProfilePicture(null);
                 }}
