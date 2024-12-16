@@ -8,7 +8,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   Image,
-  ScrollView,
   Animated,
   RefreshControl,
 } from 'react-native';
@@ -22,7 +21,6 @@ import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import Voice from '@react-native-voice/voice';
 import { useTaskRefresh } from '../../context/TaskRefreshContext';
-import SearchBar from '../../components/SearchBar';
 import { debounce } from 'lodash';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 
@@ -36,25 +34,43 @@ interface Message {
   timestamp?: string;
 }
 
-interface TaskDetails {
-  title: string;
-  description: string;
-  due_date: string;
-  priority: string;
-  type: string;
-  created_at: string;
+type RootStackParamList = {
+  Login: undefined;
+  NotificationScreen: undefined;
+};
+
+type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
+
+const BASE_URL = 'https://api.eliteaide.tech/';
+
+interface ApiResponse {
+  error?: string;
+  message?: string;
+  nextPrompt?: string;
+  suggestions?: string[];
+  task_details?: {
+    title: string;
+    description: string;
+    due_date: string;
+  };
 }
 
 interface SuccessResponse {
   message: {
     message: string;
-    task_details: TaskDetails;
+    task_details: {
+      title: string;
+      description: string;
+      due_date: string;
+      priority: number;
+      type: string;
+      created_at: string;
+    };
   };
 }
 
 interface TaskResponse {
   message: {
-    message: string;
     task_details: {
       total_pages: number;
       total_items: number;
@@ -76,28 +92,6 @@ interface TaskResponse {
   };
 }
 
-interface ApiResponse {
-  error?: string;
-  message?: string;
-  nextPrompt?: string;
-  suggestions?: string[];
-  task_details?: {
-    title: string;
-    description: string;
-    due_date: string;
-  };
-}
-
-type RootStackParamList = {
-  Login: undefined;
-  NotificationScreen: undefined;
-  // Add other screens as needed
-};
-
-type NavigationProp = NativeStackNavigationProp<RootStackParamList>;
-
-const BASE_URL = 'https://api.eliteaide.tech/';
-
 const ChatScreen = () => {
   const navigation = useNavigation<NavigationProp>();
   const [messages, setMessages] = useState<Message[]>([
@@ -112,7 +106,7 @@ const ChatScreen = () => {
   const [input, setInput] = useState('');
   const [isListening, setIsListening] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [showInput, setShowInput] = useState(true);
+  const [showInput, setShowInput] = useState(false);
   const { setShouldRefresh } = useTaskRefresh();
   const [searchQuery, setSearchQuery] = useState('');
   const micAnimation = useRef(new Animated.Value(1)).current;
@@ -136,7 +130,6 @@ const ChatScreen = () => {
     } else if (response.message || response.nextPrompt) {
       let botMessageText = response.message || response.nextPrompt || '';
 
-      // Check if the response includes task details
       if (response.task_details) {
         const { title, description, due_date } = response.task_details;
         botMessageText = `You have created a task titled "${title}".\nDescription: ${description}\nDue Date: ${due_date}`;
@@ -323,7 +316,6 @@ const ChatScreen = () => {
       console.log('Handling SHOW MY TASKS action');
       setShowInput(false);
       
-      // Get today's date and tomorrow's date
       const today = new Date();
       const tomorrow = new Date(today);
       tomorrow.setDate(tomorrow.getDate() + 1);
@@ -359,7 +351,7 @@ const ChatScreen = () => {
         });
 
         const tasks = response.data.message.task_details.data;
-        const tasksList = tasks.map(task => {
+        const tasksList = tasks.map((task: TaskResponse['message']['task_details']['data'][0]) => {
           const dueDate = new Date(task.due_date).toLocaleString('en-US', {
             month: 'short',
             day: 'numeric',
@@ -454,7 +446,6 @@ const ChatScreen = () => {
           <Text style={[tw`text-gray-200`, { fontWeight: '100' }]}>{item.text}</Text>
           <Text style={tw`text-gray-400 text-xs mt-1`}>{item.timestamp}</Text>
 
-          {/* Bot tail */}
           {item.sender === 'bot' && (
             <>
               <View
@@ -490,7 +481,6 @@ const ChatScreen = () => {
             </>
           )}
 
-          {/* User tail */}
           {item.sender === 'user' && (
             <>
               <View
@@ -603,11 +593,9 @@ const ChatScreen = () => {
 
   const onRefresh = async () => {
     setRefreshing(true);
-    // Add logic to refresh chat messages or fetch new data
-    // For example, you could reset the messages or fetch new ones from an API
     setTimeout(() => {
       setRefreshing(false);
-    }, 1000); // Simulate a network request
+    }, 1000);
   };
 
   useEffect(() => {
@@ -647,87 +635,89 @@ const ChatScreen = () => {
   }, [isListening]);
 
   return (
-<View style={tw`flex-1 bg-[#111111] pb-0`}>
-  {/* Navigation Header */}
-  <View style={tw`flex-row items-center justify-between p-4 bg-[#111111]`}>
-    {/* Back Button */}
-    <TouchableOpacity onPress={() => navigation.goBack()} style={tw`p-2`}>
-      <Icon name="chevron-back" size={24} color="#FFFFFF" />
-    </TouchableOpacity>
+    <View style={tw`flex-1 bg-[#111111] pb-10`}>
+      {/* Navigation Header */}
+      <View style={tw`flex-row items-center justify-between p-4 bg-[#111111]`}>
+        {/* Back Button */}
+        <TouchableOpacity onPress={() => navigation.goBack()} style={tw`p-2`}>
+          <Icon name="chevron-back" size={24} color="#FFFFFF" />
+        </TouchableOpacity>
 
-    {/* Search Bar */}
-    <View style={tw`flex-1 mx-2`}>
-      <TextInput
-        style={[
-          tw`px-4 py-2 rounded-full bg-[#1D1E23] text-white`,
-          { fontSize: 13 }
-        ]}
-        value={searchQuery}
-        onChangeText={setSearchQuery}
-        placeholder="Search conversations..."
-        placeholderTextColor="#4B4B4B"
-      />
-    </View>
+        {/* Search Bar */}
+        <View style={tw`flex-1 mx-2`}>
+          <TextInput
+            style={[
+              tw`px-4 py-2 rounded-full bg-[#1D1E23] text-white`,
+              { fontSize: 13 }
+            ]}
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            placeholder="Search conversations..."
+            placeholderTextColor="#4B4B4B"
+          />
+        </View>
 
-    {/* Notification Icon */}
-    <TouchableOpacity onPress={() => navigation.navigate('NotificationScreen')} style={tw`p-2`}>
-      <Icon name="notifications" size={24} color="#FFFFFF" />
-    </TouchableOpacity>
-  </View>
+        {/* Notification Icon */}
+        <TouchableOpacity onPress={() => navigation.navigate('NotificationScreen')} style={tw`p-2`}>
+          <Icon name="notifications" size={24} color="#FFFFFF" />
+        </TouchableOpacity>
+      </View>
 
-  {/* Main Content */}
-  <KeyboardAvoidingView
-    behavior={Platform.OS === 'android' ? 'padding' : 'height'}
-    keyboardVerticalOffset={80}
-    style={tw`flex-1 pb-12`}
-  >
-    <FlatList
-      data={filteredMessages}
-      renderItem={renderItem}
-      keyExtractor={(item) => item.id}
-      inverted
-      contentContainerStyle={tw`px-4 pt-4`}
-      ListFooterComponent={<View style={tw`h-4`} />}
-      ListHeaderComponent={<View style={tw`h-4`} />}
-      showsVerticalScrollIndicator={false}
-      bounces={false}
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }
-    />
-
-    {/* Message Input */}
-    <View style={tw`flex-row items-center p-4 bg-[#111111] mb-12`}>
-      <TextInput
-        style={[
-          tw`flex-1 px-4 py-2 rounded-full bg-[#1D1E23] text-white`,
-          { fontSize: 13 },
-        ]}
-        value={isListening ? "Recording..." : input}
-        onChangeText={handleInputChange}
-        placeholder="Type a message..."
-        placeholderTextColor="#4B4B4B"
-        multiline
-        numberOfLines={2}
-        maxLength={1000}
-        onFocus={triggerHaptic}
-        editable={!isListening}
-      />
-
-      <TouchableOpacity
-        activeOpacity={0.7}
-        style={tw`bg-[#3272A0] p-2 rounded-full ml-2`}
-        onPress={input.trim() ? sendMessage : (isListening ? stopListening : startListening)}
+      {/* Main Content */}
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'android' ? 'padding' : 'height'}
+        keyboardVerticalOffset={80}
+        style={tw`flex-1 pb-12`}
       >
-        <Icon
-          name={input.trim() ? "send" : (isListening ? "mic-off" : "mic")}
-          size={20}
-          color="#fff"
+        <FlatList
+          data={filteredMessages}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+          inverted
+          contentContainerStyle={tw`px-4 pt-4`}
+          ListFooterComponent={<View style={tw`h-4`} />}
+          ListHeaderComponent={<View style={tw`h-4`} />}
+          showsVerticalScrollIndicator={false}
+          bounces={false}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
         />
-      </TouchableOpacity>
+
+        {/* Message Input */}
+        {showInput && (
+          <View style={tw`flex-row items-center p-4 bg-[#111111] mb-20`}>
+            <TextInput
+              style={[
+                tw`flex-1 px-4 py-2 rounded-full bg-[#1D1E23] text-white`,
+                { fontSize: 13 },
+              ]}
+              value={isListening ? "Recording..." : input}
+              onChangeText={handleInputChange}
+              placeholder="Type a message..."
+              placeholderTextColor="#4B4B4B"
+              multiline
+              numberOfLines={2}
+              maxLength={1000}
+              onFocus={triggerHaptic}
+              editable={!isListening}
+            />
+
+            <TouchableOpacity
+              activeOpacity={0.7}
+              style={tw`bg-[#3272A0] p-2 rounded-full ml-2`}
+              onPress={input.trim() ? sendMessage : (isListening ? stopListening : startListening)}
+            >
+              <Icon
+                name={input.trim() ? "send" : (isListening ? "mic-off" : "mic")}
+                size={20}
+                color="#fff"
+              />
+            </TouchableOpacity>
+          </View>
+        )}
+      </KeyboardAvoidingView>
     </View>
-  </KeyboardAvoidingView>
-</View>
   );
 };
 

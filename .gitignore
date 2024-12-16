@@ -143,3 +143,27 @@ app/build/dex/
 
 # macOS
 .DS_Store
+
+# Android build files
+android/build/
+*.sha
+
+# Node modules and lock files
+node_modules/
+yarn-error.log
+
+# Environment files
+.env
+
+# Android build files
+android/build/
+*.sha
+
+# Node modules and lock files
+node_modules/
+yarn-error.log
+
+# Environment files
+android/build/generated/autolinking/autolinking.json
+android/build/generated/autolinking/package.json.sha
+android/build/generated/autolinking/yarn.lock.sha
