@@ -11,6 +11,7 @@ import { SignUpScreenNavigationProp } from '../../types/navigation';
 import { BASE_URL } from '@env';
 import * as Yup from 'yup';
 import Toast from 'react-native-toast-message';
+import Background from '../../components/Background';
 
 type SignUpRouteProp = RouteProp<{ SignUp: { email: string; otp: string } }, 'SignUp'>;
 
@@ -225,160 +226,162 @@ const SignUpScreen = () => {
   };
 
   return (
-    <SafeAreaView style={tw`flex-1`}>
-      <RadialGradient
-        style={tw`absolute inset-0`}
-        colors={['#4956C7', '#000000']}
-        center={[330, 90]}
-        radius={350}
-      />
-      <BlurView
-        style={tw`absolute inset-1`}
-        blurType="extraDark"
-        blurAmount={100}
-        reducedTransparencyFallbackColor="rgba(0,0,0,0.3)"
-      />
-      
-      <View style={tw`flex-1 px-4`}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={tw`w-8 h-8 justify-center items-center bg-[#1D1E23] rounded-xl mt-4`}>
-          <Ionicons name="chevron-back" size={24} color="#FFFFFF" />
-        </TouchableOpacity>
-
-        <Text style={tw`text-[#FFFFFF] text-2xl font-semibold mt-10`}>Sign Up</Text>
-        <Text style={tw`text-[#979797] mt-1 text-sm`}>Ready to be your own boss?</Text>
-
-        <View style={tw`flex-row mt-4`}>
-          <TextInput
-            style={tw`flex-1 text-[#FFFFFF] p-2 rounded-lg border border-[#555555] mr-1`}
-            placeholder="First Name"
-            placeholderTextColor="#979797"
-            value={formData.first_name}
-            onChangeText={(text) => setFormData({ ...formData, first_name: text })}
-          />
-          <TextInput
-            style={tw`flex-1 text-[#FFFFFF] p-2 rounded-lg border border-[#555555] ml-1`}
-            placeholder="Last Name"
-            placeholderTextColor="#979797"
-            value={formData.last_name}
-            onChangeText={(text) => setFormData({ ...formData, last_name: text })}
-          />
-        </View>
-
-        <TextInput
-          style={tw`text-[#FFFFFF] p-2 rounded-lg border border-[#555555] mt-3`}
-          placeholder="Username"
-          placeholderTextColor="#979797"
-          value={formData.username}
-          onChangeText={(text) => setFormData({ ...formData, username: text })}
+    <Background>
+      <SafeAreaView style={tw`flex-1`}>
+        <RadialGradient
+          style={tw`absolute inset-0`}
+          colors={['#4956C7', '#000000']}
+          center={[330, 90]}
+          radius={350}
         />
-
-        <TextInput
-          style={tw`text-[#FFFFFF] p-2 rounded-lg border border-[#555555] mt-3`}
-          placeholder="Mobile Number (Optional)"
-          placeholderTextColor="#979797"
-          value={formData.mobile_number}
-          onChangeText={(text) => setFormData({ ...formData, mobile_number: text })}
+        <BlurView
+          style={tw`absolute inset-1`}
+          blurType="extraDark"
+          blurAmount={100}
+          reducedTransparencyFallbackColor="rgba(0,0,0,0.3)"
         />
+        
+        <View style={tw`flex-1 px-4`}>
+          <TouchableOpacity onPress={() => navigation.goBack()} style={tw`w-8 h-8 justify-center items-center bg-[#1D1E23] rounded-xl mt-4`}>
+            <Ionicons name="chevron-back" size={24} color="#FFFFFF" />
+          </TouchableOpacity>
 
-        <View style={tw`flex-row items-center mt-3`}>
-          <TextInput
-            style={tw`flex-1 text-[#FFFFFF] p-2 rounded-lg border border-[#555555]`}
-            placeholder="Set a Password"
-            placeholderTextColor="#979797"
-            secureTextEntry={!isPasswordVisible}
-            value={formData.password}
-            onChangeText={handlePasswordChange}
-          />
-          <TouchableOpacity onPress={() => setIsPasswordVisible(!isPasswordVisible)} style={tw`absolute right-3`}>
-            <Ionicons
-              name={isPasswordVisible ? 'eye-off' : 'eye'}
-              size={24}
-              color="#979797"
+          <Text style={tw`text-[#FFFFFF] text-2xl font-semibold mt-10`}>Sign Up</Text>
+          <Text style={tw`text-[#979797] mt-1 text-sm`}>Ready to be your own boss?</Text>
+
+          <View style={tw`flex-row mt-4`}>
+            <TextInput
+              style={tw`flex-1 text-[#FFFFFF] p-2 rounded-lg border border-[#555555] mr-1`}
+              placeholder="First Name"
+              placeholderTextColor="#979797"
+              value={formData.first_name}
+              onChangeText={(text) => setFormData({ ...formData, first_name: text })}
             />
-          </TouchableOpacity>
-        </View>
-        {errors.password && <Text style={tw`text-[#C23333] text-xs mt-1`}>{errors.password}</Text>}
+            <TextInput
+              style={tw`flex-1 text-[#FFFFFF] p-2 rounded-lg border border-[#555555] ml-1`}
+              placeholder="Last Name"
+              placeholderTextColor="#979797"
+              value={formData.last_name}
+              onChangeText={(text) => setFormData({ ...formData, last_name: text })}
+            />
+          </View>
 
-        {/* Password Guide */}
-        <View style={tw`mt-1`}>
-          <Text style={tw`text-[#979797] text-xs`}>
-            Password must contain:
-          </Text>
-          <Text style={tw`text-xs ${passwordCriteria.length ? 'text-[#3272A0]' : 'text-[#C23333]'}`}>
-            - At least 8 characters
-          </Text>
-          <Text style={tw`text-xs ${passwordCriteria.number ? 'text-[#3272A0]' : 'text-[#C23333]'}`}>
-            - At least one number
-          </Text>
-          <Text style={tw`text-xs ${passwordCriteria.specialChar ? 'text-[#3272A0]' : 'text-[#C23333]'}`}>
-            - At least one special character (!@#$%^&*)
-          </Text>
-        </View>
-
-        <TextInput
-          style={tw`text-[#FFFFFF] p-2 rounded-lg border border-[#555555] mt-3`}
-          placeholder="Re-enter Password"
-          placeholderTextColor="#979797"
-          secureTextEntry
-          value={formData.confirmPassword}
-          onChangeText={handleConfirmPasswordChange}
-        />
-        {errors.confirmPassword && <Text style={tw`text-[#C23333] text-xs mt-1`}>{errors.confirmPassword}</Text>}
-
-        {/* Password Strength Indicator */}
-        <Text style={tw`text-xs mt-1 ${passwordStrength === 'Weak' ? 'text-[#C23333]' : passwordStrength === 'Moderate' ? 'text-[#FFA500]' : passwordStrength === 'Strong' ? 'text-[#3272A0]' : 'text-[#00FF00]'}`}>
-          Password Strength: {passwordStrength}
-        </Text>
-
-        <View style={tw`flex-row items-center mt-4`}>
-          <CheckBox
-            value={agreeTerms}
-            onValueChange={() => setAgreeTerms(!agreeTerms)}
-            tintColors={{ true: '#65779E', false: '#979797' }}
+          <TextInput
+            style={tw`text-[#FFFFFF] p-2 rounded-lg border border-[#555555] mt-3`}
+            placeholder="Username"
+            placeholderTextColor="#979797"
+            value={formData.username}
+            onChangeText={(text) => setFormData({ ...formData, username: text })}
           />
-          <Text style={tw`text-[#FFFFFF] ml-2 text-xs`}>
-            I agree to all the <Text style={tw`text-[#65779E]`}>Terms</Text> and <Text style={tw`text-[#65779E]`}>Privacy Policies</Text>
+
+          <TextInput
+            style={tw`text-[#FFFFFF] p-2 rounded-lg border border-[#555555] mt-3`}
+            placeholder="Mobile Number (Optional)"
+            placeholderTextColor="#979797"
+            value={formData.mobile_number}
+            onChangeText={(text) => setFormData({ ...formData, mobile_number: text })}
+          />
+
+          <View style={tw`flex-row items-center mt-3`}>
+            <TextInput
+              style={tw`flex-1 text-[#FFFFFF] p-2 rounded-lg border border-[#555555]`}
+              placeholder="Set a Password"
+              placeholderTextColor="#979797"
+              secureTextEntry={!isPasswordVisible}
+              value={formData.password}
+              onChangeText={handlePasswordChange}
+            />
+            <TouchableOpacity onPress={() => setIsPasswordVisible(!isPasswordVisible)} style={tw`absolute right-3`}>
+              <Ionicons
+                name={isPasswordVisible ? 'eye-off' : 'eye'}
+                size={24}
+                color="#979797"
+              />
+            </TouchableOpacity>
+          </View>
+          {errors.password && <Text style={tw`text-[#C23333] text-xs mt-1`}>{errors.password}</Text>}
+
+          {/* Password Guide */}
+          <View style={tw`mt-1`}>
+            <Text style={tw`text-[#979797] text-xs`}>
+              Password must contain:
+            </Text>
+            <Text style={tw`text-xs ${passwordCriteria.length ? 'text-[#3272A0]' : 'text-[#C23333]'}`}>
+              - At least 8 characters
+            </Text>
+            <Text style={tw`text-xs ${passwordCriteria.number ? 'text-[#3272A0]' : 'text-[#C23333]'}`}>
+              - At least one number
+            </Text>
+            <Text style={tw`text-xs ${passwordCriteria.specialChar ? 'text-[#3272A0]' : 'text-[#C23333]'}`}>
+              - At least one special character (!@#$%^&*)
+            </Text>
+          </View>
+
+          <TextInput
+            style={tw`text-[#FFFFFF] p-2 rounded-lg border border-[#555555] mt-3`}
+            placeholder="Re-enter Password"
+            placeholderTextColor="#979797"
+            secureTextEntry
+            value={formData.confirmPassword}
+            onChangeText={handleConfirmPasswordChange}
+          />
+          {errors.confirmPassword && <Text style={tw`text-[#C23333] text-xs mt-1`}>{errors.confirmPassword}</Text>}
+
+          {/* Password Strength Indicator */}
+          <Text style={tw`text-xs mt-1 ${passwordStrength === 'Weak' ? 'text-[#C23333]' : passwordStrength === 'Moderate' ? 'text-[#FFA500]' : passwordStrength === 'Strong' ? 'text-[#3272A0]' : 'text-[#00FF00]'}`}>
+            Password Strength: {passwordStrength}
           </Text>
-        </View>
-        {errors.terms && <Text style={tw`text-[#C23333] text-xs mt-1`}>{errors.terms}</Text>}
 
-        <Button
-          mode="contained"
-          onPress={signUpUser}
-          style={[
-            tw`rounded-md mt-10`,
-            {
-              backgroundColor: '#1D1E23',
-              borderWidth: 1,
-              borderColor: '#555555',
-              shadowColor: '#fff',
-              shadowOffset: { width: 3, height: 4 },
-              shadowOpacity: 0.9,
-              shadowRadius: 9,
-              elevation: 5, // For Android
-            },
-          ]}
-          contentStyle={tw`py-1.5`}
-          labelStyle={[tw`text-base`, { color: '#FFFFFF' }]}
-        >
-          {isLoading ? <ActivityIndicator color="#FFFFFF" /> : 'Sign Up'}
-        </Button>
+          <View style={tw`flex-row items-center mt-4`}>
+            <CheckBox
+              value={agreeTerms}
+              onValueChange={() => setAgreeTerms(!agreeTerms)}
+              tintColors={{ true: '#65779E', false: '#979797' }}
+            />
+            <Text style={tw`text-[#FFFFFF] ml-2 text-xs`}>
+              I agree to all the <Text style={tw`text-[#65779E]`}>Terms</Text> and <Text style={tw`text-[#65779E]`}>Privacy Policies</Text>
+            </Text>
+          </View>
+          {errors.terms && <Text style={tw`text-[#C23333] text-xs mt-1`}>{errors.terms}</Text>}
 
-        <View style={tw`flex-row justify-center mt-1`}>
-          <Text style={tw`text-[#FFFFFF] text-xs`}>Already have an account? </Text>
-          <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-            <Text style={tw`text-[#65779E] font-semibold text-xs`}>Login</Text>
-          </TouchableOpacity>
-        </View>
+          <Button
+            mode="contained"
+            onPress={signUpUser}
+            style={[
+              tw`rounded-md mt-10`,
+              {
+                backgroundColor: '#1D1E23',
+                borderWidth: 1,
+                borderColor: '#555555',
+                shadowColor: '#fff',
+                shadowOffset: { width: 3, height: 4 },
+                shadowOpacity: 0.9,
+                shadowRadius: 9,
+                elevation: 5, // For Android
+              },
+            ]}
+            contentStyle={tw`py-1.5`}
+            labelStyle={[tw`text-base`, { color: '#FFFFFF' }]}
+          >
+            {isLoading ? <ActivityIndicator color="#FFFFFF" /> : 'Sign Up'}
+          </Button>
 
-        {/* Step indicator */}
-        <View style={tw`items-center mb-1 mt-5`}>
-          <Text style={tw`text-[#979797] text-xs`}>
-            Step <Text style={tw`text-[#65779E] font-semibold`}>3</Text>/3
-          </Text>
+          <View style={tw`flex-row justify-center mt-1`}>
+            <Text style={tw`text-[#FFFFFF] text-xs`}>Already have an account? </Text>
+            <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+              <Text style={tw`text-[#65779E] font-semibold text-xs`}>Login</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Step indicator */}
+          <View style={tw`items-center mb-1 mt-5`}>
+            <Text style={tw`text-[#979797] text-xs`}>
+              Step <Text style={tw`text-[#65779E] font-semibold`}>3</Text>/3
+            </Text>
+          </View>
         </View>
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </Background>
   );
 };
 
