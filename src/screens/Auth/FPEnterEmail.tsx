@@ -163,7 +163,20 @@ const FPEnterEmail: React.FC = () => {
             onPress={handleSubmit}
             loading={loading}
             disabled={loading}
-            style={tw`rounded-xl`}
+            style={[
+              tw`rounded-xl`,
+              {
+                backgroundColor: '#1D1E23',
+                borderColor: '#323232',
+                borderWidth: 1,
+                borderRadius: 10,
+                shadowColor: '#000000',
+                shadowOffset: { width: 0, height: 4 },
+                shadowOpacity: 0.25,
+                shadowRadius: 4,
+                elevation: 8,
+              },
+            ]}
             contentStyle={tw`h-12`}
             labelStyle={tw`text-white text-base font-medium`}
           >

@@ -55,7 +55,6 @@ interface ApiResponse {
   };
 }
 
-
 interface SuccessResponse {
   message: {
     message: string;
