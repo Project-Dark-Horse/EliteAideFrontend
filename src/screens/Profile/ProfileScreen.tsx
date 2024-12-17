@@ -9,6 +9,8 @@ import { BASE_URL } from '@env';
 import CommonHeader from '../../components/CommonHeader';
 import axios from 'axios';
 import FastImage from 'react-native-fast-image';
+import LoadingScreen from '../../components/Loading/LoadingScreen';
+
 interface TaskStatistics {
   total: number;
   pending: number;
@@ -33,6 +35,7 @@ const ProfileScreen = () => {
   const [logoutFailed, setLogoutFailed] = useState(false);
   const [profilePicture, setProfilePicture] = useState<string | null>(null);
   const [imageLoading, setImageLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const fetchProfileData = async () => {
     try {
@@ -415,6 +418,7 @@ const ProfileScreen = () => {
           </TouchableOpacity>
         </View>
       </ScrollView>
+      <LoadingScreen loading={loading} />
     </SafeAreaView>
   );
 };

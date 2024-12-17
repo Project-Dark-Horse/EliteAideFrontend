@@ -340,22 +340,20 @@ const NotificationScreen: React.FC = () => {
       <CommonHeader 
         title="Notifications" 
         showTitle={true} 
-        showNotificationIcon={false} 
+        showNotificationIcon={false}
+        showSearchIcon={true}
+        onSearchPress={toggleSearchBar}
       />
-      <View style={styles.headerRight}>
-        <TouchableOpacity style={styles.iconButton} onPress={toggleSearchBar}>
-          <Ionicons name="search" size={20} color="#6B7280" />
-        </TouchableOpacity>
-      </View>
 
       {isSearchVisible && (
         <View style={styles.searchContainer}>
           <TextInput
             style={styles.searchInput}
-            placeholder="Search..."
+            placeholder="Search notifications..."
             placeholderTextColor="#6B7280"
             value={searchQuery}
             onChangeText={setSearchQuery}
+            autoFocus={true}
           />
         </View>
       )}
@@ -521,24 +519,22 @@ const styles = StyleSheet.create({
   listContent: {
     paddingBottom: 16,
   },
-  headerRight: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    paddingHorizontal: 16,
-  },
-  iconButton: {
-    padding: 4,
-  },
   searchContainer: {
     paddingHorizontal: 16,
     paddingVertical: 8,
+    backgroundColor: '#000000',
+    borderBottomWidth: 1,
+    borderBottomColor: '#262626',
   },
   searchInput: {
     backgroundColor: '#1D1E23',
-    borderRadius: 8,
-    paddingHorizontal: 8,
-    color: '#fff',
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    color: '#FFFFFF',
+    fontSize: 16,
+    borderWidth: 1,
+    borderColor: '#262626',
   },
 });
 

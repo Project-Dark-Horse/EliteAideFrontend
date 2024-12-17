@@ -9,6 +9,7 @@ import Toast from 'react-native-toast-message';
 import { BASE_URL } from '@env';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import Background from '../../components/Background';
 
 // Import the logo image
 import LogoImage from '../../assets/vector.png';
@@ -85,118 +86,113 @@ const FPEnterEmail: React.FC = () => {
   };
 
   return (
-    <View style={tw`flex-1 bg-[#000000]`}>
-      <LinearGradient
-        colors={['rgba(73, 86, 199, 0.2)', '#000000']}
-        start={{ x: 0.5, y: 0 }}
-        end={{ x: 0.5, y: 0.8 }}
-        style={tw`absolute inset-0`}
-      />
-
-      <View style={tw`flex-1 px-6`}>
-        <TouchableOpacity 
-          onPress={() => navigation.goBack()}
-          style={tw`mt-8 w-10 h-10 bg-[#1A1A1A]/80 rounded-full justify-center items-center`}
-        >
-          <Ionicons name="chevron-back" size={24} color="#FFFFFF" />
-        </TouchableOpacity>
-
-        <Animated.Image
-          source={LogoImage}
-          style={[
-            tw`w-32 h-32 mt-8 mb-8`,
-            { opacity: 0.9 }
-          ]}
-          resizeMode="contain"
-        />
-
-        <Text style={tw`text-white text-3xl font-bold mb-2`}>
-          Forgot Password?
-        </Text>
-        
-        <Text style={tw`text-[#979797] text-base mb-6`}>
-          Don't worry! It happens. Please enter your registered email address.
-        </Text>
-
-        <View style={tw`mb-8`}>
-          <TextInput
-            style={[
-              tw`bg-[#111111] text-white px-5 py-4 rounded-2xl border`,
-              {
-                fontSize: 16,
-                letterSpacing: 0.5,
-                shadowColor: '#000',
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.1,
-                shadowRadius: 3,
-                elevation: 3,
-                borderColor: emailExists ? '#333333' : '#FF0000',
-              },
-              isFocused && styles.inputFocus,
-              error && styles.inputError
-            ]}
-            placeholder="Enter your email address"
-            placeholderTextColor="#6F6F6F"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            autoCapitalize="none"
-            autoComplete="email"
-            onFocus={() => setIsFocused(true)}
-            onBlur={() => setIsFocused(false)}
-          />
-          {error && (
-            <Text style={tw`text-red-500 text-sm mt-2 ml-2`}>
-              {error}
-            </Text>
-          )}
-        </View>
-
-        <LinearGradient
-          colors={['#4956C7', '#1D1E23']}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 0 }}
-          style={tw`rounded-xl overflow-hidden mb-6`}
-        >
-          <Button
-            mode="contained"
-            onPress={handleSubmit}
-            loading={loading}
-            disabled={loading}
-            style={[
-              tw`rounded-xl`,
-              {
-                backgroundColor: '#1D1E23',
-                borderColor: '#323232',
-                borderWidth: 1,
-                borderRadius: 10,
-                shadowColor: '#000000',
-                shadowOffset: { width: 0, height: 4 },
-                shadowOpacity: 0.25,
-                shadowRadius: 4,
-                elevation: 8,
-              },
-            ]}
-            contentStyle={tw`h-12`}
-            labelStyle={tw`text-white text-base font-medium`}
+    <Background>
+      <View style={tw`flex-1`}>
+        <View style={tw`flex-1 px-6`}>
+          <TouchableOpacity 
+            onPress={() => navigation.goBack()}
+            style={tw`mt-8 w-10 h-10 bg-[#1A1A1A]/80 rounded-full justify-center items-center`}
           >
-            {loading ? 'Sending...' : 'Continue'}
-          </Button>
-        </LinearGradient>
+            <Ionicons name="chevron-back" size={24} color="#FFFFFF" />
+          </TouchableOpacity>
 
-        <TouchableOpacity 
-          onPress={() => navigation.navigate('Login')}
-          style={tw`flex-row justify-center items-center mt-8`}
-        >
-          <Text style={tw`text-[#979797] text-base`}>
-            Remember your password?{' '}
+          <Animated.Image
+            source={LogoImage}
+            style={[
+              tw`w-32 h-32 mt-8 mb-8`,
+              { opacity: 0.9 }
+            ]}
+            resizeMode="contain"
+          />
+
+          <Text style={tw`text-white text-3xl font-bold mb-2`}>
+            Forgot Password?
           </Text>
-          <Text style={tw`text-[#4956C7] font-semibold text-base`}>
-            Login
+          
+          <Text style={tw`text-[#979797] text-base mb-6`}>
+            Don't worry! It happens. Please enter your registered email address.
           </Text>
-        </TouchableOpacity>
+
+          <View style={tw`mb-8`}>
+            <TextInput
+              style={[
+                tw`bg-[#111111] text-white px-5 py-4 rounded-2xl border`,
+                {
+                  fontSize: 16,
+                  letterSpacing: 0.5,
+                  shadowColor: '#000',
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: 0.1,
+                  shadowRadius: 3,
+                  elevation: 3,
+                  borderColor: emailExists ? '#333333' : '#FF0000',
+                },
+                isFocused && styles.inputFocus,
+                error && styles.inputError
+              ]}
+              placeholder="Enter your email address"
+              placeholderTextColor="#6F6F6F"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              autoComplete="email"
+              onFocus={() => setIsFocused(true)}
+              onBlur={() => setIsFocused(false)}
+            />
+            {error && (
+              <Text style={tw`text-red-500 text-sm mt-2 ml-2`}>
+                {error}
+              </Text>
+            )}
+          </View>
+
+          <LinearGradient
+            colors={['#4956C7', '#1D1E23']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={tw`rounded-xl overflow-hidden mb-6`}
+          >
+            <Button
+              mode="contained"
+              onPress={handleSubmit}
+              loading={loading}
+              disabled={loading}
+              style={[
+                tw`rounded-xl`,
+                {
+                  backgroundColor: '#1D1E23',
+                  borderColor: '#323232',
+                  borderWidth: 1,
+                  borderRadius: 10,
+                  shadowColor: '#000000',
+                  shadowOffset: { width: 0, height: 4 },
+                  shadowOpacity: 0.25,
+                  shadowRadius: 4,
+                  elevation: 8,
+                },
+              ]}
+              contentStyle={tw`h-12`}
+              labelStyle={tw`text-white text-base font-medium`}
+            >
+              {loading ? 'Sending...' : 'Continue'}
+            </Button>
+          </LinearGradient>
+
+          <TouchableOpacity 
+            onPress={() => navigation.navigate('Login')}
+            style={tw`flex-row justify-center items-center mt-8`}
+          >
+            <Text style={tw`text-[#979797] text-base`}>
+              Remember your password?{' '}
+            </Text>
+            <Text style={tw`text-[#65779E] font-semibold text-base`}>
+              Login
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
+    </Background>
   );
 };
 

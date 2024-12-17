@@ -18,6 +18,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import tw from 'twrnc';
 import LogoImage from '../../assets/vector.png';
 import Background from '../../components/Background';
+import LoadingScreen from '../../components/Loading/LoadingScreen';
 
 // Define your navigation stack type
 type AuthStackParamList = {
@@ -150,6 +151,7 @@ const LoginScreen: React.FC = () => {
             Don't have an account? <Text style={tw`text-[#65779E] font-semibold `}>Create One</Text>
           </Text>
         </TouchableOpacity>
+        <LoadingScreen loading={loading} />
       </View>
     </Background>
   );

@@ -94,11 +94,6 @@ const FPNewPassword: React.FC = () => {
   return (
     <Background>
       <View style={tw`flex-1`}>
-        <LinearGradient
-          colors={['rgba(73, 86, 199, 0.2)', '#000000']}
-          style={tw`absolute inset-0`}
-        />
-
         <View style={tw`flex-1 px-6`}>
           <TouchableOpacity 
             onPress={() => navigation.goBack()}

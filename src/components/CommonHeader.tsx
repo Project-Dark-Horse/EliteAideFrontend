@@ -1,46 +1,35 @@
 // src/components/CommonHeader.tsx
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, TextInput } from 'react-native';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import { HomeScreenNavigationProp } from '../types/navigation';
 
-interface HeaderProps {
-  title?: string;
+interface CommonHeaderProps {
+  title: string;
   showTitle?: boolean;
   showNotificationIcon?: boolean;
-  onSearchToggle?: () => void;
-  onSearchQueryChange?: (query: string) => void;
-  isSearchVisible?: boolean;
-  searchQuery?: string;
+  showSearchIcon?: boolean;
+  onSearchPress?: () => void;
 }
 
-const CommonHeader: React.FC<HeaderProps> = ({
-  title = "Profile",
+const CommonHeader: React.FC<CommonHeaderProps> = ({
+  title,
   showTitle = true,
   showNotificationIcon = true,
-  onSearchToggle,
-  onSearchQueryChange,
-  isSearchVisible = false,
-  searchQuery = '',
+  showSearchIcon = false,
+  onSearchPress,
 }) => {
   const navigation = useNavigation<HomeScreenNavigationProp>();
-  const [query, setQuery] = useState(searchQuery);
-
-  const handleSearchChange = (text: string) => {
-    setQuery(text);
-    if (onSearchQueryChange) {
-      onSearchQueryChange(text);
-    }
-    // Implement search logic here, e.g., filter a list or make an API call
-  };
 
   return (
-    <View style={styles.headerContainer}>
+    <View style={styles.header}>
       {/* Back Button */}
-      <TouchableOpacity onPress={() => navigation.goBack()} style={styles.iconButton}>
-        <FontAwesome name="chevron-circle-left" size={29} color="#65779E" />
+      <TouchableOpacity 
+        onPress={() => navigation.goBack()} 
+        style={styles.iconButton}
+      >
+        <Icon name="chevron-back" size={24} color="#65779E" />
       </TouchableOpacity>
 
       {/* Title */}
@@ -50,43 +39,38 @@ const CommonHeader: React.FC<HeaderProps> = ({
         </Text>
       )}
 
-      {/* Right Icons (Search and Notifications) */}
+      {/* Right Icons */}
       <View style={styles.iconContainer}>
-        <TouchableOpacity style={styles.iconButton} onPress={onSearchToggle}>
-          <Icon name="search-outline" size={24} color="#65779E" />
-        </TouchableOpacity>
+        {showSearchIcon && (
+          <TouchableOpacity 
+            style={styles.iconButton} 
+            onPress={onSearchPress}
+          >
+            <Icon name="search" size={24} color="#FFFFFF" />
+          </TouchableOpacity>
+        )}
 
-        {/* Notifications Icon with navigation to NotificationScreen */}
         {showNotificationIcon && (
-          <TouchableOpacity onPress={() => navigation.navigate('NotificationScreen')} style={styles.iconButton}>
+          <TouchableOpacity 
+            onPress={() => navigation.navigate('NotificationScreen')} 
+            style={styles.iconButton}
+          >
             <Icon name="notifications" size={24} color="#65779E" />
           </TouchableOpacity>
         )}
       </View>
-
-      {/* Search Bar */}
-      {isSearchVisible && (
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search..."
-          placeholderTextColor="#6B7280"
-          value={query}
-          onChangeText={handleSearchChange}
-        />
-      )}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  headerContainer: {
+  header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     height: 55,
     backgroundColor: '#111111',
     paddingHorizontal: 10,
-    position: 'relative',
   },
   title: {
     color: '#fff',
@@ -94,7 +78,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     position: 'absolute',
     left: '50%',
-    transform: [{ translateX: -50 }], // Center title better based on dynamic width
+    transform: [{ translateX: -50 }],
   },
   iconContainer: {
     flexDirection: 'row',
@@ -102,16 +86,10 @@ const styles = StyleSheet.create({
   },
   iconButton: {
     paddingHorizontal: 5,
-  },
-  searchInput: {
-    backgroundColor: '#1D1E23',
-    borderRadius: 8,
-    paddingHorizontal: 8,
-    color: '#fff',
-    position: 'absolute',
-    top: 60,
-    left: 10,
-    right: 10,
+    height: 40,
+    width: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
