@@ -5,9 +5,14 @@ import LoadingScreen from './src/components/common/LoadingScreen';
 import { LoadingProvider } from './src/context/LoadingContext';
 import { TaskRefreshProvider } from './src/context/TaskRefreshContext';
 import AuthCheck from './src/components/AuthCheck';
+import notificationService from './src/utils/notificationService';
 
 const RootApp = () => {
-  <LoadingScreen />
+  // This will initialize the notification service
+  React.useEffect(() => {
+    // The service is initialized in its constructor
+  }, []);
+
   return (
     <TaskRefreshProvider>
       <LoadingProvider>
