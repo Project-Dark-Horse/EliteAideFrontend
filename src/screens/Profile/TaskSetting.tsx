@@ -52,8 +52,8 @@ const TaskSettingsScreen: React.FC = () => {
           <Switch
             value={remindersEnabled}
             onValueChange={toggleSwitch}
-            thumbColor={remindersEnabled ? "#4956C7" : "#555"}
-            trackColor={{ false: "#333", true: "#4956C7" }}
+            thumbColor={remindersEnabled ? "#65779E" : "#555"}
+            trackColor={{ false: "#333", true: "#65779E" }}
           />
         </View>
 
@@ -66,7 +66,7 @@ const TaskSettingsScreen: React.FC = () => {
                 onPress={() => setDefaultPriority(priority)}
                 style={[
                   tw`px-3 py-2 rounded-2xl`,
-                  { backgroundColor: defaultPriority === priority ? '#4956C7' : '#333' },
+                  { backgroundColor: defaultPriority === priority ? '#65779E' : '#333' },
                 ]}
               >
                 <Text style={tw`text-white`}>{priority}</Text>
@@ -91,7 +91,7 @@ const TaskSettingsScreen: React.FC = () => {
       </View>
 
       <TouchableOpacity
-        style={tw`bg-[#4956C7] rounded-2xl mx-6 mt-6 py-3 items-center shadow-lg`}
+        style={tw`bg-[#65779E] rounded-2xl mx-6 mt-6 py-3 items-center shadow-lg`}
         onPress={handleSaveSettings}
       >
         <Text style={tw`text-white text-base font-semibold`}>Save Settings</Text>

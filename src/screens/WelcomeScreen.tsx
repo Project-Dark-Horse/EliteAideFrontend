@@ -3,9 +3,11 @@ import React, { useState } from 'react';
 import { View, Text, ImageBackground, TouchableOpacity } from 'react-native';
 import { Button } from 'react-native-paper';
 import tw from 'twrnc';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import LoadingScreen from '../components/Loading/LoadingScreen';
 
 const WelcomeScreen = ({ navigation }: { navigation: any }) => {
+  const [loading, setLoading] = useState(false);
+
   const handleLogin = () => {
     navigation.navigate('Login');
   };
@@ -15,13 +17,15 @@ const WelcomeScreen = ({ navigation }: { navigation: any }) => {
       source={require('../assets/welcome-bg.png')}
       style={tw`flex-1 w-full h-full justify-center items-center`}
     >
-      {/* Login Button */}
-      <View style={[tw`absolute w-full px-6`, { top: 651 }]}>
+      <LoadingScreen loading={loading} />
+      {/* Grouped Login Button and Create Account Link */}
+      <View style={[tw`absolute w-full px-6`, { top: 650, alignItems: 'center' }]}>
+        {/* Login Button */}
         <Button
           mode="elevated"
           onPress={handleLogin}
           style={[
-            tw`rounded-full self-center`,
+            tw`rounded-full`,
             {
               width: 300,
               height: 48,
@@ -38,14 +42,14 @@ const WelcomeScreen = ({ navigation }: { navigation: any }) => {
         >
           Login
         </Button>
-      </View>
 
-      {/* Create Account Link */}
-      <View style={tw`flex-row justify-center top-85`}>
-        <Text style={tw`text-white`}>Don't have an account? </Text>
-        <TouchableOpacity onPress={() => navigation.navigate('EnterEmail')}>
-          <Text style={tw`text-[#65779E] font-semibold`}>Create One</Text>
-        </TouchableOpacity>
+        {/* Create Account Link */}
+        <View style={tw`flex-row justify-center mt-2`}>
+          <Text style={tw`text-white`}>Don't have an account? </Text>
+          <TouchableOpacity onPress={() => navigation.navigate('EnterEmail')}>
+            <Text style={tw`text-[#65779E] font-semibold`}>Create One</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </ImageBackground>
   );

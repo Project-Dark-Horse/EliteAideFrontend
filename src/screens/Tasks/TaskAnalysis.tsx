@@ -1,10 +1,25 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Svg, { Path, G, Circle } from 'react-native-svg';
 import { useNavigation } from '@react-navigation/native';
 import { Text } from 'react-native-paper';
+import notificationService from '../../utils/notificationService';
+
+interface TaskCardProps {
+  title: string;
+  description: string;
+  time: string;
+  backgroundColor: string;
+  iconName: string;
+}
+
+interface Task {
+  id: number;
+  title: string;
+  dueDate: string;
+}
 
 const TaskAnalysis = () => {
   const navigation = useNavigation();
@@ -40,19 +55,33 @@ const TaskAnalysis = () => {
     );
   };
 
-  const TaskCard = ({ title, description, time, backgroundColor, iconName }) => (
-    <View style={[styles.taskCard, { backgroundColor }]}>
-      <View style={styles.taskIconContainer}>
-        <Icon name={iconName} size={20} color="#fff" />
-      </View>
-      <Text style={styles.taskTitle}>{title}</Text>
-      <Text style={styles.taskDescription}>{description}</Text>
-      <View style={styles.taskTimeContainer}>
-        <Icon name="time-outline" size={14} color="#fff" />
-        <Text style={styles.taskTime}>{time}</Text>
-      </View>
+  const TaskCard: React.FC<TaskCardProps> = ({ title, description, time, backgroundColor, iconName }) => (
+  <View style={[styles.taskCard, { backgroundColor }]}>
+    <View style={styles.taskIconContainer}>
+      <Icon name={iconName} size={20} color="#fff" />
     </View>
-  );
+    <Text style={styles.taskTitle}>{title}</Text>
+    <Text style={styles.taskDescription}>{description}</Text>
+    <View style={styles.taskTimeContainer}>
+      <Icon name="time-outline" size={14} color="#fff" />
+      <Text style={styles.taskTime}>{time}</Text>
+    </View>
+  </View>
+);
+
+  const scheduleTaskReminder = async (task: Task) => {
+    const reminderDate = new Date(task.dueDate);
+    reminderDate.setHours(reminderDate.getHours() - 1); // Remind 1 hour before
+
+    try {
+      await notificationService.createDueDateNotification(
+        task.id,
+        `Don't forget: ${task.title} is due in 1 hour!`
+      );
+    } catch (error) {
+      console.error('Failed to schedule task reminder:', error);
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>

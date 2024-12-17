@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ActivityIndicator, Image, KeyboardAvoidingView, ScrollView, Platform } from 'react-native';
-import RadialGradient from 'react-native-radial-gradient';
-import { BlurView } from '@react-native-community/blur';
 import tw from 'twrnc';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
@@ -10,6 +8,7 @@ import Toast from 'react-native-toast-message';
 import { OTPRouteProp, OTPNavigationProp } from '../../types/navigation';
 import { BASE_URL } from '@env';
 import { Vibration } from 'react-native';
+import Background from '../../components/Background';
 
 // Import the logo image
 import LogoImage from '../../assets/vector.png';
@@ -149,139 +148,128 @@ const Otp: React.FC<Props> = ({ route, navigation }) => {
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'android' ? 'padding' : 'height'}
-      style={tw`flex-1`}
-    >
-      <RadialGradient
-        style={tw`absolute inset-0`}
-        colors={['#4956C7', '#111111', '#111111']}
-        center={[330, 99]}
-        radius={350}
-      />
-      <BlurView
-        style={tw`absolute inset-1`}
-        blurType="extraDark"
-        blurAmount={70}
-        reducedTransparencyFallbackColor="rgba(0,0,0,0.3)"
-      />
+    <Background>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'android' ? 'padding' : 'height'}
+        style={tw`flex-1`}
+      >
+        <ScrollView contentContainerStyle={tw`flex-grow px-6 pt-24`}>
+          {/* Back button */}
+          <TouchableOpacity 
+            onPress={() => navigation.goBack()}
+            style={tw`m-4 w-10 h-10 justify-center items-center bg-[#1D1E23] rounded-full`}
+          >
+            <Ionicons name="chevron-back" size={24} color="#fff" />
+          </TouchableOpacity>
 
-      <ScrollView contentContainerStyle={tw`flex-grow px-6 pt-24`}>
-        {/* Back button */}
-        <TouchableOpacity 
-          onPress={() => navigation.goBack()}
-          style={tw`m-4 w-10 h-10 justify-center items-center bg-[#1D1E23] rounded-full`}
-        >
-          <Ionicons name="chevron-back" size={24} color="#fff" />
-        </TouchableOpacity>
+          {/* Logo */}
+          <Image
+            source={LogoImage}
+            style={[
+              tw`mb-6`,
+              {
+                width: 120,
+                height: 55,
+                transform: [{ rotate: '0.81deg' }],
+              }
+            ]}
+            resizeMode="contain"
+          />
 
-        {/* Logo */}
-        <Image
-          source={LogoImage}
-          style={[
-            tw`mb-6`,
-            {
-              width: 120,
-              height: 55,
-              transform: [{ rotate: '0.81deg' }],
-            }
-          ]}
-          resizeMode="contain"
-        />
-
-        {/* Text content */}
-        <Text style={tw`text-white text-2xl font-semibold mb-2`}>
-          Enter the 4-digit code sent to
-        </Text>
-        <Text style={tw`text-[#979797] text-lg mb-1`}>{email}</Text>
-
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Text style={tw`text-[#979797]`}>
-            Wrong Address? <Text style={tw`text-[#65779E] font-semibold`}>Re-enter</Text>
+          {/* Text content */}
+          <Text style={tw`text-white text-2xl font-semibold mb-2`}>
+            Enter the 4-digit code sent to
           </Text>
-        </TouchableOpacity>
+          <Text style={tw`text-[#979797] text-lg mb-1`}>{email}</Text>
 
-        {/* OTP Input with enhanced UX */}
-        <View style={tw`flex-row justify-between mb-8 mt-10`}>
-          {otp.map((digit, index) => (
-            <TextInput
-              key={index}
-              style={[
-                tw`w-16 h-16 bg-[#111111] border rounded-xl text-center text-white text-xl`,
-                focusedIndex === index && tw`border-[#65779E]`, // Highlight current input
-                { borderColor: error ? 'red' : '#262626' } // Error highlighting
-              ]}
-              value={digit}
-              onChangeText={(text) => handleOtpChange(text, index)}
-              keyboardType="numeric"
-              maxLength={1}
-              ref={(el) => (otpRefs.current[index] = el)}
-              onFocus={() => setFocusedIndex(index)} // Set focused index
-              onBlur={() => setFocusedIndex(null)} // Clear focused index
-              accessibilityLabel={`OTP digit ${index + 1}`} // Accessibility label
-            />
-          ))}
-        </View>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Text style={tw`text-[#979797]`}>
+              Wrong Address? <Text style={tw`text-[#65779E] font-semibold`}>Re-enter</Text>
+            </Text>
+          </TouchableOpacity>
 
-        {/* Resend code with smooth transition */}
-        <TouchableOpacity 
-          onPress={handleResendOtp} 
-          disabled={isResendDisabled}
-          style={tw`items-center mb-8`}
-        >
-          <Text style={tw`text-[#65779E] transition-opacity duration-300`}>
-            {isResendDisabled ? `Resend code in ${timer}s` : 'Resend code'}
-          </Text>
-        </TouchableOpacity>
+          {/* OTP Input with enhanced UX */}
+          <View style={tw`flex-row justify-between mb-8 mt-10`}>
+            {otp.map((digit, index) => (
+              <TextInput
+                key={index}
+                style={[
+                  tw`w-16 h-16 bg-[#111111] border rounded-xl text-center text-white text-xl`,
+                  focusedIndex === index && tw`border-[#65779E]`, // Highlight current input
+                  { borderColor: error ? 'red' : '#262626' } // Error highlighting
+                ]}
+                value={digit}
+                onChangeText={(text) => handleOtpChange(text, index)}
+                keyboardType="numeric"
+                maxLength={1}
+                ref={(el) => (otpRefs.current[index] = el)}
+                onFocus={() => setFocusedIndex(index)} // Set focused index
+                onBlur={() => setFocusedIndex(null)} // Clear focused index
+                accessibilityLabel={`OTP digit ${index + 1}`} // Accessibility label
+              />
+            ))}
+          </View>
 
-        {/* Continue Button with 3D effect */}
-        <Button
-          mode="contained"
-          onPress={handleVerifyOtp}
-          disabled={loading}
-          style={[
-            tw`rounded-xl mb-4`,
-            {
-              backgroundColor: '#1D1E23',
-              transform: [{ translateY: 0 }],
-              shadowColor: '#000',
-              shadowOffset: {
-                width: 0,
-                height: 4,
-              },
-              shadowOpacity: 0.3,
-              shadowRadius: 4.65,
-              elevation: 8,
-              borderWidth: 1,
-              borderColor: 'rgba(255, 255, 255, 0.1)',
-            }
-          ]}
-          contentStyle={[
-            tw`py-2`,
-            {
-              transform: [{ translateY: -1 }],
-            }
-          ]}
-          labelStyle={[
-            tw`text-white font-bold`,
-            {
-              textShadowColor: 'rgba(0, 0, 0, 0.3)',
-              textShadowOffset: { width: 0, height: 1 },
-              textShadowRadius: 2,
-            }
-          ]}
-        >
-          {loading ? <ActivityIndicator size="small" color="#fff" /> : 'Continue'}
-        </Button>
+          {/* Resend code with smooth transition */}
+          <TouchableOpacity 
+            onPress={handleResendOtp} 
+            disabled={isResendDisabled}
+            style={tw`items-center mb-8`}
+          >
+            <Text style={tw`text-[#65779E] transition-opacity duration-300`}>
+              {isResendDisabled ? `Resend code in ${timer}s` : 'Resend code'}
+            </Text>
+          </TouchableOpacity>
 
-        {/* Step indicator */}
-        <View style={tw`items-center mb-1`}>
-          <Text style={tw`text-[#979797] text-sm`}>
-            Step <Text style={tw`text-[#65779E] font-semibold`}>2</Text>/3
-          </Text>
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+          {/* Continue Button with 3D effect */}
+          <Button
+            mode="contained"
+            onPress={handleVerifyOtp}
+            disabled={loading}
+            style={[
+              tw`rounded-xl mb-4`,
+              {
+                backgroundColor: '#1D1E23',
+                transform: [{ translateY: 0 }],
+                shadowColor: '#000',
+                shadowOffset: {
+                  width: 0,
+                  height: 4,
+                },
+                shadowOpacity: 0.3,
+                shadowRadius: 4.65,
+                elevation: 8,
+                borderWidth: 1,
+                borderColor: 'rgba(255, 255, 255, 0.1)',
+              }
+            ]}
+            contentStyle={[
+              tw`py-2`,
+              {
+                transform: [{ translateY: -1 }],
+              }
+            ]}
+            labelStyle={[
+              tw`text-white font-bold`,
+              {
+                textShadowColor: 'rgba(0, 0, 0, 0.3)',
+                textShadowOffset: { width: 0, height: 1 },
+                textShadowRadius: 2,
+              }
+            ]}
+          >
+            {loading ? <ActivityIndicator size="small" color="#fff" /> : 'Continue'}
+          </Button>
+
+          {/* Step indicator */}
+          <View style={tw`items-center mb-1`}>
+            <Text style={tw`text-[#979797] text-sm`}>
+              Step <Text style={tw`text-[#65779E] font-semibold`}>2</Text>/3
+            </Text>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </Background>
   );
 };
 
