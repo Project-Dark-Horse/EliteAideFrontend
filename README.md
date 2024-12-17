@@ -13,6 +13,8 @@ Elite Aide is an AI-powered task management application built with **React Nativ
 - 🔐 Secure Authentication
 - 🎯 Progress Tracking
 - 🎤 Voice Input Support
+- 📍 Geolocation
+  
 
 
   <img src="https://github.com/user-attachments/assets/74ca8ffa-7b32-420c-86b3-4d1f9691bec5" alt="User-Flow" width="1279">
