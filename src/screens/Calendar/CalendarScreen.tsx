@@ -12,6 +12,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
+import LoadingScreen from '../../components/Loading/LoadingScreen';
 
 export interface Task {
   id: number;
@@ -86,6 +87,7 @@ const CalendarScreen = () => {
           onCalendarPress={() => setIsCalendarVisible(true)} 
           onCreateTaskPress={() => setIsCreateTaskVisible(true)} 
         />
+        <LoadingScreen loading={loading} />
         {loading ? (
           <ActivityIndicator size="large" color="#fff" style={tw`mt-10`} />
         ) : (

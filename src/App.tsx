@@ -16,6 +16,7 @@ import NotificationScreen from './screens/Notification/NotificationScreen';
 import FPEnterEmail from './screens/Auth/FPEnterEmail';
 import FPEnterOtp from './screens/Auth/FPEnterOtp';
 import FPNewPassword from './screens/Auth/FPNewPassword';
+import GeolocationService from './services/GeolocationService';
 
 
 
@@ -48,6 +49,11 @@ const App = () => {
 
   useEffect(() => {
     checkAuthStatus();
+    GeolocationService.startMonitoring();
+
+    return () => {
+      GeolocationService.stopMonitoring();
+    };
   }, []);
 
   if (isLoading) {

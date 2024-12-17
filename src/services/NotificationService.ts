@@ -131,6 +131,21 @@ class NotificationService {
       // navigation.navigate('Task', { taskId: remoteMessage.data.taskId });
     }
   }
+
+  async sendGeofenceNotification() {
+    try {
+      await notifee.displayNotification({
+        title: 'You have entered the area!',
+        body: 'Welcome to the designated location.',
+        android: {
+          channelId: 'default',
+          importance: AndroidImportance.HIGH,
+        },
+      });
+    } catch (error) {
+      console.error('Error sending geofence notification:', error);
+    }
+  }
 }
 
 export default new NotificationService(); 

@@ -7,6 +7,8 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack'; // Corrected import
 import { RootStackParamList } from '../../types/navigation';
 import CommonHeader from '../../components/CommonHeader';
+import { authStorage } from '../../utils/authStorage';
+import notificationService from '../../utils/notificationService';
 
 type SettingsScreenNavigationProp = StackNavigationProp<RootStackParamList, 'SettingsScreen'>;
 
@@ -31,7 +33,7 @@ const SettingsScreen: React.FC = () => {
     } else if (option.title === 'Invite a friend') {
       Alert.alert('Invite a Friend', 'This feature is coming soon!');
     } else if (option.title === 'Update App') {
-      Alert.alert('Update App', 'Your app is up to date!');
+      handleUpdateCheck();
     } else if (option.title === 'About Elite Aide') {
       Alert.alert('About Elite Aide', 'Version 1.0.0');
     } else {
@@ -46,6 +48,30 @@ const SettingsScreen: React.FC = () => {
   const filteredOptions = settingsOptions.filter(option =>
     option.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const handleLogout = async () => {
+    try {
+      // Clear all auth data
+      await authStorage.clearTokens();
+      
+      // Reset navigation to login
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'WelcomeScreen' }],
+      });
+    } catch (error) {
+      console.error('Logout error:', error);
+      Alert.alert('Error', 'Failed to logout. Please try again.');
+    }
+  };
+
+  const handleUpdateCheck = () => {
+    // Your update check logic
+    notificationService.showUpdateNotification(
+      'App is up to date',
+      'You\'re running the latest version of Elite Aide'
+    );
+  };
 
   return (
     <View style={tw`flex-1 bg-[#000000]`}>

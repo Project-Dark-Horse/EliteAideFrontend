@@ -12,13 +12,15 @@ import {
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LinearGradient from 'react-native-linear-gradient';
-import { BlurView } from '@react-native-community/blur';
-import RadialGradient from 'react-native-radial-gradient';
 import { BASE_URL } from '@env';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import tw from 'twrnc';
 import LogoImage from '../../assets/vector.png';
+import Background from '../../components/Background';
+import LoadingScreen from '../../components/Loading/LoadingScreen';
+import { authStorage } from '../../utils/authStorage';
+import notificationService from '../../utils/notificationService';
 
 // Define your navigation stack type
 type AuthStackParamList = {
@@ -59,14 +61,20 @@ const LoginScreen: React.FC = () => {
       if (response.ok && data.message?.access) {
         const { access, refresh } = data.message;
   
-        await AsyncStorage.setItem('access_token', access);
-        await AsyncStorage.setItem('refresh_token', refresh);
+        await authStorage.setTokens(access, refresh);
+        
+        if (data.user) {
+          await authStorage.setUserData(data.user);
+          notificationService.showNotification({
+            title: 'Welcome back!',
+            message: `Good to see you again, ${data.user.name || 'User'}!`,
+          });
+        }
   
         navigation.reset({ index: 0, routes: [{ name: 'BottomTabNavigator' }] });
       } else if (data.message === 'Token is blacklisted') {
         console.warn('Token is blacklisted. Clearing local tokens.');
-        await AsyncStorage.removeItem('access_token');
-        await AsyncStorage.removeItem('refresh_token');
+        await authStorage.clearTokens();
         Alert.alert('Session Expired', 'Please log in again.');
         navigation.reset({ index: 0, routes: [{ name: 'LoginScreen' }] });
       } else {
@@ -81,20 +89,7 @@ const LoginScreen: React.FC = () => {
   }, [email, password, navigation]);
 
   return (
-    <View style={styles.container}>
-      <RadialGradient
-        style={styles.radialGradient}
-        colors={['#4956C7', '#111111', '#111111']}
-        center={[330, 99]}
-        radius={350}
-      />
-      <BlurView
-        style={styles.blurView}
-        blurType="extraDark"
-        blurAmount={70}
-        reducedTransparencyFallbackColor="rgba(0,0,0,0.3)"
-      />
-
+    <Background>
       <View style={styles.content}>
         <Image source={LogoImage} style={styles.logoImage} />
 
@@ -164,29 +159,21 @@ const LoginScreen: React.FC = () => {
             Don't have an account? <Text style={tw`text-[#65779E] font-semibold `}>Create One</Text>
           </Text>
         </TouchableOpacity>
+        <LoadingScreen loading={loading} />
       </View>
-    </View>
+    </Background>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  radialGradient: {
-    ...tw`absolute inset-0`,
-  },
-  blurView: {
-    ...tw`absolute inset-1`,
+  content: {
+    ...tw`flex-1 justify-center px-6 bg-transparent mt-5`,
   },
   logoImage: {
     width: 120,
     height: 55,
     alignSelf: 'flex-start',
     marginBottom: 20,
-  },
-  content: {
-    ...tw`flex-1 justify-center px-6 bg-transparent mt-5`,
   },
   backButton: {
     ...tw`w-10 h-10 justify-center items-center top--39 bg-[#1D1E23] rounded-2xl`,

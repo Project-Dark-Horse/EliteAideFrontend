@@ -258,7 +258,7 @@ const EditProfile = () => {
 
 const additionalStyles = {
   saveButton: {
-    color: '#3B82F6',
+    color: '#65779E',
     fontSize: 16,
     fontWeight: '600' as '600',
   },
@@ -300,7 +300,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 0,
     bottom: 0,
-    backgroundColor: '#3B82F6', // Blue color
+    backgroundColor: '#65779E', // Blue color
     width: 24,
     height: 24,
     borderRadius: 12,
@@ -335,7 +335,7 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     borderRadius: 12,
-    backgroundColor: '#3B82F6',
+    backgroundColor: '#65779E',
     alignItems: 'center',
     justifyContent: 'center',
   },

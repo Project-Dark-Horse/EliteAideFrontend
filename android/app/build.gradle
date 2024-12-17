@@ -122,6 +122,7 @@ dependencies {
     }
 
     implementation project(':react-native-haptic-feedback')
+    implementation project(':react-native-push-notification')
 }
 
 // Move this block outside of the `dependencies` block
@@ -130,4 +131,12 @@ project.ext.vectoricons = [
 ]
 // Apply the fonts.gradle script to ensure vector icons are bundled correctly
 apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
+
+// Ensure the dependency is correctly declared
+// tasks.named('generateDebugLintReportModel') {
+//     dependsOn ':app:copyReactNativeVectorIconFonts'
+// }
+
+apply plugin: 'com.google.gms.google-services'
+
 

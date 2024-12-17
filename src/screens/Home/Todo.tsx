@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
 import { BASE_URL } from '@env';
+import notificationService from '../../utils/notificationService';
 
 interface Task {
   id: number;
@@ -143,6 +144,21 @@ const ToDoScreen: React.FC = () => {
     }
   };
 
+  const handleTaskComplete = async (taskId: string) => {
+    try {
+      // Your existing task completion logic
+      
+      // Show completion notification
+      notificationService.showTaskNotification(
+        'Task Completed! 🎉',
+        'Great job on completing your task!'
+      );
+      
+    } catch (error) {
+      console.error('Error completing task:', error);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -179,7 +195,7 @@ const ToDoScreen: React.FC = () => {
               
               <View style={styles.taskFooter}>
                 <View style={styles.dateContainer}>
-                  <Ionicons name="calendar-outline" size={16} color="#979797" />
+                  <Ionicons name="calendar-outline" size={16} color="#65779E" />
                   <Text style={styles.dateText}>Due: {formatDate(task.due_date)}</Text>
                 </View>
                 <TouchableOpacity 
@@ -233,7 +249,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   emptyText: {
-    color: '#979797',
+    color: '#65779E',
     fontSize: 16,
     marginTop: 16,
   },
@@ -295,7 +311,7 @@ const styles = StyleSheet.create({
     marginLeft: 4,
   },
   actionButton: {
-    backgroundColor: '#4956C7',
+    backgroundColor: '#65779E',
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 8,
