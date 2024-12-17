@@ -7,6 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack'; // Corrected import
 import { RootStackParamList } from '../../types/navigation';
 import CommonHeader from '../../components/CommonHeader';
+import { authStorage } from '../../utils/authStorage';
 
 type SettingsScreenNavigationProp = StackNavigationProp<RootStackParamList, 'SettingsScreen'>;
 
@@ -46,6 +47,22 @@ const SettingsScreen: React.FC = () => {
   const filteredOptions = settingsOptions.filter(option =>
     option.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const handleLogout = async () => {
+    try {
+      // Clear all auth data
+      await authStorage.clearTokens();
+      
+      // Reset navigation to login
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'WelcomeScreen' }],
+      });
+    } catch (error) {
+      console.error('Logout error:', error);
+      Alert.alert('Error', 'Failed to logout. Please try again.');
+    }
+  };
 
   return (
     <View style={tw`flex-1 bg-[#000000]`}>

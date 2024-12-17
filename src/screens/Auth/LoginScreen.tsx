@@ -19,6 +19,7 @@ import tw from 'twrnc';
 import LogoImage from '../../assets/vector.png';
 import Background from '../../components/Background';
 import LoadingScreen from '../../components/Loading/LoadingScreen';
+import { authStorage } from '../../utils/authStorage';
 
 // Define your navigation stack type
 type AuthStackParamList = {
@@ -59,14 +60,16 @@ const LoginScreen: React.FC = () => {
       if (response.ok && data.message?.access) {
         const { access, refresh } = data.message;
   
-        await AsyncStorage.setItem('access_token', access);
-        await AsyncStorage.setItem('refresh_token', refresh);
+        await authStorage.setTokens(access, refresh);
+        
+        if (data.user) {
+          await authStorage.setUserData(data.user);
+        }
   
         navigation.reset({ index: 0, routes: [{ name: 'BottomTabNavigator' }] });
       } else if (data.message === 'Token is blacklisted') {
         console.warn('Token is blacklisted. Clearing local tokens.');
-        await AsyncStorage.removeItem('access_token');
-        await AsyncStorage.removeItem('refresh_token');
+        await authStorage.clearTokens();
         Alert.alert('Session Expired', 'Please log in again.');
         navigation.reset({ index: 0, routes: [{ name: 'LoginScreen' }] });
       } else {
