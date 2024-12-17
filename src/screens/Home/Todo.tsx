@@ -179,7 +179,7 @@ const ToDoScreen: React.FC = () => {
               
               <View style={styles.taskFooter}>
                 <View style={styles.dateContainer}>
-                  <Ionicons name="calendar-outline" size={16} color="#979797" />
+                  <Ionicons name="calendar-outline" size={16} color="#65779E" />
                   <Text style={styles.dateText}>Due: {formatDate(task.due_date)}</Text>
                 </View>
                 <TouchableOpacity 
@@ -233,7 +233,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   emptyText: {
-    color: '#979797',
+    color: '#65779E',
     fontSize: 16,
     marginTop: 16,
   },
@@ -295,7 +295,7 @@ const styles = StyleSheet.create({
     marginLeft: 4,
   },
   actionButton: {
-    backgroundColor: '#4956C7',
+    backgroundColor: '#65779E',
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 8,
