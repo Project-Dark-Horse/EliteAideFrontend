@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
 import { BASE_URL } from '@env';
+import notificationService from '../../utils/notificationService';
 
 interface Task {
   id: number;
@@ -140,6 +141,21 @@ const ToDoScreen: React.FC = () => {
       });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleTaskComplete = async (taskId: string) => {
+    try {
+      // Your existing task completion logic
+      
+      // Show completion notification
+      notificationService.showTaskNotification(
+        'Task Completed! 🎉',
+        'Great job on completing your task!'
+      );
+      
+    } catch (error) {
+      console.error('Error completing task:', error);
     }
   };
 

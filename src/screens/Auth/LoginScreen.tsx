@@ -20,6 +20,7 @@ import LogoImage from '../../assets/vector.png';
 import Background from '../../components/Background';
 import LoadingScreen from '../../components/Loading/LoadingScreen';
 import { authStorage } from '../../utils/authStorage';
+import notificationService from '../../utils/notificationService';
 
 // Define your navigation stack type
 type AuthStackParamList = {
@@ -64,6 +65,10 @@ const LoginScreen: React.FC = () => {
         
         if (data.user) {
           await authStorage.setUserData(data.user);
+          notificationService.showNotification({
+            title: 'Welcome back!',
+            message: `Good to see you again, ${data.user.name || 'User'}!`,
+          });
         }
   
         navigation.reset({ index: 0, routes: [{ name: 'BottomTabNavigator' }] });

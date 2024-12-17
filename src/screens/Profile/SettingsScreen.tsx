@@ -8,6 +8,7 @@ import { StackNavigationProp } from '@react-navigation/stack'; // Corrected impo
 import { RootStackParamList } from '../../types/navigation';
 import CommonHeader from '../../components/CommonHeader';
 import { authStorage } from '../../utils/authStorage';
+import notificationService from '../../utils/notificationService';
 
 type SettingsScreenNavigationProp = StackNavigationProp<RootStackParamList, 'SettingsScreen'>;
 
@@ -32,7 +33,7 @@ const SettingsScreen: React.FC = () => {
     } else if (option.title === 'Invite a friend') {
       Alert.alert('Invite a Friend', 'This feature is coming soon!');
     } else if (option.title === 'Update App') {
-      Alert.alert('Update App', 'Your app is up to date!');
+      handleUpdateCheck();
     } else if (option.title === 'About Elite Aide') {
       Alert.alert('About Elite Aide', 'Version 1.0.0');
     } else {
@@ -62,6 +63,14 @@ const SettingsScreen: React.FC = () => {
       console.error('Logout error:', error);
       Alert.alert('Error', 'Failed to logout. Please try again.');
     }
+  };
+
+  const handleUpdateCheck = () => {
+    // Your update check logic
+    notificationService.showUpdateNotification(
+      'App is up to date',
+      'You\'re running the latest version of Elite Aide'
+    );
   };
 
   return (
