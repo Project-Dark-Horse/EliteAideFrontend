@@ -29,7 +29,7 @@ const CommonHeader: React.FC<CommonHeaderProps> = ({
         onPress={() => navigation.goBack()} 
         style={styles.iconButton}
       >
-        <Icon name="chevron-back" size={24} color="#65779E" />
+        <Icon name="chevron-back" size={24} color="#fff" />
       </TouchableOpacity>
 
       {/* Title */}
@@ -55,7 +55,7 @@ const CommonHeader: React.FC<CommonHeaderProps> = ({
             onPress={() => navigation.navigate('NotificationScreen')} 
             style={styles.iconButton}
           >
-            <Icon name="notifications" size={24} color="#65779E" />
+            <Icon name="notifications" size={24} color="#fff" />
           </TouchableOpacity>
         )}
       </View>
