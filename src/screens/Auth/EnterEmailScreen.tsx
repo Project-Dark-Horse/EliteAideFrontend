@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, TextInput, TouchableOpacity, ActivityIndicator, Image, KeyboardAvoidingView, Platform, Keyboard, ScrollView, Animated } from 'react-native';
-import RadialGradient from 'react-native-radial-gradient';
-import { BlurView } from '@react-native-community/blur';
 import tw from 'twrnc';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
@@ -12,6 +10,9 @@ import { BASE_URL } from '@env';
 
 // Import the logo image
 import LogoImage from '../../assets/vector.png';
+
+// Add Background import
+import Background from '../../components/Background';
 
 type EmailScreenNavigationProp = {
   navigate: (screen: string, params?: any) => void;
@@ -159,144 +160,133 @@ const EnterEmail: React.FC = () => {
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={tw`flex-1`}
-    >
-      <RadialGradient
-        style={tw`absolute inset-0`}
-        colors={['#4956C7', '#111111', '#111111']}
-        center={[330, 99]}
-        radius={350}
-      />
-      <BlurView
-        style={tw`absolute inset-1`}
-        blurType="extraDark"
-        blurAmount={70}
-        reducedTransparencyFallbackColor="rgba(0,0,0,0.3)"
-      />
+    <Background>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'android' ? 'padding' : 'height'}
+        style={tw`flex-1`}
+      >
+        <ScrollView contentContainerStyle={tw`flex-grow px-6 pt-24`}>
+          {/* Back button */}
+          <TouchableOpacity 
+            onPress={navigation.goBack} 
+            style={tw`m-4 w-10 h-10 justify-center items-center bg-[#1D1E23] rounded-full`}
+          >
+            <Ionicons name="chevron-back" size={24} color="#fff" />
+          </TouchableOpacity>
 
-      <ScrollView contentContainerStyle={tw`flex-grow px-6 pt-24`}>
-        {/* Back button */}
-        <TouchableOpacity 
-          onPress={navigation.goBack} 
-          style={tw`m-4 w-10 h-10 justify-center items-center bg-[#1D1E23] rounded-full`}
-        >
-          <Ionicons name="chevron-back" size={24} color="#fff" />
-        </TouchableOpacity>
+          {/* Logo */}
+          <Image
+            source={LogoImage}
+            style={[
+              tw`mb-6`,
+              {
+                width: 120,
+                height: 55,
+                transform: [{ rotate: '0.81deg' }],
+              }
+            ]}
+            resizeMode="contain"
+          />
 
-        {/* Logo */}
-        <Image
-          source={LogoImage}
-          style={[
-            tw`mb-6`,
-            {
-              width: 120,
-              height: 55,
-              transform: [{ rotate: '0.81deg' }],
-            }
-          ]}
-          resizeMode="contain"
-        />
-
-        {/* Text content */}
-        <Text style={tw`text-[#979797] text-base mb-2`}>
-          Welcome to <Text style={tw`text-[#65779E]`}>Elite Aide</Text>!
-        </Text>
-        
-        <Text style={tw`text-white text-2xl font-semibold mb-2`}>
-          Enter your email address
-        </Text>
-        
-        <Text style={tw`text-[#979797] text-base mb-6`}>
-          You will need to verify your email in the next step
-        </Text>
-
-        {/* Email Input */}
-        <TextInput
-          style={tw`bg-[#111111] text-white px-4 py-4 rounded-xl mb-4 border border-[#262626]`}
-          placeholder="Enter your email address....."
-          placeholderTextColor="#6F6F6F"
-          value={email}
-          onChangeText={setEmail}
-          keyboardType="email-address"
-          autoCapitalize="none"
-        />
-
-        {/* Continue Button with 3D effect */}
-        <Button
-          mode="contained"
-          onPress={handleSubmit}
-          style={[
-            tw`rounded-xl mb-4`,
-            {
-              backgroundColor: '#1D1E23',
-              transform: [{ translateY: 0 }],
-              shadowColor: '#000',
-              shadowOffset: {
-                width: 0,
-                height: 4,
-              },
-              shadowOpacity: 0.3,
-              shadowRadius: 4.65,
-              elevation: 8,
-              borderWidth: 1,
-              borderColor: 'rgba(255, 255, 255, 0.1)',
-            }
-          ]}
-          contentStyle={[
-            tw`py-2`,
-            {
-              transform: [{ translateY: -1 }], // Slight lift for text
-            }
-          ]}
-          labelStyle={[
-            tw`text-white font-bold`,
-            {
-              textShadowColor: 'rgba(0, 0, 0, 0.3)',
-              textShadowOffset: { width: 0, height: 1 },
-              textShadowRadius: 2,
-            }
-          ]}
-          onPressIn={() => {
-            // Optional: Add press animation
-            if (Platform.OS === 'ios') {
-              Animated.spring(pressAnim, {
-                toValue: 0.95,
-                useNativeDriver: true,
-              }).start();
-            }
-          }}
-          onPressOut={() => {
-            if (Platform.OS === 'ios') {
-              Animated.spring(pressAnim, {
-                toValue: 1,
-                useNativeDriver: true,
-              }).start();
-            }
-          }}
-        >
-          Continue
-        </Button>
-
-        {/* Login link */}
-        <TouchableOpacity 
-          style={tw`items-center mb-4`}
-          onPress={() => navigation.navigate('Login')}
-        >
-          <Text style={tw`text-[#979797]`}>
-            Already have an account? <Text style={tw`text-[#65779E] font-semibold`}>Login</Text>
+          {/* Text content */}
+          <Text style={tw`text-[#979797] text-base mb-2`}>
+            Welcome to <Text style={tw`text-[#65779E]`}>Elite Aide</Text>!
           </Text>
-        </TouchableOpacity>
-
-        {/* Step indicator */}
-        <View style={tw`items-center mb-1`}>
-          <Text style={tw`text-[#979797] text-sm`}>
-            Step <Text style={tw`text-[#65779E] font-semibold`}>1</Text>/3
+          
+          <Text style={tw`text-white text-2xl font-semibold mb-2`}>
+            Enter your email address
           </Text>
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+          
+          <Text style={tw`text-[#979797] text-base mb-6`}>
+            You will need to verify your email in the next step
+          </Text>
+
+          {/* Email Input */}
+          <TextInput
+            style={tw`bg-[#111111] text-white px-4 py-4 rounded-xl mb-4 border border-[#262626]`}
+            placeholder="Enter your email address....."
+            placeholderTextColor="#6F6F6F"
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+            autoCapitalize="none"
+          />
+
+          {/* Continue Button with 3D effect */}
+          <Button
+            mode="contained"
+            onPress={handleSubmit}
+            style={[
+              tw`rounded-xl mb-4`,
+              {
+                backgroundColor: '#1D1E23',
+                transform: [{ translateY: 0 }],
+                shadowColor: '#000',
+                shadowOffset: {
+                  width: 0,
+                  height: 4,
+                },
+                shadowOpacity: 0.3,
+                shadowRadius: 4.65,
+                elevation: 8,
+                borderWidth: 1,
+                borderColor: 'rgba(255, 255, 255, 0.1)',
+              }
+            ]}
+            contentStyle={[
+              tw`py-2`,
+              {
+                transform: [{ translateY: -1 }], // Slight lift for text
+              }
+            ]}
+            labelStyle={[
+              tw`text-white font-bold`,
+              {
+                textShadowColor: 'rgba(0, 0, 0, 0.3)',
+                textShadowOffset: { width: 0, height: 1 },
+                textShadowRadius: 2,
+              }
+            ]}
+            onPressIn={() => {
+              // Optional: Add press animation
+              if (Platform.OS === 'ios') {
+                Animated.spring(pressAnim, {
+                  toValue: 0.95,
+                  useNativeDriver: true,
+                }).start();
+              }
+            }}
+            onPressOut={() => {
+              if (Platform.OS === 'ios') {
+                Animated.spring(pressAnim, {
+                  toValue: 1,
+                  useNativeDriver: true,
+                }).start();
+              }
+            }}
+          >
+            Continue
+          </Button>
+
+          {/* Login link */}
+          <TouchableOpacity 
+            style={tw`items-center mb-4`}
+            onPress={() => navigation.navigate('Login')}
+          >
+            <Text style={tw`text-[#979797]`}>
+              Already have an account? <Text style={tw`text-[#65779E] font-semibold`}>Login</Text>
+            </Text>
+          </TouchableOpacity>
+
+          {/* Step indicator */}
+          <View style={tw`items-center mb-1`}>
+            <Text style={tw`text-[#979797] text-sm`}>
+              Step <Text style={tw`text-[#65779E] font-semibold`}>1</Text>/3
+            </Text>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </Background>
   );
 };
 

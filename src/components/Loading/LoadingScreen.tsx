@@ -1,16 +1,18 @@
-import { BlurView } from '@react-native-community/blur';
 import React from 'react';
-import { View, StyleSheet, SafeAreaView } from 'react-native';
+import { View, ActivityIndicator, StyleSheet } from 'react-native';
+import { BlurView } from '@react-native-community/blur';
 import RadialGradient from 'react-native-radial-gradient';
 import tw from 'twrnc';
 
-interface BackgroundProps {
-  children: React.ReactNode;
+interface LoadingScreenProps {
+  loading: boolean;
 }
 
-const Background: React.FC<BackgroundProps> = ({ children }) => {
+const LoadingScreen: React.FC<LoadingScreenProps> = ({ loading }) => {
+  if (!loading) return null;
+
   return (
-    <View style={styles.mainContainer}>
+    <View style={[StyleSheet.absoluteFill, styles.container]}>
       {/* Base black background */}
       <View style={styles.backgroundBase} />
       
@@ -37,31 +39,28 @@ const Background: React.FC<BackgroundProps> = ({ children }) => {
         blurAmount={100}
         reducedTransparencyFallbackColor="rgba(0,0,0,0.3)"
       />
-      
-      {/* Content container */}
-      <SafeAreaView style={styles.safeArea}>
-        <View style={styles.container}>
-          {children}
-        </View>
-      </SafeAreaView>
+
+      {/* Loading indicator */}
+      <View style={styles.loaderContainer}>
+        <ActivityIndicator size="large" color="#4956C7" />
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  mainContainer: {
-    ...tw`flex-1`,
+  container: {
+    zIndex: 999,
   },
   backgroundBase: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: '#000000',
   },
-  safeArea: {
-    ...tw`flex-1`,
-  },
-  container: {
-    ...tw`flex-1 px-4`,
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 
-export default React.memo(Background);
+export default LoadingScreen; 

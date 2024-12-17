@@ -1,8 +1,6 @@
-import { BlurView } from '@react-native-community/blur';
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, SafeAreaView, ActivityIndicator, Alert } from 'react-native';
 import { Button } from 'react-native-paper';
-import RadialGradient from 'react-native-radial-gradient';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import tw from 'twrnc';
@@ -228,19 +226,6 @@ const SignUpScreen = () => {
   return (
     <Background>
       <SafeAreaView style={tw`flex-1`}>
-        <RadialGradient
-          style={tw`absolute inset-0`}
-          colors={['#4956C7', '#000000']}
-          center={[330, 90]}
-          radius={350}
-        />
-        <BlurView
-          style={tw`absolute inset-1`}
-          blurType="extraDark"
-          blurAmount={100}
-          reducedTransparencyFallbackColor="rgba(0,0,0,0.3)"
-        />
-        
         <View style={tw`flex-1 px-4`}>
           <TouchableOpacity onPress={() => navigation.goBack()} style={tw`w-8 h-8 justify-center items-center bg-[#1D1E23] rounded-xl mt-4`}>
             <Ionicons name="chevron-back" size={24} color="#FFFFFF" />

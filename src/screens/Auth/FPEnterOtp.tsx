@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Image } from 'react-native';
 import { Button } from 'react-native-paper';
 import tw from 'twrnc';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import LinearGradient from 'react-native-linear-gradient';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { BASE_URL } from '@env';
 import Toast from 'react-native-toast-message';
@@ -133,12 +132,6 @@ const FPEnterOtp: React.FC = () => {
   return (
     <Background>
       <View style={tw`flex-1`}>
-        {/* Background gradient */}
-        <LinearGradient
-          colors={['#000000', '#111111']}
-          style={tw`absolute inset-0`}
-        />
-
         <View style={tw`flex-1 px-6`}>
           {/* Back button */}
           <TouchableOpacity 

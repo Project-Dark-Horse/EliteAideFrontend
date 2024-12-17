@@ -23,6 +23,7 @@ import Voice from '@react-native-voice/voice';
 import { useTaskRefresh } from '../../context/TaskRefreshContext';
 import { debounce } from 'lodash';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
+import LoadingScreen from '../../components/Loading/LoadingScreen';
 
 interface Message {
   id: string;
@@ -105,7 +106,6 @@ const ChatScreen = () => {
 
   const [input, setInput] = useState('');
   const [isListening, setIsListening] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [showInput, setShowInput] = useState(false);
   const { setShouldRefresh } = useTaskRefresh();
   const [searchQuery, setSearchQuery] = useState('');
@@ -717,6 +717,13 @@ const ChatScreen = () => {
           </View>
         )}
       </KeyboardAvoidingView>
+      <LoadingScreen 
+        loading={
+          loadingStates.sendMessage || 
+          loadingStates.voiceRecognition || 
+          loadingStates.taskFetch
+        } 
+      />
     </View>
   );
 };
