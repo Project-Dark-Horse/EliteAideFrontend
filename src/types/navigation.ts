@@ -40,6 +40,8 @@ export type RootStackParamList = {
 
   // Stacks
   ProfileStack: undefined;
+
+  Notifications: undefined;
 };
 
 // Example usage
