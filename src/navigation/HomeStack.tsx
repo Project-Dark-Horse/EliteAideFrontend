@@ -9,6 +9,7 @@ import NotificationScreen from '../screens/Notification/NotificationScreen';
 //import ManualTaskCreate from '../screens/Ai/ManualTaskCreate';
 import MyActivity from '../screens/Profile/MyActivity';
 import MyTaskScreen from '../screens/Tasks/MyTaskScreen';
+import ProfileScreen from '../screens/Profile/ProfileScreen';
 
 const Stack = createStackNavigator();
 
@@ -19,7 +20,7 @@ const HomeStack = () => {
       <Stack.Screen name="ToDo" component={ToDo} />
       <Stack.Screen name="Progress" component={Progress} />
       <Stack.Screen name="Done" component={Done} />
-      
+      <Stack.Screen name="Profile" component={ProfileScreen} />
       <Stack.Screen name="TaskAnalysis" component={TaskAnalysis} options={{ title: 'Progress Overview' }} />
       {/* <Stack.Screen name="ManualTaskCreate" component={ManualTaskCreate} options={{ headerShown: false }} /> */}
       <Stack.Screen name="MyActivity" component={MyActivity} options={{ headerShown: false }} />
