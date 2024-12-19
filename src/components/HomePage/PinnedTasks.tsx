@@ -11,7 +11,7 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useTaskRefresh } from '../../context/TaskRefreshContext';
 import { useFocusEffect } from '@react-navigation/native';
-import { FormattedTask } from '../../types/task';
+import { FormattedTask } from '../../types/Task';
 import { getIconName, getBackgroundColor } from '../../utils/taskUtils';
 
 type RootStackParamList = {
