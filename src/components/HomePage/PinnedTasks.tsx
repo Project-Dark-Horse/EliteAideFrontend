@@ -63,15 +63,18 @@ const PinnedTasks: React.FC<PinnedTasksProps> = ({ tasks }) => {
         return;
       }
 
-      const today = new Date();
-      const nextWeek = new Date(today);
+      // Get current date and time
+      const now = new Date();
+      
+      // Set end date to 7 days from now
+      const nextWeek = new Date(now);
       nextWeek.setDate(nextWeek.getDate() + 7);
-      
-      const startDate = today.toISOString().split('T')[0];
+
+      const startDate = now.toISOString().split('T')[0];
       const endDate = nextWeek.toISOString().split('T')[0];
-      
+
       const response = await axios.get<TaskResponse>(`${BASE_URL}v1/tasks/range`, {
-        headers: { 
+        headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
@@ -83,28 +86,33 @@ const PinnedTasks: React.FC<PinnedTasksProps> = ({ tasks }) => {
       });
 
       if (response.data?.message?.task_details?.data?.length > 0) {
-        const fetchedTasks = response.data.message.task_details.data.map((task: TaskResponse['message']['task_details']['data'][0]) => {
-          const dueDate = new Date(task.due_date);
-          return {
-            id: task.id,
-            title: task.title,
-            description: task.description,
-            status: task.status,
-            due_date: task.due_date,
-            type: task.type,
-            priority: task.priority,
-            time: dueDate.toLocaleTimeString([], { 
-              hour: 'numeric', 
-              minute: '2-digit',
-              hour12: true 
-            }).toUpperCase(),
-            day: dueDate.toLocaleDateString('en-US', { 
-              weekday: 'long' 
-            }) || 'Today',
-            backgroundColor: '#1E1E1E',
-            iconName: getIconName(task.type),
-          };
-        });
+        const fetchedTasks = response.data.message.task_details.data
+          .filter(task => {
+            const taskDateTime = new Date(task.due_date);
+            return taskDateTime > now; 
+          })
+          .map((task: TaskResponse['message']['task_details']['data'][0]) => {
+            const dueDate = new Date(task.due_date);
+            return {
+              id: task.id,
+              title: task.title,
+              description: task.description,
+              status: task.status,
+              due_date: task.due_date,
+              type: task.type,
+              priority: task.priority,
+              time: dueDate.toLocaleTimeString([], {
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true
+              }).toUpperCase(),
+              day: dueDate.toLocaleDateString('en-US', {
+                weekday: 'long'
+              }) || 'Today',
+              backgroundColor: '#1E1E1E',
+              iconName: getIconName(task.type),
+            };
+          });
         tasks = fetchedTasks;
       }
     } catch (error) {

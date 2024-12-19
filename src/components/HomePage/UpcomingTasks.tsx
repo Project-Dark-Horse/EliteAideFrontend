@@ -59,13 +59,13 @@ const UpcomingTasksComponent: React.FC<UpcomingTasksComponentProps> = ({ tasks }
       }
       console.log('[HomeScreen] Token retrieved, making API call...');
 
-      // Get today's date and next 7 days date for upcoming tasks
+      // Get today's date and next 2 days date for upcoming tasks
       const today = new Date();
-      const nextWeek = new Date(today);
-      nextWeek.setDate(nextWeek.getDate() + 7);
+      const twodays = new Date(today);
+      twodays.setDate(twodays.getDate() + 2);
       
       const startDate = today.toISOString().split('T')[0];
-      const endDate = nextWeek.toISOString().split('T')[0];
+      const endDate = twodays.toISOString().split('T')[0];
       
       console.log('[HomeScreen] Fetching tasks between:', { startDate, endDate });
       
