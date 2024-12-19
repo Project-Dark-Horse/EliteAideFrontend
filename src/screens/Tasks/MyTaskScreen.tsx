@@ -38,25 +38,42 @@ const MyTaskScreen: React.FC = () => {
         return;
       }
 
-      const response = await axios.get(`${BASE_URL}v1/tasks/user-tasks`, {
+      // Get current date and time
+      const now = new Date();
+      
+      // Set end date to 12 days from now (matching PinnedTasks)
+      const nextWeek = new Date(now);
+      nextWeek.setDate(nextWeek.getDate() + 12);
+
+      const startDate = now.toISOString().split('T')[0];
+      const endDate = nextWeek.toISOString().split('T')[0];
+
+      const response = await axios.get(`${BASE_URL}v1/tasks/range`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
         params: {
+          start_date: startDate,
+          end_date: endDate,
           page,
           items_per_page: itemsPerPage,
         },
       });
 
-      const fetchedTasks = response.data.message.task_details.data.map((task: any) => ({
-        id: task.id,
-        title: task.title,
-        description: task.description,
-        time: task.due_date,
-        icon: 'briefcase',
-        color: '#1D1E23',
-        status: task.status,
-      }));
+      const fetchedTasks = response.data.message.task_details.data
+        .filter(task => {
+          const taskDateTime = new Date(task.due_date);
+          return taskDateTime > now;
+        })
+        .map((task: any) => ({
+          id: task.id,
+          title: task.title,
+          description: task.description,
+          time: task.due_date,
+          icon: 'briefcase',
+          color: '#1D1E23',
+          status: task.status,
+        }));
 
       setTasks(fetchedTasks);
     } catch (error) {

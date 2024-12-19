@@ -51,15 +51,12 @@ const Home: React.FC = () => {
         // Get current date and time
         const now = new Date();
         
-        // Get startdate as +2 days from now
-        const twodays = new Date(now);
-        twodays.setDate(twodays.getDate() + 7)
         
         // Set end date to 7 days from now
         const nextWeek = new Date(now);
-        nextWeek.setDate(nextWeek.getDate() + 7);
+        nextWeek.setDate(nextWeek.getDate() + 12);
 
-        const startDate = twodays.toISOString().split('T')[0];
+        const startDate = now.toISOString().split('T')[0];
         const endDate = nextWeek.toISOString().split('T')[0];
 
         // Properly append query parameters to URL
