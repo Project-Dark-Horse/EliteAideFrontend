@@ -9,11 +9,12 @@ interface CardProps {
   title: string;
   description: string;
   time: string;
+  date: string;
   backgroundColor: string;
   iconName: string;
 }
 
-const UpcomingTasksCard: React.FC<CardProps> = ({ id, title, description, time, backgroundColor, iconName }) => {
+const UpcomingTasksCard: React.FC<CardProps> = ({ id, title, description, time, date, backgroundColor, iconName }) => {
   return (
     <Card style={[tw`rounded-xl mr-2 h-[120px] w-[200px] justify-between`, { backgroundColor }]}>
       <Card.Content style={tw`flex-col py-4 px-3`}>

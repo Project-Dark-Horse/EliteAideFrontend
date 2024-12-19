@@ -24,7 +24,6 @@ import { useTaskRefresh } from '../../context/TaskRefreshContext';
 import { debounce } from 'lodash';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import LoadingScreen from '../../components/Loading/LoadingScreen';
-import Geolocation from 'react-native-geolocation-service';
 
 interface Message {
   id: string;
@@ -167,140 +166,128 @@ const ChatScreen = () => {
     if (input.trim() && !loadingStates.sendMessage) {
       triggerHaptic();
       setLoadingStates(prev => ({ ...prev, sendMessage: true }));
+      
+      const userMessage: Message = {
+        id: Math.random().toString(),
+        text: input.trim(),
+        sender: 'user',
+        timestamp: new Date().toLocaleString()
+      };
+      setMessages(prevMessages => [userMessage, ...prevMessages]);
+      setInput('');
 
-      // Get user's location
-      Geolocation.getCurrentPosition(
-        async (position) => {
-          const { latitude, longitude } = position.coords;
+      try {
+        const token = await AsyncStorage.getItem('access_token');
+        console.log('Retrieved Access Token:', token);
+        if (!token) {
+          navigation.navigate('Login');
+          return;
+        }
 
-          const userMessage: Message = {
-            id: Math.random().toString(),
-            text: input.trim(),
-            sender: 'user',
-            timestamp: new Date().toLocaleString()
-          };
-          setMessages(prevMessages => [userMessage, ...prevMessages]);
-          setInput('');
+        console.log('Sending request with payload:', { prompt: input.trim() });
 
-          try {
-            const token = await AsyncStorage.getItem('access_token');
-            console.log('Retrieved Access Token:', token);
-            if (!token) {
-              navigation.navigate('Login');
-              return;
+        const response = await axios.post<SuccessResponse>(
+          `${BASE_URL}v1/tasks/prompts/`,
+          { prompt: input.trim() },
+          {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
             }
-
-            console.log('Sending request with payload:', { prompt: input.trim(), location: { latitude, longitude } });
-
-            const response = await axios.post<SuccessResponse>(
-              `${BASE_URL}v1/tasks/prompts/`,
-              { prompt: input.trim(), location: { latitude, longitude } },
-              {
-                headers: {
-                  'Authorization': `Bearer ${token}`,
-                  'Content-Type': 'application/json'
-                }
-              }
-            );
-
-            console.log('API Response:', response.data);
-
-            const taskDetails = response.data.message.task_details;
-            const priorityMap = {
-              1: '🟢 Low',
-              2: '🟡 Medium',
-              3: '🔴 High'
-            };
-            const priorityKey = Number(taskDetails.priority) as keyof typeof priorityMap;
-            const priority = priorityMap[priorityKey] || `Priority ${taskDetails.priority}`;
-
-            const formattedMessage = `✅ Task created successfully!\n\n` +
-              `Title: ${taskDetails.title}\n` +
-              `Description: ${taskDetails.description}\n` +
-              `Due Date: ${new Date(taskDetails.due_date).toLocaleString('en-US', {
-                month: 'short',
-                day: 'numeric',
-                hour: 'numeric',
-                minute: '2-digit',
-                hour12: true
-              })}\n` +
-              `Priority: ${priority}\n` +
-              `Type: ${taskDetails.type}\n` +
-              `Created At: ${new Date(taskDetails.created_at).toLocaleString('en-US', {
-                month: 'short',
-                day: 'numeric',
-                hour: 'numeric',
-                minute: '2-digit',
-                hour12: true
-              })}`;
-
-            setMessages(prevMessages => [
-              {
-                id: Math.random().toString(),
-                text: formattedMessage,
-                sender: 'bot',
-                timestamp: new Date().toLocaleString('en-US', {
-                  month: 'short',
-                  day: 'numeric',
-                  hour: 'numeric',
-                  minute: '2-digit',
-                  hour12: true
-                })
-              },
-              {
-                id: Math.random().toString(),
-                text: "What would you like to do next?",
-                sender: 'bot',
-                showQuickReplies: true,
-                timestamp: new Date().toLocaleString('en-US', {
-                  month: 'short',
-                  day: 'numeric',
-                  hour: 'numeric',
-                  minute: '2-digit',
-                  hour12: true
-                })
-              },
-              ...prevMessages
-            ]);
-
-            setQuickReplies(['CREATE ANOTHER TASK', 'SHOW MY TASKS']);
-            setShouldRefresh(true);
-
-          } catch (error) {
-            let errorMessage = "Sorry, something went wrong. Please try again.";
-            
-            if (axios.isAxiosError(error)) {
-              if (error.response?.status === 401) {
-                navigation.navigate('Login');
-                errorMessage = "Your session has expired. Please login again.";
-              } else if (error.response?.status === 400) {
-                errorMessage = error.response?.data?.error || 
-                              error.response?.data?.message || 
-                              "Invalid task description. Please provide more details.";
-              } else if (error.response?.status === 429) {
-                errorMessage = "You've made too many requests. Please wait a moment and try again.";
-              }
-            }
-
-            setMessages(prevMessages => [
-              { 
-                id: Math.random().toString(), 
-                text: `❌ ${errorMessage}`, 
-                sender: 'bot' 
-              },
-              ...prevMessages
-            ]);
-
-          } finally {
-            setLoadingStates(prev => ({ ...prev, sendMessage: false }));
           }
-        },
-        (error) => {
-          console.error('Error getting location:', error);
-          // Handle location error
-        },
-        { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
-      );
+        );
+
+        console.log('API Response:', response.data);
+
+        const taskDetails = response.data.message.task_details;
+        const priorityMap = {
+          1: '🟢 Low',
+          2: '🟡 Medium',
+          3: '🔴 High'
+        };
+        const priorityKey = Number(taskDetails.priority) as keyof typeof priorityMap;
+        const priority = priorityMap[priorityKey] || `Priority ${taskDetails.priority}`;
+
+        const formattedMessage = `✅ Task created successfully!\n\n` +
+          `Title: ${taskDetails.title}\n` +
+          `Description: ${taskDetails.description}\n` +
+          `Due Date: ${new Date(taskDetails.due_date).toLocaleString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true
+          })}\n` +
+          `Priority: ${priority}\n` +
+          `Type: ${taskDetails.type}\n` +
+          `Created At: ${new Date(taskDetails.created_at).toLocaleString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true
+          })}`;
+
+        setMessages(prevMessages => [
+          {
+            id: Math.random().toString(),
+            text: formattedMessage,
+            sender: 'bot',
+            timestamp: new Date().toLocaleString('en-US', {
+              month: 'short',
+              day: 'numeric',
+              hour: 'numeric',
+              minute: '2-digit',
+              hour12: true
+            })
+          },
+          {
+            id: Math.random().toString(),
+            text: "What would you like to do next?",
+            sender: 'bot',
+            showQuickReplies: true,
+            timestamp: new Date().toLocaleString('en-US', {
+              month: 'short',
+              day: 'numeric',
+              hour: 'numeric',
+              minute: '2-digit',
+              hour12: true
+            })
+          },
+          ...prevMessages
+        ]);
+
+        setQuickReplies(['CREATE ANOTHER TASK', 'SHOW MY TASKS']);
+        setShouldRefresh(true);
+
+      } catch (error) {
+        let errorMessage = "Sorry, something went wrong. Please try again.";
+        
+        if (axios.isAxiosError(error)) {
+          if (error.response?.status === 401) {
+            navigation.navigate('Login');
+            errorMessage = "Your session has expired. Please login again.";
+          } else if (error.response?.status === 400) {
+            errorMessage = error.response?.data?.error || 
+                          error.response?.data?.message || 
+                          "Invalid task description. Please provide more details.";
+          } else if (error.response?.status === 429) {
+            errorMessage = "You've made too many requests. Please wait a moment and try again.";
+          }
+        }
+
+        setMessages(prevMessages => [
+          { 
+            id: Math.random().toString(), 
+            text: `❌ ${errorMessage}`, 
+            sender: 'bot' 
+          },
+          ...prevMessages
+        ]);
+
+      } finally {
+        setLoadingStates(prev => ({ ...prev, sendMessage: false }));
+      }
     }
   };
 
