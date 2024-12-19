@@ -60,17 +60,9 @@ const MyTaskScreen: React.FC = () => {
         },
       });
 
-<<<<<<< HEAD
-      const fetchedTasks = response.data.message.task_details.data
-        .filter(task => {
-          const taskDateTime = new Date(task.due_date);
-          return taskDateTime > now;
-        })
-=======
       const today = new Date();
       const fetchedTasks = response.data.message.task_details.data
         .filter((task: any) => isAfter(new Date(task.due_date), today) || isToday(new Date(task.due_date)))
->>>>>>> 816bb985 (Your commit message here)
         .map((task: any) => ({
           id: task.id,
           title: task.title,

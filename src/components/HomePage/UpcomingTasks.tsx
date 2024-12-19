@@ -84,18 +84,22 @@ const UpcomingTasksComponent: React.FC<UpcomingTasksComponentProps> = ({ tasks }
 
       if (response.data?.message?.task_details?.data?.length > 0) {
         console.log('[HomeScreen] Processing', response.data.message.task_details.data.length, 'tasks');
-        const fetchedTasks = response.data.message.task_details.data.map((task) => ({
-          id: task.id,
-          title: task.title,
-          description: task.description,
-          time: new Date(task.due_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-          backgroundColor: getBackgroundColor(task.type),
-          iconName: getIconName(task.type),
-          priority: Number(task.priority),
-          status: task.status,
-          type: task.type,
-          due_date: task.due_date
-        }));
+        const fetchedTasks = response.data.message.task_details.data.map((task) => {
+          const dueDate = new Date(task.due_date);
+          return {
+            id: task.id,
+            title: task.title,
+            description: task.description,
+            time: dueDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            date: dueDate.toLocaleDateString(),
+            backgroundColor: getBackgroundColor(task.type),
+            iconName: getIconName(task.type),
+            priority: Number(task.priority),
+            status: task.status,
+            type: task.type,
+            due_date: task.due_date
+          };
+        });
         setLocalTasks(fetchedTasks.slice(0, 3));
         console.log('[HomeScreen] Tasks processed and state updated');
       } else {
@@ -142,6 +146,7 @@ const UpcomingTasksComponent: React.FC<UpcomingTasksComponentProps> = ({ tasks }
               title={item.title}
               description={item.description}
               time={item.time}
+              date={item.date}
               backgroundColor={item.backgroundColor}
               iconName={item.iconName}
             />
