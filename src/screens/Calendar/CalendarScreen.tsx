@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Modal, TouchableOpacity, ActivityIndicator, Alert, ScrollView, Text, StyleSheet } from 'react-native';
+import { View, Modal, TouchableOpacity, ActivityIndicator, Alert, ScrollView, Text, StyleSheet, RefreshControl } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import tw from 'twrnc';
 import Header from './Header';
@@ -13,6 +13,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
 import LoadingScreen from '../../components/Loading/LoadingScreen';
+import { useFocusEffect } from '@react-navigation/native';
 
 export interface Task {
   id: number;
@@ -30,6 +31,7 @@ const CalendarScreen = () => {
   const [isCreateTaskVisible, setIsCreateTaskVisible] = useState(false);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   const fetchTasks = async () => {
     setLoading(true);
@@ -80,6 +82,25 @@ const CalendarScreen = () => {
     fetchTasks();
   }, []);
 
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchTasks();
+    }, [])
+  );
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchTasks();
+    }, 60000); // Refresh every 60 seconds
+
+    return () => clearInterval(interval); // Cleanup on unmount
+  }, []);
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    fetchTasks().finally(() => setRefreshing(false));
+  }, []);
+
   return (
     <SafeAreaView style={tw`flex-1 bg-[#111111]`}>
       <View style={tw`flex-1 p-4`}>
@@ -91,10 +112,14 @@ const CalendarScreen = () => {
         {loading ? (
           <ActivityIndicator size="large" color="#fff" style={tw`mt-10`} />
         ) : (
-          <>
+          <ScrollView
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+          >
             <WeekView selectedDate={selectedDate} onSelectDate={setSelectedDate} />
             <DaySchedule selectedDate={selectedDate} tasks={tasks} />
-          </>
+          </ScrollView>
         )}
       </View>
 
