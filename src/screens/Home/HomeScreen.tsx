@@ -11,7 +11,7 @@ import TopNavBar from '../../components/UpperNavBar/TopNavBar';
 // import GreetingPopup from './GreetingPopup';
 import tw from 'twrnc';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { BASE_URL } from '@env';
 import TodoImage from '../../assets/todo.png';
 import ProgressImage from '../../assets/progress.png';
 import DoneImage from '../../assets/done.png';
@@ -46,16 +46,46 @@ const Home: React.FC = () => {
     const fetchTaskStats = async () => {
       try {
         const token = await AsyncStorage.getItem('access_token');
-        const response = await fetch('https://api.eliteaide.tech/v1/tasks/user-tasks?page=1&items_per_page=100', {
+        if (!token) return;
+
+        // Get current date and time
+        const now = new Date();
+        
+        // Get startdate as +2 days from now
+        const twodays = new Date(now);
+        twodays.setDate(twodays.getDate() + 7)
+        
+        // Set end date to 7 days from now
+        const nextWeek = new Date(now);
+        nextWeek.setDate(nextWeek.getDate() + 7);
+
+        const startDate = twodays.toISOString().split('T')[0];
+        const endDate = nextWeek.toISOString().split('T')[0];
+
+        // Properly append query parameters to URL
+        const url = `${BASE_URL}v1/tasks/range?start_date=${startDate}&end_date=${endDate}`;
+        
+        console.log('Fetching tasks from:', url);
+
+        const response = await fetch(url, {
           headers: {
-            Authorization: `Bearer ${token}`,
-          },
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
         });
 
         if (response.ok) {
           const data = await response.json();
+          console.log('API Response:', data);
+
           if (data.message?.task_details?.data) {
-            const fetchedTasks = data.message.task_details.data;
+            const fetchedTasks = data.message.task_details.data.filter(task => {
+              const taskDateTime = new Date(task.due_date);
+              return taskDateTime > now;
+            });
+            
+            console.log('Filtered tasks:', fetchedTasks);
+            
             setTasks(fetchedTasks);
             const stats = {
               total: fetchedTasks.length,
@@ -64,6 +94,8 @@ const Home: React.FC = () => {
             };
             setTaskStats(stats);
           }
+        } else {
+          console.error('Failed to fetch tasks:', response.status);
         }
       } catch (error) {
         console.error('Error fetching task statistics:', error);

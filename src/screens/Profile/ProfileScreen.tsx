@@ -55,8 +55,10 @@ const ProfileScreen = () => {
           email: data.message.user_data.email,
         });
         if (data.message.user_data.profile_picture_url) {
-          console.log('Profile picture URL:', data.message.user_data.profile_picture_url);
-          setProfilePicture(data.message.user_data.profile_picture_url);
+          // Remove query parameters from the URL
+          const cleanUrl = data.message.user_data.profile_picture_url.split('?')[0];
+          console.log('Setting clean profile picture URL:', cleanUrl);
+          setProfilePicture(cleanUrl);
         }
       }
     } catch (error) {
