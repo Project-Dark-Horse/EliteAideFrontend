@@ -14,6 +14,11 @@ type ProfileScreenNavigationProp = StackNavigationProp<{
 const PhotoComponent: React.FC = () => {
   const navigation = useNavigation<ProfileScreenNavigationProp>();
 
+  if (!navigation) {
+    console.error("Navigation is undefined. Ensure PhotoComponent is within a NavigationContainer.");
+    return null; // or some fallback UI
+  }
+
   return (
     <View style={tw`flex-row justify-end items-center`}>
       <TouchableOpacity onPress={() => navigation.navigate('ProfileScreen')}>

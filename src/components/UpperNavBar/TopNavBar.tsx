@@ -4,22 +4,20 @@ import tw from 'twrnc';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FastImage from 'react-native-fast-image';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useFocusEffect } from '@react-navigation/native';
-
-interface TopNavBarProps {
-  navigation: any;
-}
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 
 // Create a separate NotificationsComponent
-const NotificationsComponent: React.FC<{ navigation: any }> = ({ navigation }) => {
+const NotificationsComponent: React.FC = () => {
+  const navigation = useNavigation();
   return (
-    <TouchableOpacity>
+    <TouchableOpacity onPress={() => navigation.navigate('Notifications')}>
       <Ionicons name="notifications-outline" size={20} color="#65779E" />
     </TouchableOpacity>
   );
 };
 
-const TopNavBar: React.FC<TopNavBarProps> = ({ navigation }) => {
+const TopNavBar: React.FC = () => {
+  const navigation = useNavigation();
   const [isSearchVisible, setIsSearchVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [profilePicture, setProfilePicture] = useState<string | null>(null);
@@ -68,7 +66,7 @@ const TopNavBar: React.FC<TopNavBarProps> = ({ navigation }) => {
   return (
     <View style={tw`w-full h-8 flex-row justify-between items-center bg-[#111111] px-2`}>
       {/* Left: Profile Photo */}
-      <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
+      <TouchableOpacity onPress={() => navigation.navigate('ProfileScreen')}>
         <FastImage
           source={
             profilePicture 
@@ -108,7 +106,7 @@ const TopNavBar: React.FC<TopNavBarProps> = ({ navigation }) => {
         )}
 
         {/* Notifications Icon */}
-        <NotificationsComponent navigation={navigation} />
+        <NotificationsComponent />
       </View>
     </View>
   );
