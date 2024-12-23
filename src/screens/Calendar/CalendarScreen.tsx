@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, Modal, TouchableOpacity, ActivityIndicator, Alert, ScrollView, Text, StyleSheet, RefreshControl } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import tw from 'twrnc';
@@ -12,7 +12,6 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
-import LoadingScreen from '../../components/Loading/LoadingScreen';
 import { useFocusEffect } from '@react-navigation/native';
 
 export interface Task {
@@ -33,7 +32,7 @@ const CalendarScreen = () => {
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
-  const fetchTasks = async () => {
+  const fetchTasks = useCallback(async () => {
     setLoading(true);
     try {
       const token = await AsyncStorage.getItem('access_token');
@@ -69,7 +68,7 @@ const CalendarScreen = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   const addTask = (newTask: Omit<Task, 'id'>) => {
     setTasks(prevTasks => [
@@ -80,12 +79,12 @@ const CalendarScreen = () => {
 
   useEffect(() => {
     fetchTasks();
-  }, []);
+  }, [fetchTasks]);
 
   useFocusEffect(
     React.useCallback(() => {
       fetchTasks();
-    }, [])
+    }, [fetchTasks])
   );
 
   useEffect(() => {
@@ -94,12 +93,12 @@ const CalendarScreen = () => {
     }, 60000); // Refresh every 60 seconds
 
     return () => clearInterval(interval); // Cleanup on unmount
-  }, []);
+  }, [fetchTasks]);
 
-  const onRefresh = React.useCallback(() => {
+  const onRefresh = useCallback(() => {
     setRefreshing(true);
     fetchTasks().finally(() => setRefreshing(false));
-  }, []);
+  }, [fetchTasks]);
 
   return (
     <SafeAreaView style={tw`flex-1 bg-[#111111]`}>
@@ -108,7 +107,6 @@ const CalendarScreen = () => {
           onCalendarPress={() => setIsCalendarVisible(true)} 
           onCreateTaskPress={() => setIsCreateTaskVisible(true)} 
         />
-        <LoadingScreen loading={loading} />
         {loading ? (
           <ActivityIndicator size="large" color="#fff" style={tw`mt-10`} />
         ) : (

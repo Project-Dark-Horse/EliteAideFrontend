@@ -145,6 +145,14 @@ const PinnedTasks: React.FC<PinnedTasksProps> = ({ tasks: initialTasks }) => {
     }, [shouldRefresh])
   );
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchTasks();
+    }, 10000); // Refresh every 10 seconds
+
+    return () => clearInterval(interval); // Cleanup on unmount
+  }, []);
+
   return (
     <Surface style={tw`p-4 bg-[#111111] flex-1`}>
       <SeeAllCards title="Weekly Tasks" />

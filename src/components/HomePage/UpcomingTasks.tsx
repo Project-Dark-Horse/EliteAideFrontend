@@ -1,6 +1,5 @@
-// UpcomingTasks.tsx
-import React, { useEffect, useState } from 'react';
-import { View, FlatList, Alert } from 'react-native';
+import React, { useEffect, useState, useCallback } from 'react';
+import { View, FlatList, Alert, RefreshControl } from 'react-native';
 import SeeAllCards from './SeeAllCards';
 import { Surface, ActivityIndicator } from 'react-native-paper';
 import UpcomingTasksCard from './UpcomingTasksCard';
@@ -42,32 +41,28 @@ interface TaskResponse {
   };
 }
 
-const UpcomingTasksComponent: React.FC<UpcomingTasksComponentProps> = ({ tasks }) => {
+const UpcomingTasksComponent: React.FC<UpcomingTasksComponentProps> = React.memo(({ tasks }) => {
   const navigation = useNavigation<NavigationProp>();
   const [loading, setLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
   const [localTasks, setLocalTasks] = useState<FormattedTask[]>(tasks);
   const { shouldRefresh, setShouldRefresh } = useTaskRefresh();
 
-  const fetchTasks = async () => {
+  const fetchTasks = useCallback(async () => {
     setLoading(true);
     try {
-      console.log('[HomeScreen] Fetching upcoming tasks...');
       const token = await AsyncStorage.getItem('access_token');
       if (!token) {
         navigation.navigate('Login');
         return;
       }
-      console.log('[HomeScreen] Token retrieved, making API call...');
 
-      // Get today's date and next 2 days date for upcoming tasks
       const today = new Date();
       const twodays = new Date(today);
       twodays.setDate(twodays.getDate() + 2);
       
       const startDate = today.toISOString().split('T')[0];
       const endDate = twodays.toISOString().split('T')[0];
-      
-      console.log('[HomeScreen] Fetching tasks between:', { startDate, endDate });
       
       const response = await axios.get<TaskResponse>(`${BASE_URL}v1/tasks/range`, {
         headers: { 
@@ -80,10 +75,7 @@ const UpcomingTasksComponent: React.FC<UpcomingTasksComponentProps> = ({ tasks }
         }
       });
 
-      console.log('[HomeScreen] API Response received:', response.status);
-
       if (response.data?.message?.task_details?.data?.length > 0) {
-        console.log('[HomeScreen] Processing', response.data.message.task_details.data.length, 'tasks');
         const fetchedTasks = response.data.message.task_details.data.map((task) => {
           const dueDate = new Date(task.due_date);
           return {
@@ -101,31 +93,42 @@ const UpcomingTasksComponent: React.FC<UpcomingTasksComponentProps> = ({ tasks }
           };
         });
         setLocalTasks(fetchedTasks.slice(0, 3));
-        console.log('[HomeScreen] Tasks processed and state updated');
       } else {
-        console.log('[HomeScreen] No tasks received from API');
+        setLocalTasks([]);
       }
     } catch (error) {
-      console.error('[HomeScreen] Error fetching tasks:', error);
+      console.error('Error fetching tasks:', error);
       Alert.alert('Error', 'Unable to fetch tasks');
     } finally {
       setLoading(false);
-      console.log('[HomeScreen] Fetch tasks operation completed');
     }
-  };
+  }, [navigation]);
 
   useEffect(() => {
     fetchTasks();
-  }, []);
+  }, [fetchTasks]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchTasks();
+    }, 10000); // Refresh every 10 seconds
+
+    return () => clearInterval(interval); // Cleanup on unmount
+  }, [fetchTasks]);
 
   useFocusEffect(
-    React.useCallback(() => {
+    useCallback(() => {
       if (shouldRefresh) {
         fetchTasks();
         setShouldRefresh(false);
       }
-    }, [shouldRefresh])
+    }, [shouldRefresh, fetchTasks, setShouldRefresh])
   );
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    fetchTasks().finally(() => setRefreshing(false));
+  }, [fetchTasks]);
 
   return (
     <Surface style={tw`p-4 bg-[#111111]`}>
@@ -154,10 +157,13 @@ const UpcomingTasksComponent: React.FC<UpcomingTasksComponentProps> = ({ tasks }
           contentContainerStyle={tw`py-1`}
           showsHorizontalScrollIndicator={false}
           ItemSeparatorComponent={() => <View style={tw`w-3`} />}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
         />
       )}
     </Surface>
   );
-};
+});
 
 export default UpcomingTasksComponent;

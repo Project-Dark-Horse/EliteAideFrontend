@@ -30,6 +30,14 @@ const MyTaskScreen: React.FC = () => {
     fetchTasks();
   }, [page, itemsPerPage]);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchTasks();
+    }, 10000); // Refresh every 10 seconds
+
+    return () => clearInterval(interval); // Cleanup on unmount
+  }, [page, itemsPerPage]);
+
   const fetchTasks = async () => {
     try {
       const token = await AsyncStorage.getItem('access_token');

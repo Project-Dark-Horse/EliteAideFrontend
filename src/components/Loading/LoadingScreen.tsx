@@ -1,7 +1,5 @@
 import React from 'react';
-import { View, ActivityIndicator, StyleSheet } from 'react-native';
-import { BlurView } from '@react-native-community/blur';
-import RadialGradient from 'react-native-radial-gradient';
+import { View, ActivityIndicator, StyleSheet, Text } from 'react-native';
 import tw from 'twrnc';
 
 interface LoadingScreenProps {
@@ -13,36 +11,12 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ loading }) => {
 
   return (
     <View style={[StyleSheet.absoluteFill, styles.container]}>
-      {/* Base black background */}
-      <View style={styles.backgroundBase} />
-      
-      {/* Top radial gradient */}
-      <RadialGradient
-        style={tw`absolute top-0 left-0 right-0 h-[350px]`}
-        colors={['#4956C7', '#111111', '#111111']}
-        center={[330, 99]}
-        radius={350}
-      />
-
-      {/* Bottom radial gradient */}
-      <RadialGradient
-        style={tw`absolute top-200 left-0 right-0 h-[350px]`}
-        colors={['#4956C7', '#111111', '#111111']}
-        center={[200, 99]}
-        radius={500}
-      />
-
-      {/* Blur overlay */}
-      <BlurView
-        style={tw`absolute inset-1`}
-        blurType="extraDark"
-        blurAmount={100}
-        reducedTransparencyFallbackColor="rgba(0,0,0,0.3)"
-      />
-
       {/* Loading indicator */}
       <View style={styles.loaderContainer}>
         <ActivityIndicator size="large" color="#4956C7" />
+        <Text style={styles.quote}>
+          "Productivity is never an accident. It is always the result of a commitment to excellence, intelligent planning, and focused effort."
+        </Text>
       </View>
     </View>
   );
@@ -50,16 +24,22 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ loading }) => {
 
 const styles = StyleSheet.create({
   container: {
-    zIndex: 999,
-  },
-  backgroundBase: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: '#000000',
-  },
-  loaderContainer: {
-    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.8)', // Semi-transparent background
     justifyContent: 'center',
     alignItems: 'center',
+    zIndex: 999,
+  },
+  loaderContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  quote: {
+    marginTop: 20,
+    color: '#FFFFFF',
+    fontSize: 16,
+    textAlign: 'center',
+    paddingHorizontal: 20,
   },
 });
 

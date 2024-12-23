@@ -10,6 +10,7 @@ import {
   Image,
   Animated,
   RefreshControl,
+  ActivityIndicator,
 } from 'react-native';
 import tw from 'twrnc';
 import bot from '../../assets/bot.png';
@@ -24,6 +25,8 @@ import { useTaskRefresh } from '../../context/TaskRefreshContext';
 import { debounce } from 'lodash';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import LoadingScreen from '../../components/Loading/LoadingScreen';
+import FastImage from 'react-native-fast-image';
+
 
 interface Message {
   id: string;
@@ -114,6 +117,9 @@ const ChatScreen = () => {
   const [recordingTime, setRecordingTime] = useState(0);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const waveformAnimations = Array.from({ length: 5 }, () => useRef(new Animated.Value(1)).current);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [typing, setTyping] = useState<boolean>(false);
+  const [profilePicture, setProfilePicture] = useState<string | null>(null);
 
   const filteredMessages = searchQuery
     ? messages.filter(msg => 
@@ -163,9 +169,10 @@ const ChatScreen = () => {
   };
 
   const sendMessage = async () => {
-    if (input.trim() && !loadingStates.sendMessage) {
+    if (input.trim() && !loading) {
       triggerHaptic();
-      setLoadingStates(prev => ({ ...prev, sendMessage: true }));
+      setLoading(true);
+      setTyping(true);
       
       const userMessage: Message = {
         id: Math.random().toString(),
@@ -286,7 +293,8 @@ const ChatScreen = () => {
         ]);
 
       } finally {
-        setLoadingStates(prev => ({ ...prev, sendMessage: false }));
+        setLoading(false);
+        setTyping(false);
       }
     }
   };
@@ -424,12 +432,9 @@ const ChatScreen = () => {
           <Image source={bot} style={tw`w-8 h-8 rounded-full mr-2 mt-1`} />
         )}
         {item.sender === 'user' && (
-          <Image 
-            source={user} 
-            style={[
-              tw`w-8 h-8 rounded-full ml-2 mt-1`,
-              { borderWidth: 2, borderColor: '#666' }
-            ]} 
+          <FastImage
+            source={profilePicture ? { uri: profilePicture } : require('../../assets/user.jpg')}
+            style={tw`w-8 h-8 rounded-full ml-2 mt-1`}
           />
         )}
         <View
@@ -634,6 +639,40 @@ const ChatScreen = () => {
     }
   }, [isListening]);
 
+  useEffect(() => {
+    const fetchProfilePicture = async () => {
+      try {
+        const token = await AsyncStorage.getItem('access_token');
+        if (!token) return;
+
+        const response = await axios.get('https://api.eliteaide.tech/v1/users/profile/', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (response.data?.message?.user_data?.profile_picture_url) {
+          const cleanUrl = response.data.message.user_data.profile_picture_url.split('?')[0];
+          setProfilePicture(cleanUrl);
+        }
+      } catch (error) {
+        console.error('Error fetching profile picture:', error);
+      }
+    };
+
+    fetchProfilePicture();
+  }, []);
+
+  if (loading) {
+    return (
+      <View style={tw`flex-1 justify-center items-center bg-[#111111]`}>
+        <ActivityIndicator size="large" color="#3272A0" />
+        <Text style={tw`text-white mt-4`}>Processing your request...</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={tw`flex-1 bg-[#111111] pb-10`}>
       {/* Navigation Header */}
@@ -683,6 +722,14 @@ const ChatScreen = () => {
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
         />
+
+        {/* Typing Indicator */}
+        {typing && (
+          <View style={tw`flex-row items-center p-4 bg-[#111111]`}>
+            <Text style={tw`text-white`}>AI is typing</Text>
+            <Animated.Text style={tw`text-white ml-2`}>...</Animated.Text>
+          </View>
+        )}
 
         {/* Message Input */}
         {showInput && (
