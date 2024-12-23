@@ -17,6 +17,7 @@ import FPEnterEmail from './screens/Auth/FPEnterEmail';
 import FPEnterOtp from './screens/Auth/FPEnterOtp';
 import FPNewPassword from './screens/Auth/FPNewPassword';
 import GeolocationService from './services/GeolocationService';
+import { TaskProvider } from './context/TaskContext';
 
 
 
@@ -61,23 +62,25 @@ const App = () => {
   }
 
   return (
-    <SafeAreaProvider>
-      <NavigationContainer>
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />
-          <Stack.Screen name="Login" component={LoginScreen} />
-          <Stack.Screen name="EnterEmail" component={EnterEmailScreen} />
-          <Stack.Screen name="Otp" component={OtpScreen} />
-          <Stack.Screen name="SignUp" component={SignUpScreen} />
-          <Stack.Screen name="BottomTabNavigator" component={BottomTabNavigator} />
-          <Stack.Screen name="FPEnterEmail" component={FPEnterEmail} />
-          <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
-          <Stack.Screen name="NotificationScreen" component={NotificationScreen} />
-          <Stack.Screen name="FPEnterOtp" component={FPEnterOtp} />
-          <Stack.Screen name="FPNewPassword" component={FPNewPassword} /> 
-        </Stack.Navigator>
-      </NavigationContainer>
-    </SafeAreaProvider>
+    <TaskProvider>
+      <SafeAreaProvider>
+        <NavigationContainer>
+          <Stack.Navigator screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />
+            <Stack.Screen name="Login" component={LoginScreen} />
+            <Stack.Screen name="EnterEmail" component={EnterEmailScreen} />
+            <Stack.Screen name="Otp" component={OtpScreen} />
+            <Stack.Screen name="SignUp" component={SignUpScreen} />
+            <Stack.Screen name="BottomTabNavigator" component={BottomTabNavigator} />
+            <Stack.Screen name="FPEnterEmail" component={FPEnterEmail} />
+            <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
+            <Stack.Screen name="NotificationScreen" component={NotificationScreen} />
+            <Stack.Screen name="FPEnterOtp" component={FPEnterOtp} />
+            <Stack.Screen name="FPNewPassword" component={FPNewPassword} /> 
+          </Stack.Navigator>
+        </NavigationContainer>
+      </SafeAreaProvider>
+    </TaskProvider>
   );
 };
 

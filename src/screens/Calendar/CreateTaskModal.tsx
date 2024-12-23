@@ -7,6 +7,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import { BASE_URL } from '@env';
 import { Task } from './CalendarScreen'; // Ensure the path is correct
 import Geolocation from 'react-native-geolocation-service';
+import { useTasks } from '../../context/TaskContext';
 
 // Props interface for the modal
 interface CreateTaskModalProps {
@@ -28,6 +29,7 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({ isVisible, onClose, s
   const [category, setCategory] = useState<string | null>(null);
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
+  const { addTask } = useTasks();
 
   const handleSave = async () => {
     if (!title || !dueDate || !time) {
@@ -67,13 +69,14 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({ isVisible, onClose, s
 
           if (response.ok) {
             const responseData = await response.json();
-            onSaveTask({
+            addTask({
+              id: Date.now(),
               time: formattedDueDate,
               summary: title,
               detail: description,
               date: new Date(formattedDueDate),
-              color: '#2196F3', // Default color, adjust as needed
-              status: "Pending",
+              color: '#2196F3',
+              status: 'Pending',
             });
             onClose();
           } else {
