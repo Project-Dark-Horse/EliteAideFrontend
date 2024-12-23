@@ -73,6 +73,7 @@ yarn-error.log
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+yarn.lock
 
 
 package-lock.json
@@ -81,6 +82,9 @@ android/app/build/outputs/apk/debug/app-debug.apk
 android/app/build/outputs/apk/release/app-release.apk
 android/app/build/outputs/mapping/release/mapping.txt
 android/app/build/outputs/mapping/release/proguard.txt
+android/app/src/main/AndroidManifest.xml
+android/app/src/main/res/values/strings.xml
+
 # Android
 android/app/build/
 android/build/
@@ -99,7 +103,7 @@ android/gradle/
 android/app/build/outputs/apk/debug/app-debug.apk
 
 node_modules
-yarn.lock
+
 
 .idea
 .gradle

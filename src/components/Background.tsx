@@ -24,7 +24,7 @@ const Background: React.FC<BackgroundProps> = ({ children }) => {
 
       {/* Bottom radial gradient */}
       <RadialGradient
-        style={tw`absolute top-200 left-0 right-0 h-[350px]`}
+        style={tw`absolute bottom-0 left-0 right-0 h-[100px]`}
         colors={['#4956C7', '#111111', '#111111']}
         center={[200, 99]}
         radius={500}

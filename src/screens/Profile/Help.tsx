@@ -89,7 +89,7 @@ const HelpScreen: React.FC = () => {
 
         {/* Action Buttons */}
         <TouchableOpacity
-          style={tw`bg-[#4956C7] rounded-2xl py-3 px-6 mb-4 w-4/5 items-center shadow-lg`}
+          style={tw`bg-[#65779E] rounded-2xl py-3 px-6 mb-4 w-4/5 items-center shadow-lg`}
           onPress={handleContactSupport}
         >
           <Text style={tw`text-white text-lg font-semibold`}>Contact Support</Text>
@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
     textDecorationLine: 'underline',
   },
   closeButton: {
-    backgroundColor: '#4956C7',
+    backgroundColor: '#65779E',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 5,

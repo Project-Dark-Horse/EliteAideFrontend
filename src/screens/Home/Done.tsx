@@ -14,6 +14,7 @@ interface Task {
   status: 'Pending' | 'In Progress' | 'Completed';
   due_date: string;
   type: string;
+  completed_at: string;
 }
 
 const CompletedTaskScreen: React.FC = () => {
@@ -58,10 +59,14 @@ const CompletedTaskScreen: React.FC = () => {
 
       const data = await response.json();
       if (data.message?.task_details?.data) {
-        const completedTasks = data.message.task_details.data.filter(
-          (task: Task) => task.status === 'Completed'
+        const today = new Date();
+        const completedBeforeToday = data.message.task_details.data.filter(
+          (task: Task) => {
+            const completedDate = new Date(task.completed_at);
+            return completedDate < today;
+          }
         );
-        setTasks(completedTasks);
+        setTasks(completedBeforeToday);
       }
     } catch (error) {
       console.error('Error fetching completed tasks:', error);

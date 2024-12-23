@@ -15,7 +15,6 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import * as ImagePicker from 'react-native-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import FastImage from 'react-native-fast-image';
-import { Platform } from 'react-native';
 
 const EditProfile = () => {
   const navigation = useNavigation();
@@ -141,6 +140,17 @@ const EditProfile = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <Ionicons name="chevron-back" size={24} color="#FFFFFF" />
+        </TouchableOpacity>
+        <View style={styles.titleContainer}>
+          <Text style={styles.headerTitle}>Edit Profile</Text>
+        </View>
+        <TouchableOpacity onPress={handleSave} style={styles.saveButton}>
+          <Text style={styles.saveButtonText}>Save</Text>
+        </TouchableOpacity>
+      </View>
       <ScrollView style={styles.scrollView}>
         <View style={styles.profileSection}>
           <View style={styles.avatarContainer}>
@@ -155,14 +165,8 @@ const EditProfile = () => {
               }
               style={styles.avatar}
               defaultSource={require('../../assets/user.jpg')}
-              onLoadStart={() => {
-                console.log('Starting to load image:', profilePicture);
-                setImageLoading(true);
-              }}
-              onLoadEnd={() => {
-                console.log('Finished loading image');
-                setImageLoading(false);
-              }}
+              onLoadStart={() => setImageLoading(true)}
+              onLoadEnd={() => setImageLoading(false)}
               onError={() => {
                 console.error('Error loading image');
                 setImageLoading(false);
@@ -183,43 +187,58 @@ const EditProfile = () => {
           </View>
 
           <View style={styles.formContainer}>
-            <TextInput
-              style={styles.input}
-              value={userData.firstName}
-              onChangeText={(text) => setUserData(prev => ({ ...prev, firstName: text }))}
-              placeholder="First Name"
-              placeholderTextColor="#6B7280"
-            />
-            <TextInput
-              style={styles.input} 
-              value={userData.lastName}
-              onChangeText={(text) => setUserData(prev => ({ ...prev, lastName: text }))}
-              placeholder="Last Name"
-              placeholderTextColor="#6B7280"
-            />
-            <TextInput
-              style={styles.input}
-              value={userData.username}
-              onChangeText={(text) => setUserData(prev => ({ ...prev, username: text }))}
-              placeholder="Username"
-              placeholderTextColor="#6B7280"
-            />
-            <TextInput
-              style={styles.input}
-              value={userData.email}
-              onChangeText={(text) => setUserData(prev => ({ ...prev, email: text }))}
-              placeholder="Email"
-              placeholderTextColor="#6B7280"
-              keyboardType="email-address"
-            />
-            <TextInput
-              style={styles.input}
-              value={userData.mobileNumber}
-              onChangeText={(text) => setUserData(prev => ({ ...prev, mobileNumber: text }))}
-              placeholder="Mobile Number"
-              placeholderTextColor="#6B7280"
-              keyboardType="phone-pad"
-            />
+            <View style={styles.inputContainer}>
+              <Ionicons name="person-outline" size={20} color="#6B7280" style={styles.inputIcon} />
+              <TextInput
+                style={styles.input}
+                value={userData.firstName}
+                onChangeText={(text) => setUserData(prev => ({ ...prev, firstName: text }))}
+                placeholder="First Name"
+                placeholderTextColor="#6B7280"
+              />
+            </View>
+            <View style={styles.inputContainer}>
+              <Ionicons name="person-outline" size={20} color="#6B7280" style={styles.inputIcon} />
+              <TextInput
+                style={styles.input} 
+                value={userData.lastName}
+                onChangeText={(text) => setUserData(prev => ({ ...prev, lastName: text }))}
+                placeholder="Last Name"
+                placeholderTextColor="#6B7280"
+              />
+            </View>
+            <View style={styles.inputContainer}>
+              <Ionicons name="at-outline" size={20} color="#6B7280" style={styles.inputIcon} />
+              <TextInput
+                style={styles.input}
+                value={userData.username}
+                onChangeText={(text) => setUserData(prev => ({ ...prev, username: text }))}
+                placeholder="Username"
+                placeholderTextColor="#6B7280"
+              />
+            </View>
+            <View style={styles.inputContainer}>
+              <Ionicons name="mail-outline" size={20} color="#6B7280" style={styles.inputIcon} />
+              <TextInput
+                style={styles.input}
+                value={userData.email}
+                onChangeText={(text) => setUserData(prev => ({ ...prev, email: text }))}
+                placeholder="Email"
+                placeholderTextColor="#6B7280"
+                keyboardType="email-address"
+              />
+            </View>
+            <View style={styles.inputContainer}>
+              <Ionicons name="call-outline" size={20} color="#6B7280" style={styles.inputIcon} />
+              <TextInput
+                style={styles.input}
+                value={userData.mobileNumber}
+                onChangeText={(text) => setUserData(prev => ({ ...prev, mobileNumber: text }))}
+                placeholder="Mobile Number"
+                placeholderTextColor="#6B7280"
+                keyboardType="phone-pad"
+              />
+            </View>
           </View>
         </View>
       </ScrollView>
@@ -248,6 +267,8 @@ const styles = StyleSheet.create({
     height: 100,
     borderRadius: 50,
     backgroundColor: '#1D1E23',
+    borderWidth: 2,
+    borderColor: '#65779E',
   },
   imageLoadingOverlay: {
     position: 'absolute',
@@ -264,19 +285,58 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: '30%',
     bottom: 0,
-    backgroundColor: '#3B82F6',
+    backgroundColor: '#65779E',
     borderRadius: 12,
     padding: 8,
   },
   formContainer: {
     gap: 16,
   },
-  input: {
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: '#1D1E23',
     borderRadius: 8,
-    padding: 12,
+    paddingHorizontal: 12,
+    marginBottom: 16,
+  },
+  inputIcon: {
+    marginRight: 8,
+  },
+  input: {
+    flex: 1,
     color: '#fff',
     fontSize: 16,
+    paddingVertical: 12,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 16,
+  },
+  backButton: {
+    padding: 8,
+  },
+  titleContainer: {
+    flex: 1,
+    alignItems: 'center',
+    position: 'absolute',
+    left: 0,
+    right: 0,
+  },
+  headerTitle: {
+    color: '#FFFFFF',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  saveButton: {
+    padding: 8,
+  },
+  saveButtonText: {
+    color: '#65779E',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 

@@ -19,6 +19,7 @@ import { useNavigation } from '@react-navigation/native';
 import { format } from 'date-fns';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { StackNavigationProp } from '@react-navigation/stack';
+import SearchBar from '../../components/SearchBar';
 // Add logging utility
 const log = (message: string, data?: any) => {
   console.log(`[NotificationScreen] ${message}`, data || '');
@@ -404,12 +405,11 @@ const NotificationScreen: React.FC = () => {
 
       {isSearchVisible && (
         <View style={styles.searchContainer}>
-          <TextInput
-            style={styles.searchInput}
-            placeholder={`Search ${showArchived ? 'archived' : 'recent'} notifications...`}
-            placeholderTextColor="#6B7280"
+          <SearchBar
             value={searchQuery}
             onChangeText={setSearchQuery}
+            onClear={() => setSearchQuery('')}
+            placeholder="Search notifications..."
           />
         </View>
       )}

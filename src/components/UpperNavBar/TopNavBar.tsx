@@ -5,9 +5,21 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import FastImage from 'react-native-fast-image';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+
+// Define your navigation stack types
+type RootStackParamList = {
+  Home: undefined;
+  NotificationScreen: undefined;
+  ProfileScreen: undefined;
+  // Add other screens here
+};
+
+// Define the navigation prop type for this component
+type TopNavBarNavigationProp = StackNavigationProp<RootStackParamList, 'NotificationScreen'>;
 
 const NotificationsComponent: React.FC = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<TopNavBarNavigationProp>();
   return (
     <TouchableOpacity onPress={() => navigation.navigate('NotificationScreen')}>
       <Ionicons name="notifications-outline" size={20} color="#65779E" />
@@ -16,7 +28,7 @@ const NotificationsComponent: React.FC = () => {
 };
 
 const TopNavBar: React.FC = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<TopNavBarNavigationProp>();
   const [isSearchVisible, setIsSearchVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [profilePicture, setProfilePicture] = useState<string | null>(null);
