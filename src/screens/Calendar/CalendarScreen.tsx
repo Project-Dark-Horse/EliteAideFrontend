@@ -13,6 +13,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
 import { useFocusEffect } from '@react-navigation/native';
+import { useTasks } from '../../context/TaskContext';
 
 export interface Task {
   id: number;
@@ -28,9 +29,10 @@ const CalendarScreen = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [isCalendarVisible, setIsCalendarVisible] = useState(false);
   const [isCreateTaskVisible, setIsCreateTaskVisible] = useState(false);
-  const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+
+  const { tasks } = useTasks();
 
   const fetchTasks = useCallback(async () => {
     setLoading(true);
@@ -43,7 +45,7 @@ const CalendarScreen = () => {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
-        params: { page: 1, items_per_page: 200 },
+        params: { page: 1, items_per_page: 50 },
       });
 
       if (response.status !== 200) throw new Error('Failed to fetch tasks');
@@ -128,11 +130,11 @@ const CalendarScreen = () => {
         onRequestClose={() => setIsCalendarVisible(false)}
       >
         <TouchableOpacity
-          style={globalStyles.modalOverlay}
+          style={tw`flex-1 justify-center items-center bg-black bg-opacity-50`}
           activeOpacity={1}
           onPress={() => setIsCalendarVisible(false)}
         >
-          <View style={globalStyles.modalContent}>
+          <View style={tw`bg-white p-4 rounded-lg`}>
             <CalendarPopup 
               selectedDate={selectedDate} 
               setSelectedDate={setSelectedDate} 

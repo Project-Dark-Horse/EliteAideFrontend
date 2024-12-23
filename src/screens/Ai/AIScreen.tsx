@@ -26,6 +26,7 @@ import { debounce } from 'lodash';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import LoadingScreen from '../../components/Loading/LoadingScreen';
 import FastImage from 'react-native-fast-image';
+import { useTasks } from '../../context/TaskContext';
 
 
 interface Message {
@@ -120,6 +121,7 @@ const ChatScreen = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [typing, setTyping] = useState<boolean>(false);
   const [profilePicture, setProfilePicture] = useState<string | null>(null);
+  const { addTask } = useTasks();
 
   const filteredMessages = searchQuery
     ? messages.filter(msg => 
