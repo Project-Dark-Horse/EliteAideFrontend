@@ -170,4 +170,4 @@ yarn-error.log
 # Environment files
 android/build/generated/autolinking/autolinking.json
 android/build/generated/autolinking/package.json.sha
-android/build/generated/autolinking/yarn.lock.sha
+android/build/generated/autolinking/yarn.lock.sha.yarnrc.yml
