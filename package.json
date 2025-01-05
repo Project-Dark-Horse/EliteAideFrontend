@@ -10,7 +10,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "@notifee/react-native": "^9.1.4",
+    "@notifee/react-native": "^9.1.8",
     "@react-native-async-storage/async-storage": "^2.0.0",
     "@react-native-community/blur": "^4.4.1",
     "@react-native-community/checkbox": "^0.5.17",
@@ -94,10 +94,12 @@
     "metro": "^0.81.0",
     "patch-package": "^8.0.0",
     "prettier": "2.8.8",
+    "react-native-make": "^1.0.1",
     "react-test-renderer": "18.3.1",
     "typescript": "5.0.4"
   },
   "engines": {
     "node": ">=18"
-  }
+  },
+  "packageManager": "yarn@4.6.0+sha512.5383cc12567a95f1d668fbe762dfe0075c595b4bfff433be478dbbe24e05251a8e8c3eb992a986667c1d53b6c3a9c85b8398c35a960587fbd9fa3a0915406728"
 }
