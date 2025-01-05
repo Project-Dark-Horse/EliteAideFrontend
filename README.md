@@ -68,7 +68,7 @@ src/
 
 ### Prerequisites
 - Node.js >= 14.0.0
-- npm >= 6.0.0
+- Yarn >= 1.22.0
 - React Native environment setup
 
 ### Step 1: Environment Setup
@@ -82,7 +82,7 @@ Complete the [React Native - Environment Setup](https://reactnative.dev/docs/env
 git clone https://github.com/Project-Dark-Horse/EliteAideFrontend.git
 
 # Install dependencies
-npm install
+yarn install
 
 # Create .env file
 BASE_URL=https://api.eliteaide.tech/
@@ -92,19 +92,19 @@ BASE_URL=https://api.eliteaide.tech/
 
 ```bash
 # Start Metro
-npm start
+yarn start
 ```
 
 ### Step 4: Run Application
 
 For Android:
 ```bash
-npm run android
+yarn android
 ```
 
 For iOS:
 ```bash
-npm run ios
+yarn ios
 ```
 
 ## Key Features Implementation
@@ -132,18 +132,18 @@ If you encounter issues:
 
 1. Clear Metro bundler cache:
 ```bash
-npm start -- --reset-cache
+yarn start --reset-cache
 ```
 
 2. Clean and rebuild:
 ```bash
 # For Android
 cd android && ./gradlew clean
-cd .. && npm run android
+cd .. && yarn android
 
 # For iOS
 cd ios && pod install
-cd .. && npm run ios
+cd .. && yarn ios
 ```
 
 ## Learn More
@@ -157,7 +157,7 @@ cd .. && npm run ios
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/feature-name`)
 3. Commit changes (`git commit -m 'Add feature_name'`)
-4. Push to branch (`git push origin feature/feature_name`)
+4. Push to branch (`git push origin feature/feature-name`)
 5. Open a Pull Request
 
 
