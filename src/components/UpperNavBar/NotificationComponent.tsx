@@ -1,18 +1,21 @@
+// src/components/UpperNavBar/NotificationsComponent.tsx
 import React from 'react';
-import { View } from 'react-native';
+import { View, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import tw from 'twrnc';
+import { useNavigation } from '@react-navigation/native';
+import { HomeScreenNavigationProp } from '../../types/navigation';
 
 const NotificationsComponent: React.FC = () => {
+  const navigation = useNavigation<HomeScreenNavigationProp>();
+
+  const handleNotificationPress = () => {
+    navigation.navigate('NotificationScreen');
+  };
+
   return (
-    <View style={tw`flex-row justify-end items-center`}>
-      <View style={tw`w-6 h-6 justify-center items-center mx-0`}>
-        <Icon name="search" size={24} color="#646464" />
-      </View>
-      <View style={tw`w-6 h-6 justify-center items-center mx-5`}>
-        <Icon name="notifications" size={24} color="#646464" />
-      </View>
-    </View>
+    <TouchableOpacity onPress={handleNotificationPress}>
+      <Icon name="notifications" size={24} color="#65779E" />
+    </TouchableOpacity>
   );
 };
 

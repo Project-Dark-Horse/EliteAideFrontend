@@ -1,3 +1,18 @@
 {
+  "compilerOptions": {
+    "jsx": "react",
+    "lib": ["es6", "dom", "dom.iterable", "esnext"], // Add comma here
+    "target": "es5",
+    "module": "esnext",
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true
+  },
   "extends": "@react-native/typescript-config/tsconfig.json"
 }

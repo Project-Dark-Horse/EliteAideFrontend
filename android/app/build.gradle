@@ -82,8 +82,8 @@ android {
         applicationId "com.eliteaidefrontend"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.1.0"
     }
     signingConfigs {
         debug {
@@ -92,17 +92,21 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        // release {
+        //     storeFile file('release.keystore')
+        //     storePassword 'Malware@9180'
+        //     keyAlias 'my-key-alias'
+        //     keyPassword 'Malware@9180'
+        // }
     }
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
         }
         release {
-            // Caution! In production, you need to generate your own keystore file.
-            // see https://reactnative.dev/docs/signed-apk-android.
             signingConfig signingConfigs.debug
-            minifyEnabled enableProguardInReleaseBuilds
-            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 }
@@ -116,4 +120,23 @@ dependencies {
     } else {
         implementation jscFlavor
     }
+
+    implementation project(':react-native-haptic-feedback')
+    implementation project(':react-native-push-notification')
 }
+
+// Move this block outside of the `dependencies` block
+project.ext.vectoricons = [
+    iconFontNames: [ 'Ionicons.ttf', 'FontAwesome.ttf', 'MaterialIcons.ttf' ] // Add more fonts if you're using other icon sets
+]
+// Apply the fonts.gradle script to ensure vector icons are bundled correctly
+apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
+
+// Ensure the dependency is correctly declared
+// tasks.named('generateDebugLintReportModel') {
+//     dependsOn ':app:copyReactNativeVectorIconFonts'
+// }
+
+apply plugin: 'com.google.gms.google-services'
+
+

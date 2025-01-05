@@ -1,79 +1,193 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+<img src="https://github.com/Project-Dark-Horse/EliteAideFrontend/blob/main/src/assets/bot.png" alt="logo" title="Elite Aide" width="80"/>
 
-# Getting Started
+# Elite Aide 
 
->**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
+Elite Aide is an AI-powered task management application built with **React Native**. The project combines intelligent task organization with a modern user interface to enhance productivity.
 
-## Step 1: Start the Metro Server
+## Features
 
-First, you will need to start **Metro**, the JavaScript _bundler_ that ships _with_ React Native.
+- 🤖 AI-Powered Task Creation
+- 📋 Task Management & Organization
+- 🔍 Real-time Search
+- 📅 Calendar Integration
+- 🔐 Secure Authentication
+- 🎯 Progress Tracking
+- 🎤 Voice Input Support
+- 📍 Geolocation
+  
 
-To start Metro, run the following command from the _root_ of your React Native project:
+
+  <img src="https://github.com/user-attachments/assets/74ca8ffa-7b32-420c-86b3-4d1f9691bec5" alt="User-Flow" width="1279">
+  
+
+## Git Flow
+
+The project uses the following Git flow structure:
+
+```plaintext
+main
+│
+├── feature/     // New features
+│   └── (e.g., AI chat integration, task management)
+|
+├── api-handling/     // API Integration
+│   └── (backend connectivity, data handling)
+│
+├── bugfix/  // Bug fixes
+│   └── (issue resolutions)
+│
+├── release/1.0.0     // Release preparation
+│   ├── feature/
+│   ├── bugfix/
+|   |── api-handling/
+│   └── (final adjustments)
+│
+└── hotfix/        // Critical fixes
+    └── (urgent production fixes)
+```
+
+## Project Structure
+
+```plaintext
+src/
+├── assets/                # Static assets
+├── components/           # Reusable components
+│   ├── HomePage/
+│   │   ├── PinnedTasks
+│   │   ├── UpcomingTasks
+│   │   └── message
+│   └── SearchBar
+├── context/            # Context providers
+├── navigation/        # Navigation setup
+├── screens/          # Application screens
+├── types/           # TypeScript definitions
+└── utils/          # Utility functions
+```
+
+## Getting Started
+
+### Prerequisites
+- Node.js >= 14.0.0
+- npm >= 6.0.0
+- React Native environment setup
+
+### Step 1: Environment Setup
+
+Complete the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) before proceeding.
+
+### Step 2: Installation
 
 ```bash
-# using npm
+# Clone repository
+git clone https://github.com/Project-Dark-Horse/EliteAideFrontend.git
+
+# Install dependencies
+npm install
+
+# Create .env file
+BASE_URL=https://api.eliteaide.tech/
+```
+
+### Step 3: Start Metro Server
+
+```bash
+# Start Metro
 npm start
-
-# OR using Yarn
-yarn start
 ```
 
-## Step 2: Start your Application
+### Step 4: Run Application
 
-Let Metro Bundler run in its _own_ terminal. Open a _new_ terminal from the _root_ of your React Native project. Run the following command to start your _Android_ or _iOS_ app:
-
-### For Android
-
+For Android:
 ```bash
-# using npm
 npm run android
-
-# OR using Yarn
-yarn android
 ```
 
-### For iOS
-
+For iOS:
 ```bash
-# using npm
 npm run ios
-
-# OR using Yarn
-yarn ios
 ```
 
-If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
+## Key Features Implementation
 
-This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
+### Authentication
+- Email/Password login
+- OTP verification
+- Password reset flow
 
-## Step 3: Modifying your App
+### Task Management
+- AI-powered task creation
+- Task categorization
+- Priority levels
+- Status tracking
+- Search functionality
 
-Now that you have successfully run the app, let's modify it.
+### Calendar Integration
+- Date-based task view
+- Task scheduling
+- Timeline visualization
 
-1. Open `App.tsx` in your text editor of choice and edit some lines.
-2. For **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Developer Menu** (<kbd>Ctrl</kbd> + <kbd>M</kbd> (on Window and Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (on macOS)) to see your changes!
+## Troubleshooting
 
-   For **iOS**: Hit <kbd>Cmd ⌘</kbd> + <kbd>R</kbd> in your iOS Simulator to reload the app and see your changes!
+If you encounter issues:
 
-## Congratulations! :tada:
+1. Clear Metro bundler cache:
+```bash
+npm start -- --reset-cache
+```
 
-You've successfully run and modified your React Native App. :partying_face:
+2. Clean and rebuild:
+```bash
+# For Android
+cd android && ./gradlew clean
+cd .. && npm run android
 
-### Now what?
+# For iOS
+cd ios && pod install
+cd .. && npm run ios
+```
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [Introduction to React Native](https://reactnative.dev/docs/getting-started).
+## Learn More
 
-# Troubleshooting
+- [React Native Documentation](https://reactnative.dev)
+- [React Navigation](https://reactnavigation.org)
+- [TypeScript](https://www.typescriptlang.org)
 
-If you can't get this to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+## Contributing to EliteAideFrontend
 
-# Learn More
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/feature-name`)
+3. Commit changes (`git commit -m 'Add feature_name'`)
+4. Push to branch (`git push origin feature/feature_name`)
+5. Open a Pull Request
 
-To learn more about React Native, take a look at the following resources:
 
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+
+
+We love contributions from the community! Contributing isn’t just about code, you can help out by suggesting new features, enhancing documentation, and much more.
+
+### How to Contribute
+1. **Fork the repository** on GitHub.
+2. **Clone** the project to your own machine.
+3. **Commit changes** to your own branch: git commit -m 'Add some feature'
+4. **Push** your work back up to your fork.
+5. Submit a **Pull request** so that we can review your changes
+
+### Code of Conduct
+This project and everyone participating in it is governed by the [EliteAide Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code.
+
+### Issue and Feature Request
+- Please search for existing issues before creating a new one.
+- Use the provided templates for new issues and feature requests.
+
+### License
+This project is licensed under the [MIT License](LICENSE.txt).
+
+### Acknowledgements
+- Thanks to all the contributors who’ve helped build EliteAide.
+
+
+## Contact
+
+Email: eliteaideio@gmail.com
+
+---
