@@ -9,6 +9,7 @@ import EnterEmailScreen from '../screens/Auth/EnterEmailScreen';
 import FPEnterEmail from '../screens/Auth/FPEnterEmail';
 import FPEnterOtp from '../screens/Auth/FPEnterOtp';
 import FPNewPassword from '../screens/Auth/FPNewPassword';
+import ProfileScreen from '../screens/Profile/ProfileScreen';
 
 // Add type definition for stack params
 type AuthStackParamList = {

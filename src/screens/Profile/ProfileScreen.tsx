@@ -9,7 +9,6 @@ import { BASE_URL } from '@env';
 import CommonHeader from '../../components/CommonHeader';
 import axios from 'axios';
 import FastImage from 'react-native-fast-image';
-import LoadingScreen from '../../components/Loading/LoadingScreen';
 
 interface TaskStatistics {
   total: number;
@@ -35,7 +34,6 @@ const ProfileScreen = () => {
   const [logoutFailed, setLogoutFailed] = useState(false);
   const [profilePicture, setProfilePicture] = useState<string | null>(null);
   const [imageLoading, setImageLoading] = useState(true);
-  const [loading, setLoading] = useState(false);
 
   const fetchProfileData = async () => {
     try {
@@ -55,8 +53,10 @@ const ProfileScreen = () => {
           email: data.message.user_data.email,
         });
         if (data.message.user_data.profile_picture_url) {
-          console.log('Profile picture URL:', data.message.user_data.profile_picture_url);
-          setProfilePicture(data.message.user_data.profile_picture_url);
+          // Remove query parameters from the URL
+          const cleanUrl = data.message.user_data.profile_picture_url.split('?')[0];
+          console.log('Setting clean profile picture URL:', cleanUrl);
+          setProfilePicture(cleanUrl);
         }
       }
     } catch (error) {
@@ -418,7 +418,6 @@ const ProfileScreen = () => {
           </TouchableOpacity>
         </View>
       </ScrollView>
-      <LoadingScreen loading={loading} />
     </SafeAreaView>
   );
 };

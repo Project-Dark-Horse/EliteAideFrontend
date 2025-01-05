@@ -1,6 +1,5 @@
-// UpcomingTasks.tsx
-import React, { useEffect, useState } from 'react';
-import { View, FlatList, Alert } from 'react-native';
+import React, { useEffect, useState, useCallback } from 'react';
+import { View, FlatList, Alert, RefreshControl } from 'react-native';
 import SeeAllCards from './SeeAllCards';
 import { Surface, ActivityIndicator } from 'react-native-paper';
 import UpcomingTasksCard from './UpcomingTasksCard';
@@ -42,32 +41,28 @@ interface TaskResponse {
   };
 }
 
-const UpcomingTasksComponent: React.FC<UpcomingTasksComponentProps> = ({ tasks }) => {
+const UpcomingTasksComponent: React.FC<UpcomingTasksComponentProps> = React.memo(({ tasks }) => {
   const navigation = useNavigation<NavigationProp>();
   const [loading, setLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
   const [localTasks, setLocalTasks] = useState<FormattedTask[]>(tasks);
   const { shouldRefresh, setShouldRefresh } = useTaskRefresh();
 
-  const fetchTasks = async () => {
+  const fetchTasks = useCallback(async () => {
     setLoading(true);
     try {
-      console.log('[HomeScreen] Fetching upcoming tasks...');
       const token = await AsyncStorage.getItem('access_token');
       if (!token) {
         navigation.navigate('Login');
         return;
       }
-      console.log('[HomeScreen] Token retrieved, making API call...');
 
-      // Get today's date and next 7 days date for upcoming tasks
       const today = new Date();
-      const nextWeek = new Date(today);
-      nextWeek.setDate(nextWeek.getDate() + 7);
+      const twodays = new Date(today);
+      twodays.setDate(twodays.getDate() + 2);
       
       const startDate = today.toISOString().split('T')[0];
-      const endDate = nextWeek.toISOString().split('T')[0];
-      
-      console.log('[HomeScreen] Fetching tasks between:', { startDate, endDate });
+      const endDate = twodays.toISOString().split('T')[0];
       
       const response = await axios.get<TaskResponse>(`${BASE_URL}v1/tasks/range`, {
         headers: { 
@@ -80,48 +75,60 @@ const UpcomingTasksComponent: React.FC<UpcomingTasksComponentProps> = ({ tasks }
         }
       });
 
-      console.log('[HomeScreen] API Response received:', response.status);
-
       if (response.data?.message?.task_details?.data?.length > 0) {
-        console.log('[HomeScreen] Processing', response.data.message.task_details.data.length, 'tasks');
-        const fetchedTasks = response.data.message.task_details.data.map((task) => ({
-          id: task.id,
-          title: task.title,
-          description: task.description,
-          time: new Date(task.due_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-          backgroundColor: getBackgroundColor(task.type),
-          iconName: getIconName(task.type),
-          priority: Number(task.priority),
-          status: task.status,
-          type: task.type,
-          due_date: task.due_date
-        }));
+        const fetchedTasks = response.data.message.task_details.data.map((task) => {
+          const dueDate = new Date(task.due_date);
+          return {
+            id: task.id,
+            title: task.title,
+            description: task.description,
+            time: dueDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            date: dueDate.toLocaleDateString(),
+            backgroundColor: getBackgroundColor(task.type),
+            iconName: getIconName(task.type),
+            priority: Number(task.priority),
+            status: task.status,
+            type: task.type,
+            due_date: task.due_date
+          };
+        });
         setLocalTasks(fetchedTasks.slice(0, 3));
-        console.log('[HomeScreen] Tasks processed and state updated');
       } else {
-        console.log('[HomeScreen] No tasks received from API');
+        setLocalTasks([]);
       }
     } catch (error) {
-      console.error('[HomeScreen] Error fetching tasks:', error);
+      console.error('Error fetching tasks:', error);
       Alert.alert('Error', 'Unable to fetch tasks');
     } finally {
       setLoading(false);
-      console.log('[HomeScreen] Fetch tasks operation completed');
     }
-  };
+  }, [navigation]);
 
   useEffect(() => {
     fetchTasks();
-  }, []);
+  }, [fetchTasks]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchTasks();
+    }, 10000); // Refresh every 10 seconds
+
+    return () => clearInterval(interval); // Cleanup on unmount
+  }, [fetchTasks]);
 
   useFocusEffect(
-    React.useCallback(() => {
+    useCallback(() => {
       if (shouldRefresh) {
         fetchTasks();
         setShouldRefresh(false);
       }
-    }, [shouldRefresh])
+    }, [shouldRefresh, fetchTasks, setShouldRefresh])
   );
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    fetchTasks().finally(() => setRefreshing(false));
+  }, [fetchTasks]);
 
   return (
     <Surface style={tw`p-4 bg-[#111111]`}>
@@ -142,6 +149,7 @@ const UpcomingTasksComponent: React.FC<UpcomingTasksComponentProps> = ({ tasks }
               title={item.title}
               description={item.description}
               time={item.time}
+              date={item.date}
               backgroundColor={item.backgroundColor}
               iconName={item.iconName}
             />
@@ -149,10 +157,13 @@ const UpcomingTasksComponent: React.FC<UpcomingTasksComponentProps> = ({ tasks }
           contentContainerStyle={tw`py-1`}
           showsHorizontalScrollIndicator={false}
           ItemSeparatorComponent={() => <View style={tw`w-3`} />}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
         />
       )}
     </Surface>
   );
-};
+});
 
 export default UpcomingTasksComponent;

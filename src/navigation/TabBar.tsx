@@ -34,7 +34,7 @@ const TAB_CONFIG: Record<RouteNames, TabConfig> = {
     name: 'ai',
     activeColor: '#FFFFFF',
     inactiveColor: '#555555',
-    size: 24,
+    size: 27,
   },
   Profile: {
     name: 'person',

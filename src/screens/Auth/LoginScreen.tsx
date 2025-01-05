@@ -130,14 +130,14 @@ const LoginScreen: React.FC = () => {
           </TouchableOpacity>
         </View>
         <TouchableOpacity
-    onPress={() => {
-      console.log('Navigating to ForgotPassword');
-      navigation.navigate('FPEnterEmail');
-    }}
-    style={tw`mt-2`}
-  >
-    <Text style={tw`text-blue-300 text-left`}>Forgot Password?</Text>
-  </TouchableOpacity>
+          onPress={() => {
+            console.log('Navigating to ForgotPassword');
+            navigation.navigate('FPEnterEmail');
+          }}
+          style={tw`mt-2`}
+        >
+          <Text style={tw`text-blue-300 text-left`}>Forgot Password?</Text>
+        </TouchableOpacity>
 
         <TouchableOpacity onPress={handleLogin} style={styles.loginButton}>
           <LinearGradient
@@ -152,14 +152,11 @@ const LoginScreen: React.FC = () => {
           </LinearGradient>
         </TouchableOpacity>
 
-        
-
         <TouchableOpacity onPress={() => navigation.navigate('EnterEmail')} style={styles.linkContainer}>
-        <Text style={tw`text-[#979797] mt-0`}>
+          <Text style={tw`text-[#979797] mt-0`}>
             Don't have an account? <Text style={tw`text-[#65779E] font-semibold `}>Create One</Text>
           </Text>
         </TouchableOpacity>
-        <LoadingScreen loading={loading} />
       </View>
     </Background>
   );

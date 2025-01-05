@@ -2,21 +2,97 @@ import React, { useState } from 'react';
 import { View, TouchableOpacity, TextInput } from 'react-native';
 import tw from 'twrnc';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import PhotoComponent from './PhotoComponent';
-import NotificationsComponent from '../UpperNavBar/NotificationComponent';
+import FastImage from 'react-native-fast-image';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 
-interface TopNavBarProps {
-  navigation: any;
-}
+// Define your navigation stack types
+type RootStackParamList = {
+  Home: undefined;
+  NotificationScreen: undefined;
+  ProfileScreen: undefined;
+  // Add other screens here
+};
 
-const TopNavBar: React.FC<TopNavBarProps> = ({ navigation }) => {
+// Define the navigation prop type for this component
+type TopNavBarNavigationProp = StackNavigationProp<RootStackParamList, 'NotificationScreen'>;
+
+const NotificationsComponent: React.FC = () => {
+  const navigation = useNavigation<TopNavBarNavigationProp>();
+  return (
+    <TouchableOpacity onPress={() => navigation.navigate('NotificationScreen')}>
+      <Ionicons name="notifications-outline" size={20} color="#65779E" />
+    </TouchableOpacity>
+  );
+};
+
+const TopNavBar: React.FC = () => {
+  const navigation = useNavigation<TopNavBarNavigationProp>();
   const [isSearchVisible, setIsSearchVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [profilePicture, setProfilePicture] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const fetchProfileData = async () => {
+    if (isLoading) return; // Prevent multiple simultaneous requests
+    
+    setIsLoading(true);
+    try {
+      const token = await AsyncStorage.getItem('access_token');
+      if (!token) {
+        console.log('No access token found');
+        return;
+      }
+
+      const response = await fetch('https://api.eliteaide.tech/v1/users/profile/', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      const data = await response.json();
+      if (response.ok && data.message?.user_data?.profile_picture_url) {
+        // Remove query parameters from the URL
+        const cleanUrl = data.message.user_data.profile_picture_url.split('?')[0];
+        console.log('Setting clean profile picture URL:', cleanUrl);
+        setProfilePicture(cleanUrl);
+      }
+    } catch (error) {
+      console.error('Error fetching profile data:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Use useFocusEffect to refresh profile data when screen comes into focus
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchProfileData();
+    }, [])
+  );
 
   return (
     <View style={tw`w-full h-8 flex-row justify-between items-center bg-[#111111] px-2`}>
       {/* Left: Profile Photo */}
-      <PhotoComponent />
+      <TouchableOpacity onPress={() => navigation.navigate('ProfileScreen')}>
+        <FastImage
+          source={
+            profilePicture 
+              ? { 
+                  uri: profilePicture,
+                  priority: FastImage.priority.normal,
+                  cache: FastImage.cacheControl.immutable,
+                }
+              : require('../../assets/user.jpg')
+          }
+          style={tw`w-8 h-8 rounded-full`}
+          defaultSource={require('../../assets/user.jpg')}
+          resizeMode={FastImage.resizeMode.cover}
+        />
+      </TouchableOpacity>
 
       {/* Right Side: Search Bar or Icons */}
       <View style={tw`flex-row items-center`}>
@@ -29,7 +105,7 @@ const TopNavBar: React.FC<TopNavBarProps> = ({ navigation }) => {
             value={searchQuery}
             onChangeText={setSearchQuery}
             autoFocus
-            onBlur={() => setIsSearchVisible(false)} // Close search bar on blur
+            onBlur={() => setIsSearchVisible(false)}
           />
         ) : (
           <TouchableOpacity
@@ -41,10 +117,10 @@ const TopNavBar: React.FC<TopNavBarProps> = ({ navigation }) => {
         )}
 
         {/* Notifications Icon */}
-        <NotificationsComponent navigation={navigation} />
+        <NotificationsComponent />
       </View>
     </View>
   );
 };
 
-export default TopNavBar;
+export default React.memo(TopNavBar);

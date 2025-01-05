@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { View, Modal, TouchableOpacity, ActivityIndicator, Alert, ScrollView, Text, StyleSheet } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, Modal, TouchableOpacity, ActivityIndicator, Alert, ScrollView, Text, StyleSheet, RefreshControl } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import tw from 'twrnc';
 import Header from './Header';
@@ -12,7 +12,8 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
-import LoadingScreen from '../../components/Loading/LoadingScreen';
+import { useFocusEffect } from '@react-navigation/native';
+import { useTasks } from '../../context/TaskContext';
 
 export interface Task {
   id: number;
@@ -28,10 +29,12 @@ const CalendarScreen = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [isCalendarVisible, setIsCalendarVisible] = useState(false);
   const [isCreateTaskVisible, setIsCreateTaskVisible] = useState(false);
-  const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
-  const fetchTasks = async () => {
+  const { tasks } = useTasks();
+
+  const fetchTasks = useCallback(async () => {
     setLoading(true);
     try {
       const token = await AsyncStorage.getItem('access_token');
@@ -42,7 +45,7 @@ const CalendarScreen = () => {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
-        params: { page: 1, items_per_page: 200 },
+        params: { page: 1, items_per_page: 50 },
       });
 
       if (response.status !== 200) throw new Error('Failed to fetch tasks');
@@ -67,7 +70,7 @@ const CalendarScreen = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   const addTask = (newTask: Omit<Task, 'id'>) => {
     setTasks(prevTasks => [
@@ -78,7 +81,26 @@ const CalendarScreen = () => {
 
   useEffect(() => {
     fetchTasks();
-  }, []);
+  }, [fetchTasks]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchTasks();
+    }, [fetchTasks])
+  );
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchTasks();
+    }, 60000); // Refresh every 60 seconds
+
+    return () => clearInterval(interval); // Cleanup on unmount
+  }, [fetchTasks]);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    fetchTasks().finally(() => setRefreshing(false));
+  }, [fetchTasks]);
 
   return (
     <SafeAreaView style={tw`flex-1 bg-[#111111]`}>
@@ -87,14 +109,17 @@ const CalendarScreen = () => {
           onCalendarPress={() => setIsCalendarVisible(true)} 
           onCreateTaskPress={() => setIsCreateTaskVisible(true)} 
         />
-        <LoadingScreen loading={loading} />
         {loading ? (
           <ActivityIndicator size="large" color="#fff" style={tw`mt-10`} />
         ) : (
-          <>
+          <ScrollView
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+          >
             <WeekView selectedDate={selectedDate} onSelectDate={setSelectedDate} />
             <DaySchedule selectedDate={selectedDate} tasks={tasks} />
-          </>
+          </ScrollView>
         )}
       </View>
 
@@ -105,11 +130,11 @@ const CalendarScreen = () => {
         onRequestClose={() => setIsCalendarVisible(false)}
       >
         <TouchableOpacity
-          style={globalStyles.modalOverlay}
+          style={tw`flex-1 justify-center items-center bg-black bg-opacity-50`}
           activeOpacity={1}
           onPress={() => setIsCalendarVisible(false)}
         >
-          <View style={globalStyles.modalContent}>
+          <View style={tw`bg-white p-4 rounded-lg`}>
             <CalendarPopup 
               selectedDate={selectedDate} 
               setSelectedDate={setSelectedDate} 
