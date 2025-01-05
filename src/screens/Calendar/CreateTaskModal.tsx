@@ -6,6 +6,8 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import LinearGradient from 'react-native-linear-gradient';
 import { BASE_URL } from '@env';
 import { Task } from './CalendarScreen'; // Ensure the path is correct
+import Geolocation from 'react-native-geolocation-service';
+import { useTasks } from '../../context/TaskContext';
 
 // Props interface for the modal
 interface CreateTaskModalProps {
@@ -27,6 +29,7 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({ isVisible, onClose, s
   const [category, setCategory] = useState<string | null>(null);
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
+  const { addTask } = useTasks();
 
   const handleSave = async () => {
     if (!title || !dueDate || !time) {
@@ -35,49 +38,63 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({ isVisible, onClose, s
     }
 
     setLoading(true);
-    const access_token = await AsyncStorage.getItem('access_token');
 
-    const formattedDueDate = formatDate(dueDate);
+    // Get user's location
+    Geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+        const access_token = await AsyncStorage.getItem('access_token');
 
-    const taskData = {
-      title,
-      description,
-      priority,
-      status: "Pending",
-      due_date: formattedDueDate,
-      type: "Errands",
-    };
+        const formattedDueDate = formatDate(dueDate);
 
-    try {
-      const response = await fetch(`${BASE_URL}v1/tasks/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${access_token}`,
-        },
-        body: JSON.stringify(taskData),
-      });
-
-      if (response.ok) {
-        const responseData = await response.json();
-        onSaveTask({
-          time: formattedDueDate,
-          summary: title,
-          detail: description,
-          date: new Date(formattedDueDate),
-          color: '#2196F3', // Default color, adjust as needed
+        const taskData = {
+          title,
+          description,
+          priority,
           status: "Pending",
-        });
-        onClose();
-      } else {
-        const errorData = await response.json();
-        alert(`Failed to save task: ${errorData.message}`);
-      }
-    } catch (error) {
-      alert('An error occurred while saving the task.');
-    } finally {
-      setLoading(false);
-    }
+          due_date: formattedDueDate,
+          type: "Errands",
+          location: { latitude, longitude }
+        };
+
+        try {
+          const response = await fetch(`${BASE_URL}v1/tasks/`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${access_token}`,
+            },
+            body: JSON.stringify(taskData),
+          });
+
+          if (response.ok) {
+            const responseData = await response.json();
+            addTask({
+              id: Date.now(),
+              time: formattedDueDate,
+              summary: title,
+              detail: description,
+              date: new Date(formattedDueDate),
+              color: '#2196F3',
+              status: 'Pending',
+            });
+            onClose();
+          } else {
+            const errorData = await response.json();
+            alert(`Failed to save task: ${errorData.message}`);
+          }
+        } catch (error) {
+          alert('An error occurred while saving the task.');
+        } finally {
+          setLoading(false);
+        }
+      },
+      (error) => {
+        console.error('Error getting location:', error);
+        // Handle location error
+      },
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+    );
   };
 
   const formatDate = (dateString: string): string => {

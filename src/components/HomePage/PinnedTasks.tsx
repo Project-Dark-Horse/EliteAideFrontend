@@ -11,7 +11,7 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useTaskRefresh } from '../../context/TaskRefreshContext';
 import { useFocusEffect } from '@react-navigation/native';
-import { FormattedTask } from '../../types/task';
+import { FormattedTask } from '../../types/Task';
 import { getIconName, getBackgroundColor } from '../../utils/taskUtils';
 
 type RootStackParamList = {
@@ -49,10 +49,11 @@ interface TaskResponse {
   };
 }
 
-const PinnedTasks: React.FC<PinnedTasksProps> = ({ tasks }) => {
+const PinnedTasks: React.FC<PinnedTasksProps> = ({ tasks: initialTasks }) => {
   const navigation = useNavigation<NavigationProp>();
   const [loading, setLoading] = useState(false);
   const { shouldRefresh, setShouldRefresh } = useTaskRefresh();
+  const [tasks, setTasks] = useState(initialTasks);
 
   const fetchTasks = async () => {
     setLoading(true);
@@ -63,15 +64,18 @@ const PinnedTasks: React.FC<PinnedTasksProps> = ({ tasks }) => {
         return;
       }
 
-      const today = new Date();
-      const nextWeek = new Date(today);
-      nextWeek.setDate(nextWeek.getDate() + 7);
+      // Get current date and time
+      const now = new Date();
       
-      const startDate = today.toISOString().split('T')[0];
+      // Set end date to 7 days from now
+      const nextWeek = new Date(now);
+      nextWeek.setDate(nextWeek.getDate() + 12);
+
+      const startDate = now.toISOString().split('T')[0];
       const endDate = nextWeek.toISOString().split('T')[0];
-      
+
       const response = await axios.get<TaskResponse>(`${BASE_URL}v1/tasks/range`, {
-        headers: { 
+        headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
@@ -82,30 +86,42 @@ const PinnedTasks: React.FC<PinnedTasksProps> = ({ tasks }) => {
         }
       });
 
+      console.log('API Response:', response.data);
+
       if (response.data?.message?.task_details?.data?.length > 0) {
-        const fetchedTasks = response.data.message.task_details.data.map((task: TaskResponse['message']['task_details']['data'][0]) => {
-          const dueDate = new Date(task.due_date);
-          return {
-            id: task.id,
-            title: task.title,
-            description: task.description,
-            status: task.status,
-            due_date: task.due_date,
-            type: task.type,
-            priority: task.priority,
-            time: dueDate.toLocaleTimeString([], { 
-              hour: 'numeric', 
-              minute: '2-digit',
-              hour12: true 
-            }).toUpperCase(),
-            day: dueDate.toLocaleDateString('en-US', { 
-              weekday: 'long' 
-            }) || 'Today',
-            backgroundColor: '#1E1E1E',
-            iconName: getIconName(task.type),
-          };
-        });
-        tasks = fetchedTasks;
+        const fetchedTasks = response.data.message.task_details.data
+          .filter(task => {
+            const taskDateTime = new Date(task.due_date);
+            return taskDateTime > now; 
+          })
+          .map((task: TaskResponse['message']['task_details']['data'][0]) => {
+            const dueDate = new Date(task.due_date);
+            return {
+              id: task.id,
+              title: task.title,
+              description: task.description,
+              status: task.status,
+              due_date: task.due_date,
+              type: task.type,
+              priority: task.priority,
+              time: dueDate.toLocaleTimeString([], {
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true
+              }).toUpperCase(),
+              day: dueDate.toLocaleDateString('en-US', {
+                weekday: 'long'
+              }) || 'Today',
+              backgroundColor: '#1E1E1E',
+              iconName: getIconName(task.type),
+            };
+          });
+
+        console.log('Filtered tasks:', fetchedTasks);
+        console.log('Setting local tasks:', fetchedTasks);
+        setTasks(fetchedTasks);
+      } else {
+        console.log('No tasks received from API');
       }
     } catch (error) {
       console.error('Error fetching pinned tasks:', error);
@@ -116,6 +132,7 @@ const PinnedTasks: React.FC<PinnedTasksProps> = ({ tasks }) => {
   };
 
   useEffect(() => {
+    console.log('Initial tasks:', initialTasks);
     fetchTasks();
   }, []);
 
@@ -127,6 +144,14 @@ const PinnedTasks: React.FC<PinnedTasksProps> = ({ tasks }) => {
       }
     }, [shouldRefresh])
   );
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchTasks();
+    }, 10000); // Refresh every 10 seconds
+
+    return () => clearInterval(interval); // Cleanup on unmount
+  }, []);
 
   return (
     <Surface style={tw`p-4 bg-[#111111] flex-1`}>

@@ -48,9 +48,9 @@ const ToDoScreen: React.FC = () => {
 
       const data = await response.json();
       if (data.message?.task_details?.data) {
-        // Filter only pending tasks
+        const now = new Date();
         const pendingTasks = data.message.task_details.data.filter(
-          (task: Task) => task.status === 'Pending'
+          (task: Task) => task.status === 'Pending' && new Date(task.due_date) > now
         );
         setTasks(pendingTasks);
       }
@@ -91,9 +91,8 @@ const ToDoScreen: React.FC = () => {
     try {
       setLoading(true);
       const token = await AsyncStorage.getItem('access_token');
-      const userId = await AsyncStorage.getItem('user_id');
       
-      if (!token || !userId) {
+      if (!token) {
         Toast.show({
           type: 'error',
           text1: 'Error',
@@ -102,42 +101,35 @@ const ToDoScreen: React.FC = () => {
         return;
       }
 
-      const url = `${BASE_URL}v1/tasks/${userId}/${taskId}/`;
-      console.log('Request URL:', url);
-
-      const response = await fetch(url, {
+      const response = await fetch(`${BASE_URL}v1/tasks/${taskId}/start`, {
         method: 'PATCH',
         headers: {
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          status: 'In Progress'
-        }),
+        body: JSON.stringify({ status: 'In Progress' }),
       });
 
-      const responseText = await response.text();
-      console.log('Raw Response:', responseText);
+      if (!response.ok) throw new Error('Failed to update task status');
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = JSON.parse(responseText);
+      // Update the task status locally
+      setTasks((prevTasks) =>
+        prevTasks.map((task) =>
+          task.id === taskId ? { ...task, status: 'In Progress' } : task
+        )
+      );
 
       Toast.show({
         type: 'success',
-        text1: 'Success',
-        text2: 'Task started successfully',
+        text1: 'Task Started',
+        text2: 'The task is now in progress.',
       });
-      fetchTasks();
-
     } catch (error) {
       console.error('Error starting task:', error);
       Toast.show({
         type: 'error',
         text1: 'Error',
-        text2: 'Failed to start task. Please try again.',
+        text2: 'Failed to start task',
       });
     } finally {
       setLoading(false);

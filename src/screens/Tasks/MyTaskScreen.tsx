@@ -6,7 +6,7 @@ import axios from 'axios';
 import { BASE_URL } from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CommonHeader from '../../components/CommonHeader';
-import { format, isToday, isThisWeek } from 'date-fns';
+import { format, isToday, isThisWeek, isAfter } from 'date-fns';
 import DeleteTaskPopup from './DeleteTaskPopup';
 
 interface Task {
@@ -30,6 +30,14 @@ const MyTaskScreen: React.FC = () => {
     fetchTasks();
   }, [page, itemsPerPage]);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchTasks();
+    }, 10000); // Refresh every 10 seconds
+
+    return () => clearInterval(interval); // Cleanup on unmount
+  }, [page, itemsPerPage]);
+
   const fetchTasks = async () => {
     try {
       const token = await AsyncStorage.getItem('access_token');
@@ -38,25 +46,40 @@ const MyTaskScreen: React.FC = () => {
         return;
       }
 
-      const response = await axios.get(`${BASE_URL}v1/tasks/user-tasks`, {
+      // Get current date and time
+      const now = new Date();
+      
+      // Set end date to 12 days from now (matching PinnedTasks)
+      const nextWeek = new Date(now);
+      nextWeek.setDate(nextWeek.getDate() + 12);
+
+      const startDate = now.toISOString().split('T')[0];
+      const endDate = nextWeek.toISOString().split('T')[0];
+
+      const response = await axios.get(`${BASE_URL}v1/tasks/range`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
         params: {
+          start_date: startDate,
+          end_date: endDate,
           page,
           items_per_page: itemsPerPage,
         },
       });
 
-      const fetchedTasks = response.data.message.task_details.data.map((task: any) => ({
-        id: task.id,
-        title: task.title,
-        description: task.description,
-        time: task.due_date,
-        icon: 'briefcase',
-        color: '#1D1E23',
-        status: task.status,
-      }));
+      const today = new Date();
+      const fetchedTasks = response.data.message.task_details.data
+        .filter((task: any) => isAfter(new Date(task.due_date), today) || isToday(new Date(task.due_date)))
+        .map((task: any) => ({
+          id: task.id,
+          title: task.title,
+          description: task.description,
+          time: task.due_date,
+          icon: 'briefcase',
+          color: '#1D1E23',
+          status: task.status,
+        }));
 
       setTasks(fetchedTasks);
     } catch (error) {
