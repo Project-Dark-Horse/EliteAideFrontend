@@ -126,6 +126,14 @@ yarn ios
 - Task scheduling
 - Timeline visualization
 
+### Voice Integration
+- Voice input support for task creation and management.
+- Example: "I have to buy groceries tomorrow" can be added via voice command.
+
+### Location Access
+- Geolocation-based reminders and notifications.
+- Example: If you have a task to buy groceries and you are near a store, you will receive a popup: "Do you wanna buy groceries? You are nearby this PDH Groceries store."
+
 ## Troubleshooting
 
 If you encounter issues:
