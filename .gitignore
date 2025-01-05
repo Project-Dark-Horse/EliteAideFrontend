@@ -1,6 +1,7 @@
 # OSX
 #
 .DS_Store
+.env
 
 # Xcode
 #
@@ -35,14 +36,13 @@ local.properties
 !debug.keystore
 
 # node.js
-#
-/src/
+###
 node_modules/
 npm-debug.log
 yarn-error.log
 
 # fastlane
-#
+###
 # It is recommended to not store the screenshots in the git repo. Instead, use fastlane to re-generate the
 # screenshots whenever they are needed.
 # For more information about the recommended setup visit:
@@ -54,7 +54,7 @@ yarn-error.log
 **/fastlane/test_output
 
 # Bundle artifact
-*.jsbundle
+*.jsbundlec
 
 # Ruby / CocoaPods
 **/Pods/
@@ -73,3 +73,102 @@ yarn-error.log
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+yarn.lock
+
+
+package-lock.json
+
+android/app/build/outputs/apk/debug/app-debug.apk
+android/app/build/outputs/apk/release/app-release.apk
+android/app/build/outputs/mapping/release/mapping.txt
+android/app/build/outputs/mapping/release/proguard.txt
+android/app/src/main/AndroidManifest.xml
+android/app/src/main/res/values/strings.xml
+
+# Android
+android/app/build/
+android/build/
+android/.gradle/
+android/local.properties
+android/*.iml
+android/.idea/
+android/captures/
+android/gradlew
+android/gradlew.bat
+android/gradle/
+
+
+
+
+android/app/build/outputs/apk/debug/app-debug.apk
+
+node_modules
+
+
+.idea
+.gradle
+local.properties
+*.iml
+/android/
+
+# Android
+android/.gradle/
+
+# Documentation
+README.md
+*.md
+
+# Android build files
+android/app/build/
+android/build/
+android/.gradle/
+android/local.properties
+android/*.iml
+android/.idea/
+android/captures/
+
+# React Native build files
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+yarn.lock
+
+# Kotlin/Gradle
+app/build/kotlin/
+app/build/intermediates/
+app/build/outputs/
+app/build/source_set_path_map/
+app/build/dex/
+
+# IDE files
+.idea/
+.vscode/
+
+# macOS
+.DS_Store
+
+# Android build files
+android/build/
+*.sha
+
+# Node modules and lock files
+node_modules/
+yarn-error.log
+
+# Environment files
+.env
+
+# Android build files
+android/build/
+*.sha
+
+# Node modules and lock files
+node_modules/
+yarn-error.log
+
+# Environment files
+android/build/generated/autolinking/autolinking.json
+android/build/generated/autolinking/package.json.sha
+android/build/generated/autolinking/yarn.lock.sha.yarnrc.yml
+.yarnrc.yml
