@@ -12,10 +12,11 @@ interface Task {
 
 interface TaskContextType {
   tasks: Task[];
-  addTask: (task: Task) => void;
+  setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
+  addTask: (newTask: Omit<Task, 'id'>) => void;
 }
 
-const TaskContext = createContext<TaskContextType | undefined>(undefined);
+export const TaskContext = React.createContext<TaskContextType | undefined>(undefined);
 
 export const TaskProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -25,7 +26,7 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   return (
-    <TaskContext.Provider value={{ tasks, addTask }}>
+    <TaskContext.Provider value={{ tasks, setTasks, addTask }}>
       {children}
     </TaskContext.Provider>
   );
