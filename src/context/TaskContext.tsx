@@ -16,13 +16,14 @@ interface TaskContextType {
   addTask: (newTask: Omit<Task, 'id'>) => void;
 }
 
-export const TaskContext = React.createContext<TaskContextType | undefined>(undefined);
+export const TaskContext = createContext<TaskContextType | undefined>(undefined);
 
 export const TaskProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [tasks, setTasks] = useState<Task[]>([]);
 
-  const addTask = (task: Task) => {
-    setTasks((prevTasks) => [...prevTasks, task]);
+  const addTask = (newTask: Omit<Task, 'id'>) => {
+    const taskWithId = { ...newTask, id: Date.now() };
+    setTasks((prevTasks) => [...prevTasks, taskWithId]);
   };
 
   return (

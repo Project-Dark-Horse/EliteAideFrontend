@@ -72,7 +72,6 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({ isVisible, onClose, s
           if (response.ok) {
             const responseData = await response.json();
             onSaveTask({
-              id: Date.now(),
               time: formattedDueDate,
               summary: title,
               detail: description,
