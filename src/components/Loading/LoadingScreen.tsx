@@ -1,45 +1,97 @@
-import React from 'react';
-import { View, ActivityIndicator, StyleSheet, Text } from 'react-native';
-import tw from 'twrnc';
+import React, { useEffect, useRef } from 'react';
+import { View, StyleSheet, Animated, ViewStyle } from 'react-native';
 
 interface LoadingScreenProps {
   loading: boolean;
+  backgroundColor?: string;
+  spinnerColor?: string;
+  style?: ViewStyle;
 }
 
-const LoadingScreen: React.FC<LoadingScreenProps> = ({ loading }) => {
+const LoadingScreen: React.FC<LoadingScreenProps> = ({
+  loading,
+  backgroundColor = 'rgba(0, 0, 0, 0.7)',
+  spinnerColor = '#3272A0',
+  style,
+}) => {
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const spinValue = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    if (loading) {
+      // Fade in
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 200,
+        useNativeDriver: true,
+      }).start();
+
+      // Start spinning
+      const spinAnimation = Animated.loop(
+        Animated.timing(spinValue, {
+          toValue: 1,
+          duration: 1500,
+          useNativeDriver: true,
+        })
+      );
+      
+      spinAnimation.start();
+      
+      return () => {
+        spinAnimation.stop();
+      };
+    } else {
+      // Fade out
+      Animated.timing(fadeAnim, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [loading, fadeAnim, spinValue]);
+
   if (!loading) return null;
 
+  const spin = spinValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '360deg'],
+  });
+
   return (
-    <View style={[StyleSheet.absoluteFill, styles.container]}>
-      {/* Loading indicator */}
-      <View style={styles.loaderContainer}>
-        <ActivityIndicator size="large" color="#4956C7" />
-        <Text style={styles.quote}>
-          "Productivity is never an accident. It is always the result of a commitment to excellence, intelligent planning, and focused effort."
-        </Text>
-      </View>
-    </View>
+    <Animated.View 
+      style={[
+        styles.container, 
+        { backgroundColor },
+        style,
+        { opacity: fadeAnim }
+      ]}
+    >
+      <Animated.View
+        style={[
+          styles.spinner,
+          { 
+            borderColor: spinnerColor,
+            borderTopColor: 'transparent'
+          },
+          { transform: [{ rotate: spin }] }
+        ]}
+      />
+    </Animated.View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0.8)', // Semi-transparent background
     justifyContent: 'center',
     alignItems: 'center',
     zIndex: 999,
   },
-  loaderContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  quote: {
-    marginTop: 20,
-    color: '#FFFFFF',
-    fontSize: 16,
-    textAlign: 'center',
-    paddingHorizontal: 20,
+  spinner: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    borderWidth: 3,
   },
 });
 
