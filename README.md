@@ -50,18 +50,58 @@ main
 
 ```plaintext
 src/
-├── assets/                # Static assets
-├── components/           # Reusable components
-│   ├── HomePage/
-│   │   ├── PinnedTasks
-│   │   ├── UpcomingTasks
-│   │   └── message
-│   └── SearchBar
-├── context/            # Context providers
-├── navigation/        # Navigation setup
-├── screens/          # Application screens
-├── types/           # TypeScript definitions
-└── utils/          # Utility functions
+├── assets/                 # Static assets (images, fonts, etc.)
+│   ├── bot.png
+│   └── user.jpg
+│
+├── components/            # Reusable UI components
+│   ├── common/           # Shared components
+│   │   ├── LoadingScreen.tsx
+│   │   └── ErrorBoundary.tsx
+│   ├── forms/            # Form-related components
+│   └── layout/           # Layout components
+│
+├── context/              # React Context providers
+│   ├── TaskContext.tsx
+│   ├── LoadingContext.tsx
+│   ├── ThemeContext.tsx
+│   └── TaskRefreshContext.tsx
+│
+├── hooks/                # Custom React hooks
+│   └── useDebounce.ts
+│
+├── navigation/           # Navigation configuration
+│   ├── BottomTabNavigator.tsx
+│   └── AppNavigator.tsx
+│
+├── screens/              # Screen components
+│   ├── Ai/
+│   │   └── AIScreen.tsx
+│   ├── Auth/
+│   │   ├── LoginScreen.tsx
+│   │   ├── SignUpScreen.tsx
+│   │   └── OtpScreen.tsx
+│   ├── Profile/
+│   │   └── ProfileScreen.tsx
+│   └── Notification/
+│       └── NotificationScreen.tsx
+│
+├── services/             # API and other services
+│   ├── api.ts
+│   └── GeolocationService.ts
+│
+├── theme/                # Theme configuration
+│   └── colors.ts
+│
+├── types/                # TypeScript type definitions
+│   ├── navigation.ts
+│   └── api.ts
+│
+├── utils/                # Utility functions
+│   ├── dateFormatter.ts
+│   └── validation.ts
+│
+└── App.tsx                  # Root component
 ```
 
 ## Getting Started
