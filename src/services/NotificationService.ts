@@ -3,6 +3,8 @@ import notifee, { AndroidImportance } from '@notifee/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from 'react-native';
 import { BASE_URL } from '@env';
+import { notificationApi } from './notificationApi';
+import PushNotification from 'react-native-push-notification';
 
 class NotificationService {
   async init() {
@@ -146,6 +148,54 @@ class NotificationService {
       console.error('Error sending geofence notification:', error);
     }
   }
+
+  async handleNotification(notification: any) {
+    console.log('Processing notification:', notification);
+    
+    if (!notification.id) {
+      console.warn('Notification received without ID');
+      return;
+    }
+
+    try {
+      const result = await this.markNotificationAsRead(notification.id);
+      if (!result.success) {
+        throw new Error(result.message || 'Failed to update notification');
+      }
+    } catch (error) {
+      console.error('Notification processing failed:', error);
+      // Retry with exponential backoff
+      await this.scheduleRetry(notification);
+    }
+  }
+
+  private async markNotificationAsRead(notificationId: string) {
+    try {
+      const response = await notificationApi.updateNotificationStatus(notificationId, 'read');
+      if (!response.success) {
+        throw new Error(response.message || 'Update notification status returned false');
+      }
+      return response;
+    } catch (error) {
+      console.error(`Failed to mark notification ${notificationId} as read:`, error);
+      return {
+        success: false,
+        message: error.message
+      };
+    }
+  }
+
+  private scheduleRetry(notification: any, retryCount = 0) {
+    if (retryCount >= 3) return; // Maximum retry attempts
+    
+    setTimeout(async () => {
+      try {
+        await this.markNotificationAsRead(notification.id);
+      } catch (error) {
+        this.scheduleRetry(notification, retryCount + 1);
+      }
+    }, Math.pow(2, retryCount) * 1000); // Exponential backoff
+  }
 }
 
-export default new NotificationService(); 
+export default new NotificationService();

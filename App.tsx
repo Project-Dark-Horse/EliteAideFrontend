@@ -7,6 +7,7 @@ import { TaskRefreshProvider } from './src/context/TaskRefreshContext';
 import AuthCheck from './src/components/AuthCheck';
 import notificationService from './src/utils/notificationService';
 
+
 const RootApp = () => {
   // This will initialize the notification service
   React.useEffect(() => {
