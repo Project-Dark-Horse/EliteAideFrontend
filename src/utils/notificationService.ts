@@ -226,8 +226,35 @@ class NotificationService {
       console.error('Failed to create due date notification:', error);
     }
   }
+
+  async sendFirebaseNotification(token: string, title: string, body: string) {
+    try {
+      const response = await fetch('https://fcm.googleapis.com/fcm/send', {
+        method: 'POST',
+        headers: {
+          'Authorization': `key=`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          to: token,
+          notification: {
+            title,
+            body,
+          },
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to send notification');
+      }
+
+      console.log('Notification sent successfully');
+    } catch (error) {
+      console.error('Error sending notification:', error);
+    }
+  }
 }
 
 const notificationService = new NotificationService();
 
-export default notificationService; 
+export default notificationService;

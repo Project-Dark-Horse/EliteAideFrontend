@@ -30,7 +30,6 @@ const ToDoScreen: React.FC = () => {
     try {
       const token = await AsyncStorage.getItem('access_token');
       if (!token) {
-        console.log('No access token found');
         setLoading(false);
         return;
       }
@@ -101,7 +100,7 @@ const ToDoScreen: React.FC = () => {
         return;
       }
 
-      const response = await fetch(`${BASE_URL}v1/tasks/${taskId}/start`, {
+      const response = await fetch(`${BASE_URL}v1/tasks/${taskId}/`, {
         method: 'PATCH',
         headers: {
           Authorization: `Bearer ${token}`,
