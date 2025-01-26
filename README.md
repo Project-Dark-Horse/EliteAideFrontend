@@ -147,6 +147,36 @@ For iOS:
 yarn ios
 ```
 
+## Build and Release
+
+### Building the App
+To build the app for production, run:
+```bash
+cd android
+./gradlew assembleRelease
+```
+
+The APK will be located at:
+```bash
+android/app/build/outputs/apk/release/app-release.apk
+```
+
+### Releasing the App
+To release the app, run:
+```bash
+./gradlew bundleRelease
+```
+
+The AAB will be located at:
+```bash
+android/app/build/outputs/bundle/release/app-release.aab
+```
+
+To install the APK on a connected device, run:
+```bash
+adb install android/app/build/outputs/apk/release/app-release.apk
+```
+
 ## Key Features Implementation
 
 ### Authentication
@@ -239,3 +269,4 @@ This project is licensed under the [MIT License](LICENSE.txt).
 Email: eliteaideio@gmail.com
 
 ---
+````
