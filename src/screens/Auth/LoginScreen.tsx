@@ -20,6 +20,10 @@ import LogoImage from '../../assets/vector.png';
 import Background from '../../components/Background';
 import { authStorage } from '../../utils/authStorage';
 import notificationService from '../../utils/notificationService';
+import {
+  GoogleSignin,
+  statusCodes,
+} from '@react-native-google-signin/google-signin';
 
 // Define your navigation stack type
 type AuthStackParamList = {
