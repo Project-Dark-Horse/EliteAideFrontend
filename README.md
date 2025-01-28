@@ -260,6 +260,10 @@ This project and everyone participating in it is governed by the [EliteAide Code
 ### License
 This project is licensed under the [MIT License](LICENSE.txt).
 
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
 ### Acknowledgements
 - Thanks to all the contributors who’ve helped build EliteAide.
 
