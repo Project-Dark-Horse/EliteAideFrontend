@@ -1,4 +1,6 @@
 import PushNotification, { Importance } from 'react-native-push-notification';
+// Remove the incorrect import
+// import FetchResult from 'react-native-push-notification';
 import { Platform } from 'react-native';
 import { notificationApi } from '../services/notificationApi';
 
@@ -44,6 +46,7 @@ class NotificationService {
             console.error('Failed to mark notification as read:', error);
           }
         }
+        notification.finish(PushNotification.FetchResult.NoData);
       },
       permissions: {
         alert: true,
@@ -230,4 +233,4 @@ class NotificationService {
 
 const notificationService = new NotificationService();
 
-export default notificationService; 
+export default notificationService;

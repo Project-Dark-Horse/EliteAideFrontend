@@ -32,7 +32,7 @@ const CalendarScreen = () => {
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
-  const { tasks } = useTasks();
+  const { tasks, setTasks } = useTasks();
 
   const fetchTasks = useCallback(async () => {
     setLoading(true);
@@ -62,7 +62,9 @@ const CalendarScreen = () => {
 
       setTasks(fetchedTasks);
     } catch (error: unknown) {
-      if (error instanceof Error) {
+      if (axios.isAxiosError(error)) {
+        Alert.alert('Error', error.response?.data?.message || 'Failed to fetch tasks');
+      } else if (error instanceof Error) {
         Alert.alert('Error', error.message);
       } else {
         Alert.alert('Error', 'An unknown error occurred');
@@ -70,21 +72,21 @@ const CalendarScreen = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [setTasks]);
 
-  const addTask = (newTask: Omit<Task, 'id'>) => {
-    setTasks(prevTasks => [
+  const addTask = useCallback((newTask: Omit<Task, 'id'>) => {
+    setTasks((prevTasks: Task[]) => [
       ...prevTasks,
       { ...newTask, id: prevTasks.length + 1 }
     ]);
-  };
+  }, [setTasks]);
 
   useEffect(() => {
     fetchTasks();
   }, [fetchTasks]);
 
   useFocusEffect(
-    React.useCallback(() => {
+    useCallback(() => {
       fetchTasks();
     }, [fetchTasks])
   );
@@ -151,6 +153,7 @@ const CalendarScreen = () => {
         onClose={() => setIsCreateTaskVisible(false)}
         selectedDate={selectedDate}
         onSaveTask={addTask}
+        refreshTasks={fetchTasks}
       />
     </SafeAreaView>
   );
@@ -161,7 +164,7 @@ interface DayScheduleProps {
   tasks: Task[];
 }
 
-const DaySchedule: React.FC<DayScheduleProps> = ({ selectedDate, tasks }) => {
+const DaySchedule: React.FC<DayScheduleProps> = React.memo(({ selectedDate, tasks }) => {
   const filteredTasks = tasks.filter(
     (task) => task.date.toDateString() === selectedDate.toDateString()
   );
@@ -210,7 +213,7 @@ const DaySchedule: React.FC<DayScheduleProps> = ({ selectedDate, tasks }) => {
       })}
     </ScrollView>
   );
-};
+});
 
 const cardStyles = StyleSheet.create({
   taskCardContainer: {

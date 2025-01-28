@@ -18,9 +18,12 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import tw from 'twrnc';
 import LogoImage from '../../assets/vector.png';
 import Background from '../../components/Background';
-import LoadingScreen from '../../components/Loading/LoadingScreen';
 import { authStorage } from '../../utils/authStorage';
 import notificationService from '../../utils/notificationService';
+import {
+  GoogleSignin,
+  statusCodes,
+} from '@react-native-google-signin/google-signin';
 
 
 // Define your navigation stack type
@@ -46,8 +49,6 @@ const LoginScreen: React.FC = () => {
   
     setLoading(true);
     try {
-      console.log(`Requesting login at: ${BASE_URL}v1/users/login/`);
-  
       const response = await fetch(`${BASE_URL}v1/users/login/`, {
         method: 'POST',
         headers: {
@@ -57,7 +58,6 @@ const LoginScreen: React.FC = () => {
       });
   
       const data = await response.json();
-      console.log('Response data:', data);
   
       if (response.ok && data.message?.access) {
         const { access, refresh } = data.message;
@@ -74,7 +74,6 @@ const LoginScreen: React.FC = () => {
   
         navigation.reset({ index: 0, routes: [{ name: 'BottomTabNavigator' }] });
       } else if (data.message === 'Token is blacklisted') {
-        console.warn('Token is blacklisted. Clearing local tokens.');
         await authStorage.clearTokens();
         Alert.alert('Session Expired', 'Please log in again.');
         navigation.reset({ index: 0, routes: [{ name: 'LoginScreen' }] });
@@ -131,10 +130,7 @@ const LoginScreen: React.FC = () => {
           </TouchableOpacity>
         </View>
         <TouchableOpacity
-          onPress={() => {
-            console.log('Navigating to ForgotPassword');
-            navigation.navigate('FPEnterEmail');
-          }}
+          onPress={() => navigation.navigate('FPEnterEmail')}
           style={tw`mt-2`}
         >
           <Text style={tw`text-blue-300 text-left`}>Forgot Password?</Text>

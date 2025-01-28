@@ -19,9 +19,11 @@ import FPNewPassword from './screens/Auth/FPNewPassword';
 import GeolocationService from './services/GeolocationService';
 import { TaskProvider } from './context/TaskContext';
 import { LoadingProvider } from './context/LoadingContext';
-import { ThemeProvider } from './context/ThemeContext';
-
-
+import messaging from '@react-native-firebase/messaging';
+import PushNotification, { Importance, FetchResult } from 'react-native-push-notification';
+import { Platform } from 'react-native';
+import { notificationApi } from './services/notificationApi'; // Ensure this import is added
+import NotificationService from './services/NotificationService';
 
 const Stack = createStackNavigator<RootStackParamList>();
 
@@ -59,34 +61,125 @@ const App = () => {
     };
   }, []);
 
+  useEffect(() => {
+    const requestUserPermission = async () => {
+      const authStatus = await messaging().requestPermission();
+      const enabled =
+        authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+        authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+    
+      if (enabled) {
+        console.log('Authorization status:', authStatus);
+      }
+    };
+
+    const getToken = async () => {
+      const token = await messaging().getToken();
+      console.log('Token:', token);
+    };
+
+    const configurePushNotifications = () => {
+      PushNotification.configure({
+        onRegister: async (token) => {
+          console.log('TOKEN:', token);
+          try {
+            await notificationApi.registerDevice(token.token);
+          } catch (error) {
+            console.error('Failed to register device:', error);
+          }
+        },
+        onNotification: async (notification) => {
+          console.log('NOTIFICATION:', notification);
+          try {
+            await NotificationService.handleNotification(notification);
+          } catch (error) {
+            console.error('Notification handling failed:', error);
+          }
+          notification.finish(FetchResult.NoData);
+        },
+        permissions: {
+          alert: true,
+          badge: true,
+          sound: true,
+        },
+        popInitialNotification: true,
+        requestPermissions: Platform.OS === 'ios',
+      });
+    };
+
+    const createDefaultChannels = () => {
+      PushNotification.createChannel(
+        {
+          channelId: 'default-channel',
+          channelName: 'Default Channel',
+          channelDescription: 'Default notification channel',
+          importance: Importance.HIGH,
+          playSound: true,
+          soundName: 'default',
+          vibrate: true,
+        },
+        (created) => console.log(`Channel default-channel created:`, created)
+      );
+
+      PushNotification.createChannel(
+        {
+          channelId: 'task-reminders',
+          channelName: 'Task Reminders',
+          channelDescription: 'Notifications for task reminders',
+          importance: Importance.HIGH,
+          playSound: true,
+          soundName: 'default',
+          vibrate: true,
+        },
+        (created) => console.log(`Channel task-reminders created:`, created)
+      );
+
+      PushNotification.createChannel(
+        {
+          channelId: 'updates',
+          channelName: 'App Updates',
+          channelDescription: 'Notifications for app updates and news',
+          importance: Importance.DEFAULT,
+          playSound: true,
+          soundName: 'default',
+          vibrate: true,
+        },
+        (created) => console.log(`Channel updates created:`, created)
+      );
+    };
+
+    requestUserPermission();
+    getToken();
+    configurePushNotifications();
+    createDefaultChannels();
+  }, []);
+  
   if (isLoading) {
     return <LoadingScreen />;
   }
 
   return (
-    <ThemeProvider>
-      <LoadingProvider>
-        <TaskProvider>
-          <SafeAreaProvider>
-            <NavigationContainer>
-              <Stack.Navigator screenOptions={{ headerShown: false }}>
-                <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />
-                <Stack.Screen name="Login" component={LoginScreen} />
-                <Stack.Screen name="EnterEmail" component={EnterEmailScreen} />
-                <Stack.Screen name="Otp" component={OtpScreen} />
-                <Stack.Screen name="SignUp" component={SignUpScreen} />
-                <Stack.Screen name="BottomTabNavigator" component={BottomTabNavigator} />
-                <Stack.Screen name="FPEnterEmail" component={FPEnterEmail} />
-                <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
-                <Stack.Screen name="NotificationScreen" component={NotificationScreen} />
-                <Stack.Screen name="FPEnterOtp" component={FPEnterOtp} />
-                <Stack.Screen name="FPNewPassword" component={FPNewPassword} /> 
-              </Stack.Navigator>
-            </NavigationContainer>
-          </SafeAreaProvider>
-        </TaskProvider>
-      </LoadingProvider>
-    </ThemeProvider>
+    <LoadingProvider>
+      <TaskProvider>
+        <SafeAreaProvider>
+          <NavigationContainer>
+            <Stack.Navigator screenOptions={{ headerShown: false }}>
+              <Stack.Screen name="WelcomeScreen" component={WelcomeScreen} />
+              <Stack.Screen name="Login" component={LoginScreen} />
+              <Stack.Screen name="EnterEmail" component={EnterEmailScreen} />
+              <Stack.Screen name="Otp" component={OtpScreen} />
+              <Stack.Screen name="SignUp" component={SignUpScreen} />
+              <Stack.Screen name="BottomTabNavigator" component={BottomTabNavigator} />
+              <Stack.Screen name="FPEnterEmail" component={FPEnterEmail} />
+              <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
+              <Stack.Screen name="NotificationScreen" component={NotificationScreen} />
+              <Stack.Screen name="FPEnterOtp" component={FPEnterOtp} />
+              <Stack.Screen name="FPNewPassword" component={FPNewPassword} /> 
+            </Stack.Navigator>
+          </NavigationContainer>
+        </SafeAreaProvider>
+      </TaskProvider>
+    </LoadingProvider>
   );
 };
 

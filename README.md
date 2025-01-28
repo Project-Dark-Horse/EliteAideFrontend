@@ -50,25 +50,65 @@ main
 
 ```plaintext
 src/
-├── assets/                # Static assets
-├── components/           # Reusable components
-│   ├── HomePage/
-│   │   ├── PinnedTasks
-│   │   ├── UpcomingTasks
-│   │   └── message
-│   └── SearchBar
-├── context/            # Context providers
-├── navigation/        # Navigation setup
-├── screens/          # Application screens
-├── types/           # TypeScript definitions
-└── utils/          # Utility functions
+├── assets/                 # Static assets (images, fonts, etc.)
+│   ├── bot.png
+│   └── user.jpg
+│
+├── components/            # Reusable UI components
+│   ├── common/           # Shared components
+│   │   ├── LoadingScreen.tsx
+│   │   └── ErrorBoundary.tsx
+│   ├── forms/            # Form-related components
+│   └── layout/           # Layout components
+│
+├── context/              # React Context providers
+│   ├── TaskContext.tsx
+│   ├── LoadingContext.tsx
+│   ├── ThemeContext.tsx
+│   └── TaskRefreshContext.tsx
+│
+├── hooks/                # Custom React hooks
+│   └── useDebounce.ts
+│
+├── navigation/           # Navigation configuration
+│   ├── BottomTabNavigator.tsx
+│   └── AppNavigator.tsx
+│
+├── screens/              # Screen components
+│   ├── Ai/
+│   │   └── AIScreen.tsx
+│   ├── Auth/
+│   │   ├── LoginScreen.tsx
+│   │   ├── SignUpScreen.tsx
+│   │   └── OtpScreen.tsx
+│   ├── Profile/
+│   │   └── ProfileScreen.tsx
+│   └── Notification/
+│       └── NotificationScreen.tsx
+│
+├── services/             # API and other services
+│   ├── api.ts
+│   └── GeolocationService.ts
+│
+├── theme/                # Theme configuration
+│   └── colors.ts
+│
+├── types/                # TypeScript type definitions
+│   ├── navigation.ts
+│   └── api.ts
+│
+├── utils/                # Utility functions
+│   ├── dateFormatter.ts
+│   └── validation.ts
+│
+└── App.tsx                  # Root component
 ```
 
 ## Getting Started
 
 ### Prerequisites
 - Node.js >= 14.0.0
-- npm >= 6.0.0
+- Yarn >= 1.22.0
 - React Native environment setup
 
 ### Step 1: Environment Setup
@@ -82,7 +122,7 @@ Complete the [React Native - Environment Setup](https://reactnative.dev/docs/env
 git clone https://github.com/Project-Dark-Horse/EliteAideFrontend.git
 
 # Install dependencies
-npm install
+yarn install
 
 # Create .env file
 BASE_URL=https://api.eliteaide.tech/
@@ -92,19 +132,49 @@ BASE_URL=https://api.eliteaide.tech/
 
 ```bash
 # Start Metro
-npm start
+yarn start
 ```
 
 ### Step 4: Run Application
 
 For Android:
 ```bash
-npm run android
+yarn android
 ```
 
 For iOS:
 ```bash
-npm run ios
+yarn ios
+```
+
+## Build and Release
+
+### Building the App
+To build the app for production, run:
+```bash
+cd android
+./gradlew assembleRelease
+```
+
+The APK will be located at:
+```bash
+android/app/build/outputs/apk/release/app-release.apk
+```
+
+### Releasing the App
+To release the app, run:
+```bash
+./gradlew bundleRelease
+```
+
+The AAB will be located at:
+```bash
+android/app/build/outputs/bundle/release/app-release.aab
+```
+
+To install the APK on a connected device, run:
+```bash
+adb install android/app/build/outputs/apk/release/app-release.apk
 ```
 
 ## Key Features Implementation
@@ -126,24 +196,32 @@ npm run ios
 - Task scheduling
 - Timeline visualization
 
+### Voice Integration
+- Voice input support for task creation and management.
+- Example: "I have to buy groceries tomorrow" can be added via voice command.
+
+### Location Access
+- Geolocation-based reminders and notifications.
+- Example: If you have a task to buy groceries and you are near a store, you will receive a popup: "Do you wanna buy groceries? You are nearby this PDH Groceries store."
+
 ## Troubleshooting
 
 If you encounter issues:
 
 1. Clear Metro bundler cache:
 ```bash
-npm start -- --reset-cache
+yarn start --reset-cache
 ```
 
 2. Clean and rebuild:
 ```bash
 # For Android
 cd android && ./gradlew clean
-cd .. && npm run android
+cd .. && yarn android
 
 # For iOS
 cd ios && pod install
-cd .. && npm run ios
+cd .. && yarn ios
 ```
 
 ## Learn More
@@ -157,7 +235,7 @@ cd .. && npm run ios
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/feature-name`)
 3. Commit changes (`git commit -m 'Add feature_name'`)
-4. Push to branch (`git push origin feature/feature_name`)
+4. Push to branch (`git push origin feature/feature-name`)
 5. Open a Pull Request
 
 
@@ -191,3 +269,4 @@ This project is licensed under the [MIT License](LICENSE.txt).
 Email: eliteaideio@gmail.com
 
 ---
+````

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal, View, StyleSheet, Text, TextInput, Button, Switch, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { Modal, View, StyleSheet, Text, TextInput, Button, Switch, ActivityIndicator, TouchableOpacity, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -8,6 +8,7 @@ import { BASE_URL } from '@env';
 import { Task } from './CalendarScreen'; // Ensure the path is correct
 import Geolocation from 'react-native-geolocation-service';
 import { useTasks } from '../../context/TaskContext';
+import CategorySelector from '../../components/AIchat/CategorySelector';
 
 // Props interface for the modal
 interface CreateTaskModalProps {
@@ -16,9 +17,10 @@ interface CreateTaskModalProps {
   onClose: () => void;
   selectedDate: Date;
   onSaveTask: (newTask: Omit<Task, 'id'>) => void;
+  refreshTasks: () => Promise<void>;
 }
 
-const CreateTaskModal: React.FC<CreateTaskModalProps> = ({ isVisible, onClose, selectedDate, onSaveTask }) => {
+const CreateTaskModal: React.FC<CreateTaskModalProps> = ({ isVisible, onClose, selectedDate, onSaveTask, refreshTasks }) => {
   const [title, setTitle] = useState('');
   const [dueDate, setDueDate] = useState('');
   const [time, setTime] = useState('');
@@ -26,14 +28,14 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({ isVisible, onClose, s
   const [isAutocomplete, setIsAutocomplete] = useState(false);
   const [priority, setPriority] = useState('medium');
   const [loading, setLoading] = useState(false);
-  const [category, setCategory] = useState<string | null>(null);
+  const [category, setCategory] = useState<string>('');
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
   const { addTask } = useTasks();
 
   const handleSave = async () => {
     if (!title || !dueDate || !time) {
-      alert('Please fill in all required fields.');
+      Alert.alert('Validation Error', 'Please fill in all required fields.');
       return;
     }
 
@@ -69,8 +71,7 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({ isVisible, onClose, s
 
           if (response.ok) {
             const responseData = await response.json();
-            addTask({
-              id: Date.now(),
+            onSaveTask({
               time: formattedDueDate,
               summary: title,
               detail: description,
@@ -78,6 +79,7 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({ isVisible, onClose, s
               color: '#2196F3',
               status: 'Pending',
             });
+            await refreshTasks();
             onClose();
           } else {
             const errorData = await response.json();
@@ -162,32 +164,10 @@ const CreateTaskModal: React.FC<CreateTaskModalProps> = ({ isVisible, onClose, s
             />
 
             <Text style={styles.label}>Category</Text>
-            <View style={styles.categoryContainer}>
-              {['Personal', 'Work', 'Finance', 'Travel', 'Health', 'Shopping'].map((cat, index) => (
-                <TouchableOpacity
-                  key={cat}
-                  style={[
-                    styles.categoryButton,
-                    category === cat && styles.selectedCategory
-                  ]}
-                  onPress={() => setCategory(cat)}
-                >
-                  <Icon 
-                    name={index === 0 ? "user" : index === 1 ? "briefcase" : index === 2 ? "dollar" : index === 3 ? "plane" : index === 4 ? "heart" : "shopping-cart"} 
-                    size={16} 
-                    color={
-                      index === 0 ? "#65779E" : // Personal - Orange
-                      index === 1 ? "#6BCB77" : // Work - Green
-                      index === 2 ? "#4CAF50" : // Finance - Dark Green
-                      index === 3 ? "#64B5F6" : // Travel - Blue
-                      index === 4 ? "#FF6B6B" : // Health - Red
-                      "#9C27B0"                 // Shopping - Purple
-                    } 
-                  />
-                  <Text style={styles.categoryText}>{cat}</Text>
-                </TouchableOpacity>
-              ))}
-            </View>
+            <CategorySelector
+              selectedCategory={category}
+              onCategorySelect={setCategory}
+            />
 
             <View style={styles.priorityContainer}>
               <Text style={styles.label}>Priority level:</Text>

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
-import Loading from '../components/Loading';
+import LoadingScreen from '../components/common/LoadingScreen';
 
 interface LoadingContextType {
   showLoading: () => void;
@@ -8,7 +8,7 @@ interface LoadingContextType {
 
 const LoadingContext = createContext<LoadingContextType | undefined>(undefined);
 
-export const LoadingProvider = ({ children }: { children: React.ReactNode }) => {
+export const LoadingProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const showLoading = () => setIsLoading(true);
@@ -17,7 +17,7 @@ export const LoadingProvider = ({ children }: { children: React.ReactNode }) => 
   return (
     <LoadingContext.Provider value={{ showLoading, hideLoading }}>
       {children}
-      {isLoading && <Loading />}
+      {isLoading && <LoadingScreen />}
     </LoadingContext.Provider>
   );
 };

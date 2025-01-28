@@ -1,6 +1,8 @@
 import { BASE_URL } from '@env';
 import { authStorage } from '../utils/authStorage';
 import { Platform } from 'react-native';
+import axios from 'axios';
+
 
 interface NotificationPayload {
   task?: number;
@@ -12,6 +14,11 @@ interface NotificationPayload {
 interface DeviceRegistrationPayload {
   device_token: string;
   device_type: 'android' | 'ios';
+}
+
+interface NotificationResponse {
+  success: boolean;
+  message?: string;
 }
 
 class NotificationApi {
@@ -47,11 +54,22 @@ class NotificationApi {
         body: JSON.stringify({ notification_status: status }),
       });
 
-      if (!response.ok) throw new Error('Failed to update notification');
-      return await response.json();
+      if (!response.ok) {
+        throw new Error('Failed to update notification');
+      }
+
+      const data = await response.json();
+      return {
+        success: true,
+        message: 'Notification updated successfully',
+        data
+      };
     } catch (error) {
       console.error('Error updating notification:', error);
-      throw error;
+      return {
+        success: false,
+        message: error.message
+      };
     }
   }
 
@@ -93,4 +111,5 @@ class NotificationApi {
   }
 }
 
-export const notificationApi = new NotificationApi(); 
+const notificationApiInstance = new NotificationApi();
+export { notificationApiInstance as notificationApi };

@@ -21,6 +21,7 @@ export default function Header() {
         style={styles.button}
         labelStyle={styles.buttonLabel}
         onPress={() => console.log('Create task')}
+        accessibilityLabel="Create a new task"
       >
         Create task
       </Button>

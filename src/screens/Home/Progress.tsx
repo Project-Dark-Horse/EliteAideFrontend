@@ -59,13 +59,9 @@ const TaskAnalysis = () => {
       try {
         const token = await AsyncStorage.getItem('access_token');
         if (!token) {
-          console.log('🔴 No access token found');
           setLoading(false);
           return;
         }
-
-        console.log('🟢 Token found:', token);
-        console.log('📡 Fetching tasks...');
 
         const response = await fetch('https://api.eliteaide.tech/v1/tasks/user-tasks?page=1&items_per_page=200', {
           headers: {
@@ -73,26 +69,18 @@ const TaskAnalysis = () => {
           },
         });
 
-        console.log('📥 Response status:', response.status);
-        
         if (!response.ok) {
-          console.log('❌ Error response:', response.statusText);
           setLoading(false);
           return;
         }
 
         const data = await response.json();
-        console.log('📦 API Response Data:', JSON.stringify(data, null, 2));
 
         if (data.message && data.message.task_details && data.message.task_details.data) {
-          console.log('✅ Tasks loaded successfully');
-          console.log('📊 Number of tasks:', data.message.task_details.data.length);
           setTasks(data.message.task_details.data);
-        } else {
-          console.log('⚠️ Unexpected response structure:', data);
         }
       } catch (error) {
-        console.log('🔴 Error fetching tasks:', error);
+        console.error('Error fetching tasks:', error);
       } finally {
         setLoading(false);
       }

@@ -64,10 +64,7 @@ const PinnedTasks: React.FC<PinnedTasksProps> = ({ tasks: initialTasks }) => {
         return;
       }
 
-      // Get current date and time
       const now = new Date();
-      
-      // Set end date to 7 days from now
       const nextWeek = new Date(now);
       nextWeek.setDate(nextWeek.getDate() + 12);
 
@@ -85,8 +82,6 @@ const PinnedTasks: React.FC<PinnedTasksProps> = ({ tasks: initialTasks }) => {
           is_pinned: true
         }
       });
-
-      console.log('API Response:', response.data);
 
       if (response.data?.message?.task_details?.data?.length > 0) {
         const fetchedTasks = response.data.message.task_details.data
@@ -117,11 +112,7 @@ const PinnedTasks: React.FC<PinnedTasksProps> = ({ tasks: initialTasks }) => {
             };
           });
 
-        console.log('Filtered tasks:', fetchedTasks);
-        console.log('Setting local tasks:', fetchedTasks);
         setTasks(fetchedTasks);
-      } else {
-        console.log('No tasks received from API');
       }
     } catch (error) {
       console.error('Error fetching pinned tasks:', error);
@@ -132,7 +123,6 @@ const PinnedTasks: React.FC<PinnedTasksProps> = ({ tasks: initialTasks }) => {
   };
 
   useEffect(() => {
-    console.log('Initial tasks:', initialTasks);
     fetchTasks();
   }, []);
 
