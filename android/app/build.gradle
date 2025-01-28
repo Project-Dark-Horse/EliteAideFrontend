@@ -123,6 +123,7 @@ dependencies {
 
     implementation project(':react-native-haptic-feedback')
     implementation project(':react-native-push-notification')
+    implementation 'com.google.android.gms:play-services-auth:20.7.0'
 }
 
 // Move this block outside of the `dependencies` block

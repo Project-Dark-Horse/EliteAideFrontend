@@ -22,9 +22,9 @@ import { authStorage } from '../../utils/authStorage';
 import notificationService from '../../utils/notificationService';
 import {
   GoogleSignin,
+  GoogleSigninButton,
   statusCodes,
 } from '@react-native-google-signin/google-signin';
-
 
 // Define your navigation stack type
 type AuthStackParamList = {
@@ -40,6 +40,7 @@ const LoginScreen: React.FC = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
 
   const handleLogin = useCallback(async () => {
     if (!email || !password) {
@@ -87,6 +88,54 @@ const LoginScreen: React.FC = () => {
       setLoading(false);
     }
   }, [email, password, navigation]);
+
+  const handleGoogleSignIn = useCallback(async () => {
+    setGoogleLoading(true);
+    try {
+      await GoogleSignin.hasPlayServices();
+      const userInfo = await GoogleSignin.signIn();
+      
+      // Make API call to your backend
+      const response = await fetch(`${BASE_URL}v1/users/google-login/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id_token: userInfo.idToken || userInfo.id_token,
+        }),
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok && data.message?.access) {
+        const { access, refresh } = data.message;
+        await authStorage.setTokens(access, refresh);
+        
+        if (data.user) {
+          await authStorage.setUserData(data.user);
+          notificationService.showNotification({
+            title: 'Welcome!',
+            message: `Hello, ${data.user.name || 'User'}!`,
+          });
+        }
+  
+        navigation.reset({ index: 0, routes: [{ name: 'BottomTabNavigator' }] });
+      }
+    } catch (error: any) {
+      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+        console.log('User cancelled login flow');
+      } else if (error.code === statusCodes.IN_PROGRESS) {
+        console.log('Sign in already in progress');
+      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+        Alert.alert('Error', 'Play services not available');
+      } else {
+        Alert.alert('Error', 'Something went wrong with Google sign in');
+      }
+    } finally {
+      setGoogleLoading(false);
+    }
+  }, [navigation]);
 
   return (
     <Background>
@@ -149,6 +198,17 @@ const LoginScreen: React.FC = () => {
           </LinearGradient>
         </TouchableOpacity>
 
+        <View style={styles.googleButtonContainer}>
+          <Text style={styles.orText}>OR</Text>
+          <GoogleSigninButton
+            style={styles.googleButton}
+            size={GoogleSigninButton.Size.Wide}
+            color={GoogleSigninButton.Color.Dark}
+            onPress={handleGoogleSignIn}
+            disabled={googleLoading}
+          />
+        </View>
+
         <TouchableOpacity onPress={() => navigation.navigate('EnterEmail')} style={styles.linkContainer}>
           <Text style={tw`text-[#979797] mt-0`}>
             Don't have an account? <Text style={tw`text-[#65779E] font-semibold `}>Create One</Text>
@@ -207,6 +267,18 @@ const styles = StyleSheet.create({
   },
   linkText: {
     ...tw`text-blue-500 text-left`,
+  },
+  googleButtonContainer: {
+    marginTop: 20,
+    alignItems: 'center',
+  },
+  orText: {
+    color: '#979797',
+    marginVertical: 10,
+  },
+  googleButton: {
+    width: '100%',
+    height: 48,
   },
 });
 
