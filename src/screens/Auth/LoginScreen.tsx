@@ -22,6 +22,7 @@ import LoadingScreen from '../../components/Loading/LoadingScreen';
 import { authStorage } from '../../utils/authStorage';
 import notificationService from '../../utils/notificationService';
 
+
 // Define your navigation stack type
 type AuthStackParamList = {
   BottomTabNavigator: undefined;
