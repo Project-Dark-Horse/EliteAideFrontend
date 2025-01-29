@@ -210,3 +210,17 @@ src/utils/apiKeys.ts
 android/app/release/
 android/app/debug/
 ios/build/
+
+# Large Build Files
+node_modules/react-native-reanimated/android/build/
+android/.gradle/
+*.so
+*.bin
+
+# Other build artifacts
+*.hprof
+*.aab
+*.apk
+*.ipa
+/build/
+/dist/
