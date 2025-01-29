@@ -174,3 +174,39 @@ android/build/generated/autolinking/yarn.lock.sha.yarnrc.yml
 .yarnrc.yml
 yarn.lock
 LICENSE
+
+# Security Sensitive Files
+.env*
+google-services.json
+GoogleService-Info.plist
+firebase.json
+aws-exports.js
+amplify.json
+sentry.properties
+*.keystore
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.cer
+*.der
+*.priv
+gradle.properties
+local.properties
+secrets.js
+secrets.json
+auth.json
+credentials.json
+service-account.json
+
+# API Keys & Configs
+src/config/api.ts
+src/config/keys.ts
+src/config/firebase.ts
+src/utils/apiKeys.ts
+
+# Build outputs with sensitive data
+android/app/release/
+android/app/debug/
+ios/build/
