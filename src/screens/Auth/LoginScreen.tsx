@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import {
   View,
   Text,
@@ -22,6 +22,7 @@ import { authStorage } from '../../utils/authStorage';
 import notificationService from '../../utils/notificationService';
 import {
   GoogleSignin,
+  GoogleSigninButton,
   statusCodes,
 } from '@react-native-google-signin/google-signin';
 
@@ -206,6 +207,18 @@ const styles = StyleSheet.create({
   },
   linkText: {
     ...tw`text-blue-500 text-left`,
+  },
+  googleButtonContainer: {
+    marginTop: 20,
+    alignItems: 'center',
+  },
+  orText: {
+    color: '#979797',
+    marginVertical: 10,
+  },
+  googleButton: {
+    width: '100%',
+    height: 48,
   },
 });
 
