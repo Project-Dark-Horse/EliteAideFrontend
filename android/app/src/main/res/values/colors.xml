@@ -1,0 +1,5 @@
+<resources>
+    <color name="colorPrimary">#9E9E9E</color> <!-- Grey 500 -->
+    <color name="colorPrimaryDark">#616161</color> <!-- Grey 700 -->
+    <color name="colorAccent">#BDBDBD</color> <!-- Grey 400 -->
+</resources> 

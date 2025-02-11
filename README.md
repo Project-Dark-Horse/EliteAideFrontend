@@ -132,7 +132,7 @@ BASE_URL=https://api.eliteaide.tech/
 
 ```bash
 # Start Metro
-yarn start
+yarn start --reset-cache
 ```
 
 ### Step 4: Run Application

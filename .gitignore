@@ -79,57 +79,37 @@ yarn.lock
 
 package-lock.json
 
-android/app/build/outputs/apk/debug/app-debug.apk
-android/app/build/outputs/apk/release/app-release.apk
-android/app/build/outputs/mapping/release/mapping.txt
-android/app/build/outputs/mapping/release/proguard.txt
-android/app/src/main/AndroidManifest.xml
-android/app/src/main/res/values/strings.xml
+# Ignore macOS system files
+.DS_Store
 
-# Android
+# Ignore build outputs
 android/app/build/
-android/build/
-android/.gradle/
+
+# Ignore local development keys
+android/app/debug.keystore
+
+# Ignore local properties
 android/local.properties
-android/*.iml
-android/.idea/
-android/captures/
-android/gradlew
-android/gradlew.bat
-android/gradle/
 
+# Ignore Google Services configuration if sensitive
+android/app/google-services.json
 
-
-
-android/app/build/outputs/apk/debug/app-debug.apk
-
-node_modules
-
-
-.idea
-.gradle
-local.properties
-*.iml
-/android/
-
-# Android
-android/.gradle/
+# Include necessary build scripts and configurations
+!android/gradlew
+!android/gradlew.bat
+!android/gradle/wrapper/gradle-wrapper.jar
+!android/gradle/wrapper/gradle-wrapper.properties
+!android/build.gradle
+!android/settings.gradle
+!android/app/build.gradle
+!android/app/proguard-rules.pro
+!android/app/src/
 
 # Documentation
 README.md
 *.md
 
-# Android build files
-android/app/build/
-android/build/
-android/.gradle/
-android/local.properties
-android/*.iml
-android/.idea/
-android/captures/
-
 # React Native build files
-node_modules/
 npm-debug.log
 yarn-error.log
 package-lock.json
@@ -146,35 +126,12 @@ app/build/dex/
 .idea/
 .vscode/
 
-# macOS
-.DS_Store
-
-# Android build files
-android/build/
-*.sha
-
 # Node modules and lock files
 node_modules/
 yarn-error.log
 
 # Environment files
 .env
-
-# Android build files
-android/build/
-*.sha
-
-# Node modules and lock files
-node_modules/
-yarn-error.log
-
-# Environment files
-android/build/generated/autolinking/autolinking.json
-android/build/generated/autolinking/package.json.sha
-android/build/generated/autolinking/yarn.lock.sha.yarnrc.yml
-.yarnrc.yml
-yarn.lock
-LICENSE
 
 # Security Sensitive Files
 .env*
@@ -208,20 +165,44 @@ src/config/firebase.ts
 src/utils/apiKeys.ts
 
 # Build outputs with sensitive data
-android/app/release/
-android/app/debug/
 ios/build/
 
 # Large Build Files
 node_modules/react-native-reanimated/android/build/
-android/.gradle/
 *.so
 *.bin
 
 # Other build artifacts
 *.hprof
 *.aab
-*.apk
 *.ipa
 /build/
 /dist/
+
+
+# Ignore Gradle files
+android/gradle/wrapper/gradle-wrapper.jar
+android/gradlew
+android/gradlew.bat
+
+# Ignore build files
+android/app/build/
+android/.cxx/
+android/.idea/
+
+# Ignore credentials (if applicable)
+android/app/src/main/assets/
+android/app/google-services.json
+android/app/src/main/res/values/secrets.xml
+
+# Ignore Keystore files
+android/app/debug.keystore
+android/app/release.keystore
+
+# Ignore Secrets
+android/app/src/main/res/values/secrets.xml
+src/utils/apiKeys.ts
+
+# Ignore Build-related files
+android/.cxx/
+android/app/build/
