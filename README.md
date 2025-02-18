@@ -107,9 +107,9 @@ src/
 ## Getting Started
 
 ### Prerequisites
-- Node.js >= 14.0.0
-- Yarn >= 1.22.0
-- React Native environment setup
+- Node.js >= 14.0.0 [Download Node.js](https://nodejs.org/en/download/)
+- Yarn >= 1.22.0 [Install Yarn](https://classic.yarnpkg.com/lang/en/docs/install/)
+- React Native environment setup [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup)
 
 ### Step 1: Environment Setup
 
@@ -119,18 +119,18 @@ Complete the [React Native - Environment Setup](https://reactnative.dev/docs/env
 
 ```bash
 # Clone repository
-git clone https://github.com/Project-Dark-Horse/EliteAideFrontend.git
+git clone https://github.com/Project-Dark-Horse/EliteAideFrontend.git 
 
-# Install dependencies
-yarn install
-
+# Install dependencies 
+yarn install 
+ 
 # Create .env file
-BASE_URL=https://api.eliteaide.tech/
+BASE_URL=https://api.eliteaide.tech/ 
 ```
 
-### Step 3: Start Metro Server
+### Step 3: Start Metro Server 
 
-```bash
+```bash 
 # Start Metro
 yarn start --reset-cache
 ```

@@ -150,7 +150,6 @@ sentry.properties
 *.cer
 *.der
 *.priv
-gradle.properties
 local.properties
 secrets.js
 secrets.json

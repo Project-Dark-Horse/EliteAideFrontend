@@ -1,16 +1,16 @@
 {
   "compilerOptions": {
     "jsx": "react",
-    "lib": ["es6", "dom", "dom.iterable", "esnext"], // Add comma here
+    "lib": ["es6", "dom", "dom.iterable", "esnext"],
     "target": "es5",
-    "module": "esnext",
+    "module": "Node16",
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
-    "moduleResolution": "bundler",
+    "moduleResolution": "node16",
     "resolveJsonModule": true,
     "isolatedModules": true
   },
