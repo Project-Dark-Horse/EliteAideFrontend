@@ -1,11 +1,5 @@
-<div align="center">
-
-# Get More Done with Less Stress – Meet Elite Aide
 
 <img src="https://github.com/Project-Dark-Horse/EliteAideFrontend/blob/main/src/assets/bot.png" alt="logo" title="Elite Aide" width="80"/>
-
-</div>
-
 
 # Elite Aide 
 
