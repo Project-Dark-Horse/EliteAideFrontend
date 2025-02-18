@@ -1,8 +1,3 @@
-<div align="center">
-
-# Get More Done with Less Stress – Meet Elite Aide
-
-</div>
 
 <img src="https://github.com/Project-Dark-Horse/EliteAideFrontend/blob/main/src/assets/bot.png" alt="logo" title="Elite Aide" width="80"/>
 
@@ -113,6 +108,15 @@ yarn ios
 ```
 
 ## Build and Release
+
+Before building the project, ensure that the following files are added to the appropriate directories:
+
+1. **google-services.json**: This file is required for Firebase integration. Place it in the `android/app/` directory.
+
+2. **debug.keystore**: This file is used for signing the app during the debug build process. Ensure it is located in the `android/app/` directory.
+
+These files are not included in the repository for security reasons, so you must add them manually before building the project.
+
 
 ### Building the App
 To build the app for production, run:
