@@ -87,10 +87,7 @@ android {
     }
     signingConfigs {
         debug {
-            storeFile file('debug.keystore')
-            storePassword 'android'
-            keyAlias 'androiddebugkey'
-            keyPassword 'android'
+            // Remove or comment out the following lines
         }
     }
     buildTypes {
@@ -131,5 +128,5 @@ apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
 //     dependsOn ':app:copyReactNativeVectorIconFonts'
 // }
 
-apply plugin: 'com.google.gms.google-services'
+//apply plugin: 'com.google.gms.google-services'
 
